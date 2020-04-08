@@ -1,0 +1,11 @@
+target_sources(${PROJECT_NAME}
+    PUBLIC
+        ast.h
+        check.h
+        create.h
+        free.h
+    PRIVATE
+        check.c
+        create.c
+        free.c
+)

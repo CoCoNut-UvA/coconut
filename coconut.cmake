@@ -1,0 +1,38 @@
+set(COCONUT_ROOT_DIR ${CMAKE_CURRENT_LIST_DIR})
+
+if(NOT DEFINED ${COCONUT_INSTALL_DIR})
+    set(COCONUT_INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
+
+if(NOT DEFINED ${COCONUT_BUILD_DIR})
+    set(COCONUT_BUILD_DIR ${COCONUT_ROOT_DIR}/build)
+endif()
+
+include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
+ExternalProject_Add(coconut
+    SOURCE_DIR ${COCONUT_ROOT_DIR}
+    BINARY_DIR ${COCONUT_BUILD_DIR}
+    CMAKE_ARGS
+        -DCMAKE_INSTALL_PREFIX:PATH=${COCONUT_INSTALL_DIR}
+    CMAKE_GENERATOR "Unix Makefiles"
+)
+
+
+macro(coconut_generate DSL_FILE)
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${DSL_FILE}")
+    message("*********************** GENERATING WITH COCOGEN ***********************")
+    execute_process(COMMAND ${COCONUT_INSTALL_DIR}/bin/cocogen "${DSL_FILE}"
+        RESULT_VARIABLE COCOGEN_RET
+        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+        INPUT_FILE "${IN_FILE}"
+        OUTPUT_VARIABLE COCONUT_GENERATED_FILES
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    if(${COCOGEN_RET})
+        message(${MESSAGE})
+        message(FATAL_ERROR ">>>> ERROR: COULD NOT GENERATE FILES, STOPPING...")
+    endif()
+    set(COCONUT_GENERATED_INCLUDE_DIR ${CMAKE_BINARY_DIR}/coconut-generated)
+endmacro()
+
+add_subdirectory(${COCONUT_ROOT_DIR}/palm ${CMAKE_CURRENT_BINARY_DIR}/palm)

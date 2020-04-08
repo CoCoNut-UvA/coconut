@@ -1,0 +1,371 @@
+start phase RootPhase {
+    prefix = R,
+    actions {
+        LoadProgram;
+        SemanticAnalysis;
+        Optimisations;
+        CodeGen;
+    }
+};
+
+phase LoadProgram {
+    prefix = LP, 
+    actions {
+        pass ScanAndParse;
+    }
+};
+
+cycle Optimisations {
+    gate,
+    actions {
+        pass Optimisation1;
+        pass Optimisation2;
+        pass Optimisation3;
+    }
+};
+
+phase SemanticAnalysis {
+    prefix = SA,
+    actions {
+        ByteCode;
+    }
+};
+
+phase CodeGen {
+    prefix = CG,
+    actions {
+        ByteCode;
+        Print;
+    }  
+};
+
+
+enum BasicType {
+    prefix = BT,
+    values = {
+        int, float, bool, void
+    }
+};
+
+enum MonOpEnum {
+    prefix = MO,
+    values = {
+        neg, not
+    }
+};
+
+enum BinOpEnum {
+    prefix = BO,
+    values = {
+        mul, add, sub, div, mod, lt, leq, eq, gt, geq, neq, and, or
+    }
+};
+
+pass Test;
+
+traversal Print;
+traversal ByteCode = {BinOp};
+
+traversal RenameFor {
+    prefix = RFOR,
+    nodes = {For, VarLet, Var}
+};
+
+traversal Context {
+    prefix = CTX,
+    nodes = Decl | Vars | {Root, Param, For, FunCall}
+};
+
+traversal SplitInit {
+    prefix = SIT,
+    nodes = {Root, GlobalDef, FunBody, VarDec}
+};
+
+traversal TypeCheck {
+    prefix = TCK,
+    nodes = Stmt | FunctionParts | Expr - {Ternary}
+};
+
+traversal Refactor {
+    prefix = RAT,
+    nodes = {While, StmtList} | Expr - {MonOp, Ternary}
+};
+
+traversal Symbols {
+    prefix = SOS,
+    nodes = {Root, FunDef, FunSymbol, Symbol}
+};
+
+nodeset Constants = {FloatConst, BoolConst, IntConst};
+
+nodeset Operations = {BinOp, MonOp};
+
+nodeset Decl = {GlobalDef, GlobalDec, FunDef};
+
+nodeset Vars = {VarDec, Var, VarLet};
+
+nodeset FunctionParts = {FunDef, FunHeader, Param, FunBody};
+
+nodeset Expr = {Cast, FunCall, Var, Ternary} | (Constants | Operations);
+
+nodeset Stmt = {VarLet, FunCall, IfElse, While, DoWhile, For, Return};
+
+root node Root {
+    children {
+        Decls decls { constructor, mandatory },
+        FunSymbol funsymbol { constructor },
+        Symbol symbol { constructor }
+    }
+};
+
+node Decls {
+    children {
+        Decl decl { constructor, mandatory },
+        Decls next { constructor }
+    }
+};
+
+node LocalFunDef {
+    children {
+        FunDef decl { constructor, mandatory },
+        LocalFunDef next { constructor }
+    }
+};
+
+node FunDef {
+    children {
+        FunHeader funheader { constructor, mandatory },
+        FunBody funbody { constructor },
+        FunSymbol funsymbol { constructor },
+        FunDef next { constructor },
+        Symbol symbol { constructor }
+    },
+    attributes {
+        bool external { constructor },
+        bool export { constructor }
+    }
+};
+
+node FunHeader {
+    children {
+        Param params { constructor }
+    },
+    attributes {
+        BasicType rettype { constructor },
+        string id { constructor }
+    }
+};
+
+node Param {
+    children {
+        Param next { constructor }
+    },
+    attributes {
+        BasicType type { constructor },
+        string id { constructor }
+    }
+};
+
+node GlobalDec {
+    attributes {
+        BasicType type { constructor },
+        string id { constructor }
+    }
+};
+
+node GlobalDef {
+    children {
+        Expr expr { constructor }
+    },
+    attributes {
+        BasicType type { constructor },
+        string id { constructor },
+        bool export { constructor },
+        Symbol symbol = NULL
+    }
+};
+
+node FunBody {
+    children {
+        VarDec vardec { constructor },
+        LocalFunDef localfundef { constructor },
+        StmtList stmtlist { constructor }
+    }
+};
+
+node VarDec {
+    children {
+        Expr expr { constructor },
+        VarDec next { constructor }
+    },
+    attributes {
+        Symbol symbol = NULL,
+        BasicType type { constructor },
+        string id { constructor }
+    }
+};
+
+node StmtList {
+    children {
+        Stmt stmt { constructor, mandatory },
+        StmtList next { constructor }
+    }
+};
+
+node VarLet {
+    children {
+        Expr expr { constructor, mandatory }
+    },
+    attributes {
+        Symbol symbol = NULL,
+        string id { constructor }
+    }
+};
+
+node FunCall {
+    children {
+        ExprList params { constructor }
+    },
+    attributes {
+        FunSymbol symbol = NULL,
+        string id { constructor }
+    }
+};
+
+node ExprList {
+    children {
+        Expr expr { constructor, mandatory },
+        ExprList next { constructor }
+    }
+};
+
+node IfElse {
+    children {
+        Expr condition { constructor, mandatory },
+        StmtList ifblock { constructor },
+        StmtList elseblock { constructor }
+    }
+};
+
+node While {
+    children {
+        Expr condition { constructor, mandatory },
+        StmtList block { constructor }
+    }
+};
+
+node DoWhile {
+    children {
+        Expr condition { constructor, mandatory },
+        StmtList block { constructor }
+    }
+};
+
+node For {
+    children {
+        Expr initexpr { constructor, mandatory },
+        Expr boundexpr { constructor, mandatory },
+        Expr stepexpr { constructor },
+        StmtList block { constructor }
+    },
+    attributes {
+        Symbol symbol = NULL,
+        string id { constructor }
+    }
+};
+
+node Return {
+    children {
+        Expr expr { constructor }
+    }
+};
+
+node BinOp {
+    children {
+        Expr left { constructor, mandatory},
+        Expr right { constructor, mandatory }
+    },
+    attributes {
+        BinOpEnum op { constructor, mandatory, disallowed = {and, or}}
+    }
+};
+
+node MonOp {
+    children {
+        Expr expr { constructor, mandatory }
+    },
+    attributes {
+        MonOpEnum op { constructor }
+    }
+};
+
+node Cast {
+    children {
+        Expr expr { constructor, mandatory }
+    },
+    attributes {
+        BasicType type { constructor }
+    }
+};
+
+node Var {
+    attributes {
+        string id { constructor },
+        Symbol symbol = NULL
+    }
+};
+
+node IntConst {
+    attributes {
+        int value { constructor }
+    }
+};
+
+node FloatConst {
+    attributes {
+        float value { constructor }
+    }
+};
+
+node BoolConst {
+    attributes {
+        bool value { constructor }
+    }
+};
+
+node Ternary {
+    children {
+        Expr testexpr { constructor, mandatory },
+        Expr trueexpr { constructor, mandatory },
+        Expr falseexpr { constructor, mandatory }
+    }
+};
+
+node Symbol {
+    children {
+        Symbol next { constructor }
+    },
+    attributes {
+        bool external { constructor },
+        bool export { constructor },
+        string name { constructor },
+        int scope { constructor },
+        int offset { constructor }
+    }
+};
+
+node FunSymbol {
+    children {
+        FunSymbol next { constructor }
+    },
+    attributes {
+        bool export { constructor },
+        bool external { constructor },
+        string name { constructor },
+        string scopedname { constructor },
+        int arity { constructor },
+        int scope { constructor },
+        int offset { constructor }
+    }
+};
+

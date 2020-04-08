@@ -1,0 +1,15 @@
+target_sources(${PROJECT_NAME}
+    PUBLIC
+        array.h
+        assert.h
+        imap.h
+        color.h
+        errors.h
+        log.h
+        memory.h
+        print.h
+        set_implementations.h
+        set.h
+        smap.h
+        str.h
+)

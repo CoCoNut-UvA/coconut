@@ -1,0 +1,8 @@
+/**
+ *
+ *  Implementation of a generic hash map that.
+ *  
+ *  Builds an array of buckets and the buckers store
+ *  a linked list. So, collisions are chained in a linked
+ *  list (collision resolution by chaining)
+ */
