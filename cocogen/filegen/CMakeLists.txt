@@ -1,0 +1,10 @@
+target_sources(${PROJECT_NAME}
+    PUBLIC
+        driver.h
+        formatting.h
+        genmacros.h
+        util.h
+    PRIVATE
+        util.c
+        driver.c
+)

@@ -8,9 +8,10 @@ add_executable(${PROJECT_NAME} main.c commandline.c commandline.h ${FLEX_DslToke
 
 add_subdirectory(frontend/)
 add_subdirectory(pretty/)
+add_subdirectory(filegen/)
 
 target_include_directories(${PROJECT_NAME}
-    PRIVATE include/
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE coconut::palm)
