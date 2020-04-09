@@ -56,3 +56,6 @@ build/
 
 # Bin dir
 bin/
+
+cocogen/framework/generated
+.vscode/settings.json

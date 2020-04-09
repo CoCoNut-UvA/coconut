@@ -4,7 +4,10 @@ target_sources(${PROJECT_NAME}
         formatting.h
         genmacros.h
         util.h
+        gen-enum.h
     PRIVATE
         util.c
         driver.c
+        gen-ast.c
+        gen-enum.c
 )

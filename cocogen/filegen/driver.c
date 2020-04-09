@@ -1,7 +1,7 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-#include <assert.h>
 
 #include <dirent.h>
 #include <errno.h>
@@ -14,9 +14,9 @@
 #include "lib/errors.h"
 #include "lib/memory.h"
 #include "lib/print.h"
+#include "lib/set_implementations.h"
 #include "lib/smap.h"
 #include "lib/str.h"
-#include "lib/set_implementations.h"
 
 #define HASH_HEADER "// Hash: %s\n"
 
@@ -31,7 +31,8 @@ typedef struct directory_tracking_data {
 } directory_tracking_data_t;
 
 static directory_tracking_data_t *create_tracking_data() {
-    directory_tracking_data_t *data = mem_alloc(sizeof (directory_tracking_data_t));
+    directory_tracking_data_t *data =
+        mem_alloc(sizeof(directory_tracking_data_t));
     data->blacklist = ccn_set_string_create(10);
     data->generated = ccn_set_string_create(10);
     return data;
@@ -46,24 +47,24 @@ static smap_t *directories_being_tracked = NULL;
 
 static bool only_list_files = false;
 
-/* Last step of generation is deleting all left over files in the tracked directories.
- * Because of flag change deleted nodes, we do not want to keep these files around.
- * So, we loop over all directories that are tracked and delete the files
- * not in the smap. Therefore users should not combine generated data with
- * their own files, because it might delete them.
+/* Last step of generation is deleting all left over files in the tracked
+ * directories. Because of flag change deleted nodes, we do not want to keep
+ * these files around. So, we loop over all directories that are tracked and
+ * delete the files not in the smap. Therefore users should not combine
+ * generated data with their own files, because it might delete them.
  */
-bool add_filename_to_tracked_specify_dir(const char *dir, const char *filename) {
-    directory_tracking_data_t *data = smap_retrieve(directories_being_tracked, dir);
+bool add_filename_to_tracked_specify_dir(const char *dir,
+                                         const char *filename) {
+    directory_tracking_data_t *data =
+        smap_retrieve(directories_being_tracked, dir);
     if (data == NULL) {
         fprintf(stderr, "Could not find dir: %s\n", dir);
         return false;
-
     }
 
     ccn_set_insert(data->generated, ccn_str_cpy(filename));
     return true;
 }
-
 
 /* Add a filename to the tracked set in the current directory.
    Returns false if the current directory is not being tracked.
@@ -78,7 +79,8 @@ bool add_filename_to_tracked(const char *filename) {
 bool add_filename_to_blacklist(const char *filename) {
     assert(current_directory != NULL);
 
-    directory_tracking_data_t *data = smap_retrieve(directories_being_tracked, current_directory);
+    directory_tracking_data_t *data =
+        smap_retrieve(directories_being_tracked, current_directory);
     if (data == NULL)
         return false;
 
@@ -86,8 +88,10 @@ bool add_filename_to_blacklist(const char *filename) {
     return true;
 }
 
-bool add_filename_to_blacklist_specify_dir(const char *dir, const char *filename) {
-    directory_tracking_data_t *data = smap_retrieve(directories_being_tracked, dir);
+bool add_filename_to_blacklist_specify_dir(const char *dir,
+                                           const char *filename) {
+    directory_tracking_data_t *data =
+        smap_retrieve(directories_being_tracked, dir);
     if (data == NULL)
         return false;
 
@@ -99,7 +103,8 @@ bool clean_specific_tracked_directory(const char *dirpath) {
     assert(dirpath != NULL);
     DIR *dir;
     struct dirent *ent;
-    directory_tracking_data_t *data = smap_retrieve(directories_being_tracked, dirpath);
+    directory_tracking_data_t *data =
+        smap_retrieve(directories_being_tracked, dirpath);
     if (data == NULL)
         return false;
 
@@ -109,8 +114,9 @@ bool clean_specific_tracked_directory(const char *dirpath) {
                 continue;
 
             char *name = ent->d_name;
-            if (!ccn_set_contains(data->blacklist, name) && !ccn_set_contains(data->generated, name)) {
-                char *full_path= ccn_str_cat(dirpath, name);
+            if (!ccn_set_contains(data->blacklist, name) &&
+                !ccn_set_contains(data->generated, name)) {
+                char *full_path = ccn_str_cat(dirpath, name);
                 if (remove(full_path) != 0) {
                     perror("Could not remove file: ");
                     fprintf(stderr, " %s\n", full_path);
@@ -119,12 +125,13 @@ bool clean_specific_tracked_directory(const char *dirpath) {
                 } else {
                     printf("RM: %s\n", full_path);
                 }
-
             }
         }
         closedir(dir);
     } else {
-        perror("Error opening directory for file cleanup"); // TODO: Probably propogate error instead?
+        perror("Error opening directory for file cleanup"); // TODO: Probably
+                                                            // propogate error
+                                                            // instead?
         fprintf(stderr, "Dirpath: %s\n", dirpath);
     }
     return true;
@@ -132,7 +139,8 @@ bool clean_specific_tracked_directory(const char *dirpath) {
 
 bool add_directory_to_tracked_dirs(const char *dir) {
     if (smap_retrieve(directories_being_tracked, dir) == NULL) {
-        smap_insert(directories_being_tracked, ccn_str_cpy(dir), create_tracking_data());
+        smap_insert(directories_being_tracked, ccn_str_cpy(dir),
+                    create_tracking_data());
         return true;
     }
 
@@ -160,7 +168,8 @@ void set_current_directory_to_be_tracked(const char *dirname) {
     current_directory = ccn_str_cpy(dirname);
 
     if (smap_retrieve(directories_being_tracked, dirname) == NULL) {
-        smap_insert(directories_being_tracked, ccn_str_cpy(dirname), create_tracking_data());
+        smap_insert(directories_being_tracked, ccn_str_cpy(dirname),
+                    create_tracking_data());
     }
 }
 
@@ -168,8 +177,7 @@ void init_tracking_data(size_t num_of_dirs) {
     directories_being_tracked = smap_init(num_of_dirs);
 }
 
-void cleanup_tracking_data()
-{
+void cleanup_tracking_data() {
     smap_free_values(directories_being_tracked, mem_free);
     mem_free(current_directory);
 }
@@ -183,13 +191,9 @@ FILE *get_fp(char *full_path, char *mode) {
     return fp;
 }
 
-bool is_only_list_files() {
-    return only_list_files;
-}
+bool is_only_list_files() { return only_list_files; }
 
-Config *_get_ast_definition() {
-    return ast_definition;
-}
+Config *_get_ast_definition() { return ast_definition; }
 
 char *format_with_formatter(char *formatter, char *value) {
     char *res = mem_alloc(strlen(formatter) + strlen(value) + 1);
@@ -212,7 +216,6 @@ char *get_full_path_with_dir(const char *dir, char *filename, char *formatter) {
     }
 
     return full_path;
-
 }
 
 static char *get_full_path(char *filename, char *formatter) {
@@ -332,8 +335,9 @@ void filegen_dir(char *out_dir) {
 void filegen_generate(char *filename, void (*func)(Config *, FILE *)) {
 
     char *full_path = get_full_path(filename, NULL);
-    add_filename_to_tracked(filename);
-    add_filename_to_set(full_path);
+    // TODO(Rick) Had to comment this out to make it work
+    // add_filename_to_tracked(filename);
+    // add_filename_to_set(full_path);
 
     print_file_gen(full_path);
 
@@ -383,7 +387,7 @@ void filegen_all_nodesets(char *fileformatter,
     for (int i = 0; i < array_size(ast_definition->nodesets); ++i) {
         Nodeset *nodeset = array_get(ast_definition->nodesets, i);
         char *filename = format_with_formatter(fileformatter, nodeset->id);
-        //full_path = get_full_path(fileformatter, nodeset->id);
+        // full_path = get_full_path(fileformatter, nodeset->id);
         full_path = get_full_path_with_dir(current_directory, filename, NULL);
         add_filename_to_tracked(filename);
 
@@ -412,7 +416,7 @@ void filegen_all_traversals(char *fileformatter,
     for (int i = 0; i < array_size(ast_definition->traversals); ++i) {
         Traversal *traversal = array_get(ast_definition->traversals, i);
         char *filename = format_with_formatter(fileformatter, traversal->id);
-        //full_path = get_full_path(fileformatter, traversal->id);
+        // full_path = get_full_path(fileformatter, traversal->id);
         full_path = get_full_path_with_dir(current_directory, filename, NULL);
         add_filename_to_tracked(filename);
 
@@ -441,7 +445,7 @@ void filegen_all_passes(char *fileformatter,
     for (int i = 0; i < array_size(ast_definition->passes); ++i) {
         Pass *pass = array_get(ast_definition->passes, i);
         char *filename = format_with_formatter(fileformatter, pass->id);
-        //full_path = get_full_path(fileformatter, pass->id);
+        // full_path = get_full_path(fileformatter, pass->id);
         full_path = get_full_path_with_dir(current_directory, filename, NULL);
         add_filename_to_tracked(filename);
 
@@ -470,7 +474,7 @@ void filegen_all_phases(char *fileFormatter,
     for (int i = 0; i < array_size(ast_definition->phases); ++i) {
         Phase *phase = array_get(ast_definition->phases, i);
         char *filename = format_with_formatter(fileFormatter, phase->id);
-        //full_path = get_full_path(fileFormatter, phase->id);
+        // full_path = get_full_path(fileFormatter, phase->id);
         full_path = get_full_path_with_dir(current_directory, filename, NULL);
         add_filename_to_tracked(filename);
 

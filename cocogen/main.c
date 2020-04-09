@@ -1,12 +1,16 @@
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
+#include <unistd.h>
 
+#include "ast/ast.h"
 #include "commandline.h"
 #include "lib/color.h"
 #include "lib/errors.h"
-#include "ast/ast.h"
 #include "pretty/printer.h"
+
+#include "filegen/driver.h"
+#include "filegen/gen-ast.h"
+#include "filegen/gen-enum.h"
 
 // Defined in the parser.
 extern struct Config *parseDSL(FILE *fp);
@@ -19,11 +23,14 @@ void exit_compile_error(void) {
     exit(INVALID_CONFIG);
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     process_commandline_args(argc, argv);
-    FILE *f = fopen(yy_filename, "r");
-    Config *ir = parseDSL(f);
+    FILE *fp = fopen(yy_filename, "r");
+    Config *config = parseDSL(fp);
 
-    pretty_print(ir);
+    filegen_init(config, false);
+    filegen_dir("cocogen/framework/generated/");
+    filegen_generate("enum.h", gen_enum_header);
+    filegen_generate("ast.h", gen_ast_header);
+    filegen_generate("ast.c", gen_ast_src);
 }
