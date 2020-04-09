@@ -6,11 +6,11 @@ target_sources(${PROJECT_NAME}
         util.h
         gen-ast.h
         gen-enum.h
-        gen-ast-util.h
+        gen-util.h
     PRIVATE
         util.c
         driver.c
         gen-ast.c
         gen-enum.c
-        gen-ast-util.c
+        gen-util.c
 )

@@ -4,11 +4,11 @@
 #include "ast/ast.h"
 #include "filegen/genmacros.h"
 
-#include "filegen/gen-ast-util.h"
+#include "filegen/gen-util.h"
 
-char *attrtype_to_str(enum AttrType type) {
+char *get_attr_str(Config *config, Attr *attr) {
     char *type_str = NULL;
-    switch (type) {
+    switch (attr->type) {
     case AT_int:
         type_str = "int";
         break;
@@ -52,11 +52,17 @@ char *attrtype_to_str(enum AttrType type) {
         type_str = "char*";
         break;
     case AT_link_or_enum:
+        if (type_is_link(config, attr)) {
+            type_str = "Node *";
+        } else {
+            type_str = attr->type_id;
+        }
         break;
     case AT_link:
-        type_str = "node*";
+        type_str = "Node*";
         break;
     case AT_enum:
+        type_str = attr->type_id;
         break;
     }
 
