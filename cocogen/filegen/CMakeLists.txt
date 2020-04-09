@@ -4,10 +4,13 @@ target_sources(${PROJECT_NAME}
         formatting.h
         genmacros.h
         util.h
+        gen-ast.h
         gen-enum.h
+        gen-ast-util.h
     PRIVATE
         util.c
         driver.c
         gen-ast.c
         gen-enum.c
+        gen-ast-util.c
 )
