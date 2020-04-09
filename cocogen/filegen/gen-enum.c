@@ -28,11 +28,14 @@ void gen_nodetype_enum(Config *config, FILE *fp) {
 }
 
 void gen_enum_header(Config *config, FILE *fp) {
+    out("#ifndef _CCN_ENUM_H_\n");
+    out("#define _CCN_ENUM_H_\n\n");
     gen_nodetype_enum(config, fp);
     for (int i = 0; i < array_size(config->enums); ++i) {
         Enum *arg_enum = (Enum *)array_get(config->enums, i);
         gen_enum(config, fp, arg_enum);
     }
+    out("#endif /* _CCN_ENUM_H_ */\n");
 }
 
 void gen_enum_src(Config *config, FILE *fp) {}

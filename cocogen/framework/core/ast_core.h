@@ -9,13 +9,13 @@
 #define NODE_COL(n) ((n)->colno)
 #define NODE_ERROR(n) ((n)->error)
 
-struct NODE {
+typedef struct NODE {
     NodeType nodetype;
     int lineno;
     int colno;
     struct NODE *error;
     union CHILDREN children;
     union ATTRIBUTES attribs;
-} node;
+} Node;
 
 #endif /* _CCN_AST_CORE_H_ */

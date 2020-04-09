@@ -13,7 +13,7 @@ void generate_child_struct(Config *config, FILE *fp, Node *node) {
     out("struct CHILDREN_%s {\n", node->id);
     for (int i = 0; i < array_size(node->children); ++i) {
         Child *child = (Child *)array_get(node->children, i);
-        out("    node *%s;\n", child->id);
+        out("    Node *%s;\n", child->id);
     }
     out("};\n\n");
 }
@@ -28,7 +28,7 @@ void generate_attribute_struct(Config *config, FILE *fp, Node *node) {
             out("    %s %s;\n", type_str, attr->id);
         } else if (attr->type == AT_link || (attr->type == AT_link_or_enum &&
                                              type_is_link(config, attr))) {
-            out("    node *%s;\n", attr->id);
+            out("    Node *%s;\n", attr->id);
         } else if (attr->type == AT_enum || attr->type == AT_link_or_enum) {
             out("    %s %s;\n", attr->type_id, attr->id);
         }
@@ -57,10 +57,11 @@ void generate_attributes_union(Config *config, FILE *fp) {
 }
 
 void gen_ast_header(Config *config, FILE *fp) {
+    out("#ifndef _CCN_AST_H_\n");
+    out("#define _CCN_AST_H_\n\n");
     out("#include \"<stdbool.h>\"\n");
     out("#include \"core/ast_core.h\"\n");
     out("\n");
-    out("typedef struct NODE node;\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
         generate_child_struct(config, fp, node);
@@ -71,6 +72,7 @@ void gen_ast_header(Config *config, FILE *fp) {
     }
     generate_children_union(config, fp);
     generate_attributes_union(config, fp);
+    out("#endif /* _CCN_AST_H_ */\n");
 }
 
 void gen_ast_src(Config *config, FILE *fp) {}
