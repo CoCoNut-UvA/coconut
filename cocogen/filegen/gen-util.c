@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -83,4 +84,22 @@ bool type_is_link(Config *config, Attr *attr) {
         }
     }
     return islink;
+}
+
+char *strupr(char *string) {
+    char *upper = malloc(64 * sizeof(char));
+    strcpy(upper, string);
+    for (int i = 0; i < strlen(upper); ++i) {
+        upper[i] = toupper(upper[i]);
+    }
+    return upper;
+}
+
+char *strlwr(char *string) {
+    char *lower = malloc(64 * sizeof(char));
+    strcpy(lower, string);
+    for (int i = 0; i < strlen(lower); ++i) {
+        lower[i] = tolower(lower[i]);
+    }
+    return lower;
 }

@@ -5,6 +5,7 @@
 #include "filegen/genmacros.h"
 
 #include "filegen/gen-enum.h"
+#include "filegen/gen-util.h"
 
 void gen_enum(Config *config, FILE *fp, Enum *arg_enum) {
     out("// Enum %s\n", arg_enum->id);
@@ -22,7 +23,9 @@ void gen_nodetype_enum(Config *config, FILE *fp) {
     out("typedef enum {\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
-        out("    N_%s,\n", node->id);
+        char *nodelwr = strlwr(node->id);
+        out("    N_%s,\n", nodelwr);
+        free(nodelwr);
     }
     out("} NodeType;\n\n");
 }
