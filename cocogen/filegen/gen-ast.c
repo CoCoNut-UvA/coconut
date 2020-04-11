@@ -159,7 +159,7 @@ void generate_node_constructor(Config *config, FILE *fp, Node *node) {
         nodelwr, nodeupr);
     out("    node->attribs.N_%s = mem_alloc(sizeof(struct ATTRIBUTES_%s));\n",
         nodelwr, nodeupr);
-    out("    NODE_TYPE(node) = N_%s;\n", nodelwr);
+    out("    NODE_TYPE(node) = NT_%s;\n", nodelwr);
     generate_members(config, fp, node);
     // TODO: Checks here or in another file?
     out("}\n\n");

@@ -54,7 +54,7 @@ char *get_attr_str(Config *config, Attr *attr) {
         break;
     case AT_link_or_enum:
         if (type_is_link(config, attr)) {
-            type_str = "Node *";
+            type_str = "Node*";
         } else {
             type_str = attr->type_id;
         }
