@@ -2,7 +2,7 @@
 
 typedef struct traversalstack {
     struct traversalstack *next;
-    trav_fun *funs;
+    trav_fun_p *funs;
     TraversalType prefix;
 } TraversalStack;
 
@@ -10,10 +10,11 @@ static TraversalStack *travstack = NULL;
 
 Node *traverse_node(Node *arg_node, Info *arg_info) {
     if (arg_node == NULL) {
+        /// TODO: do error handling, or throw warning?
         return arg_node;
     }
 
-    // TODO: fix globals
+    /// TODO: fix globals
     // global.line = NODE_LINE(arg_node);
 
     if (pretable[travstack->prefix] != NULL) {
@@ -36,7 +37,7 @@ void push_new_traversal(TraversalType prefix) {
 
     new->next = travstack;
     new->prefix = prefix;
-    new->funs = travtables[prefix];
+    new->funs = travtable[prefix];
 
     travstack = new;
 }

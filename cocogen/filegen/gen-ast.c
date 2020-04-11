@@ -8,7 +8,7 @@
 #include "filegen/gen-ast.h"
 #include "filegen/gen-util.h"
 
-void generate_init_function(Config *config, FILE *fp, Node *node) {
+void gen_init_function(Config *config, FILE *fp, Node *node) {
     char *nodelwr = strlwr(node->id);
     out("Node *node_init_%s(", nodelwr);
     for (int i = 0; i < array_size(node->children); ++i) {
@@ -30,7 +30,7 @@ void generate_init_function(Config *config, FILE *fp, Node *node) {
     free(nodelwr);
 }
 
-void generate_child_struct(Config *config, FILE *fp, Node *node) {
+void gen_child_struct(Config *config, FILE *fp, Node *node) {
     char *nodeupr = strupr(node->id);
     out("// Node %s Children\n", node->id);
     out("struct CHILDREN_%s {\n", nodeupr);
@@ -42,7 +42,7 @@ void generate_child_struct(Config *config, FILE *fp, Node *node) {
     free(nodeupr);
 }
 
-void generate_attribute_struct(Config *config, FILE *fp, Node *node) {
+void gen_attribute_struct(Config *config, FILE *fp, Node *node) {
     char *nodeupr = strupr(node->id);
     out("// Node %s Attributes\n", node->id);
     out("struct ATTRIBUTES_%s {\n", nodeupr);
@@ -55,7 +55,7 @@ void generate_attribute_struct(Config *config, FILE *fp, Node *node) {
     free(nodeupr);
 }
 
-void generate_children_union(Config *config, FILE *fp) {
+void gen_children_union(Config *config, FILE *fp) {
     out("// Children\n");
     out("union CHILDREN {\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
@@ -69,7 +69,7 @@ void generate_children_union(Config *config, FILE *fp) {
     out("};\n\n");
 }
 
-void generate_attributes_union(Config *config, FILE *fp) {
+void gen_attributes_union(Config *config, FILE *fp) {
     out("// Attributes\n");
     out("union ATTRIBUTES {\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
@@ -83,7 +83,7 @@ void generate_attributes_union(Config *config, FILE *fp) {
     out("};\n\n");
 }
 
-void generate_macros(Config *config, FILE *fp, Node *node) {
+void gen_macros(Config *config, FILE *fp, Node *node) {
     out("// Macros for Node %s\n", node->id);
     char *nodeupr = strupr(node->id);
     char *nodelwr = strlwr(node->id);
@@ -113,26 +113,26 @@ void gen_ast_header(Config *config, FILE *fp) {
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
-        generate_child_struct(config, fp, node);
+        gen_child_struct(config, fp, node);
     }
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
-        generate_attribute_struct(config, fp, node);
+        gen_attribute_struct(config, fp, node);
     }
-    generate_children_union(config, fp);
-    generate_attributes_union(config, fp);
+    gen_children_union(config, fp);
+    gen_attributes_union(config, fp);
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
-        generate_macros(config, fp, node);
+        gen_macros(config, fp, node);
         out("// Constructor for Node %s\n", node->id);
         out("extern ");
-        generate_init_function(config, fp, node);
+        gen_init_function(config, fp, node);
         out(";\n\n");
     }
     out("#endif /* _CCN_AST_H_ */\n");
 }
 
-void generate_members(Config *config, FILE *fp, Node *node) {
+void gen_members(Config *config, FILE *fp, Node *node) {
     char *nodeupr = strupr(node->id);
     for (int i = 0; i < array_size(node->children); ++i) {
         Child *child = (Child *)array_get(node->children, i);
@@ -149,10 +149,10 @@ void generate_members(Config *config, FILE *fp, Node *node) {
     free(nodeupr);
 }
 
-void generate_node_constructor(Config *config, FILE *fp, Node *node) {
+void gen_node_constructor(Config *config, FILE *fp, Node *node) {
     char *nodeupr = strupr(node->id);
     char *nodelwr = strlwr(node->id);
-    generate_init_function(config, fp, node);
+    gen_init_function(config, fp, node);
     out("{\n");
     out("    Node *node = node_init_empty();\n");
     out("    node->children.N_%s = mem_alloc(sizeof(struct CHILDREN_%s));\n",
@@ -160,7 +160,7 @@ void generate_node_constructor(Config *config, FILE *fp, Node *node) {
     out("    node->attribs.N_%s = mem_alloc(sizeof(struct ATTRIBUTES_%s));\n",
         nodelwr, nodeupr);
     out("    NODE_TYPE(node) = NT_%s;\n", nodelwr);
-    generate_members(config, fp, node);
+    gen_members(config, fp, node);
     // TODO: Checks here or in another file?
     out("}\n\n");
     free(nodeupr);
@@ -175,6 +175,6 @@ void gen_ast_src(Config *config, FILE *fp) {
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
         out("// Constructor for Node %s\n", node->id);
-        generate_node_constructor(config, fp, node);
+        gen_node_constructor(config, fp, node);
     }
 }

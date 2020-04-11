@@ -7,6 +7,23 @@
 
 #include "filegen/gen-util.h"
 
+/** This is terrible but this is the frontend's fault. It is necessary because
+ * we want to address nodes dynamically. The current frontend addresses links
+ * with their respective "static" struct declaration, which is not what we want.
+ * Instead, the resulting type should become "node *".
+ */
+bool type_is_link(Config *config, Attr *attr) {
+    bool islink = false;
+    for (int i = 0; i < array_size(config->nodes); ++i) {
+        Node *node = (Node *)array_get(config->nodes, i);
+        if (strcmp(attr->type_id, node->id) == 0) {
+            islink = true;
+            break;
+        }
+    }
+    return islink;
+}
+
 char *get_attr_str(Config *config, Attr *attr) {
     char *type_str = NULL;
     switch (attr->type) {
@@ -70,22 +87,6 @@ char *get_attr_str(Config *config, Attr *attr) {
     return type_str;
 }
 
-bool type_is_link(Config *config, Attr *attr) {
-    // This is terrible but this is the frontend's fault. It is necessary
-    // because we want to address nodes dynamically. The current frontend
-    // addresses links with their respective "static" struct declaration, which
-    // is not what we want. Instead, the resulting type should become "node *".
-    bool islink = false;
-    for (int i = 0; i < array_size(config->nodes); ++i) {
-        Node *node = (Node *)array_get(config->nodes, i);
-        if (strcmp(attr->type_id, node->id) == 0) {
-            islink = true;
-            break;
-        }
-    }
-    return islink;
-}
-
 char *strupr(char *string) {
     char *upper = malloc(strlen(string) * sizeof(char));
     strcpy(upper, string);
@@ -102,4 +103,19 @@ char *strlwr(char *string) {
         lower[i] = tolower(lower[i]);
     }
     return lower;
+}
+
+/**
+ * This this function goes over each node in the traversal and compares it to
+ * the node given to the function. If the two nodes have an equal ID, then the
+ * node is a valid node in the traversal.
+ */
+bool node_in_traversal(Config *config, FILE *fp, Traversal *trav, Node *node) {
+    for (int i = 0; i < array_size(trav->nodes); i++) {
+        char *travnode_id = array_get(trav->nodes, i);
+        if (strcmp(travnode_id, node->id) == 0) {
+            return true;
+        }
+    }
+    return false;
 }

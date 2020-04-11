@@ -8,6 +8,7 @@ target_sources(${PROJECT_NAME}
         gen-enum.h
         gen-util.h
         gen-trav.h
+        gen-trav-table.h
     PRIVATE
         util.c
         driver.c
@@ -15,4 +16,5 @@ target_sources(${PROJECT_NAME}
         gen-enum.c
         gen-util.c
         gen-trav.c
+        gen-trav-table.c
 )

@@ -332,7 +332,7 @@ void filegen_dir(char *out_dir) {
     ensure_dir_exists(output_directory, 0755);
 }
 
-void filegen_generate(char *filename, void (*func)(Config *, FILE *)) {
+void filegen_generate(char *filename, void *(*func)(Config *, FILE *)) {
 
     char *full_path = get_full_path(filename, NULL);
     // TODO(Rick) Had to comment this out to make it work

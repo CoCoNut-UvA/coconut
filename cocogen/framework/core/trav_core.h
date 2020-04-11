@@ -6,9 +6,13 @@
     }
 
 typedef struct INFO Info;
-typedef Node *(*trav_fun)(Node *, Info *);
-Node *traverse_node(Node *arg_node, Info *arg_info);
-Node *traverse_children(Node *arg_node, Info *arg_info);
-void push_new_traversal(TraversalType prefix);
-TraversalType pop_cur_traversal(void);
-const char *traversal_name(void);
+
+// Pointer to traversal functions
+typedef Node *(*trav_fun_p)(Node *, Info *);
+
+extern node *traverse_node(node *arg_node, info *arg_info);
+extern void push_new_traversal(TraversalType traversal);
+extern TraversalType pop_cur_traversal(void);
+extern const char *traversal_name(void);
+extern void trav_set_pre_fun(TraversalType traversal, trav_fun_p prefun);
+extern void trav_set_post_fun(TraversalType traversal, trav_fun_p postfun);
