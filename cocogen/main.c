@@ -6,6 +6,8 @@
 #include "commandline.h"
 #include "lib/color.h"
 #include "lib/errors.h"
+#include "ast/ast.h"
+#include "ast/check.h"
 #include "pretty/printer.h"
 
 #include "filegen/driver.h"
@@ -25,8 +27,11 @@ void exit_compile_error(void) {
 
 int main(int argc, char *argv[]) {
     process_commandline_args(argc, argv);
-    FILE *fp = fopen(yy_filename, "r");
-    Config *config = parseDSL(fp);
+    FILE *f = fopen(yy_filename, "r");
+    Config *config = parseDSL(f);
+    if (check_config(config)) {
+        exit_compile_error();
+    }
 
     filegen_init(config, false);
     filegen_dir("cocogen/framework/generated/");
