@@ -168,7 +168,6 @@ void generate_node_constructor(Config *config, FILE *fp, Node *node) {
 }
 
 void gen_ast_src(Config *config, FILE *fp) {
-    out("#include <stdbool.h>\n");
     // TODO: Does the library need to be in the core directory?
     out("#include \"lib/memory.h\"\n");
     out("#include \"generated/ast.h\"\n");

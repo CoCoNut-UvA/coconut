@@ -3,16 +3,16 @@
 #include <unistd.h>
 
 #include "ast/ast.h"
+#include "ast/check.h"
 #include "commandline.h"
 #include "lib/color.h"
 #include "lib/errors.h"
-#include "ast/ast.h"
-#include "ast/check.h"
 #include "pretty/printer.h"
 
 #include "filegen/driver.h"
 #include "filegen/gen-ast.h"
 #include "filegen/gen-enum.h"
+#include "filegen/gen-trav.h"
 
 // Defined in the parser.
 extern struct Config *parseDSL(FILE *fp);
@@ -38,4 +38,6 @@ int main(int argc, char *argv[]) {
     filegen_generate("enum.h", gen_enum_header);
     filegen_generate("ast.h", gen_ast_header);
     filegen_generate("ast.c", gen_ast_src);
+    filegen_generate("trav.h", gen_trav_header);
+    filegen_generate("trav.c", gen_trav_src);
 }

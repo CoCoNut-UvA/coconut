@@ -7,10 +7,12 @@ target_sources(${PROJECT_NAME}
         gen-ast.h
         gen-enum.h
         gen-util.h
+        gen-trav.h
     PRIVATE
         util.c
         driver.c
         gen-ast.c
         gen-enum.c
         gen-util.c
+        gen-trav.c
 )
