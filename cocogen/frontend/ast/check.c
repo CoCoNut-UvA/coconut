@@ -1,23 +1,23 @@
 #include "ast/check.h"
 
 #include <assert.h>
+#include <ctype.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
-#include <math.h>
 
 #include "ast/ast.h"
 #include "ast/create.h"
 #include "ast/free.h"
 
-#include "lib/str.h"
-#include "lib/set_implementations.h"
 #include "lib/array.h"
 #include "lib/memory.h"
 #include "lib/print.h"
 #include "lib/set.h"
+#include "lib/set_implementations.h"
 #include "lib/smap.h"
+#include "lib/str.h"
 
 struct Info {
     smap_t *enum_name;
@@ -72,7 +72,8 @@ static void *check_prefix_exists(struct Info *info, char *prefix) {
     return smap_retrieve(info->action_prefix, prefix);
 }
 
-static char *gen_unique_prefix_from_existing_prefix(char *prefix, struct Info *info) {
+static char *gen_unique_prefix_from_existing_prefix(char *prefix,
+                                                    struct Info *info) {
     size_t i = 1;
     int max_size = (int)ceil(log10(SIZE_MAX));
     char buffer[max_size + 2];
@@ -116,9 +117,9 @@ static char *gen_prefix_from_string(const char *string, struct Info *info) {
         }
     }
     chars[index] = '\0';
-    return gen_unique_prefix_from_existing_prefix(realloc(chars, (strlen(chars) + 1) * sizeof(char)), info);
+    return gen_unique_prefix_from_existing_prefix(
+        realloc(chars, (strlen(chars) + 1) * sizeof(char)), info);
 }
-
 
 static void *check_name_exists(struct Info *info, char *name) {
     Enum *enum_orig;
@@ -196,8 +197,7 @@ static int check_nodes(array *nodes, struct Info *info) {
         if (cur_node->root) {
             if (info->root_node != NULL) {
                 orig_def = info->root_node->id;
-                print_error(cur_node->id,
-                            "Duplicate declaration of root node");
+                print_error(cur_node->id, "Duplicate declaration of root node");
                 print_note(orig_def, "Previously declared here");
                 error = 1;
             } else {
@@ -241,7 +241,8 @@ static Action *copy_action(Action *action) {
 }
 
 static Phase *copy_phase_shallow(Phase *phase) {
-    Phase *new = create_phase_header(ccn_str_cpy(phase->id), phase->start, phase->cycle);
+    Phase *new =
+        create_phase_header(ccn_str_cpy(phase->id), phase->start, phase->cycle);
     array *actions = create_array();
     for (int i = 0; i < array_size(phase->actions); ++i) {
         array_append(actions, copy_action(array_get(phase->actions, i)));
@@ -252,7 +253,8 @@ static Phase *copy_phase_shallow(Phase *phase) {
     }
     new->common_info->hash = phase->common_info->hash;
     new->common_info->hash_matches = phase->common_info->hash_matches;
-    new = create_phase(new, root, ccn_str_cpy(phase->prefix), actions, phase->gate_func);
+    new = create_phase(new, root, ccn_str_cpy(phase->prefix), actions,
+                       phase->gate_func);
     ccn_set_free(new->roots);
     new->roots = ccn_set_copy(phase->roots);
     new->root_owner = false;
@@ -291,9 +293,8 @@ static int check_action_reference(Action *action, struct Info *info) {
         return 0;
     }
 
-    print_error(
-        action->action,
-        "ID is not a reference to a defined pass, traversal or phase.");
+    print_error(action->action,
+                "ID is not a reference to a defined pass, traversal or phase.");
     exit(1);
     // TODO !important propogate this error!
     return 1;
@@ -302,10 +303,10 @@ static int check_action_reference(Action *action, struct Info *info) {
 static int check_actions_reference(array *actions, struct Info *info) {
     int error = 0;
     for (int i = 0; i < array_size(actions); ++i) {
-            Action *action = array_get(actions, i);
-            if (action->type == ACTION_REFERENCE) {
-                error = check_action_reference(action, info) == 0 ? error : 1;
-            }
+        Action *action = array_get(actions, i);
+        if (action->type == ACTION_REFERENCE) {
+            error = check_action_reference(action, info) == 0 ? error : 1;
+        }
     }
     return error;
 }
@@ -339,19 +340,23 @@ static int check_phases(array *phases, struct Info *info) {
                     break;
                 }
             }
-            if (! has_child_next) {
-                print_error(cur_phase->root, "Specified root has no child named next.");
+            if (!has_child_next) {
+                print_error(cur_phase->root,
+                            "Specified root has no child named next.");
                 error = 1;
             }
         }
 
         if (cur_phase->prefix != NULL) {
-            if ((orig_def = check_prefix_exists(info, cur_phase->prefix)) != NULL) {
-                print_error(cur_phase->prefix, "Redefinition of prefix '%s'", cur_phase->prefix);
+            if ((orig_def = check_prefix_exists(info, cur_phase->prefix)) !=
+                NULL) {
+                print_error(cur_phase->prefix, "Redefinition of prefix '%s'",
+                            cur_phase->prefix);
                 print_note(orig_def, "Previously declared here");
                 error = 1;
             } else {
-                smap_insert(info->action_prefix, cur_phase->prefix, cur_phase->prefix);
+                smap_insert(info->action_prefix, cur_phase->prefix,
+                            cur_phase->prefix);
             }
         } else {
             char *pref = gen_prefix_from_string(cur_phase->id, info);
@@ -360,7 +365,8 @@ static int check_phases(array *phases, struct Info *info) {
                 exit(1);
             }
             cur_phase->prefix = pref;
-            smap_insert(info->action_prefix, cur_phase->prefix, cur_phase->prefix);
+            smap_insert(info->action_prefix, cur_phase->prefix,
+                        cur_phase->prefix);
         }
     }
 
@@ -392,12 +398,15 @@ static int check_passes(array *passes, struct Info *info) {
             smap_insert(info->pass_name, cur_pass->id, cur_pass);
         }
         if (cur_pass->prefix != NULL) {
-            if ((orig_def = check_prefix_exists(info, cur_pass->prefix)) != NULL) {
-                print_error(cur_pass->prefix, "Redefinition of prefix '%s'", cur_pass->prefix);
+            if ((orig_def = check_prefix_exists(info, cur_pass->prefix)) !=
+                NULL) {
+                print_error(cur_pass->prefix, "Redefinition of prefix '%s'",
+                            cur_pass->prefix);
                 print_note(orig_def, "Previously declared here");
                 error = 1;
             } else {
-                smap_insert(info->action_prefix, cur_pass->prefix, cur_pass->prefix);
+                smap_insert(info->action_prefix, cur_pass->prefix,
+                            cur_pass->prefix);
             }
         } else {
             char *pref = gen_prefix_from_string(cur_pass->id, info);
@@ -406,7 +415,8 @@ static int check_passes(array *passes, struct Info *info) {
                 exit(1);
             }
             cur_pass->prefix = pref;
-            smap_insert(info->action_prefix, cur_pass->prefix, cur_pass->prefix);
+            smap_insert(info->action_prefix, cur_pass->prefix,
+                        cur_pass->prefix);
         }
     }
     return error;
@@ -426,17 +436,20 @@ static int check_traversals(array *traversals, struct Info *info) {
             print_note(orig_def, "Previously declared here");
             error = 1;
         } else {
-            smap_insert(info->traversal_name, cur_traversal->id,
-                        cur_traversal);
+            smap_insert(info->traversal_name, cur_traversal->id, cur_traversal);
         }
 
         if (cur_traversal->prefix != NULL) {
-            if ((orig_def = check_prefix_exists(info, cur_traversal->prefix)) != NULL) {
-                print_error(cur_traversal->prefix, "Redefinition of prefix '%s'", cur_traversal->prefix);
+            if ((orig_def = check_prefix_exists(info, cur_traversal->prefix)) !=
+                NULL) {
+                print_error(cur_traversal->prefix,
+                            "Redefinition of prefix '%s'",
+                            cur_traversal->prefix);
                 print_note(orig_def, "Previously declared here");
                 error = 1;
             } else {
-                smap_insert(info->action_prefix, cur_traversal->prefix, cur_traversal->prefix);
+                smap_insert(info->action_prefix, cur_traversal->prefix,
+                            cur_traversal->prefix);
             }
         } else {
             char *pref = gen_prefix_from_string(cur_traversal->id, info);
@@ -445,9 +458,9 @@ static int check_traversals(array *traversals, struct Info *info) {
                 exit(1);
             }
             cur_traversal->prefix = pref;
-            smap_insert(info->action_prefix, cur_traversal->prefix, cur_traversal->prefix);
+            smap_insert(info->action_prefix, cur_traversal->prefix,
+                        cur_traversal->prefix);
         }
-
     }
     return error;
 }
@@ -571,8 +584,8 @@ static int check_nodeset(Nodeset *nodeset, struct Info *info) {
                         nodeset->id, nodeset_nodeset->id);
             error = 1;
         } else if (!nodeset_node) {
-            print_error(node, "Unknown type of node '%s' in nodeset '%s'",
-                        node, nodeset->id);
+            print_error(node, "Unknown type of node '%s' in nodeset '%s'", node,
+                        nodeset->id);
             error = 1;
         } else {
             mem_free(node);
@@ -596,8 +609,7 @@ static int check_enum(Enum *arg_enum, struct Info *info) {
 
         // Check if there is no duplicate naming.
         if ((orig_value = smap_retrieve(value_name, cur_value)) != NULL) {
-            print_error(cur_value,
-                        "Duplicate name '%s' in values of enum '%s'",
+            print_error(cur_value, "Duplicate name '%s' in values of enum '%s'",
                         cur_value, arg_enum->id);
             print_note(orig_value, "Previously declared here");
 
@@ -701,7 +713,8 @@ static int check_phase(Phase *phase, struct Info *info, smap_t *phase_order) {
     int error = 0;
 
     if (phase->start) {
-        if (info->root_phase != NULL) { // TODO: rename root_phase to start_phase in info struct.
+        if (info->root_phase !=
+            NULL) { // TODO: rename root_phase to start_phase in info struct.
             print_error(phase->id, "Double declaration of start phase");
             print_note(info->root_phase->id, "Previously declared here");
             error = 1;
@@ -721,7 +734,8 @@ void print_cyclic_error(array *vals, SetExpr *to_add) {
     print_note_no_loc("Dependency chain:");
     for (int i = 0; i < array_size(vals); ++i) {
         char *val = array_get(vals, i);
-        printf("%s->", val);;
+        printf("%s->", val);
+        ;
     }
     printf("%s\n", to_add->ref_id);
 }
@@ -736,7 +750,8 @@ bool is_cyclic_dependency(array *vals, char *new_to_add) {
     return false;
 }
 
-static void evaluate_set_expr(SetExpr *expr, struct Info *info, int *error, array *merged_sets, bool report) {
+static void evaluate_set_expr(SetExpr *expr, struct Info *info, int *error,
+                              array *merged_sets, bool report) {
     ccn_set_t *new_set = NULL;
     if (expr->type == SET_REFERENCE) {
         if (is_cyclic_dependency(merged_sets, expr->ref_id)) {
@@ -765,8 +780,10 @@ static void evaluate_set_expr(SetExpr *expr, struct Info *info, int *error, arra
         expr->type = SET_LITERAL;
         expr->id_set = new_set;
     } else if (expr->type == SET_OPERATION) {
-        evaluate_set_expr(expr->operation->left_child, info, error, merged_sets, report);
-        evaluate_set_expr(expr->operation->right_child, info, error, merged_sets, report);
+        evaluate_set_expr(expr->operation->left_child, info, error, merged_sets,
+                          report);
+        evaluate_set_expr(expr->operation->right_child, info, error,
+                          merged_sets, report);
         if (*error) {
             return;
         }
@@ -890,7 +907,8 @@ static void unwrap_all_actions(array *phases, struct Info *info) {
                 array_append(info->config->passes, (Pass *)action->action);
                 break;
             case ACTION_TRAVERSAL:
-                array_append(info->config->traversals, (Traversal *)action->action);
+                array_append(info->config->traversals,
+                             (Traversal *)action->action);
                 break;
             case ACTION_PHASE:
                 array_append(new_phases, (Phase *)action->action);
@@ -933,7 +951,6 @@ static bool is_last_namespace(Range_spec_t *spec) {
     return array_size(spec->ids) - 1 == spec->id_index;
 }
 
-
 int insert_active_spec(smap_t *active_specs, Range_spec_t *curr_spec) {
     Range_spec_t *old = smap_retrieve(active_specs, curr_spec->consistency_key);
     if (old == NULL) {
@@ -941,26 +958,36 @@ int insert_active_spec(smap_t *active_specs, Range_spec_t *curr_spec) {
         return 0;
     }
     if (old->life_type != curr_spec->life_type) {
-        print_error(curr_spec->owner, "Lifetime conflicts with already present lifetime.");
+        print_error(curr_spec->owner,
+                    "Lifetime conflicts with already present lifetime.");
         print_note(old->owner, "Lifetime that is being conflicted with.");
         return 1;
     }
     return 0;
 }
 
-static void lifetime_phase_set_specs(Phase *phase, Range_spec_t *spec, int *error);
+static void lifetime_phase_set_specs(Phase *phase, Range_spec_t *spec,
+                                     int *error);
 
 // TODO add lifetime range spec to passes.
-static void action_add_lifetime_spec(Action *action, Range_spec_t *curr_spec, int *error) {
+static void action_add_lifetime_spec(Action *action, Range_spec_t *curr_spec,
+                                     int *error) {
     switch (action->type) {
     case ACTION_TRAVERSAL:
-        *error = insert_active_spec(action->active_specs, curr_spec) == 0 ? *error : 1;
+        *error = insert_active_spec(action->active_specs, curr_spec) == 0
+                     ? *error
+                     : 1;
         break;
     case ACTION_PASS:
-        *error = insert_active_spec(action->active_specs, curr_spec) == 0 ? *error : 1;
+        *error = insert_active_spec(action->active_specs, curr_spec) == 0
+                     ? *error
+                     : 1;
         break;
     case ACTION_PHASE:
-        *error = insert_active_spec(((Phase *)action->action)->active_specs, curr_spec) == 0 ? *error : 1;
+        *error = insert_active_spec(((Phase *)action->action)->active_specs,
+                                    curr_spec) == 0
+                     ? *error
+                     : 1;
         if (error)
             break;
         lifetime_phase_set_specs(action->action, curr_spec, error);
@@ -970,9 +997,11 @@ static void action_add_lifetime_spec(Action *action, Range_spec_t *curr_spec, in
     }
 }
 
-static void lifetime_phase_set_specs(Phase *phase, Range_spec_t *spec, int *error) {
+static void lifetime_phase_set_specs(Phase *phase, Range_spec_t *spec,
+                                     int *error) {
     for (int i = 0; i < array_size(phase->actions); ++i) {
-        if (error) return;
+        if (error)
+            return;
         Action *action = array_get(phase->actions, i);
         action_add_lifetime_spec(action, spec, error);
     }
@@ -982,7 +1011,6 @@ uint32_t get_last_action_id(Phase *phase) {
     Action *action = array_get(phase->actions, array_size(phase->actions) - 1);
     return action->id_counter;
 }
-
 
 void last_action_found(Action *action, Range_spec_t *spec, bool active) {
     if (action->type == ACTION_PHASE) {
@@ -999,17 +1027,18 @@ void last_action_found(Action *action, Range_spec_t *spec, bool active) {
 char *get_action_prefix(const Action *action) {
     switch (action->type) {
     case ACTION_PASS:
-        return ((Pass*)action->action)->prefix;
+        return ((Pass *)action->action)->prefix;
     case ACTION_TRAVERSAL:
-        return ((Traversal*)action->action)->prefix;
+        return ((Traversal *)action->action)->prefix;
     case ACTION_PHASE:
-        return ((Phase*)action->action)->prefix;
+        return ((Phase *)action->action)->prefix;
     default:
         return NULL;
     }
 }
 
-bool find_lifetime_spec(Lifetime_t *lifetime, struct Info *info, Phase *phase, bool active, bool *found) {
+bool find_lifetime_spec(Lifetime_t *lifetime, struct Info *info, Phase *phase,
+                        bool active, bool *found) {
     Range_spec_t *spec = NULL;
     if (active)
         spec = lifetime->end;
@@ -1018,8 +1047,9 @@ bool find_lifetime_spec(Lifetime_t *lifetime, struct Info *info, Phase *phase, b
 
     for (int i = 0; i < array_size(phase->actions); ++i) {
         Action *action = array_get(phase->actions, i);
-        if (ccn_str_equal(action->id, get_current_namespace(spec))
-          || ccn_str_equal(get_action_prefix(action), get_current_namespace(spec))) {
+        if (ccn_str_equal(action->id, get_current_namespace(spec)) ||
+            ccn_str_equal(get_action_prefix(action),
+                          get_current_namespace(spec))) {
             if (spec->inclusive) {
                 int error = 0;
                 action_add_lifetime_spec(action, spec, &error);
@@ -1032,13 +1062,16 @@ bool find_lifetime_spec(Lifetime_t *lifetime, struct Info *info, Phase *phase, b
             } else {
                 if (action->type == ACTION_PHASE) {
                     spec->id_index++;
-                    find_lifetime_spec(lifetime, info, action->action, active, found); // Must be found in this phase.
+                    find_lifetime_spec(lifetime, info, action->action, active,
+                                       found); // Must be found in this phase.
                 }
             }
-            return false; // Either last namespace found or checked in namespace action, so never continue.
+            return false; // Either last namespace found or checked in namespace
+                          // action, so never continue.
         }
         if (action->type == ACTION_PHASE) {
-            bool cont = find_lifetime_spec(lifetime, info, action->action, active, found);
+            bool cont = find_lifetime_spec(lifetime, info, action->action,
+                                           active, found);
             if (!cont)
                 return false;
         }
@@ -1047,7 +1080,8 @@ bool find_lifetime_spec(Lifetime_t *lifetime, struct Info *info, Phase *phase, b
     return true;
 }
 
-bool check_lifetime_spec_root(Lifetime_t *lifetime, struct Info *info, bool active, Phase *root) {
+bool check_lifetime_spec_root(Lifetime_t *lifetime, struct Info *info,
+                              bool active, Phase *root) {
     Range_spec_t *spec = NULL;
     bool found = false;
     if (active)
@@ -1055,10 +1089,12 @@ bool check_lifetime_spec_root(Lifetime_t *lifetime, struct Info *info, bool acti
     else
         spec = lifetime->start;
 
-    if (ccn_str_equal(root->id, get_current_namespace(spec)) || ccn_str_equal(root->prefix, get_current_namespace(spec))) {
+    if (ccn_str_equal(root->id, get_current_namespace(spec)) ||
+        ccn_str_equal(root->prefix, get_current_namespace(spec))) {
         if (spec->inclusive) {
             int error = 0;
-            error = insert_active_spec(root->active_specs, spec) == 0 ? error : 1;
+            error =
+                insert_active_spec(root->active_specs, spec) == 0 ? error : 1;
             lifetime_phase_set_specs(root, spec, &error);
             if (error) // TODO: Handle better.
                 return false;
@@ -1067,7 +1103,9 @@ bool check_lifetime_spec_root(Lifetime_t *lifetime, struct Info *info, bool acti
             if ((active && spec->inclusive) || (!active && !spec->inclusive)) {
                 spec->action_counter_id = get_last_action_id(root);
             } else {
-                spec->action_counter_id = 1; // 1 is the id for the root phase, special as its not really an action.
+                spec->action_counter_id =
+                    1; // 1 is the id for the root phase, special
+                       // as its not really an action.
             }
             return true;
         }
@@ -1120,30 +1158,38 @@ static int check_lifetime_reach(Lifetime_t *lifetime, struct Info *info) {
 
     Range_spec_t *curr_spec = lifetime->start;
     Phase *root_phase = info->root_phase;
-    if (lifetime->start != NULL && !lifetime->start->inclusive
-        && (ccn_str_equal(get_current_namespace(curr_spec), root_phase->id)
-          || ccn_str_equal(get_current_namespace(curr_spec), root_phase->prefix))) {
+    if (lifetime->start != NULL && !lifetime->start->inclusive &&
+        (ccn_str_equal(get_current_namespace(curr_spec), root_phase->id) ||
+         ccn_str_equal(get_current_namespace(curr_spec), root_phase->prefix))) {
 
         if (is_last_namespace(curr_spec)) {
-            print_error(curr_spec, "Exclusive over the root phase will never be reached, because nothing comes after the root phase.");
-            print_note(curr_spec, "Maybe, you meant to use the \'[\' operator.");
+            print_error(curr_spec,
+                        "Exclusive over the root phase will never be reached, "
+                        "because nothing comes after the root phase.");
+            print_note(curr_spec,
+                       "Maybe, you meant to use the \'[\' operator.");
             return 1;
         }
     }
 
     bool found = check_lifetime_spec_root(lifetime, info, false, root_phase);
     if (!found) {
-        print_error(lifetime->start, "Specification could not be reached. Recheck your ranges.");
+        print_error(lifetime->start,
+                    "Specification could not be reached. Recheck your ranges.");
         return 1;
     }
 
     found = check_lifetime_spec_root(lifetime, info, true, root_phase);
     if (!found) {
-        print_error(lifetime->end, "Specification could not be reached. Recheck your ranges.");
+        print_error(lifetime->end,
+                    "Specification could not be reached. Recheck your ranges.");
         return 1;
     }
     if (lifetime->end->action_counter_id < lifetime->start->action_counter_id) {
-        print_error(lifetime->end, "Specification could not be reached from specified starting action. Recheck your ranges.");
+        print_error(
+            lifetime->end,
+            "Specification could not be reached from specified starting "
+            "action. Recheck your ranges.");
         return 1;
     }
     return 0;
@@ -1152,12 +1198,15 @@ static int check_lifetime_reach(Lifetime_t *lifetime, struct Info *info) {
 static int check_lifetime(Lifetime_t *lifetime, struct Info *info) {
     int error = 0;
 
-    if (lifetime->start != NULL && !name_is_action(get_current_namespace(lifetime->start), info)) {
-        print_error(lifetime->start, "Id is not a reference to a valid action.");
+    if (lifetime->start != NULL &&
+        !name_is_action(get_current_namespace(lifetime->start), info)) {
+        print_error(lifetime->start,
+                    "Id is not a reference to a valid action.");
         error++;
     }
 
-    if (lifetime->end != NULL && !name_is_action(get_current_namespace(lifetime->end), info)) {
+    if (lifetime->end != NULL &&
+        !name_is_action(get_current_namespace(lifetime->end), info)) {
         print_error(lifetime->end, "Id is not a reference to a valid action.");
         error++;
     }
@@ -1198,7 +1247,8 @@ static int check_lifetimes_attribute_values(Attr *attr, struct Info *info) {
         Lifetime_t *lifetime = array_get(attr->lifetimes, i);
         Enum *e = find_enum(info->config->enums, attr->type_id);
 
-        if (e == NULL) continue;
+        if (e == NULL)
+            continue;
 
         for (int j = 0; j < array_size(lifetime->values); ++j) {
             char *id = array_get(lifetime->values, j);
@@ -1214,7 +1264,9 @@ static int check_lifetimes_attribute_values(Attr *attr, struct Info *info) {
 
             if (!found) {
                 error = true;
-                print_error(id, "Could not find this value in the values of the corresponding attribute.");
+                print_error(id,
+                            "Could not find this value in the values of the "
+                            "corresponding attribute.");
                 print_note(e, "The corresponding attribute can be found here.");
             }
         }
@@ -1240,7 +1292,10 @@ static int check_lifetimes(struct Info *info) {
 
             if (attr->type != AT_enum) {
                 if (attr->lifetimes != NULL) {
-                    print_error(attr, "This attribute is not allowed to have lifetimes. Lifetimes are only possible on enum or pointer attributes.");
+                    print_error(attr,
+                                "This attribute is not allowed to have "
+                                "lifetimes. Lifetimes are "
+                                "only possible on enum or pointer attributes.");
                     error += 1;
                 }
             } else {
@@ -1260,20 +1315,20 @@ static int check_lifetimes(struct Info *info) {
  */
 static void fill_lifetime(Lifetime_t *lifetime, char *key) {
     if (lifetime->type == LIFETIME_DISALLOWED) {
-            if (lifetime->start != NULL) {
-                lifetime->start->type = ccn_str_cpy("CCN_CHK_DISALLOWED");
-            }
-            if (lifetime->end != NULL) {
-                lifetime->end->type = ccn_str_cpy("CCN_CHK_DISALLOWED");
-            }
-        } else if (lifetime->type == LIFETIME_MANDATORY) {
-            if (lifetime->start != NULL) {
-                lifetime->start->type = "CCN_CHK_MANDATORY";
-            }
-            if (lifetime->end != NULL) {
-                lifetime->end->type = "CCN_CHK_MANDATORY";
-            }
+        if (lifetime->start != NULL) {
+            lifetime->start->type = ccn_str_cpy("CCN_CHK_DISALLOWED");
         }
+        if (lifetime->end != NULL) {
+            lifetime->end->type = ccn_str_cpy("CCN_CHK_DISALLOWED");
+        }
+    } else if (lifetime->type == LIFETIME_MANDATORY) {
+        if (lifetime->start != NULL) {
+            lifetime->start->type = "CCN_CHK_MANDATORY";
+        }
+        if (lifetime->end != NULL) {
+            lifetime->end->type = "CCN_CHK_MANDATORY";
+        }
+    }
 
     if (lifetime->start != NULL) {
         lifetime->start->consistency_key = strdup(key);
@@ -1285,7 +1340,8 @@ static void fill_lifetime(Lifetime_t *lifetime, char *key) {
     }
 }
 
-static void create_lifetime_func_attrs(Attr *attr, char *node_id, struct Info *info) {
+static void create_lifetime_func_attrs(Attr *attr, char *node_id,
+                                       struct Info *info) {
     for (int i = 0; i < array_size(attr->lifetimes); ++i) {
         Lifetime_t *lifetime = array_get(attr->lifetimes, i);
         char *key = ccn_str_cat(node_id, attr->id);
@@ -1341,13 +1397,14 @@ uint32_t assign_id_to_phase_actions(Phase *phase, uint32_t id) {
 
 void assign_id_to_action(struct Info *info) {
     Phase *root = info->root_phase;
-    uint32_t id = 2; // 0 is for undefined, 1 is for the root-phase, so start at 2.
+    uint32_t id =
+        2; // 0 is for undefined, 1 is for the root-phase, so start at 2.
     assign_id_to_phase_actions(root, id);
 }
 
-
 Lifetime_t *copy_lifetime(Lifetime_t *lifetime, char *key) {
-    Lifetime_t *new = create_lifetime(lifetime->start, lifetime->end, lifetime->type, NULL);
+    Lifetime_t *new =
+        create_lifetime(lifetime->start, lifetime->end, lifetime->type, NULL);
     new->key = ccn_str_cpy(key);
     new->owner = false;
     return new;
@@ -1427,7 +1484,7 @@ int check_config(Config *config) {
     success += check_passes(config->passes, info);
     success += check_phases(config->phases, info);
 
-    //subtree_generate_traversals(config);
+    // subtree_generate_traversals(config);
 
     // Transform setExpr to array of node ptrs.
     success += evaluate_nodesets_expr(config->nodesets, info);
@@ -1482,7 +1539,6 @@ int check_config(Config *config) {
         print_error_no_loc("No start phase specified.");
         success++;
     }
-
 
     // Lifetime setup and processing.
     assign_id_to_action(info);
