@@ -7,52 +7,54 @@
 #include "filegen/gen-enum.h"
 #include "filegen/gen-util.h"
 
+static int indent = 0;
+
 void gen_enum(Config *config, FILE *fp, Enum *arg_enum) {
     char *arg_enumupr = strupr(arg_enum->id);
-    out("// Enum %s\n", arg_enum->id);
-    out("typedef enum %s {\n", arg_enumupr);
+    out_comment("Enum %s", arg_enum->id);
+    out_enum("%s", arg_enumupr);
     for (int i = 0; i < array_size(arg_enum->values); i++) {
         char *id = (char *)array_get(arg_enum->values, i);
-        out("    %s_%s,\n", arg_enum->prefix, id);
+        out_enum_field("%s_%s", arg_enum->prefix, id);
     }
-    out("    %s_NULL\n", arg_enum->prefix);
-    out("} %s;\n\n", arg_enum->id);
+    out_enum_field("%s_NULL", arg_enum->prefix);
+    out_enum_end("%s", arg_enum->id);
     free(arg_enumupr);
 }
 
 void gen_nodetype_enum(Config *config, FILE *fp) {
-    out("// Enum NodeType\n");
-    out("typedef enum NODETYPE {\n");
-    out("    // Nodes\n");
+    out_comment("Enum NodeType");
+    out_enum("NODETYPE");
+    out_comment("Nodes");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
         char *nodelwr = strlwr(node->id);
-        out("    NT_%s,\n", nodelwr);
+        out_enum_field("NT_%s", nodelwr);
         free(nodelwr);
     }
-    out("    // Nodesets\n");
+    out_comment("Nodesets");
     for (int i = 0; i < array_size(config->nodesets); ++i) {
         Nodeset *nodeset = (Nodeset *)array_get(config->nodesets, i);
         char *nodesetlwr = strlwr(nodeset->id);
-        out("    NT_%s,\n", nodesetlwr);
+        out_enum_field("NT_%s", nodesetlwr);
         free(nodesetlwr);
     }
-    out("    NT_NULL\n");
-    out("} NodeType;\n\n");
+    out_enum_field("NT_NULL");
+    out_enum_end("NodeType");
 }
 
 void gen_traversal_enum(Config *config, FILE *fp) {
-    out("typedef enum TRAVERSALS {\n");
-    out("    // Traversals\n");
+    out_enum("TRAVERSALS");
+    out_comment("Traversals");
     for (int i = 0; i < array_size(config->traversals); ++i) {
         Traversal *trav = (Traversal *)array_get(config->traversals, i);
         char *travlwr = strlwr(trav->id);
-        out("    TRAV_%s,\n", travlwr);
+        out_enum_field("TRAV_%s", travlwr);
         free(travlwr);
     }
-    out("    TRAV_free,\n");
-    out("    TRAV_NULL\n");
-    out("} TraversalType;\n\n");
+    out_enum_field("TRAV_free");
+    out_enum_field("TRAV_NULL");
+    out_enum_end("TraversalType");
 }
 
 void gen_enum_header(Config *config, FILE *fp) {
