@@ -8,8 +8,6 @@
         arg_node = traverse_node(arg_node, arg_info);                          \
     }
 
-typedef struct INFO Info;
-
 // Pointer to traversal functions
 typedef Node *(*trav_fun_p)(Node *, Info *);
 

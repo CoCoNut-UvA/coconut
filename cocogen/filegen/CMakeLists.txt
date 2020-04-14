@@ -9,6 +9,7 @@ target_sources(${PROJECT_NAME}
         gen-util.h
         gen-trav.h
         gen-trav-table.h
+        gen-free.h
     PRIVATE
         util.c
         driver.c
@@ -17,4 +18,5 @@ target_sources(${PROJECT_NAME}
         gen-util.c
         gen-trav.c
         gen-trav-table.c
+        gen-free.c
 )

@@ -18,4 +18,6 @@ typedef struct NODE {
     union ATTRIBUTES attribs;
 } Node;
 
+typedef struct INFO Info;
+
 #endif /* _CCN_AST_CORE_H_ */

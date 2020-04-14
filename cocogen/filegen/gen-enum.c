@@ -50,6 +50,7 @@ void gen_traversal_enum(Config *config, FILE *fp) {
         out("    TRAV_%s,\n", travlwr);
         free(travlwr);
     }
+    out("    TRAV_free,\n");
     out("    TRAV_NULL\n");
     out("} TraversalType;\n\n");
 }
