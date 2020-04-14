@@ -56,3 +56,5 @@ build/
 
 # Bin dir
 bin/
+.vscode/settings.json
+.vscode/launch.json
