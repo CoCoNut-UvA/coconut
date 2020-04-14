@@ -12,24 +12,15 @@
 #include "filegen/gen-util.h"
 #include "filegen/genmacros.h"
 
-void gen_trav_function_declarations(Config *config, FILE *fp, Traversal *trav) {
+void gen_trav_functions(Config *config, FILE *fp, Traversal *trav,
+                        bool is_header) {
     out("// Traversal functions for %s\n", trav->id);
     char *travlwr = strlwr(trav->id);
-    if (trav->nodes != NULL) {
-        for (int i = 0; i < array_size(trav->nodes); i++) {
-            char *node_id = array_get(trav->nodes, i);
-            char *nodelwr = strlwr(node_id);
-            out("Node *%s_%s(Node *arg_node, Info *arg_info);\n", travlwr,
-                nodelwr);
-        }
-    } else {
-        for (int i = 0; i < array_size(config->nodes); i++) {
-            Node *node = array_get(config->nodes, i);
-            char *nodelwr = strlwr(node->id);
-            out("Node *%s_%s(Node *arg_node, Info *arg_info);\n", travlwr,
-                nodelwr);
-            free(nodelwr);
-        }
+    for (int i = 0; i < array_size(config->nodes); i++) {
+        Node *node = array_get(config->nodes, i);
+        char *nodelwr = strlwr(node->id);
+        out("Node *%s_%s(Node *arg_node, Info *arg_info);\n", travlwr, nodelwr);
+        free(nodelwr);
     }
     out("\n");
     free(travlwr);
@@ -45,7 +36,7 @@ void gen_trav_header(Config *config, FILE *fp) {
 
     for (int i = 0; i < array_size(config->traversals); ++i) {
         Traversal *trav = array_get(config->traversals, i);
-        gen_trav_function_declarations(config, fp, trav);
+        gen_trav_functions(config, fp, trav, true);
     }
 
     out("#endif /* _CCN_TRAV_H_ */\n");
@@ -83,6 +74,8 @@ void gen_traverse_children(Config *config, FILE *fp) {
 }
 
 void gen_trav_src(Config *config, FILE *fp) {
+    out("#include <stdio.h>");
+    out("\n");
     out("#include \"generated/trav.h\"\n");
     out("\n");
     gen_traverse_children(config, fp);

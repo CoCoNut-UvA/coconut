@@ -1,4 +1,6 @@
 #include "core/trav_core.h"
+#include "generated/trav_table.h"
+#include <stdio.h>
 
 typedef struct traversalstack {
     struct traversalstack *next;
@@ -67,10 +69,10 @@ const char *traversal_name(void) {
     return name;
 }
 
-void traversal_set_pre_fun(TraversalType prefix, trav_fun prefun) {
+void traversal_set_pre_fun(TraversalType prefix, trav_fun_p prefun) {
     pretable[prefix] = prefun;
 }
 
-void traversal_set_post_fun(TraversalType prefix, trav_fun postfun) {
+void traversal_set_post_fun(TraversalType prefix, trav_fun_p postfun) {
     posttable[prefix] = postfun;
 }

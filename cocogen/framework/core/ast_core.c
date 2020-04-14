@@ -1,7 +1,7 @@
 #include "generated/ast.h"
 #include "lib/memory.h"
 
-static Node *node_init_empty() {
+static Node *node_init() {
     Node *node = (Node *)mem_alloc(sizeof(Node));
 
     // TODO: make this work

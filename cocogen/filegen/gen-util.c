@@ -112,8 +112,8 @@ char *strlwr(char *string) {
  */
 bool node_in_traversal(Config *config, FILE *fp, Traversal *trav, Node *node) {
     for (int i = 0; i < array_size(trav->nodes); i++) {
-        char *travnode_id = array_get(trav->nodes, i);
-        if (strcmp(travnode_id, node->id) == 0) {
+        Node *travnode = array_get(trav->nodes, i);
+        if (strcmp(travnode->id, node->id) == 0) {
             return true;
         }
     }

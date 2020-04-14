@@ -40,24 +40,15 @@ void gen_trav_table(Config *config, FILE *fp) {
         out("    // Traversal TRAV_%s for traversal %s\n", trav->prefix,
             trav->id);
         out("    {\n");
-        if (trav->nodes != NULL) {
-            for (int i = 0; i < array_size(config->nodes); ++i) {
-                Node *node = array_get(config->nodes, i);
-                char *nodelwr = strlwr(node->id);
-                if (node_in_traversal(config, fp, trav, node)) {
-                    out("        &%s_%s,\n", travlwr, nodelwr);
-                } else {
-                    out("        &traverse_children,\n");
-                }
-                free(nodelwr);
-            }
-        } else {
-            for (int i = 0; i < array_size(config->nodes); ++i) {
-                Node *node = array_get(config->nodes, i);
-                char *nodelwr = strlwr(node->id);
+        for (int i = 0; i < array_size(config->nodes); ++i) {
+            Node *node = array_get(config->nodes, i);
+            char *nodelwr = strlwr(node->id);
+            if (node_in_traversal(config, fp, trav, node)) {
                 out("        &%s_%s,\n", travlwr, nodelwr);
-                free(nodelwr);
+            } else {
+                out("        &traverse_children,\n");
             }
+            free(nodelwr);
         }
         out("    },\n\n");
         free(travlwr);
@@ -65,7 +56,7 @@ void gen_trav_table(Config *config, FILE *fp) {
     out("};\n\n");
 }
 
-void gen_pre_post_tabeles(Config *config, FILE *fp) {
+void gen_pre_post_tables(Config *config, FILE *fp) {
     out("PrePostTable pretable = {\n");
     for (int i = 0; i < array_size(config->traversals); ++i) {
         out("    NULL,\n");
@@ -91,9 +82,11 @@ void gen_trav_names_table(Config *config, FILE *fp) {
 }
 
 void gen_trav_table_src(Config *config, FILE *fp) {
+    out("#include <stdio.h>\n");
+    out("\n");
     out("#include \"generated/trav_table.h\"\n");
     out("\n");
     gen_trav_table(config, fp);
-    gen_pre_post_tabeles(config, fp);
+    gen_pre_post_tables(config, fp);
     gen_trav_names_table(config, fp);
 }

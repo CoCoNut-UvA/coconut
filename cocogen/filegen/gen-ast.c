@@ -3,10 +3,9 @@
 
 #include "ast/ast.h"
 #include "filegen/driver.h"
-#include "filegen/genmacros.h"
-
 #include "filegen/gen-ast.h"
 #include "filegen/gen-util.h"
+#include "filegen/genmacros.h"
 
 void gen_init_function(Config *config, FILE *fp, Node *node) {
     char *nodelwr = strlwr(node->id);
@@ -108,8 +107,9 @@ void gen_macros(Config *config, FILE *fp, Node *node) {
 void gen_ast_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_AST_H_\n");
     out("#define _CCN_AST_H_\n\n");
-    out("#include \"<stdbool.h>\"\n");
     out("#include \"core/ast_core.h\"\n");
+    out("\n");
+    out("typedef enum { false, true } bool;\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
@@ -153,8 +153,8 @@ void gen_node_constructor(Config *config, FILE *fp, Node *node) {
     char *nodeupr = strupr(node->id);
     char *nodelwr = strlwr(node->id);
     gen_init_function(config, fp, node);
-    out("{\n");
-    out("    Node *node = node_init_empty();\n");
+    out(" {\n");
+    out("    Node *node = node_init();\n");
     out("    node->children.N_%s = mem_alloc(sizeof(struct CHILDREN_%s));\n",
         nodelwr, nodeupr);
     out("    node->attribs.N_%s = mem_alloc(sizeof(struct ATTRIBUTES_%s));\n",
@@ -169,8 +169,8 @@ void gen_node_constructor(Config *config, FILE *fp, Node *node) {
 
 void gen_ast_src(Config *config, FILE *fp) {
     // TODO: Does the library need to be in the core directory?
-    out("#include \"lib/memory.h\"\n");
     out("#include \"generated/ast.h\"\n");
+    out("#include \"lib/memory.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);

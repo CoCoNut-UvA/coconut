@@ -56,8 +56,10 @@ build/
 
 # Bin dir
 bin/
-.vscode/launch.json
 
 cocogen/framework/generated
+old_framework/
+
+.vscode/launch.json
 .vscode/settings.json
 .vscode/c_cpp_properties.json
