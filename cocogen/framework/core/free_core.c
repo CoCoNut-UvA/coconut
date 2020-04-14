@@ -19,7 +19,7 @@ static Info *free_info(Info *info) {
     return info;
 }
 
-Node *syntaxtree(Node *syntaxtree) {
+Node *free_node(Node *syntaxtree) {
     Info *arg_info = make_info();
 
     INFO_FREE_FLAG(arg_info) = syntaxtree;
