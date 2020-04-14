@@ -561,35 +561,37 @@ static int check_nodeset(Nodeset *nodeset, struct Info *info) {
     smap_t *node_name = smap_init(16);
 
     for (int i = 0; i < array_size(nodeset->nodes); ++i) {
-        char *node = (char *)array_get(nodeset->nodes, i);
-        char *orig_node;
+        Node *node = (Node *)array_get(nodeset->nodes, i);
+        Node *orig_node = smap_retrieve(node_name, node->id);
 
         // Check if there is no duplicate naming.
-        if ((orig_node = smap_retrieve(node_name, node)) != NULL) {
+        if (orig_node != NULL) {
             print_error(node, "Duplicate name '%s' in nodes of nodeset '%s'",
                         node, nodeset->id);
             print_note(orig_node, "Previously declared here");
             error = 1;
         } else {
-            smap_insert(node_name, node, node);
+            smap_insert(node_name, node->id, node);
         }
 
-        Node *nodeset_node = (Node *)smap_retrieve(info->node_name, node);
+        Node *nodeset_node = (Node *)smap_retrieve(info->node_name, node->id);
 
         Nodeset *nodeset_nodeset =
-            (Nodeset *)smap_retrieve(info->nodeset_name, node);
+            (Nodeset *)smap_retrieve(info->nodeset_name, node->id);
 
         if (nodeset_nodeset) {
             print_error(node, "Nodeset '%s' contains other nodeset '%s'",
                         nodeset->id, nodeset_nodeset->id);
             error = 1;
         } else if (!nodeset_node) {
-            print_error(node, "Unknown type of node '%s' in nodeset '%s'", node,
-                        nodeset->id);
+            print_error(node, "Unknown type of node '%s' in nodeset '%s'",
+                        node->id, nodeset->id);
             error = 1;
         } else {
-            mem_free(node);
-            array_set(nodeset->nodes, i, nodeset_node);
+            /// TODO: Something with cleaning the array? probably happens
+            /// somewhere else
+            // mem_free(node);
+            // array_set(nodeset->nodes, i, nodeset_node);
         }
     }
 
@@ -638,26 +640,26 @@ static int check_traversal(Traversal *traversal, struct Info *info) {
     array *nodes_expanded = array_init(16);
 
     for (int i = 0; i < array_size(traversal->nodes); ++i) {
-        char *node = (char *)array_get(traversal->nodes, i);
-        char *orig_node;
+        Node *node = (Node *)array_get(traversal->nodes, i);
+        Node *orig_node = smap_retrieve(node_name, node->id);
 
         // Check if there is no duplicate naming.
-        if ((orig_node = smap_retrieve(node_name, node)) != NULL) {
+        if (orig_node != NULL) {
             print_error(node, "Duplicate name '%s' in nodes of traversal '%s'",
-                        node, traversal->id);
+                        node->id, traversal->id);
             print_note(orig_node, "Previously declared here");
             error = 1;
         } else {
-            smap_insert(node_name, node, node);
+            smap_insert(node_name, node->id, node);
         }
 
-        Node *traversal_node = (Node *)smap_retrieve(info->node_name, node);
+        Node *traversal_node = (Node *)smap_retrieve(info->node_name, node->id);
         Nodeset *traversal_nodeset =
-            (Nodeset *)smap_retrieve(info->nodeset_name, node);
+            (Nodeset *)smap_retrieve(info->nodeset_name, node->id);
 
         if (traversal_node) {
-            array_append(nodes_expanded, strdup(node));
-            smap_insert(node_name_expanded, node, node);
+            array_append(nodes_expanded, strdup(node->id));
+            smap_insert(node_name_expanded, node->id, node);
         } else if (traversal_nodeset) {
 
             // Adds every node in the nodeset to the expanded node list
@@ -673,13 +675,14 @@ static int check_traversal(Traversal *traversal, struct Info *info) {
         } else {
             print_error(
                 node, "Unknown type of node or nodeset '%s' in traversal '%s'",
-                node, traversal->id);
+                node->id, traversal->id);
             error = 1;
         }
     }
 
-    array_cleanup(traversal->nodes, mem_free);
-    traversal->nodes = nodes_expanded;
+    /// TODO: Something with cleaning the array? probably happens somewhere else
+    // array_cleanup(traversal->nodes, NULL);
+    // traversal->nodes = nodes_expanded;
 
     smap_free(node_name);
     smap_free(node_name_expanded);
@@ -811,15 +814,6 @@ static void evaluate_set_expr(SetExpr *expr, struct Info *info, int *error,
     }
 }
 
-// TODO: move this??
-static array *set_to_array(ccn_set_t *set) {
-    assert(set != NULL);
-    array *values = smap_values(set->hash_map);
-    smap_free(set->hash_map);
-    mem_free(set);
-    return values;
-}
-
 static int evaluate_nodesets_expr(array *nodesets, struct Info *info) {
     int error = 0;
     array *merged_sets = create_array();
@@ -859,14 +853,31 @@ cleanup:
     return error;
 }
 
+// TODO: move this??
+static array *set_to_array(ccn_set_t *set, struct Info *info) {
+    assert(set != NULL);
+    array *names = smap_values(set->hash_map);
+    array *nodes = array_init(1);
+    for (int i = 0; i < array_size(names); ++i) {
+        char *name = array_get(names, i);
+        Node *node = smap_retrieve(info->node_name, name);
+        array_append(nodes, node);
+    }
+    smap_free(set->hash_map);
+    mem_free(set);
+    // array_cleanup(names, NULL);
+    return nodes;
+}
+
 static int nodesets_expr_to_array(array *nodesets, struct Info *info) {
     int error = 0;
 
     for (int i = 0; i < array_size(nodesets); ++i) {
         Nodeset *nodeset = (Nodeset *)array_get(nodesets, i);
-        if (nodeset->expr->type != SET_LITERAL)
+        if (nodeset->expr->type != SET_LITERAL) {
             continue;
-        array *nodes = set_to_array(nodeset->expr->id_set);
+        }
+        array *nodes = set_to_array(nodeset->expr->id_set, info);
         nodeset->expr->id_set = NULL;
         free_setExpr(nodeset->expr);
         nodeset->nodes = nodes;
@@ -880,11 +891,14 @@ static int traversals_expr_to_array(array *traversals, struct Info *info) {
 
     for (int i = 0; i < array_size(traversals); ++i) {
         Traversal *trav = (Traversal *)array_get(traversals, i);
-        if (trav->expr == NULL)
-            continue;
-        array *nodes = set_to_array(trav->expr->id_set);
-        trav->expr->id_set = NULL;
-        free_setExpr(trav->expr);
+        array *nodes = NULL;
+        if (trav->expr == NULL) {
+            nodes = info->config->nodes;
+        } else {
+            nodes = set_to_array(trav->expr->id_set, info);
+            trav->expr->id_set = NULL;
+            free_setExpr(trav->expr);
+        }
         trav->nodes = nodes;
     }
 
@@ -1066,8 +1080,8 @@ bool find_lifetime_spec(Lifetime_t *lifetime, struct Info *info, Phase *phase,
                                        found); // Must be found in this phase.
                 }
             }
-            return false; // Either last namespace found or checked in namespace
-                          // action, so never continue.
+            return false; // Either last namespace found or checked in
+                          // namespace action, so never continue.
         }
         if (action->type == ACTION_PHASE) {
             bool cont = find_lifetime_spec(lifetime, info, action->action,
