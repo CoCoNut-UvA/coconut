@@ -130,10 +130,11 @@ void gen_node_constructor(Config *config, FILE *fp, Node *node) {
     char *nodeupr = strupr(node->id);
     char *nodelwr = strlwr(node->id);
     gen_init_function(config, fp, node);
-    out_field("Node *node = node_init();\n");
-    out_field("node->attribs.N_%s = mem_alloc(sizeof(struct STRUCT_%s));\n",
+    out_start_func_field();
+    out_field("Node *node = node_init()");
+    out_field("node->attribs.N_%s = mem_alloc(sizeof(struct STRUCT_%s))",
               nodelwr, nodeupr);
-    out_field("NODE_TYPE(node) = NT_%s;\n", nodelwr);
+    out_field("NODE_TYPE(node) = NT_%s", nodelwr);
     gen_members(config, fp, node);
     // TODO: Checks here or in another file?
     out_end_func();
