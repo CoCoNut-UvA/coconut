@@ -50,3 +50,12 @@ Node *free_tree(Node *syntaxtree) {
 
     return syntaxtree;
 }
+
+char *free_string(char *str) {
+
+    if (str != NULL) {
+        str = MEMfree(str);
+    }
+
+    return str;
+}
