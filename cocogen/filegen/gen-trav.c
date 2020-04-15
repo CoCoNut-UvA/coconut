@@ -18,8 +18,8 @@ void gen_trav_functions(Config *config, FILE *fp, Traversal *trav,
                         bool is_header) {
     out_comment("Traversal functions for %s", trav->id);
     char *travlwr = strlwr(trav->id);
-    for (int i = 0; i < array_size(config->nodes); i++) {
-        Node *node = array_get(config->nodes, i);
+    for (int i = 0; i < array_size(trav->nodes); i++) {
+        Node *node = array_get(trav->nodes, i);
         char *nodelwr = strlwr(node->id);
         out_field("Node *%s_%s(Node *arg_node, Info *arg_info)", travlwr,
                   nodelwr);
