@@ -14,7 +14,7 @@ typedef struct NODE {
     int lineno;
     int colno;
     struct NODE *error;
-    union STRUCT attribs;
+    union STRUCT data;
 } Node;
 
 typedef struct INFO Info;
