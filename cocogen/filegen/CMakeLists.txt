@@ -10,6 +10,7 @@ target_sources(${PROJECT_NAME}
         gen-trav.h
         gen-trav-table.h
         gen-free.h
+        gen-copy.h
     PRIVATE
         util.c
         driver.c
@@ -19,4 +20,5 @@ target_sources(${PROJECT_NAME}
         gen-trav.c
         gen-trav-table.c
         gen-free.c
+        gen-copy.c
 )

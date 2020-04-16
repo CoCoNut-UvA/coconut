@@ -1,0 +1,57 @@
+#include <stdio.h>
+
+#include "core/ast_core.h"
+#include "core/copy_core.h"
+#include "core/trav_core.h"
+#include "lib/memory.h"
+
+static Info *make_info() {
+    Info *result;
+
+    result = mem_alloc(sizeof(Info));
+
+    return result;
+}
+
+static Info *copy_info(Info *info) {
+    info = MEMcopy(info);
+
+    return info;
+}
+
+Node *copy_node(Node *syntaxtree) {
+    Info *arg_info = make_info();
+
+    TRAVpush(TRAV_copy);
+
+    syntaxtree = traverse_node(syntaxtree, arg_info);
+
+    TRAVpop();
+
+    arg_info = copy_info(arg_info);
+
+    return syntaxtree;
+}
+
+Node *copy_tree(Node *syntaxtree) {
+    Info *arg_info = make_info();
+
+    TRAVpush(TRAV_copy);
+
+    syntaxtree = traverse_node(syntaxtree, arg_info);
+
+    TRAVpop();
+
+    arg_info = copy_info(arg_info);
+
+    return syntaxtree;
+}
+
+char *copy_string(char *str) {
+
+    if (str != NULL) {
+        str = MEMcopy(str);
+    }
+
+    return str;
+}

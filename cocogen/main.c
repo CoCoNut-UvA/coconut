@@ -11,6 +11,7 @@
 
 #include "filegen/driver.h"
 #include "filegen/gen-ast.h"
+#include "filegen/gen-copy.h"
 #include "filegen/gen-enum.h"
 #include "filegen/gen-free.h"
 #include "filegen/gen-trav-table.h"
@@ -46,4 +47,6 @@ int main(int argc, char *argv[]) {
     filegen_generate("trav.c", &gen_trav_src);
     filegen_generate("free.h", &gen_free_header);
     filegen_generate("free.c", &gen_free_src);
+    filegen_generate("copy.h", &gen_copy_header);
+    filegen_generate("copy.c", &gen_copy_src);
 }
