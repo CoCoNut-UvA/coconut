@@ -71,7 +71,10 @@ enum ActionType {
     ACTION_REFERENCE
 };
 
-enum LifetimeType { LIFETIME_DISALLOWED, LIFETIME_MANDATORY };
+enum LifetimeType {
+    LIFETIME_DISALLOWED,
+    LIFETIME_MANDATORY
+};
 
 typedef struct ccn_sub_root_pair {
     char *from;
@@ -85,8 +88,7 @@ typedef struct Range_spec {
     array *ids; // Ids of the action this spec starts or end, with namespacing.
     unsigned int id_index;
     bool inclusive; // Range inclusive over the action or not.
-    char *
-        consistency_key; // Key used to lookup this spec in the consistency map.
+    char *consistency_key; // Key used to lookup this spec in the consistency map.
     char *type;
     bool push; // Either push this spec or pop.
     enum LifetimeType life_type;
@@ -103,6 +105,7 @@ struct Lifetime {
     bool owner;
     char *original_value;
     array *values;
+
 };
 
 typedef struct Config {
@@ -121,6 +124,7 @@ typedef struct Config {
 
     struct NodeCommonInfo *common_info;
 } Config;
+
 
 struct Phase {
     char *id;
@@ -161,16 +165,13 @@ typedef struct Traversal {
         SetExpr *expr;
     };
 
-    array *pass_nodes;
-
     struct NodeCommonInfo *common_info;
 } Traversal;
 
 typedef struct Action {
     enum ActionType type;
     uint32_t id_counter;
-    bool action_owner; // We create shallow actions, that do not own the actual
-                       // action.
+    bool action_owner; // We create shallow actions, that do not own the actual action.
     bool checked;
     void *action;
     char *id;
