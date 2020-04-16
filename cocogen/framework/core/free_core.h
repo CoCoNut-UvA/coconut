@@ -1,8 +1,9 @@
 #ifndef _CCN_FREE_CORE_H_
 #define _CCN_FREE_CORE_H_
 
-#include "core/trav_core.h"
-#include "generated/free.h"
+#include "../generated/free.h"
+#include "trav_core.h"
+
 typedef struct INFO {
     Node *flag;
     Node *assign;

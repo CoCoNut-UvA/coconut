@@ -1,7 +1,7 @@
 #ifndef _CCN_TRAV_CORE_H_
 #define _CCN_TRAV_CORE_H_
 
-#include "core/ast_core.h"
+#include "ast_core.h"
 
 #define TRAV(arg_node, arg_info)                                               \
     if (arg_node != NULL) {                                                    \

@@ -1,6 +1,7 @@
-#include "core/trav_core.h"
-#include "generated/trav_table.h"
 #include <stdio.h>
+
+#include "generated/trav_table.h"
+#include "trav_core.h"
 
 typedef struct traversalstack {
     struct traversalstack *next;

@@ -1,6 +1,8 @@
-#include "core/free_core.h"
-#include "generated/ast.h"
 #include <stdio.h>
+
+#include "../generated/ast.h"
+#include "../lib/memory.h"
+#include "free_core.h"
 
 static Info *make_info() {
     Info *result;

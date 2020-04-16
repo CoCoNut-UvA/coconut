@@ -32,8 +32,8 @@ void gen_trav_functions(Config *config, FILE *fp, Traversal *trav,
 void gen_trav_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_TRAV_H_\n");
     out("#define _CCN_TRAV_H_\n\n");
-    out("#include \"core/ast_core.h\"\n");
-    out("#include \"core/trav_core.h\"\n");
+    out("#include \"../core/ast_core.h\"\n");
+    out("#include \"../core/trav_core.h\"\n");
     out("\n");
     out("Node *traverse_children(Node *arg_node, Info *arg_info);\n\n");
 
@@ -77,9 +77,10 @@ void gen_traverse_children(Config *config, FILE *fp) {
 }
 
 void gen_trav_src(Config *config, FILE *fp) {
-    out("#include <stdio.h>");
+    out("#include <stdio.h>\n");
     out("\n");
-    out("#include \"generated/trav.h\"\n");
+    out("#include \"ast.h\"\n");
+    out("#include \"trav.h\"\n");
     out("\n");
     gen_traverse_children(config, fp);
 }
