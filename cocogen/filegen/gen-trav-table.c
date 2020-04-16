@@ -1,3 +1,4 @@
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,8 +15,8 @@
 void gen_trav_table_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_TRAV_TABLE_H_\n");
     out("#define _CCN_TRAV_TABLE_H_\n\n");
-    out("#include \"core/ast_core.h\"\n");
-    out("#include \"generated/trav.h\"\n");
+    out("#include \"../core/ast_core.h\"\n");
+    out("#include \"trav.h\"\n");
     out("\n");
     out("typedef trav_fun_p TravFunArray[%ld];\n", array_size(config->nodes));
     out("typedef TravFunArray TravTable[%ld];\n",
@@ -43,10 +44,12 @@ void gen_trav_table(Config *config, FILE *fp) {
         for (int i = 0; i < array_size(config->nodes); ++i) {
             Node *node = array_get(config->nodes, i);
             char *nodelwr = strlwr(node->id);
-            if (node_in_traversal(config, fp, trav, node)) {
+            if (is_traversal_node(config, fp, trav, node)) {
                 out("        &%s_%s,\n", travlwr, nodelwr);
-            } else {
+            } else if (is_pass_node(config, fp, trav, node)) {
                 out("        &traverse_children,\n");
+            } else {
+                out("        &traverse_noop,\n");
             }
             free(nodelwr);
         }
@@ -84,7 +87,7 @@ void gen_trav_names_table(Config *config, FILE *fp) {
 void gen_trav_table_src(Config *config, FILE *fp) {
     out("#include <stdio.h>\n");
     out("\n");
-    out("#include \"generated/trav_table.h\"\n");
+    out("#include \"trav_table.h\"\n");
     out("\n");
     gen_trav_table(config, fp);
     gen_pre_post_tables(config, fp);

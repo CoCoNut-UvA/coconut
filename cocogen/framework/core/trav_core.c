@@ -33,6 +33,8 @@ Node *traverse_node(Node *arg_node, Info *arg_info) {
     return arg_node;
 }
 
+Node *traverse_noop(Node *arg_node, Info *arg_info) { return arg_node; }
+
 void push_new_traversal(TraversalType prefix) {
     TraversalStack *new;
 

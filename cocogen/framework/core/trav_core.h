@@ -12,6 +12,7 @@
 typedef Node *(*trav_fun_p)(Node *, Info *);
 
 extern Node *traverse_node(Node *arg_node, Info *arg_info);
+extern Node *traverse_noop(Node *arg_node, Info *arg_info);
 extern void push_new_traversal(TraversalType traversal);
 extern TraversalType pop_cur_traversal(void);
 extern const char *traversal_name(void);
