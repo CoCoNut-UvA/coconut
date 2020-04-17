@@ -1471,99 +1471,6 @@ void unpack_lifetime_attrb_values(struct Info *info) {
     }
 }
 
-bool is_trav_node(Config *config, Traversal *trav, Node *node) {
-    for (int j = 0; j < array_size(trav->nodes); j++) {
-        Node *travnode = array_get(trav->nodes, j);
-        if (strcmp(node->id, travnode->id) == 0) {
-            return true;
-        }
-    }
-    return false;
-}
-
-int compute_reachable_nodes(Config *config) {
-    bool **node_reachability = NULL;
-    int error = 0;
-    if (node_reachability) {
-        return 0;
-    }
-
-    smap_t *node_index = smap_init(32);
-    size_t num_nodes = array_size(config->nodes);
-    size_t num_traversals = array_size(config->traversals);
-
-    // Add nodes to node_index map
-    for (int i = 0; i < num_nodes; i++) {
-        Node *node = array_get(config->nodes, i);
-        int *index = mem_alloc(sizeof(int));
-        *index = i;
-        smap_insert(node_index, node->id, index);
-    }
-
-    // Allocate node reachability matrix
-    node_reachability = mem_alloc(sizeof(bool *) * num_nodes);
-    for (int i = 0; i < num_nodes; i++) {
-        node_reachability[i] = mem_alloc(sizeof(bool) * num_nodes);
-        memset(node_reachability[i], 0, sizeof(bool) * num_nodes);
-    }
-
-    // Initialise reachability matrix with adjacency matrix. Nodesets are
-    // handled differently, the adjacency of each of their nodes will be set to
-    // true as well
-    for (int i = 0; i < num_nodes; i++) {
-        Node *dest = array_get(config->nodes, i);
-        for (int j = 0; j < array_size(dest->children); j++) {
-            Child *child = array_get(dest->children, j);
-            if (!child->node) {
-                Nodeset *nodeset = child->nodeset;
-                for (int k = 0; k < array_size(nodeset->nodes); k++) {
-                    Node *src = array_get(nodeset->nodes, k);
-                    int *index = smap_retrieve(node_index, src->id);
-                    node_reachability[*index][i] = true;
-                }
-            } else if (!child->nodeset) {
-                Node *src = child->node;
-                int *index = smap_retrieve(node_index, src->id);
-                node_reachability[*index][i] = true;
-            }
-        }
-    }
-
-    // Compute reachability of nodes using the Floyd-Warshall algorithm
-    for (int k = 0; k < num_nodes; k++) {
-        for (int i = 0; i < num_nodes; i++) {
-            for (int j = 0; j < num_nodes; j++) {
-                if (node_reachability[j][k] && node_reachability[k][i]) {
-                    node_reachability[j][i] = true;
-                }
-            }
-        }
-    }
-
-    // Add passthrough nodes to map and add values to passthrough array of
-    // traversal
-    for (int i = 0; i < num_traversals; i++) {
-        Traversal *trav = array_get(config->traversals, i);
-        smap_t *passthrough_nodes = smap_init(16);
-        for (int j = 0; j < array_size(trav->nodes); j++) {
-            Node *dest = array_get(trav->nodes, j);
-            int *index = smap_retrieve(node_index, dest->id);
-            for (int k = 0; k < num_nodes; k++) {
-                Node *src = array_get(config->nodes, k);
-                if (node_reachability[*index][k] &&
-                    !is_trav_node(config, trav, src)) {
-                    if (!smap_retrieve(passthrough_nodes, src->id)) {
-                        smap_insert(passthrough_nodes, src->id, src);
-                    }
-                }
-            }
-        }
-        trav->pass_nodes = smap_values(passthrough_nodes);
-    }
-
-    return error;
-}
-
 int check_config(Config *config) {
 
     // Great name...
@@ -1646,10 +1553,6 @@ int check_config(Config *config) {
         print_error_no_loc("No start phase specified.");
         success++;
     }
-
-    // Compute reachable nodes and assign them to passthrough nodes.
-    /// TODO: move this to another file?
-    success += compute_reachable_nodes(config);
 
     // Lifetime setup and processing.
     assign_id_to_action(info);
