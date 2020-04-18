@@ -139,7 +139,8 @@ void gen_trav_header(Config *config, FILE *fp) {
     out("#include \"core/trav_core.h\"\n");
     out("#include \"generated/ast.h\"\n");
     out("\n");
-
+    out_field("Node *traverse(Node *arg_node, Info *arg_info)");
+    out("\n");
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
         out_comment("Traversal %s", trav->id);
@@ -258,8 +259,17 @@ static void gen_trav_node(Config *config, FILE *fp, Node *node) {
     for (int i = 0; i < array_size(node->children); i++) {
         Child *child = array_get(node->children, i);
         char *childlwr = strlwr(child->id);
-        out_field("arg_node = " TRAV_PREFIX "%s_%s(arg_node, arg_info)",
-                  nodelwr, childlwr);
+        char *ctypelwr = strlwr(child->type);
+        char *childupr = strupr(child->id);
+        if (child->nodeset == NULL) {
+            out_field("arg_node = " TRAV_PREFIX "%s(%s_%s(arg_node), arg_info)",
+                      ctypelwr, nodeupr, childupr);
+        } else {
+            out_field("arg_node = " TRAV_PREFIX "%s_%s(arg_node, arg_info)",
+                      nodelwr, childlwr);
+        }
+        free(ctypelwr);
+        free(childupr);
         free(childlwr);
     }
     out_field("break");

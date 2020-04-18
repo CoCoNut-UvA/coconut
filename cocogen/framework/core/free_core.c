@@ -1,10 +1,12 @@
 #include <stdio.h>
 
-#include "free_core.h"
 #include "generated/ast.h"
+#include "generated/trav.h"
 #include "lib/memory.h"
 
-static Info *make_info() {
+#include "core/free_core.h"
+
+static Info *free_make_info() {
     Info *result;
 
     result = mem_alloc(sizeof(Info));
@@ -16,19 +18,19 @@ static Info *make_info() {
 }
 
 static Info *free_info(Info *info) {
-    info = MEMfree(info);
+    info = mem_free(info);
 
     return info;
 }
 
 Node *free_node(Node *syntaxtree) {
-    Info *arg_info = make_info();
+    Info *arg_info = free_make_info();
 
     INFO_FREE_FLAG(arg_info) = syntaxtree;
 
     TRAVpush(TRAV_free);
 
-    syntaxtree = TRAVdo(syntaxtree, arg_info);
+    syntaxtree = traverse(syntaxtree, arg_info);
 
     TRAVpop();
 
@@ -38,13 +40,13 @@ Node *free_node(Node *syntaxtree) {
 }
 
 Node *free_tree(Node *syntaxtree) {
-    Info *arg_info = make_info();
+    Info *arg_info = free_make_info();
 
     INFO_FREE_FLAG(arg_info) = NULL;
 
     TRAVpush(TRAV_free);
 
-    syntaxtree = TRAVdo(syntaxtree, arg_info);
+    syntaxtree = traverse(syntaxtree, arg_info);
 
     TRAVpop();
 
@@ -56,7 +58,7 @@ Node *free_tree(Node *syntaxtree) {
 char *free_string(char *str) {
 
     if (str != NULL) {
-        str = MEMfree(str);
+        str = mem_free(str);
     }
 
     return str;

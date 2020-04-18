@@ -5,7 +5,7 @@
 #include "core/trav_core.h"
 #include "lib/memory.h"
 
-static Info *make_info() {
+static Info *free_make_info() {
     Info *result;
 
     result = mem_alloc(sizeof(Info));
@@ -20,7 +20,7 @@ static Info *copy_info(Info *info) {
 }
 
 Node *copy_node(Node *syntaxtree) {
-    Info *arg_info = make_info();
+    Info *arg_info = free_make_info();
 
     TRAVpush(TRAV_copy);
 
@@ -34,7 +34,7 @@ Node *copy_node(Node *syntaxtree) {
 }
 
 Node *copy_tree(Node *syntaxtree) {
-    Info *arg_info = make_info();
+    Info *arg_info = free_make_info();
 
     TRAVpush(TRAV_copy);
 

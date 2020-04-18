@@ -12,12 +12,14 @@ typedef struct INFO {
 #define INFO_FREE_FLAG(n) (n->flag)
 #define INFO_FREE_ASSIGN(n) (n->assign)
 
-#define FREETRAV(node, info) (node != NULL) ? traverse_node(node, info) : node
-#define FREECOND(node, info)                                                   \
-    (INFO_FREE_FLAG(info) != arg_node) ? FREETRAV(node, info) : (node)
+#define FREETRAV(arg_node, arg_info)                                           \
+    (arg_node != NULL) ? traverse(arg_node, arg_info) : arg_node
+#define FREECOND(arg_node, arg_info)                                           \
+    (INFO_FREE_FLAG(arg_info) != arg_node) ? FREETRAV(arg_node, arg_info)      \
+                                           : (arg_node)
 
-static Info *make_info();
-static Info *free_info(Info *info);
+static Info *free_make_info();
+static Info *free_info(Info *arg_info);
 Node *free_node(Node *syntaxtree);
 Node *free_tree(Node *syntaxtree);
 char *free_string(char *str);
