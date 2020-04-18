@@ -14,7 +14,6 @@
 #include "filegen/gen-copy.h"
 #include "filegen/gen-enum.h"
 #include "filegen/gen-free.h"
-#include "filegen/gen-trav-table.h"
 #include "filegen/gen-trav.h"
 
 // Defined in the parser.
@@ -41,8 +40,6 @@ int main(int argc, char *argv[]) {
     filegen_generate("enum.h", &gen_enum_header);
     filegen_generate("ast.h", &gen_ast_header);
     filegen_generate("ast.c", &gen_ast_src);
-    filegen_generate("trav_table.h", &gen_trav_table_header);
-    filegen_generate("trav_table.c", &gen_trav_table_src);
     filegen_generate("trav.h", &gen_trav_header);
     filegen_generate("trav.c", &gen_trav_src);
     filegen_generate("free.h", &gen_free_header);

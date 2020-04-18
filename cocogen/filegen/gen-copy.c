@@ -70,8 +70,8 @@ void gen_init_arguments(Config *config, FILE *fp, Node *node) {
 void gen_copy_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_COPY_H_\n");
     out("#define _CCN_COPY_H_\n\n");
-    out("#include \"../core/ast_core.h\"\n");
-    out("#include \"../core/copy_core.h\"\n");
+    out("#include \"core/ast_core.h\"\n");
+    out("#include \"core/copy_core.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = array_get(config->nodes, i);
@@ -130,7 +130,7 @@ void gen_copy_src(Config *config, FILE *fp) {
     out("\n");
     out("#include \"ast.h\"\n");
     out("#include \"copy.h\"\n");
-    out("#include \"../lib/memory.h\"\n");
+    out("#include \"lib/memory.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = array_get(config->nodes, i);

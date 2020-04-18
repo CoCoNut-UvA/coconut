@@ -8,7 +8,6 @@ target_sources(${PROJECT_NAME}
         gen-enum.h
         gen-util.h
         gen-trav.h
-        gen-trav-table.h
         gen-free.h
         gen-copy.h
     PRIVATE
@@ -18,7 +17,6 @@ target_sources(${PROJECT_NAME}
         gen-enum.c
         gen-util.c
         gen-trav.c
-        gen-trav-table.c
         gen-free.c
         gen-copy.c
 )

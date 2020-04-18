@@ -1,7 +1,7 @@
 #ifndef _CCN_AST_CORE_H_
 #define _CCN_AST_CORE_H_
 
-#include "../generated/enum.h"
+#include "generated/enum.h"
 
 #define NODE_TYPE(n) ((n)->nodetype)
 #define NODE_LINE(n) ((n)->lineno)

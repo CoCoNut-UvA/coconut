@@ -1,7 +1,7 @@
 #ifndef _CCN_FREE_CORE_H_
 #define _CCN_FREE_CORE_H_
 
-#include "../generated/free.h"
+#include "generated/free.h"
 #include "trav_core.h"
 
 typedef struct INFO {

@@ -110,21 +110,9 @@ char *strlwr(char *string) {
  * the node given to the function. If the two nodes have an equal ID, then the
  * node is a valid node in the traversal.
  */
-bool is_traversal_node(Config *config, FILE *fp, Traversal *trav, Node *node) {
+bool is_traversal_node(Config *config, Traversal *trav, Node *node) {
     for (int i = 0; i < array_size(trav->nodes); i++) {
         Node *travnode = array_get(trav->nodes, i);
-        if (strcmp(travnode->id, node->id) == 0) {
-            return true;
-        }
-    }
-    return false;
-}
-
-/**
- */
-bool is_pass_node(Config *config, FILE *fp, Traversal *trav, Node *node) {
-    for (int i = 0; i < array_size(trav->pass_nodes); i++) {
-        Node *travnode = array_get(trav->pass_nodes, i);
         if (strcmp(travnode->id, node->id) == 0) {
             return true;
         }
