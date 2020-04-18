@@ -72,10 +72,4 @@ const char *traversal_name(void) {
     return name;
 }
 
-void traversal_set_pre_fun(TraversalType prefix, trav_fun_p prefun) {
-    pretable[prefix] = prefun;
-}
-
-void traversal_set_post_fun(TraversalType prefix, trav_fun_p postfun) {
-    posttable[prefix] = postfun;
-}
+TraversalType current_traversal(void) { return current_traversal->current; }
