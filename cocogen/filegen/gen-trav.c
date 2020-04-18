@@ -139,9 +139,6 @@ void gen_trav_header(Config *config, FILE *fp) {
     out("#include \"core/trav_core.h\"\n");
     out("#include \"generated/ast.h\"\n");
     out("\n");
-    out_field("extern " NT_ENUM_NAME " node_replacement_type");
-    out_field("extern void *node_replacement");
-    out("\n");
 
     for (int i = 0; i < array_size(config->nodes); i++) {
         Node *node = array_get(config->nodes, i);
@@ -149,84 +146,46 @@ void gen_trav_header(Config *config, FILE *fp) {
         for (int i = 0; i < array_size(node->children); ++i) {
             Child *child = (Child *)array_get(node->children, i);
             char *childlwr = strlwr(child->id);
-            out_field("void " TRAV_PREFIX
+            out_field("Node *" TRAV_PREFIX
                       "%s_%s(Node *arg_node, Info *arg_info)",
                       nodelwr, childlwr);
             free(childlwr);
         }
-        out_field("void " TRAV_START_FORMAT
+        out_field("Node *" TRAV_START_FORMAT
                   "(Node *arg_node, TraversalType trav)",
                   nodelwr);
-        out_field("void " REPLACE_NODE_FORMAT "(Node *arg_node)", nodelwr);
         free(nodelwr);
     }
     out("#endif /* _CCN_TRAV_H_ */\n");
 }
 
-// Generate replace functions
-static void gen_replace_node(Config *config, FILE *fp, Node *node) {
-    char *nodelwr = strlwr(node->id);
-    out_start_func("void " REPLACE_NODE_FORMAT "(Node *arg_node)", nodelwr);
-    out_begin_if("node_replacement == NULL");
-    out_field("node_replacement_type = " NT_FORMAT, nodelwr);
-    out_field("node_replacement = arg_node");
-    out_end_if();
-    out_begin_else();
-    out_field("print_user_error(\"" ERROR_HEADER "\", \"" REPLACE_NODE_FORMAT
-              ": "
-              "Not making a node replacement, since another replacement "
-              "function "
-              "was already called previously.\")",
-              nodelwr);
-    out_end_if();
-    out_end_func();
-    free(nodelwr);
-}
-
 // Generate start functions
-static void gen_start_node(Config *config, FILE *fp, Node *node) {
-    char *nodelwr = strlwr(node->id);
-    out_start_func("void " TRAV_START_FORMAT
-                   "(Node *arg_node, TraversalType trav)",
-                   nodelwr);
-    out_field("Info *arg_info");
-    out_comment("Set the new traversal as current traversal.");
-    out_field(TRAV_PREFIX "push(trav)");
-    out_begin_switch("trav");
-    for (int j = 0; j < array_size(config->traversals); ++j) {
-        Traversal *trav = (Traversal *)array_get(config->traversals, j);
-        char *travlwr = strlwr(trav->id);
-        out_begin_case(TRAV_FORMAT, travlwr);
-        out_field("arg_info = %s_createinfo()", travlwr);
-        out_field(TRAV_PREFIX "%s(arg_node, arg_info)", nodelwr);
-        out_field("%s_freeinfo(arg_info)", travlwr);
+static void gen_trav_func(Config *config, FILE *fp) {
+    out_start_func("Node *traverse(Node *arg_node, Info *arg_info)");
+    out_begin_if("!arg_node");
+    out_field("return");
+    out_end_if();
+    out_begin_switch("NODE_TYPE(arg_node)");
+    for (int i = 0; i < array_size(config->nodes); i++) {
+        Node *node = array_get(config->nodes, i);
+        char *nodelwr = strlwr(node->id);
+        out_begin_case(NT_FORMAT, nodelwr);
+        out_field("arg_node = " TRAV_PREFIX "%s(arg_node, arg_info)", nodelwr);
         out_field("break");
         out_end_case();
-        free(travlwr);
+        free(nodelwr);
     }
     out_end_switch();
-    out_field(TRAV_PREFIX "pop()");
+    out_field("return arg_node");
     out_end_func();
-    free(nodelwr);
 }
 
 static void gen_node_child_node(Node *node, Child *child, FILE *fp) {
     char *nodeupr = strupr(node->id);
     char *childupr = strupr(child->id);
     char *ctypelwr = strlwr(child->type);
-
-    out_field(TRAV_PREFIX "%s(%s_%s(arg_node), arg_info)", ctypelwr, nodeupr,
-              childupr);
-    out_begin_if("node_replacement != NULL");
-    out_begin_if("node_replacement_type == " NT_FORMAT, ctypelwr);
-    out_field("%s_%s(arg_node) = node_replacement", nodeupr, childupr);
-    out_end_if();
-    out_begin_else();
-    out_field("print_user_error(\"" ERROR_HEADER
-              "\",  \"Replacement node for %s->%s is not of type %s.\")",
-              node->id, child->id, child->type);
-    out_end_if();
-    out_end_if();
+    out_field("arg_node = " TRAV_FORMAT "(%s_%s(arg_node), arg_info)", ctypelwr,
+              nodeupr, childupr);
     free(nodeupr);
     free(childupr);
     free(ctypelwr);
@@ -236,46 +195,25 @@ static void gen_node_child_nodeset(Node *node, Child *child, FILE *fp) {
     Nodeset *nodeset = child->nodeset;
     char *nodeupr = strupr(node->id);
     char *childupr = strupr(child->id);
-    char *cidlwris = strlwr(child->id);
     char *nodesetlwr = strlwr(nodeset->id);
+
     out_begin_if("!%s_%s(arg_node)", nodeupr, childupr);
-    out_field("return");
+    out_field("return arg_node");
     out_end_if();
+
     out_begin_switch("NODE_TYPE(%s_%s(arg_node))", nodeupr, childupr);
     for (int i = 0; i < array_size(nodeset->nodes); ++i) {
         Node *cnode = (Node *)array_get(nodeset->nodes, i);
         char *cnodelwr = strlwr(cnode->id);
         out_begin_case(NT_FORMAT, cnodelwr);
-        out_field(TRAV_PREFIX "%s(%s_%s(arg_node), arg_info)", cnodelwr,
-                  nodeupr, childupr);
+        out_field("arg_node = " TRAV_PREFIX "%s(%s_%s(arg_node), arg_info)",
+                  cnodelwr, nodeupr, childupr);
         out_field("break");
         out_end_case();
         free(cnodelwr);
     }
     out_end_switch();
 
-    out_begin_if("node_replacement != NULL");
-    out_begin_switch("node_replacement_type");
-    for (int i = 0; i < array_size(nodeset->nodes); ++i) {
-        Node *cnode = (Node *)array_get(nodeset->nodes, i);
-        char *cnodelwr = strlwr(cnode->id);
-        out_begin_case(NT_FORMAT, cnodelwr);
-        out_field("%s_%s(arg_node) = node_replacement", nodeupr, childupr);
-        out_field("NODE_TYPE(%s_%s(arg_node)) = " NT_FORMAT, nodeupr, childupr,
-                  cnodelwr);
-        out_field("break");
-        out_end_case();
-        free(cnodelwr);
-    }
-    out_begin_default_case();
-    out_field("print_user_error(\"" ERROR_HEADER
-              "\", \"Replacement node for %s->%s is not a "
-              "node type of nodeset %s.\")",
-              node->id, child->id, child->type);
-    out_field("break");
-    out_end_case();
-    out_end_switch();
-    out_end_if();
     free(nodeupr);
     free(childupr);
     free(nodesetlwr);
@@ -283,7 +221,7 @@ static void gen_node_child_nodeset(Node *node, Child *child, FILE *fp) {
 
 static void gen_trav_node(Config *config, FILE *fp, Node *node) {
     char *nodelwr = strlwr(node->id);
-    out_start_func("void " TRAV_PREFIX "%s(Node *arg_node, Info *arg_info)",
+    out_start_func("Node *" TRAV_PREFIX "%s(Node *arg_node, Info *arg_info)",
                    nodelwr);
     out_begin_if("!arg_node");
     out_field("return");
@@ -294,8 +232,9 @@ static void gen_trav_node(Config *config, FILE *fp, Node *node) {
         char *travlwr = strlwr(trav->id);
         out_begin_case(TRAV_FORMAT, travlwr);
         if (is_traversal_node(config, trav, node)) {
-            out_field(TRAVERSAL_HANDLER_FORMAT "(arg_node, arg_info)", travlwr,
-                      nodelwr);
+            out_field("arg_node = " TRAVERSAL_HANDLER_FORMAT
+                      "(arg_node, arg_info)",
+                      travlwr, nodelwr);
         } else {
             for (int j = 0; j < array_size(node->children); j++) {
                 Child *child = array_get(node->children, j);
@@ -304,8 +243,9 @@ static void gen_trav_node(Config *config, FILE *fp, Node *node) {
                 int *index = smap_retrieve(node_index, child->type);
                 bool handles_child = traversal_node_handles[i][*index];
                 if (handles_child) {
-                    out_field(TRAV_PREFIX "%s_%s(arg_node, arg_info)", nodelwr,
-                              childlwr);
+                    out_field("arg_node = " TRAV_PREFIX
+                              "%s_%s(arg_node, arg_info)",
+                              nodelwr, childlwr);
                 }
                 free(childlwr);
             }
@@ -318,25 +258,25 @@ static void gen_trav_node(Config *config, FILE *fp, Node *node) {
     for (int i = 0; i < array_size(node->children); i++) {
         Child *child = array_get(node->children, i);
         char *childlwr = strlwr(child->id);
-        out_field(TRAV_PREFIX "%s_%s(arg_node, arg_info)", nodelwr, child->id);
+        out_field("arg_node = " TRAV_PREFIX "%s_%s(arg_node, arg_info)",
+                  nodelwr, child->id);
         free(childlwr);
     }
     out_field("break");
     out_end_case();
     out_end_switch();
+    out_field("return arg_node");
     out_end_func();
 
     for (int i = 0; i < array_size(node->children); ++i) {
         Child *child = (Child *)array_get(node->children, i);
         char *childlwr = strlwr(child->id);
-        out_start_func("void " TRAV_PREFIX
+        out_start_func("Node *" TRAV_PREFIX
                        "%s_%s(Node *arg_node, Info *arg_info)",
                        nodelwr, childlwr);
         out_begin_if("!arg_node");
-        out_field("return");
+        out_field("return arg_node");
         out_end_if();
-        out_field("void *orig_node_replacement = node_replacement");
-        out_field("node_replacement = NULL");
 
         if (child->node != NULL) {
             // Child is a node
@@ -348,7 +288,8 @@ static void gen_trav_node(Config *config, FILE *fp, Node *node) {
             // Should not have passed the context analysis.
             assert(0);
         }
-        out_field("node_replacement = orig_node_replacement");
+
+        out_field("return arg_node");
 
         out_end_func();
         free(childlwr);
@@ -363,10 +304,9 @@ void gen_trav_src(Config *config, FILE *fp) {
     out("#include \"lib/print.h\"\n");
     out("#include \"generated/trav.h\"\n");
     out("\n");
+    gen_trav_func(config, fp);
     for (int i = 0; i < array_size(config->nodes); i++) {
         Node *node = array_get(config->nodes, i);
         gen_trav_node(config, fp, node);
-        gen_start_node(config, fp, node);
-        gen_replace_node(config, fp, node);
     }
 }

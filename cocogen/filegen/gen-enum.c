@@ -23,39 +23,39 @@ void gen_enum(Config *config, FILE *fp, Enum *arg_enum) {
 }
 
 void gen_nodetype_enum(Config *config, FILE *fp) {
-    out_comment("Enum NodeType");
+    out_comment("Enum " NT_ENUM_NAME);
     out_enum("NODETYPE");
-    out_enum_field("NT_NULL");
+    out_enum_field(NT_ENUM_PREFIX "NULL");
     out_comment("Nodes");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
         char *nodelwr = strlwr(node->id);
-        out_enum_field("NT_%s", nodelwr);
+        out_enum_field(NT_ENUM_PREFIX "%s", nodelwr);
         free(nodelwr);
     }
     out_comment("Nodesets");
     for (int i = 0; i < array_size(config->nodesets); ++i) {
         Nodeset *nodeset = (Nodeset *)array_get(config->nodesets, i);
         char *nodesetlwr = strlwr(nodeset->id);
-        out_enum_field("NT_%s", nodesetlwr);
+        out_enum_field(NT_ENUM_PREFIX "%s", nodesetlwr);
         free(nodesetlwr);
     }
-    out_enum_end("NodeType");
+    out_enum_end(NT_ENUM_NAME);
 }
 
 void gen_traversal_enum(Config *config, FILE *fp) {
+    out_comment("Enum " TRAV_ENUM_NAME);
     out_enum("TRAVERSALS");
-    out_comment("Traversals");
-    out_enum_field("TRAV_NULL");
+    out_enum_field(TRAV_ENUM_PREFIX "NULL");
     for (int i = 0; i < array_size(config->traversals); ++i) {
         Traversal *trav = (Traversal *)array_get(config->traversals, i);
         char *travlwr = strlwr(trav->id);
-        out_enum_field("TRAV_%s", travlwr);
+        out_enum_field(TRAV_ENUM_PREFIX "%s", travlwr);
         free(travlwr);
     }
-    out_enum_field("TRAV_free");
-    out_enum_field("TRAV_copy");
-    out_enum_end("TraversalType");
+    out_enum_field(TRAV_ENUM_PREFIX "free");
+    out_enum_field(TRAV_ENUM_PREFIX "copy");
+    out_enum_end(TRAV_ENUM_NAME);
 }
 
 void gen_enum_header(Config *config, FILE *fp) {

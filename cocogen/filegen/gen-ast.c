@@ -134,7 +134,7 @@ void gen_node_constructor(Config *config, FILE *fp, Node *node) {
     out_field("Node *node = node_init()");
     out_field("node->data->N_%s = mem_alloc(sizeof(struct DATA_%s))", nodelwr,
               nodeupr);
-    out_field("NODE_TYPE(node) = NT_%s", nodelwr);
+    out_field("NODE_TYPE(node) = " NT_ENUM_PREFIX "%s", nodelwr);
     gen_members(config, fp, node);
     // TODO: Checks here or in another file?
     out_end_func();
