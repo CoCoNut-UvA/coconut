@@ -58,7 +58,7 @@ void gen_free_func(Config *config, FILE *fp, Node *node) {
                   nodeupr, childupr, nodeupr, childupr);
         free(childupr);
     }
-    out_field("arg_node->data.N_%s = mem_free(arg_node->data.N_%s)", nodelwr,
+    out_field("arg_node->data->N_%s = mem_free(arg_node->data->N_%s)", nodelwr,
               nodelwr);
     out_field("Node *result = mem_free(arg_node)");
     out_field("return result");

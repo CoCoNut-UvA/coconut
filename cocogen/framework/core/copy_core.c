@@ -24,7 +24,7 @@ Node *copy_node(Node *syntaxtree) {
 
     TRAVpush(TRAV_copy);
 
-    syntaxtree = traverse_node(syntaxtree, arg_info);
+    syntaxtree = traverse(syntaxtree, arg_info);
 
     TRAVpop();
 
@@ -38,7 +38,7 @@ Node *copy_tree(Node *syntaxtree) {
 
     TRAVpush(TRAV_copy);
 
-    syntaxtree = traverse_node(syntaxtree, arg_info);
+    syntaxtree = traverse(syntaxtree, arg_info);
 
     TRAVpop();
 
