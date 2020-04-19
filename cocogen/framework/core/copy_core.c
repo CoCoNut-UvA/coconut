@@ -14,7 +14,7 @@ static Info *free_make_info() {
 }
 
 static Info *copy_info(Info *info) {
-    info = MEMcopy(info);
+    info = mem_copy(info, sizeof(Info));
 
     return info;
 }
@@ -50,7 +50,7 @@ Node *copy_tree(Node *syntaxtree) {
 char *copy_string(char *str) {
 
     if (str != NULL) {
-        str = MEMcopy(str);
+        str = mem_copy(str, sizeof(char) * (strlen(str) + 1));
     }
 
     return str;

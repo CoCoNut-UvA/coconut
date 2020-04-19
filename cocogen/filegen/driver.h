@@ -29,6 +29,8 @@ Config *_get_ast_definition();
 // TODO(Rick) Return this to how it used to be? Didn't work for me without this
 // change
 void filegen_generate(char *filename, void (*func)(Config *, FILE *));
+void filegen_all_traversals(char *fileformatter,
+                            void (*func)(Config *, FILE *, Traversal *));
 void filegen_phase_subtree(Config *, void (*func)(Config *, array *));
 
 void filegen_delete_non_generated_filed(ccn_set_t *generated_files,

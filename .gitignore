@@ -58,6 +58,7 @@ build/
 bin/
 
 cocogen/framework/generated
+cocogen/framework/user
 old_framework/
 
 .vscode

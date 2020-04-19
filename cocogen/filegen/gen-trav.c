@@ -139,7 +139,27 @@ void gen_trav_header(Config *config, FILE *fp) {
     out("#include \"core/trav_core.h\"\n");
     out("#include \"generated/ast.h\"\n");
     out("\n");
+    out_comment("Traversal functions");
     out_field("Node *traverse(Node *arg_node, Info *arg_info)");
+    for (int i = 0; i < array_size(config->nodes); i++) {
+        Node *node = array_get(config->nodes, i);
+        char *nodelwr = strlwr(node->id);
+        out_field("Node *" TRAV_PREFIX "%s(Node *arg_node, Info *arg_info)",
+                  nodelwr);
+        for (int i = 0; i < array_size(node->children); ++i) {
+            Child *child = (Child *)array_get(node->children, i);
+            if (child->node != NULL) {
+                continue;
+            }
+            char *childlwr = strlwr(child->id);
+
+            out_field("Node *" TRAV_PREFIX
+                      "%s_%s(Node *arg_node, Info *arg_info)",
+                      nodelwr, childlwr);
+            free(childlwr);
+        }
+        free(nodelwr);
+    }
     out("\n");
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
@@ -306,7 +326,7 @@ void gen_trav_src(Config *config, FILE *fp) {
     compute_reachable_nodes(config);
 
     out("#include <stdio.h>\n");
-    out("#include \"lib/print.h\"\n");
+    out("\n");
     out("#include \"generated/trav.h\"\n");
     out("\n");
     gen_trav_func(config, fp);

@@ -1,0 +1,1 @@
+void gen_trav_user(Config *config, FILE *fp, Traversal *trav);

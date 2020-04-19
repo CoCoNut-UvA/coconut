@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 
 #include "ast/ast.h"
+#include "filegen/gen-util.h"
 #include "filegen/util.h"
 
 #include "lib/array.h"
@@ -410,29 +411,21 @@ void filegen_all_nodesets(char *fileformatter,
 
 void filegen_all_traversals(char *fileformatter,
                             void (*func)(Config *, FILE *, Traversal *)) {
-    char *full_path;
-    FILE *fp;
-
     for (int i = 0; i < array_size(ast_definition->traversals); ++i) {
         Traversal *traversal = array_get(ast_definition->traversals, i);
-        char *filename = format_with_formatter(fileformatter, traversal->id);
-        // full_path = get_full_path(fileformatter, traversal->id);
-        full_path = get_full_path_with_dir(current_directory, filename, NULL);
-        add_filename_to_tracked(filename);
+        char *travlwr = strlwr(traversal->id);
+        char *filename = format_with_formatter(fileformatter, travlwr);
 
-        if (hash_match(traversal->common_info, full_path)) {
-            mem_free(full_path);
-            continue;
-        }
+        char *full_path = get_full_path(filename, NULL);
+        print_file_gen(full_path);
 
         if (!only_list_files) {
-            fp = get_fp(full_path, "w");
-            out(HASH_HEADER, traversal->common_info->hash);
+            FILE *fp = get_fp(full_path, "w");
             func(ast_definition, fp, traversal);
             out("\n");
             fclose(fp);
         }
-        mem_free(filename);
+
         mem_free(full_path);
     }
 }
