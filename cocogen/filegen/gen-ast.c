@@ -71,14 +71,14 @@ void gen_macros(Config *config, FILE *fp, Node *node) {
     for (int i = 0; i < array_size(node->children); ++i) {
         Child *child = (Child *)array_get(node->children, i);
         char *childupr = strupr(child->id);
-        out("#define %s_%s(n) ((n)->data->N_%s->%s)\n", nodeupr, childupr,
+        out("#define %s_%s(n) ((n)->data.N_%s->%s)\n", nodeupr, childupr,
             nodelwr, child->id);
         free(childupr);
     }
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
         char *attrupr = strupr(attr->id);
-        out("#define %s_%s(n) ((n)->data->N_%s->%s)\n", nodeupr, attrupr,
+        out("#define %s_%s(n) ((n)->data.N_%s->%s)\n", nodeupr, attrupr,
             nodelwr, attr->id);
         free(attrupr);
     }
@@ -91,7 +91,7 @@ void gen_ast_header(Config *config, FILE *fp) {
     out("#define _CCN_AST_H_\n\n");
     out("#include <stdbool.h>\n");
     out("\n");
-    out("#include \"core/ast_core.h\"\n");
+    out("#include \"core/types.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
@@ -132,7 +132,7 @@ void gen_node_constructor(Config *config, FILE *fp, Node *node) {
     gen_init_function(config, fp, node);
     out_start_func_field();
     out_field("Node *node = node_init()");
-    out_field("node->data->N_%s = mem_alloc(sizeof(struct DATA_%s))", nodelwr,
+    out_field("node->data.N_%s = mem_alloc(sizeof(struct DATA_%s))", nodelwr,
               nodeupr);
     out_field("NODE_TYPE(node) = " NT_ENUM_PREFIX "%s", nodelwr);
     gen_members(config, fp, node);
@@ -145,8 +145,8 @@ void gen_node_constructor(Config *config, FILE *fp, Node *node) {
 void gen_ast_src(Config *config, FILE *fp) {
     out("#include <stdlib.h>\n");
     out("\n");
-    out("#include \"ast.h\"\n");
-    out("#include \"../../../palm/include/lib/memory.h\"\n");
+    out("#include \"core/ast_core.h\"\n");
+    out("#include \"lib/memory.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);

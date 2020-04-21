@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-#include "../../../palm/include/lib/memory.h"
 #include "generated/ast.h"
 #include "generated/trav.h"
+#include "lib/memory.h"
 
 #include "core/free_core.h"
 

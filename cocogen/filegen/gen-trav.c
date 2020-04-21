@@ -135,8 +135,8 @@ void gen_trav_header(Config *config, FILE *fp) {
     compute_reachable_nodes(config);
     out("#ifndef _CCN_TRAV_H_\n");
     out("#define _CCN_TRAV_H_\n\n");
-    out("#include \"../core/ast_core.h\"\n");
-    out("#include \"../core/trav_core.h\"\n");
+    out("#include \"core/ast_core.h\"\n");
+    out("#include \"core/trav_core.h\"\n");
     out("#include \"ast.h\"\n");
     out("\n");
     out_comment("Traversal functions");
