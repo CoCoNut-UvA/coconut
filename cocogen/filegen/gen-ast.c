@@ -137,6 +137,7 @@ void gen_node_constructor(Config *config, FILE *fp, Node *node) {
     out_field("NODE_TYPE(node) = " NT_ENUM_PREFIX "%s", nodelwr);
     gen_members(config, fp, node);
     // TODO: Checks here or in another file?
+    out_field("return node");
     out_end_func();
     free(nodeupr);
     free(nodelwr);
