@@ -200,12 +200,22 @@ static void gen_trav_func(Config *config, FILE *fp) {
     out_end_func();
 }
 
-// Printing nodesets
-static void gen_node_child_nodeset(Node *node, Child *child, FILE *fp) {
+// Traversal function for nodesets
+static void gen_trav_nodeset(Config *config, FILE *fp, Node *node,
+                             Child *child) {
     Nodeset *nodeset = child->nodeset;
+
+    char *childlwr = strlwr(child->id);
+    char *nodelwr = strlwr(node->id);
     char *nodeupr = strupr(node->id);
     char *childupr = strupr(child->id);
     char *nodesetlwr = strlwr(nodeset->id);
+
+    out_start_func("Node *" TRAV_PREFIX "%s_%s(Node *arg_node, Info *arg_info)",
+                   nodelwr, childlwr);
+    out_begin_if("!arg_node");
+    out_field("return arg_node");
+    out_end_if();
 
     out_begin_if("!%s_%s(arg_node)", nodeupr, childupr);
     out_field("return arg_node");
@@ -223,12 +233,18 @@ static void gen_node_child_nodeset(Node *node, Child *child, FILE *fp) {
         free(cnodelwr);
     }
     out_end_switch();
+    out_field("return arg_node");
+
+    out_end_func();
 
     free(nodeupr);
     free(childupr);
     free(nodesetlwr);
+    free(nodelwr);
+    free(childlwr);
 }
 
+// Traversal function for nodes
 static void gen_trav_node(Config *config, FILE *fp, Node *node) {
     char *nodelwr = strlwr(node->id);
     char *nodeupr = strupr(node->id);
@@ -298,26 +314,6 @@ static void gen_trav_node(Config *config, FILE *fp, Node *node) {
     out_field("return arg_node");
     out_end_func();
 
-    for (int i = 0; i < array_size(node->children); ++i) {
-        Child *child = (Child *)array_get(node->children, i);
-        if (child->node != NULL) {
-            continue;
-        }
-        char *childlwr = strlwr(child->id);
-
-        out_start_func("Node *" TRAV_PREFIX
-                       "%s_%s(Node *arg_node, Info *arg_info)",
-                       nodelwr, childlwr);
-        out_begin_if("!arg_node");
-        out_field("return arg_node");
-        out_end_if();
-
-        gen_node_child_nodeset(node, child, fp);
-        out_field("return arg_node");
-
-        out_end_func();
-        free(childlwr);
-    }
     free(nodeupr);
     free(nodelwr);
 }
@@ -333,5 +329,12 @@ void gen_trav_src(Config *config, FILE *fp) {
     for (int i = 0; i < array_size(config->nodes); i++) {
         Node *node = array_get(config->nodes, i);
         gen_trav_node(config, fp, node);
+        for (int i = 0; i < array_size(node->children); ++i) {
+            Child *child = (Child *)array_get(node->children, i);
+            if (child->node != NULL) {
+                continue;
+            }
+            gen_trav_nodeset(config, fp, node, child);
+        }
     }
 }

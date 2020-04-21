@@ -14,26 +14,38 @@ void gen_trav_user(Config *config, FILE *fp, Traversal *trav) {
     out("#include \"generated/trav.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("\n");
+
+    // Info struct skeleton
     out_typedef_struct("INFO");
     out_typedef_struct_end("Info");
 
+    // Info constructor
     out_start_func("Info *%s_create_info()", travlwr);
     out_field("Info *info = mem_alloc(sizeof(Info))");
     out_field("return info");
     out_end_func();
 
+    // Info destructor
+    out_start_func("void *%s_free_info(Info *info)", travlwr);
+    out_field("mem_free(info)");
+    out_end_func();
+
+    // Start function
     out_start_func("Node *%s_start(Node* syntaxtree)", travlwr);
     out_field("Info *arg_info = %s_create_info()", travlwr);
     out_field("trav_push(" TRAV_ENUM_PREFIX "%s)", travlwr);
     out_field("syntaxtree = traverse(syntaxtree, arg_info)");
     out_field("trav_pop()");
-    /// TODO: free info
+    out_field("%s_free_info(arg_info)", travlwr);
+    out_field("return syntaxtree");
     out_end_func();
 
     for (int i = 0; i < array_size(trav->nodes); i++) {
         Node *node = array_get(trav->nodes, i);
         char *nodelwr = strlwr(node->id);
         char *nodeupr = strupr(node->id);
+
+        // Traversal Function
         out_start_func("Node *%s_%s(Node *arg_node, Info *arg_info)", travlwr,
                        nodelwr);
         for (int i = 0; i < array_size(node->children); i++) {
@@ -45,6 +57,7 @@ void gen_trav_user(Config *config, FILE *fp, Traversal *trav) {
         }
         out_field("return arg_node");
         out_end_func();
+
         free(nodelwr);
         free(nodeupr);
     }
