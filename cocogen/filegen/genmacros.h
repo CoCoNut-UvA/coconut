@@ -17,6 +17,13 @@
     fprintf(fp, __VA_ARGS__);                                                  \
     fprintf(fp, " {\n")
 
+#define out_typedef_struct(...)                                                \
+    print_indent_level(indent, fp);                                            \
+    indent++;                                                                  \
+    fprintf(fp, "typedef struct ");                                            \
+    fprintf(fp, __VA_ARGS__);                                                  \
+    fprintf(fp, " {\n")
+
 #define out_union(...)                                                         \
     print_indent_level(indent, fp);                                            \
     indent++;                                                                  \
@@ -33,6 +40,13 @@
     indent--;                                                                  \
     print_indent_level(indent, fp);                                            \
     fprintf(fp, "};\n\n")
+
+#define out_typedef_struct_end(...)                                            \
+    indent--;                                                                  \
+    print_indent_level(indent, fp);                                            \
+    fprintf(fp, "} ");                                                         \
+    fprintf(fp, __VA_ARGS__);                                                  \
+    fprintf(fp, ";\n\n")
 
 #define out_statement(...)                                                     \
     print_indent_level(indent, fp);                                            \
