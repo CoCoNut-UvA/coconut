@@ -22,8 +22,8 @@ void gen_trav_user(Config *config, FILE *fp, Traversal *trav) {
         for (int i = 0; i < array_size(node->children); i++) {
             Child *child = array_get(node->children, i);
             char *childupr = strupr(child->id);
-            out_comment("arg_node = traverse(%s_%s(arg_node), arg_info);",
-                        nodeupr, childupr);
+            out_field("arg_node = traverse(%s_%s(arg_node), arg_info)", nodeupr,
+                      childupr);
             free(childupr);
         }
         out_field("return arg_node");

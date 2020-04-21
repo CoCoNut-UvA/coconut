@@ -47,6 +47,5 @@ int main(int argc, char *argv[]) {
     filegen_generate("free.c", &gen_free_src);
     filegen_generate("copy.h", &gen_copy_header);
     filegen_generate("copy.c", &gen_copy_src);
-    filegen_dir("cocogen/framework/user/");
     filegen_all_traversals("trav_%s.c", &gen_trav_user);
 }

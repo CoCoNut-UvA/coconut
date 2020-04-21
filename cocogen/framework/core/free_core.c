@@ -1,8 +1,8 @@
 #include <stdio.h>
 
+#include "../../../palm/include/lib/memory.h"
 #include "generated/ast.h"
 #include "generated/trav.h"
-#include "lib/memory.h"
 
 #include "core/free_core.h"
 
@@ -17,49 +17,39 @@ static Info *free_make_info() {
     return result;
 }
 
-static Info *free_info(Info *info) {
-    info = mem_free(info);
+static void free_info(Info *info) { mem_free(info); }
 
-    return info;
-}
-
-Node *free_node(Node *syntaxtree) {
+void free_node(Node *syntaxtree) {
     Info *arg_info = free_make_info();
 
     INFO_FREE_FLAG(arg_info) = syntaxtree;
 
-    TRAVpush(TRAV_free);
+    trav_push(TRAV_free);
 
     syntaxtree = traverse(syntaxtree, arg_info);
 
-    TRAVpop();
+    trav_pop();
 
-    arg_info = free_info(arg_info);
-
-    return syntaxtree;
+    free_info(arg_info);
 }
 
-Node *free_tree(Node *syntaxtree) {
+void free_tree(Node *syntaxtree) {
     Info *arg_info = free_make_info();
 
     INFO_FREE_FLAG(arg_info) = NULL;
 
-    TRAVpush(TRAV_free);
+    trav_push(TRAV_free);
 
     syntaxtree = traverse(syntaxtree, arg_info);
 
-    TRAVpop();
+    trav_pop();
 
-    arg_info = free_info(arg_info);
-
-    return syntaxtree;
+    free_info(arg_info);
 }
 
-char *free_string(char *str) {
+void free_string(char *str) {
 
     if (str != NULL) {
-        str = mem_free(str);
+        mem_free(str);
     }
-
-    return str;
 }

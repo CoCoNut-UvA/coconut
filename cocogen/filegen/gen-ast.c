@@ -146,7 +146,7 @@ void gen_ast_src(Config *config, FILE *fp) {
     out("#include <stdlib.h>\n");
     out("\n");
     out("#include \"ast.h\"\n");
-    out("#include \"lib/memory.h\"\n");
+    out("#include \"../../../palm/include/lib/memory.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);

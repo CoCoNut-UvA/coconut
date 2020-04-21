@@ -135,9 +135,9 @@ void gen_trav_header(Config *config, FILE *fp) {
     compute_reachable_nodes(config);
     out("#ifndef _CCN_TRAV_H_\n");
     out("#define _CCN_TRAV_H_\n\n");
-    out("#include \"core/ast_core.h\"\n");
-    out("#include \"core/trav_core.h\"\n");
-    out("#include \"generated/ast.h\"\n");
+    out("#include \"../core/ast_core.h\"\n");
+    out("#include \"../core/trav_core.h\"\n");
+    out("#include \"ast.h\"\n");
     out("\n");
     out_comment("Traversal functions");
     out_field("Node *traverse(Node *arg_node, Info *arg_info)");
@@ -183,7 +183,7 @@ void gen_trav_header(Config *config, FILE *fp) {
 static void gen_trav_func(Config *config, FILE *fp) {
     out_start_func("Node *traverse(Node *arg_node, Info *arg_info)");
     out_begin_if("!arg_node");
-    out_field("return");
+    out_field("return arg_node");
     out_end_if();
     out_begin_switch("NODE_TYPE(arg_node)");
     for (int i = 0; i < array_size(config->nodes); i++) {
@@ -235,7 +235,7 @@ static void gen_trav_node(Config *config, FILE *fp, Node *node) {
     out_start_func("Node *" TRAV_PREFIX "%s(Node *arg_node, Info *arg_info)",
                    nodelwr);
     out_begin_if("!arg_node");
-    out_field("return");
+    out_field("return arg_node");
     out_end_if();
     out_begin_switch(TRAV_PREFIX "current()");
     for (int i = 0; i < array_size(config->traversals); i++) {
@@ -327,7 +327,7 @@ void gen_trav_src(Config *config, FILE *fp) {
 
     out("#include <stdio.h>\n");
     out("\n");
-    out("#include \"generated/trav.h\"\n");
+    out("#include \"trav.h\"\n");
     out("\n");
     gen_trav_func(config, fp);
     for (int i = 0; i < array_size(config->nodes); i++) {

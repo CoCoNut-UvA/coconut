@@ -1,9 +1,14 @@
 #include <stdio.h>
+#include <string.h>
 
+#include "../../../palm/include/lib/memory.h"
 #include "core/ast_core.h"
 #include "core/copy_core.h"
 #include "core/trav_core.h"
-#include "lib/memory.h"
+
+typedef struct INFO {
+
+} Info;
 
 static Info *free_make_info() {
     Info *result;
@@ -22,11 +27,11 @@ static Info *copy_info(Info *info) {
 Node *copy_node(Node *syntaxtree) {
     Info *arg_info = free_make_info();
 
-    TRAVpush(TRAV_copy);
+    trav_push(TRAV_copy);
 
     syntaxtree = traverse(syntaxtree, arg_info);
 
-    TRAVpop();
+    trav_pop();
 
     arg_info = copy_info(arg_info);
 
@@ -36,11 +41,11 @@ Node *copy_node(Node *syntaxtree) {
 Node *copy_tree(Node *syntaxtree) {
     Info *arg_info = free_make_info();
 
-    TRAVpush(TRAV_copy);
+    trav_push(TRAV_copy);
 
     syntaxtree = traverse(syntaxtree, arg_info);
 
-    TRAVpop();
+    trav_pop();
 
     arg_info = copy_info(arg_info);
 

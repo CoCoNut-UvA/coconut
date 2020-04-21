@@ -1,7 +1,8 @@
 #include <stdio.h>
 
+#include "../../../palm/include/lib/memory.h"
+#include "../../../palm/include/lib/print.h"
 #include "generated/enum.h"
-#include "lib/memory.h"
 
 #include "core/trav_core.h"
 

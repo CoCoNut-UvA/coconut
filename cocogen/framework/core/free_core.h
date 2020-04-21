@@ -19,9 +19,9 @@ typedef struct INFO {
                                            : (arg_node)
 
 static Info *free_make_info();
-static Info *free_info(Info *arg_info);
-Node *free_node(Node *syntaxtree);
-Node *free_tree(Node *syntaxtree);
-char *free_string(char *str);
+static void free_info(Info *arg_info);
+void free_node(Node *syntaxtree);
+void free_tree(Node *syntaxtree);
+void free_string(char *str);
 
 #endif /* __CCN_FREE_CORE_H_ */

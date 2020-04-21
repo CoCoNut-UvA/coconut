@@ -70,8 +70,8 @@ void gen_init_arguments(Config *config, FILE *fp, Node *node) {
 void gen_copy_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_COPY_H_\n");
     out("#define _CCN_COPY_H_\n\n");
-    out("#include \"core/ast_core.h\"\n");
-    out("#include \"core/copy_core.h\"\n");
+    out("#include \"../core/ast_core.h\"\n");
+    out("#include \"../core/copy_core.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = array_get(config->nodes, i);
@@ -88,7 +88,7 @@ void gen_copy_func(Config *config, FILE *fp, Node *node) {
     char *nodeupr = strupr(node->id);
     out_comment("%s", node->id);
     out_start_func("Node *copy_%s(Node *arg_node, Info *arg_info)", nodelwr);
-    out("Node *result = node_init_%s(", nodelwr);
+    out("    Node *result = node_init_%s(", nodelwr);
     gen_init_arguments(config, fp, node);
     out(");\n");
     for (int i = 0; i < array_size(node->attrs); i++) {
@@ -96,14 +96,14 @@ void gen_copy_func(Config *config, FILE *fp, Node *node) {
         char *attrupr = strupr(attr->id);
         char *copyfunc;
         if (attr->type == AT_string) {
-            copyfunc = "strcpy";
+            copyfunc = "ccn_str_cpy";
         } else if (attr->type == AT_link) {
             copyfunc = "copy_node";
         } else if (attr->type == AT_link_or_enum) {
             if (type_is_link(config, attr)) {
                 copyfunc = "copy_node";
             } else {
-                copyfunc = "strcpy";
+                copyfunc = "ccn_str_cpy";
             }
         } else {
             continue;
@@ -127,10 +127,13 @@ void gen_copy_func(Config *config, FILE *fp, Node *node) {
 
 void gen_copy_src(Config *config, FILE *fp) {
     out("#include <stdlib.h>\n");
+    out("#include <string.h>\n");
     out("\n");
     out("#include \"ast.h\"\n");
     out("#include \"copy.h\"\n");
-    out("#include \"lib/memory.h\"\n");
+    out("#include \"../core/copy_core.h\"\n");
+    out("#include \"../../../palm/include/lib/memory.h\"\n");
+    out("#include \"../../../palm/include/lib/str.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = array_get(config->nodes, i);
