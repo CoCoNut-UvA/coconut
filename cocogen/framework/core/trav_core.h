@@ -3,8 +3,9 @@
 
 #include "generated/enum.h"
 #include "generated/trav.h"
-// Stack of traversals, so that new traversals can be started inside other
-// traversals.
+
+void *globaldata[_TRAV_SIZE];
+
 void trav_push(TraversalType trav);
 void trav_pop(void);
 TraversalType trav_current(void);

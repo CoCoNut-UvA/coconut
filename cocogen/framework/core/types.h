@@ -5,6 +5,4 @@
 
 typedef struct NODE Node;
 
-typedef struct INFO Info;
-
 #endif /* _CCN_TYPES_H_ */

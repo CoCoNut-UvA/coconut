@@ -76,7 +76,7 @@ void gen_copy_header(Config *config, FILE *fp) {
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = array_get(config->nodes, i);
         char *nodelwr = strlwr(node->id);
-        out("extern Node *copy_%s(Node *arg_node, Info *arg_info);\n", nodelwr);
+        out("extern Node *copy_%s(Node *arg_node);\n", nodelwr);
         free(nodelwr);
     }
     out("\n");
@@ -87,7 +87,7 @@ void gen_copy_func(Config *config, FILE *fp, Node *node) {
     char *nodelwr = strlwr(node->id);
     char *nodeupr = strupr(node->id);
     out_comment("%s", node->id);
-    out_start_func("Node *copy_%s(Node *arg_node, Info *arg_info)", nodelwr);
+    out_start_func("Node *copy_%s(Node *arg_node)", nodelwr);
     out("    Node *result = node_init_%s(", nodelwr);
     gen_init_arguments(config, fp, node);
     out(");\n");
@@ -115,8 +115,8 @@ void gen_copy_func(Config *config, FILE *fp, Node *node) {
     for (int i = 0; i < array_size(node->children); i++) {
         Child *child = array_get(node->children, i);
         char *childupr = strupr(child->id);
-        out_field("%s_%s(arg_node) = COPYTRAV(%s_%s(arg_node), arg_info)",
-                  nodeupr, childupr, nodeupr, childupr);
+        out_field("%s_%s(arg_node) = traverse(%s_%s(arg_node))", nodeupr,
+                  childupr, nodeupr, childupr);
         free(childupr);
     }
     out_field("return result");
@@ -131,6 +131,7 @@ void gen_copy_src(Config *config, FILE *fp) {
     out("\n");
     out("#include \"ast.h\"\n");
     out("#include \"copy.h\"\n");
+    out("#include \"trav.h\"\n");
     out("#include \"core/copy_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("#include \"lib/str.h\"\n");

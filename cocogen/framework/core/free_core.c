@@ -6,50 +6,21 @@
 
 #include "core/free_core.h"
 
-static Info *free_make_info() {
-    Info *result;
+typedef struct FREE_DATA {
+} FreeData;
 
-    result = mem_alloc(sizeof(Info));
-
-    INFO_FREE_FLAG(result) = NULL;
-    INFO_FREE_ASSIGN(result) = NULL;
-
+FreeData *free_init_data() {
+    FreeData *result = mem_alloc(sizeof(FreeData));
     return result;
 }
 
-static void free_info(Info *info) { mem_free(info); }
+void free_free_data(FreeData *data) { mem_free(data); }
 
-void free_node(Node *syntaxtree) {
-    Info *arg_info = free_make_info();
-
-    INFO_FREE_FLAG(arg_info) = syntaxtree;
-
+Node *free_node(Node *syntaxtree) {
+    FreeData *arg_data = free_init_data();
     trav_push(TRAV_free);
-
-    syntaxtree = traverse(syntaxtree, arg_info);
-
+    syntaxtree = traverse(syntaxtree);
     trav_pop();
-
-    free_info(arg_info);
-}
-
-void free_tree(Node *syntaxtree) {
-    Info *arg_info = free_make_info();
-
-    INFO_FREE_FLAG(arg_info) = NULL;
-
-    trav_push(TRAV_free);
-
-    syntaxtree = traverse(syntaxtree, arg_info);
-
-    trav_pop();
-
-    free_info(arg_info);
-}
-
-void free_string(char *str) {
-
-    if (str != NULL) {
-        mem_free(str);
-    }
+    free_free_data(arg_data);
+    return NULL;
 }

@@ -8,7 +8,7 @@ add_executable(${PROJECT_NAME} main.c)
 add_subdirectory(core/)
 add_subdirectory(generated/)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE coconut::palm)
+target_link_libraries(${PROJECT_NAME} PRIVATE coconut::palm -fsanitize=address -fsanitize=undefined)
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC ${CMAKE_CURRENT_LIST_DIR}

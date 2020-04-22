@@ -18,6 +18,7 @@ void gen_enum(Config *config, FILE *fp, Enum *arg_enum) {
         char *id = (char *)array_get(arg_enum->values, i);
         out_enum_field("%s_%s", arg_enum->prefix, id);
     }
+    out_enum_field("_%s_SIZE", arg_enum->prefix);
     out_enum_end("%s", arg_enum->id);
     free(arg_enumupr);
 }
@@ -40,6 +41,7 @@ void gen_nodetype_enum(Config *config, FILE *fp) {
         out_enum_field(NT_ENUM_PREFIX "%s", nodesetlwr);
         free(nodesetlwr);
     }
+    out_enum_field("_" NT_ENUM_PREFIX "SIZE");
     out_enum_end(NT_ENUM_NAME);
 }
 
@@ -55,6 +57,7 @@ void gen_traversal_enum(Config *config, FILE *fp) {
     }
     out_enum_field(TRAV_ENUM_PREFIX "free");
     out_enum_field(TRAV_ENUM_PREFIX "copy");
+    out_enum_field("_" TRAV_ENUM_PREFIX "SIZE");
     out_enum_end(TRAV_ENUM_NAME);
 }
 

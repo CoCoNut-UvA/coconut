@@ -16,8 +16,6 @@ typedef struct NODE {
     union DATA data;
 } Node;
 
-typedef struct INFO Info;
-
 Node *node_init();
 
 #endif /* _CCN_AST_CORE_H_ */

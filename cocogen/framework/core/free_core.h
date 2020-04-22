@@ -1,27 +1,15 @@
 #ifndef _CCN_FREE_CORE_H_
 #define _CCN_FREE_CORE_H_
 
+#include "core/trav_core.h"
 #include "generated/free.h"
-#include "trav_core.h"
 
-typedef struct INFO {
-    Node *flag;
-    Node *assign;
-} Info;
+struct FREE_DATA;
+typedef struct FREE_DATA FreeData;
 
-#define INFO_FREE_FLAG(n) (n->flag)
-#define INFO_FREE_ASSIGN(n) (n->assign)
-
-#define FREETRAV(arg_node, arg_info)                                           \
-    (arg_node != NULL) ? traverse(arg_node, arg_info) : arg_node
-#define FREECOND(arg_node, arg_info)                                           \
-    (INFO_FREE_FLAG(arg_info) != arg_node) ? FREETRAV(arg_node, arg_info)      \
-                                           : (arg_node)
-
-static Info *free_make_info();
-static void free_info(Info *arg_info);
-void free_node(Node *syntaxtree);
-void free_tree(Node *syntaxtree);
+FreeData *free_init_data();
+void free_data(FreeData *arg_data);
+Node *free_node(Node *syntaxtree);
 void free_string(char *str);
 
 #endif /* __CCN_FREE_CORE_H_ */
