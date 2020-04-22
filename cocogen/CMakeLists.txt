@@ -15,7 +15,7 @@ target_include_directories(${PROJECT_NAME}
     PRIVATE ${CMAKE_CURRENT_LIST_DIR}
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE coconut::palm)
+target_link_libraries(${PROJECT_NAME} PRIVATE coconut::palm -fsanitize=address -fsanitize=undefined)
 
 if(DEFINED ${COCUNT_ENABLE_TESTING})
     add_subdirectory(tests)

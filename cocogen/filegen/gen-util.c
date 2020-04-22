@@ -88,7 +88,7 @@ char *get_attr_str(Config *config, Attr *attr) {
 }
 
 char *strupr(char *string) {
-    char *upper = malloc(strlen(string) * sizeof(char));
+    char *upper = malloc((strlen(string) + 1) * sizeof(char));
     strcpy(upper, string);
     for (int i = 0; i < strlen(upper); ++i) {
         upper[i] = toupper(upper[i]);
@@ -97,7 +97,7 @@ char *strupr(char *string) {
 }
 
 char *strlwr(char *string) {
-    char *lower = malloc(strlen(string) * sizeof(char));
+    char *lower = malloc((strlen(string) + 1) * sizeof(char));
     strcpy(lower, string);
     for (int i = 0; i < strlen(lower); ++i) {
         lower[i] = tolower(lower[i]);
