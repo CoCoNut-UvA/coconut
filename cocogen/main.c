@@ -14,6 +14,7 @@
 #include "filegen/gen-copy.h"
 #include "filegen/gen-enum.h"
 #include "filegen/gen-free.h"
+#include "filegen/gen-globaldata.h"
 #include "filegen/gen-trav-user.h"
 #include "filegen/gen-trav.h"
 
@@ -39,6 +40,8 @@ int main(int argc, char *argv[]) {
     filegen_init(config, false);
     filegen_dir("cocogen/framework/generated/");
     filegen_generate("enum.h", &gen_enum_header);
+    filegen_generate("globaldata.h", &gen_globaldata_header);
+    filegen_generate("globaldata.c", &gen_globaldata_src);
     filegen_generate("ast.h", &gen_ast_header);
     filegen_generate("ast.c", &gen_ast_src);
     filegen_generate("trav.h", &gen_trav_header);

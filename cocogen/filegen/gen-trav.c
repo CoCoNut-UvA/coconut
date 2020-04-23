@@ -141,19 +141,7 @@ void gen_trav_header(Config *config, FILE *fp) {
     out("#include \"generated/free.h\"\n");
     out("#include \"lib/array.h\"\n");
     out("\n");
-    out_field("extern void *globaldata[_TRAV_SIZE]");
-    for (int i = 0; i < array_size(config->traversals); i++) {
-        Traversal *trav = array_get(config->traversals, i);
-        char *travupr = strupr(trav->id);
-        char *travlwr = strlwr(trav->id);
-        out("#define GET_%s_DATA(item) ((%sData *)globaldata[TRAV_%s])->item\n",
-            travupr, trav->id, travlwr);
-        free(travlwr);
-        free(travupr);
-    }
-    out("\n");
     out_comment("Traversal functions");
-    out_field("void init_globaldata()");
     out_field("Node *traverse(Node *arg_node)");
     for (int i = 0; i < array_size(config->nodes); i++) {
         Node *node = array_get(config->nodes, i);
@@ -178,9 +166,6 @@ void gen_trav_header(Config *config, FILE *fp) {
         char *travlwr = strlwr(trav->id);
         char *travupr = strupr(trav->id);
         out_comment("Traversal %s", trav->id);
-        out_field("struct %s_DATA", travupr);
-        out_field("typedef struct %s_DATA %sData", travupr, trav->id);
-        out_field("%sData *%s_init_data()", trav->id, travlwr);
         out_field("Node *%s_start(Node* syntaxtree)", travlwr);
         for (int i = 0; i < array_size(trav->nodes); i++) {
             Node *node = array_get(trav->nodes, i);
@@ -323,25 +308,6 @@ static void gen_trav_node(Config *config, FILE *fp, Node *node) {
     free(nodelwr);
 }
 
-void gen_globaldata(Config *config, FILE *fp) {
-    out_start_func("void init_globaldata()");
-    for (int i = 0; i < array_size(config->traversals); i++) {
-        Traversal *trav = array_get(config->traversals, i);
-        char *travlwr = strlwr(trav->id);
-        out_field("%sData *%s_data = %s_init_data()", trav->id, travlwr,
-                  travlwr);
-        out_field("globaldata[TRAV_%s] = %s_data", travlwr, travlwr);
-        out("\n");
-        free(travlwr);
-    }
-    out_field("FreeData *free_data = free_init_data()");
-    out_field("globaldata[TRAV_free] = free_data");
-    out("\n");
-    out_field("CopyData *copy_data = copy_init_data()");
-    out_field("globaldata[TRAV_copy] = copy_data");
-    out_end_func();
-}
-
 void gen_trav_src(Config *config, FILE *fp) {
     compute_reachable_nodes(config);
 
@@ -365,5 +331,4 @@ void gen_trav_src(Config *config, FILE *fp) {
             gen_trav_nodeset(config, fp, node, child);
         }
     }
-    gen_globaldata(config, fp);
 }

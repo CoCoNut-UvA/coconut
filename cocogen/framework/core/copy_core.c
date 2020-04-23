@@ -4,6 +4,7 @@
 #include "core/ast_core.h"
 #include "core/copy_core.h"
 #include "core/trav_core.h"
+#include "generated/globaldata.h"
 #include "lib/memory.h"
 
 typedef struct COPY_DATA {

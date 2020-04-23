@@ -4,6 +4,7 @@
 #include "core/trav_core.h"
 #include "generated/ast.h"
 #include "generated/enum.h"
+#include "generated/globaldata.h"
 #include "lib/array.h"
 
 int main(int argc, char *argv[]) {

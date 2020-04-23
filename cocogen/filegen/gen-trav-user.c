@@ -14,6 +14,7 @@ void gen_trav_user(Config *config, FILE *fp, Traversal *trav) {
     char *travupr = strupr(trav->id);
     out("#include \"core/trav_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
+    out("#include \"generated/globaldata.h\"\n");
     out("\n");
     out_field("extern void *globaldata[_TRAV_SIZE]");
 
@@ -28,7 +29,7 @@ void gen_trav_user(Config *config, FILE *fp, Traversal *trav) {
     out_end_func();
 
     // Data destructor
-    out_start_func("void *%s_free_data(%sData *data)", travlwr, trav->id);
+    out_start_func("void %s_free_data(%sData *data)", travlwr, trav->id);
     out_field("mem_free(data)");
     out_end_func();
 

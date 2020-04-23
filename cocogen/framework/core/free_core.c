@@ -1,10 +1,10 @@
 #include <stdio.h>
 
+#include "core/free_core.h"
 #include "generated/ast.h"
+#include "generated/globaldata.h"
 #include "generated/trav.h"
 #include "lib/memory.h"
-
-#include "core/free_core.h"
 
 typedef struct FREE_DATA {
 } FreeData;
