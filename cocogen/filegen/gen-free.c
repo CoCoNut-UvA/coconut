@@ -13,7 +13,6 @@ void gen_free_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_FREE_H_\n");
     out("#define _CCN_FREE_H_\n\n");
     out("#include \"core/ast_core.h\"\n");
-    out("#include \"core/free_core.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = array_get(config->nodes, i);
@@ -68,8 +67,8 @@ void gen_free_func(Config *config, FILE *fp, Node *node) {
 void gen_free_src(Config *config, FILE *fp) {
     out("#include <stdlib.h>\n");
     out("\n");
-    out("#include \"free.h\"\n");
-    out("#include \"trav.h\"\n");
+    out("#include \"core/free_core.h\"\n");
+    out("#include \"core/trav_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {

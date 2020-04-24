@@ -1,9 +1,10 @@
 #include <stdio.h>
 
-#include "core/free_core.h"
+#include "core/ast_core.h"
 #include "core/trav_core.h"
-#include "generated/ast.h"
 #include "lib/memory.h"
+
+#include "core/free_core.h"
 
 struct TRAV_DATA {};
 

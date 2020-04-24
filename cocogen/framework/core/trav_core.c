@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-#include "generated/enum.h"
 #include "lib/memory.h"
 #include "lib/print.h"
 

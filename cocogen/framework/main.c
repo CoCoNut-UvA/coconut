@@ -1,6 +1,8 @@
 #include <stdio.h>
 
 #include "core/ast_core.h"
+#include "core/copy_core.h"
+#include "core/free_core.h"
 #include "core/trav_core.h"
 #include "generated/ast.h"
 #include "generated/enum.h"

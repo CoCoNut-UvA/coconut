@@ -1,7 +1,6 @@
 #ifndef _CCN_FREE_CORE_H_
 #define _CCN_FREE_CORE_H_
 
-#include "core/trav_core.h"
 #include "generated/free.h"
 
 Node *free_node(Node *syntaxtree);

@@ -136,10 +136,6 @@ void gen_trav_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_TRAV_H_\n");
     out("#define _CCN_TRAV_H_\n\n");
     out("#include \"core/ast_core.h\"\n");
-    out("#include \"core/trav_core.h\"\n");
-    out("#include \"generated/ast.h\"\n");
-    out("#include \"generated/free.h\"\n");
-    out("#include \"lib/array.h\"\n");
     out("\n");
     out_comment("Traversal functions");
     out_field("Node *traverse(Node *arg_node)");
@@ -259,11 +255,14 @@ static void gen_trav_node(Config *config, FILE *fp, Node *node) {
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
         char *travlwr = strlwr(trav->id);
-        out_begin_case(TRAV_FORMAT, travlwr);
         if (is_traversal_node(config, trav, node)) {
+            out_begin_case(TRAV_FORMAT, travlwr);
             out_field("arg_node = " TRAVERSAL_HANDLER_FORMAT "(arg_node)",
                       travlwr, nodelwr);
+            out_field("break");
+            out_end_case();
         } else {
+            bool madecase = false;
             for (int j = 0; j < array_size(node->children); j++) {
                 Child *child = array_get(node->children, j);
                 char *childlwr = strlwr(child->id);
@@ -273,6 +272,10 @@ static void gen_trav_node(Config *config, FILE *fp, Node *node) {
                 int *index = smap_retrieve(node_index, child->type);
                 bool is_pass_node = pass_nodes[i][*index];
                 if (is_pass_node) {
+                    if (!madecase) {
+                        out_begin_case(TRAV_FORMAT, travlwr);
+                        madecase = true;
+                    }
                     if (child->nodeset == NULL) {
                         out_field("arg_node = " TRAV_PREFIX
                                   "%s(%s_%s(arg_node))",
@@ -286,9 +289,11 @@ static void gen_trav_node(Config *config, FILE *fp, Node *node) {
                 free(childupr);
                 free(childlwr);
             }
+            if (madecase) {
+                out_field("break");
+                out_end_case();
+            }
         }
-        out_field("break");
-        out_end_case();
         free(travlwr);
     }
     out_begin_case(TRAV_FORMAT, "free");
@@ -315,11 +320,9 @@ void gen_trav_src(Config *config, FILE *fp) {
 
     out("#include <stdio.h>\n");
     out("\n");
-    out("#include \"lib/array.h\"\n");
-    out("#include \"generated/trav.h\"\n");
-    out("#include \"generated/enum.h\"\n");
     out("#include \"core/copy_core.h\"\n");
     out("#include \"core/free_core.h\"\n");
+    out("#include \"core/trav_core.h\"\n");
     out("\n");
     gen_trav_func(config, fp);
     for (int i = 0; i < array_size(config->nodes); i++) {

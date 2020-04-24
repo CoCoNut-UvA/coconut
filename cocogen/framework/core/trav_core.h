@@ -1,7 +1,6 @@
 #ifndef _CCN_TRAV_CORE_H_
 #define _CCN_TRAV_CORE_H_
 
-#include "generated/enum.h"
 #include "generated/trav.h"
 
 void trav_push(TraversalType trav, TraversalData *travfunc(void));
