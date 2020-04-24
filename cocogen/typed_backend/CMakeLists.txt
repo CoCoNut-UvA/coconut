@@ -1,0 +1,13 @@
+target_sources(${PROJECT_NAME}
+    PUBLIC
+        API.h
+    PRIVATE
+        gen-functions.h
+        gen-ast-definitions.c
+        gen-constructors.c
+        gen-destructors.c
+        gen-pass-header.c
+        gen-gate-header.c
+        gen-copy-functions.c
+        API.c
+)
