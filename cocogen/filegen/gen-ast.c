@@ -34,7 +34,7 @@ void gen_init_function(Config *config, FILE *fp, Node *node) {
 void gen_struct(Config *config, FILE *fp, Node *node) {
     char *nodeupr = strupr(node->id);
     out_comment("Node %s Attributes", node->id);
-    out_struct("DATA_%s", nodeupr);
+    out_struct("NODE_DATA_%s", nodeupr);
     out_comment("Children");
     for (int i = 0; i < array_size(node->children); ++i) {
         Child *child = (Child *)array_get(node->children, i);
@@ -52,12 +52,12 @@ void gen_struct(Config *config, FILE *fp, Node *node) {
 
 void gen_union(Config *config, FILE *fp) {
     out_comment("Attributes");
-    out_union("DATA");
+    out_union("NODE_DATA");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
         char *nodeupr = strupr(node->id);
         char *nodelwr = strlwr(node->id);
-        out_field("struct DATA_%s *N_%s", nodeupr, nodelwr);
+        out_field("struct NODE_DATA_%s *N_%s", nodeupr, nodelwr);
         free(nodeupr);
         free(nodelwr);
     }
@@ -132,8 +132,8 @@ void gen_node_constructor(Config *config, FILE *fp, Node *node) {
     gen_init_function(config, fp, node);
     out_start_func_field();
     out_field("Node *node = node_init()");
-    out_field("node->data.N_%s = mem_alloc(sizeof(struct DATA_%s))", nodelwr,
-              nodeupr);
+    out_field("node->data.N_%s = mem_alloc(sizeof(struct NODE_DATA_%s))",
+              nodelwr, nodeupr);
     out_field("NODE_TYPE(node) = " NT_ENUM_PREFIX "%s", nodelwr);
     gen_members(config, fp, node);
     // TODO: Checks here or in another file?

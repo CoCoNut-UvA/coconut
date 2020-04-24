@@ -11,7 +11,6 @@ target_sources(${PROJECT_NAME}
         gen-trav-user.h
         gen-free.h
         gen-copy.h
-        gen-globaldata.h
     PRIVATE
         util.c
         driver.c
@@ -22,5 +21,4 @@ target_sources(${PROJECT_NAME}
         gen-trav.c
         gen-free.c
         gen-copy.c
-        gen-globaldata.c
 )

@@ -2,29 +2,22 @@
 #include <string.h>
 
 #include "core/ast_core.h"
-#include "core/copy_core.h"
 #include "core/trav_core.h"
-#include "generated/globaldata.h"
 #include "lib/memory.h"
 
-typedef struct COPY_DATA {
-} CopyData;
+#include "core/copy_core.h"
 
-CopyData *copy_init_data() {
-    CopyData *result;
-    result = mem_alloc(sizeof(CopyData));
-    return result;
+struct TRAV_DATA {};
+
+TraversalData *copy_init_data() {
+    TraversalData *data = mem_alloc(sizeof(TraversalData));
+    return data;
 }
 
-void copy_free_data(CopyData *data) { mem_free(data); }
+void copy_free_data(TraversalData *data) { mem_free(data); }
 
-Node *copy_node(Node *syntaxtree) {
-    CopyData *arg_data = copy_init_data();
-    trav_push(TRAV_copy);
-    syntaxtree = traverse(syntaxtree);
-    trav_pop();
-    copy_free_data(arg_data);
-    return syntaxtree;
+Node *copy_node(Node *node) {
+    trav_start(node, TRAV_copy, &copy_init_data, &copy_free_data);
 }
 
 char *copy_string(char *str) {

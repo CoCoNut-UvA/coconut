@@ -4,5 +4,6 @@
 #include "generated/enum.h"
 
 typedef struct NODE Node;
+typedef struct TRAV_DATA TraversalData;
 
 #endif /* _CCN_TYPES_H_ */

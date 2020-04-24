@@ -14,34 +14,22 @@ void gen_trav_user(Config *config, FILE *fp, Traversal *trav) {
     char *travupr = strupr(trav->id);
     out("#include \"core/trav_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
-    out("#include \"generated/globaldata.h\"\n");
     out("\n");
-    out_field("extern void *globaldata[_TRAV_SIZE]");
-
-    // Data struct skeleton
-    out_struct("%s_DATA", travupr);
-    out_struct_end();
-
-    // Data constructor
-    out_start_func("%sData *%s_init_data()", trav->id, travlwr);
-    out_field("%sData *data = mem_alloc(sizeof(%sData))", trav->id, trav->id);
+    out_typedef_struct("TRAV_DATA");
+    out_comment("Define your data here");
+    out_typedef_struct_end("TraversalData");
+    out("\n");
+    out_start_func("TraversalData *%s_init_data()", travlwr);
+    out_field("TraversalData *data = mem_alloc(sizeof(TraversalData))");
+    out_comment("Initialise your data here");
     out_field("return data");
     out_end_func();
-
-    // Data destructor
-    out_start_func("void %s_free_data(%sData *data)", travlwr, trav->id);
+    out("\n");
+    out_start_func("void %s_free_data(TraversalData *data)", travlwr);
+    out_comment("Free your data here");
     out_field("mem_free(data)");
     out_end_func();
-
-    // Start function
-    out_start_func("Node *%s_start(Node* syntaxtree)", travlwr);
-    // out_field("%sData *arg_data = %s_init_data()", trav->id, travlwr);
-    out_field("trav_push(" TRAV_ENUM_PREFIX "%s)", travlwr);
-    out_field("syntaxtree = traverse(syntaxtree)");
-    out_field("trav_pop()");
-    out_field("return syntaxtree");
-    out_end_func();
-
+    out("\n");
     for (int i = 0; i < array_size(trav->nodes); i++) {
         Node *node = array_get(trav->nodes, i);
         char *nodelwr = strlwr(node->id);

@@ -1,26 +1,19 @@
 #include <stdio.h>
 
 #include "core/free_core.h"
+#include "core/trav_core.h"
 #include "generated/ast.h"
-#include "generated/globaldata.h"
-#include "generated/trav.h"
 #include "lib/memory.h"
 
-typedef struct FREE_DATA {
-} FreeData;
+struct TRAV_DATA {};
 
-FreeData *free_init_data() {
-    FreeData *result = mem_alloc(sizeof(FreeData));
-    return result;
+TraversalData *free_init_data() {
+    TraversalData *data = mem_alloc(sizeof(TraversalData));
+    return data;
 }
 
-void free_free_data(FreeData *data) { mem_free(data); }
+void free_free_data(TraversalData *data) { mem_free(data); }
 
-Node *free_node(Node *syntaxtree) {
-    FreeData *arg_data = free_init_data();
-    trav_push(TRAV_free);
-    syntaxtree = traverse(syntaxtree);
-    trav_pop();
-    free_free_data(arg_data);
-    return NULL;
+Node *free_node(Node *node) {
+    trav_start(node, TRAV_free, &free_init_data, &free_free_data);
 }

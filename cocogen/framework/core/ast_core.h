@@ -13,7 +13,7 @@ typedef struct NODE {
     int lineno;
     int colno;
     struct NODE *error;
-    union DATA data;
+    union NODE_DATA data;
 } Node;
 
 Node *node_init();

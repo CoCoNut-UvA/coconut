@@ -166,7 +166,9 @@ void gen_trav_header(Config *config, FILE *fp) {
         char *travlwr = strlwr(trav->id);
         char *travupr = strupr(trav->id);
         out_comment("Traversal %s", trav->id);
-        out_field("Node *%s_start(Node* syntaxtree)", travlwr);
+        out_field("TraversalData *%s_init_data()", travlwr);
+        out_field("void %s_free_data(TraversalData* data)", travlwr);
+        out_field("Node *%s_start(Node *syntaxtree)", travlwr);
         for (int i = 0; i < array_size(trav->nodes); i++) {
             Node *node = array_get(trav->nodes, i);
             char *nodelwr = strlwr(node->id);
