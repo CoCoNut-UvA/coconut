@@ -134,6 +134,7 @@ static void new_location(void *ptr, struct ParserLocation *loc);
 %token T_SUBPHASES "subphases"
 %token T_TO "to"
 %token T_TRAVERSAL "traversal"
+%token T_TRAVDATA "travdata"
 %token T_FLOAT "float"
 %token T_DOUBLE "double"
 %token T_STRING "string"
@@ -147,7 +148,7 @@ static void new_location(void *ptr, struct ParserLocation *loc);
 
 %type<string> info func prefix
 %type<array> idlist actionsbody actions lifetimelistwithvalues namespacelist
-             attrlist attrs childlist children enumvalues lifetimelist
+             travdata attrlist attrs childlist children enumvalues lifetimelist
 %type<attrval> attrval
 %type<attrtype> attrprimitivetype
 %type<attr> attr attrhead
@@ -346,59 +347,117 @@ pass: T_PASS T_ID '{' prefix ',' T_FUNC '=' T_ID '}'
 
 traversal: T_TRAVERSAL T_ID
          {
-             $$ = create_traversal($2, NULL, NULL, NULL);
+             $$ = create_traversal($2, NULL, NULL, NULL, NULL);
              new_location($$, &@$);
              new_location($2, &@2);
          }
          | T_TRAVERSAL T_ID '{' prefix ',' func '}'
          {
-             $$ = create_traversal($2, $6, $4, NULL);
+             $$ = create_traversal($2, $6, $4, NULL, NULL);
              new_location($$, &@$);
              new_location($2, &@2);
          }
          | T_TRAVERSAL T_ID '{' prefix ',' func ',' traversalnodes '}'
          {
-             $$ = create_traversal($2, $6, $4, $8);
+             $$ = create_traversal($2, $6, $4, $8, NULL);
              new_location($$, &@$);
              new_location($2, &@2);
          }
          | T_TRAVERSAL T_ID '{' prefix ',' traversalnodes '}'
          {
-             $$ = create_traversal($2, NULL, $4, $6);
+             $$ = create_traversal($2, NULL, $4, $6, NULL);
              new_location($$, &@$);
              new_location($2, &@2);
          }
          | T_TRAVERSAL T_ID '{' info ',' prefix '}'
          {
-             $$ = create_traversal($2, NULL, $6, NULL);
+             $$ = create_traversal($2, NULL, $6, NULL, NULL);
              $$->info = $4;
              new_location($$, &@$);
              new_location($2, &@2);
          }
          | T_TRAVERSAL T_ID '{' info ',' prefix ',' func '}'
          {
-             $$ = create_traversal($2, $8, $6, NULL);
+             $$ = create_traversal($2, $8, $6, NULL, NULL);
              $$->info = $4;
              new_location($$, &@$);
              new_location($2, &@2);
          }
          | T_TRAVERSAL T_ID '{' info ',' prefix ',' func ',' traversalnodes '}'
          {
-             $$ = create_traversal($2, $8, $6, $10);
+             $$ = create_traversal($2, $8, $6, $10, NULL);
              $$->info = $4;
              new_location($$, &@$);
              new_location($2, &@2);
          }
          | T_TRAVERSAL T_ID '{' info ',' prefix ',' traversalnodes '}'
          {
-             $$ = create_traversal($2, NULL, $6, $8);
+             $$ = create_traversal($2, NULL, $6, $8, NULL);
+             $$->info = $4;
+             new_location($$, &@$);
+             new_location($2, &@2);
+         }
+         | T_TRAVERSAL T_ID '{' travdata '}'
+         {
+             $$ = create_traversal($2, NULL, NULL, NULL, $4);
+             new_location($$, &@$);
+             new_location($2, &@2);
+         }
+         | T_TRAVERSAL T_ID '{' prefix ',' travdata '}'
+         {
+             $$ = create_traversal($2, NULL, $4, NULL, $6);
+             new_location($$, &@$);
+             new_location($2, &@2);
+         }
+         | T_TRAVERSAL T_ID '{' prefix ',' func ',' travdata '}'
+         {
+             $$ = create_traversal($2, $6, $4, NULL, $8);
+             new_location($$, &@$);
+             new_location($2, &@2);
+         }
+         | T_TRAVERSAL T_ID '{' prefix ',' func ',' traversalnodes ',' travdata '}'
+         {
+             $$ = create_traversal($2, $6, $4, $8, $10);
+             new_location($$, &@$);
+             new_location($2, &@2);
+         }
+         | T_TRAVERSAL T_ID '{' prefix ',' traversalnodes ',' travdata '}'
+         {
+             $$ = create_traversal($2, NULL, $4, $6, $8);
+             new_location($$, &@$);
+             new_location($2, &@2);
+         }
+         | T_TRAVERSAL T_ID '{' info ',' prefix ',' travdata '}'
+         {
+             $$ = create_traversal($2, NULL, $6, NULL, $8);
+             $$->info = $4;
+             new_location($$, &@$);
+             new_location($2, &@2);
+         }
+         | T_TRAVERSAL T_ID '{' info ',' prefix ',' func ',' travdata '}'
+         {
+             $$ = create_traversal($2, $8, $6, NULL, $10);
+             $$->info = $4;
+             new_location($$, &@$);
+             new_location($2, &@2);
+         }
+         | T_TRAVERSAL T_ID '{' info ',' prefix ',' func ',' traversalnodes ',' travdata '}'
+         {
+             $$ = create_traversal($2, $8, $6, $10, $12);
+             $$->info = $4;
+             new_location($$, &@$);
+             new_location($2, &@2);
+         }
+         | T_TRAVERSAL T_ID '{' info ',' prefix ',' traversalnodes ',' travdata '}'
+         {
+             $$ = create_traversal($2, NULL, $6, $8, $10);
              $$->info = $4;
              new_location($$, &@$);
              new_location($2, &@2);
          }
          | T_TRAVERSAL T_ID '=' setexpr
          {
-            $$ = create_traversal($2, NULL, NULL, $4);
+            $$ = create_traversal($2, NULL, NULL, $4, NULL);
             new_location($$, &@$);
             new_location($2, &@2);
          }
@@ -862,6 +921,9 @@ info: T_INFO '=' T_STRINGVAL
         new_location($3, &@3);
     }
 
+travdata: T_TRAVDATA '=' '{' attrlist '}'
+    { $$ = $4; }
+     ;
 %%
 
 static void new_location(void *ptr, struct ParserLocation *loc) {

@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "lib/array.h"
 #include <stdbool.h>
 #include <stdint.h>
@@ -10,11 +9,13 @@ Config *create_config(array *phases, array *passes, array *traversals,
 
 Pass *create_pass(char *id, char *func, char *prefix);
 
-Traversal *create_traversal(char *id, char *func, char *prefix, SetExpr *expr);
+Traversal *create_traversal(char *id, char *func, char *prefix, SetExpr *expr,
+                            array *data);
 
 Phase *create_phase_header(char *id, bool root, bool cycle);
 
-Phase *create_phase(Phase *phase_header, char *root, char *prefix, array *actions, char *gate);
+Phase *create_phase(Phase *phase_header, char *root, char *prefix,
+                    array *actions, char *gate);
 
 Enum *create_enum(char *id, char *prefix, array *values);
 
@@ -29,8 +30,7 @@ Node *create_node(char *id, Node *nodebody);
 
 Node *create_nodebody(array *children, array *attrs);
 
-Child *create_child(int construct, array *lifetimes,
-                    char *id, char *type);
+Child *create_child(int construct, array *lifetimes, char *id, char *type);
 
 MandatoryPhase *create_mandatory_singlephase(char *phase, int negation);
 
@@ -43,7 +43,8 @@ Range_spec_t *create_range_spec(bool inclusive, array *);
 Lifetime_t *create_lifetime(Range_spec_t *start, Range_spec_t *end,
                             enum LifetimeType type, array *values);
 
-Attr *create_attr(Attr *attrhead, AttrValue *default_value, int construct, array *lifetimes);
+Attr *create_attr(Attr *attrhead, AttrValue *default_value, int construct,
+                  array *lifetimes);
 
 Attr *create_attrhead_primitive(enum AttrType type, char *id);
 
