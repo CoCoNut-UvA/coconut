@@ -9,6 +9,7 @@ typedef struct CommandOptions {
     bool break_inspect_points;
     bool consistcheck;
     bool serialise;
+    bool gen_user_files;
     char *header_dir;
     char *source_dir;
     char *dot_dir;
@@ -16,7 +17,6 @@ typedef struct CommandOptions {
 } CommandOptions;
 
 extern CommandOptions global_command_options;
-
 
 void process_commandline_args(int argc, char *argv[]);
 void init_global_options();

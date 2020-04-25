@@ -136,6 +136,12 @@ void gen_trav_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_TRAV_H_\n");
     out("#define _CCN_TRAV_H_\n\n");
     out("#include \"core/ast_core.h\"\n");
+    for (int i = 0; i < array_size(config->traversals); i++) {
+        Traversal *trav = array_get(config->traversals, i);
+        char *travlwr = strlwr(trav->id);
+        out("#include \"user/trav_%s.h\"\n", travlwr);
+        free(travlwr);
+    }
     out("\n");
     out_comment("Traversal functions");
     out_field("Node *traverse(Node *arg_node)");
@@ -157,24 +163,6 @@ void gen_trav_header(Config *config, FILE *fp) {
         free(nodelwr);
     }
     out("\n");
-    for (int i = 0; i < array_size(config->traversals); i++) {
-        Traversal *trav = array_get(config->traversals, i);
-        char *travlwr = strlwr(trav->id);
-        char *travupr = strupr(trav->id);
-        out_comment("Traversal %s", trav->id);
-        out_field("TraversalData *%s_init_data()", travlwr);
-        out_field("void %s_free_data(TraversalData* data)", travlwr);
-        out_field("Node *%s_start(Node *syntaxtree)", travlwr);
-        for (int i = 0; i < array_size(trav->nodes); i++) {
-            Node *node = array_get(trav->nodes, i);
-            char *nodelwr = strlwr(node->id);
-            out_field("Node *%s_%s(Node *arg_node)", travlwr, nodelwr);
-            free(nodelwr);
-        }
-        out("\n");
-        free(travlwr);
-        free(travupr);
-    }
     out("#endif /* _CCN_TRAV_H_ */\n");
 }
 

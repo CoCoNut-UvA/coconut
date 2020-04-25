@@ -144,8 +144,8 @@ node FunDef {
         Symbol symbol { constructor }
     },
     attributes {
-        bool external { constructor },
-        bool export { constructor }
+        bool isexternal { constructor },
+        bool isexport { constructor }
     }
 };
 
@@ -183,7 +183,7 @@ node GlobalDef {
     attributes {
         BasicType type { constructor },
         string id { constructor },
-        bool export { constructor },
+        bool isexport { constructor },
         Symbol symbol = NULL
     }
 };
@@ -350,7 +350,7 @@ node Symbol {
     },
     attributes {
         bool external { constructor },
-        bool export { constructor },
+        bool isexport { constructor },
         string name { constructor },
         int scope { constructor },
         int offset { constructor }
@@ -362,7 +362,7 @@ node FunSymbol {
         FunSymbol next { constructor }
     },
     attributes {
-        bool export { constructor },
+        bool isexport { constructor },
         bool external { constructor },
         string name { constructor },
         string scopedname { constructor },

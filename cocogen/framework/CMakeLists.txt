@@ -7,6 +7,7 @@ add_executable(${PROJECT_NAME} main.c)
 
 add_subdirectory(core/)
 add_subdirectory(generated/)
+add_subdirectory(user/)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE coconut::palm -fsanitize=address -fsanitize=undefined)
 
