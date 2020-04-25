@@ -10,30 +10,6 @@
 
 static int indent = 0;
 
-// target_sources(${PROJECT_NAME}
-//     PUBLIC
-//         driver.h
-//         formatting.h
-//         genmacros.h
-//         util.h
-//         gen-ast.h
-//         gen-enum.h
-//         gen-util.h
-//         gen-trav.h
-//         gen-trav-user.h
-//         gen-free.h
-//         gen-copy.h
-//     PRIVATE
-//         util.c
-//         driver.c
-//         gen-ast.c
-//         gen-enum.c
-//         gen-util.c
-//         gen-trav-user.c
-//         gen-trav.c
-//         gen-free.c
-//         gen-copy.c
-// )
 void gen_trav_user_cmakelists(Config *config, FILE *fp) {
     out("target_sources(${PROJECT_NAME}\n");
     out("    PUBLIC\n");
