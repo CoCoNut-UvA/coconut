@@ -196,7 +196,6 @@ static void gen_trav_nodeset(Config *config, FILE *fp, Node *node,
     char *nodelwr = strlwr(node->id);
     char *nodeupr = strupr(node->id);
     char *childupr = strupr(child->id);
-    char *nodesetlwr = strlwr(nodeset->id);
 
     out_start_func("Node *" TRAV_PREFIX "%s_%s(Node *arg_node)", nodelwr,
                    childlwr);
@@ -226,7 +225,6 @@ static void gen_trav_nodeset(Config *config, FILE *fp, Node *node,
 
     free(nodeupr);
     free(childupr);
-    free(nodesetlwr);
     free(nodelwr);
     free(childlwr);
 }
@@ -239,7 +237,7 @@ static void gen_trav_node(Config *config, FILE *fp, Node *node) {
     out_begin_if("!arg_node");
     out_field("return arg_node");
     out_end_if();
-    out_begin_switch(TRAV_PREFIX "current()");
+    out_begin_switch(TRAV_PREFIX "type()");
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
         char *travlwr = strlwr(trav->id);

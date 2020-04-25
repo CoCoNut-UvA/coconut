@@ -47,6 +47,7 @@ int main(int argc, char *argv[]) {
     filegen_generate("free.c", &gen_free_src);
     filegen_generate("copy.h", &gen_copy_header);
     filegen_generate("copy.c", &gen_copy_src);
+
     if (global_command_options.gen_user_files) {
         filegen_dir("cocogen/framework/user/");
         filegen_generate("CMakeLists.txt", &gen_trav_user_cmakelists);

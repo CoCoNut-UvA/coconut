@@ -37,7 +37,7 @@
 #define NT_ENUM_NAME                "NodeType"
 
 // Name of the enum type containing all traversals
-#define TRAV_ENUM_NAME              "TraversalType"
+#define TRAV_ENUM_NAME              "TravType"
 
 // ******************** Prefix of enum type values ********************
 

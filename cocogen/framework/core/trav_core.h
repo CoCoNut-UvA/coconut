@@ -3,11 +3,15 @@
 
 #include "generated/trav.h"
 
-void trav_push(TraversalType trav, TraversalData *travfunc(void));
-void trav_pop(void free_data_func(TraversalData *));
-TraversalType trav_current(void);
-Node *trav_start(Node *syntaxtree, TraversalType trav,
-                 TraversalData *init_data_func(void),
-                 void free_data_func(TraversalData *));
+typedef struct TRAV_STACK TravStack;
+
+void trav_push(TravType trav, TravData *travfunc(void));
+void trav_pop(void free_data_func(TravData *));
+TravStack *trav_current(void);
+TravType trav_type(void);
+TravData *trav_data(void);
+Node *trav_start(Node *syntaxtree, TravType trav,
+                 TravData *init_data_func(void),
+                 void free_data_func(TravData *));
 
 #endif /* _CCN_TRAV_CORE_H_ */

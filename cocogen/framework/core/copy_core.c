@@ -9,12 +9,12 @@
 
 struct TRAV_DATA {};
 
-TraversalData *copy_init_data() {
-    TraversalData *data = mem_alloc(sizeof(TraversalData));
+TravData *copy_init_data() {
+    TravData *data = mem_alloc(sizeof(TravData));
     return data;
 }
 
-void copy_free_data(TraversalData *data) { mem_free(data); }
+void copy_free_data(TravData *data) { mem_free(data); }
 
 Node *copy_node(Node *node) {
     trav_start(node, TRAV_copy, &copy_init_data, &copy_free_data);
