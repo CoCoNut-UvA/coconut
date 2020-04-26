@@ -54,7 +54,8 @@ Phase *create_phase_header(char *id, bool start, bool cycle) {
     return p;
 }
 
-Phase *create_phase(Phase *phase_header, char *root, char *prefix, array *actions, char *gate_func) {
+Phase *create_phase(Phase *phase_header, char *root, char *prefix,
+                    array *actions, char *gate_func) {
 
     Phase *p = phase_header;
     p->root = root;
@@ -78,7 +79,8 @@ Pass *create_pass(char *id, char *func, char *prefix) {
     return p;
 }
 
-Traversal *create_traversal(char *id, char *func, char *prefix, SetExpr *expr) {
+Traversal *create_traversal(char *id, char *func, char *prefix, SetExpr *expr,
+                            array *data) {
 
     Traversal *t = mem_alloc(sizeof(Traversal));
     t->id = id;
@@ -86,6 +88,7 @@ Traversal *create_traversal(char *id, char *func, char *prefix, SetExpr *expr) {
     t->info = NULL;
     t->prefix = prefix;
     t->expr = expr;
+    t->data = data;
 
     t->common_info = create_commoninfo();
     return t;
@@ -219,10 +222,7 @@ Lifetime_t *create_lifetime(Range_spec_t *start, Range_spec_t *end,
     return lifetime;
 }
 
-
-
-Child *create_child(int construct, array *lifetimes,
-                    char *id, char *type) {
+Child *create_child(int construct, array *lifetimes, char *id, char *type) {
 
     Child *c = mem_alloc(sizeof(Child));
     c->construct = construct;
@@ -275,7 +275,8 @@ Action *create_action(enum ActionType type, void *action, char *id) {
     return _action;
 }
 
-Attr *create_attr(Attr *a, AttrValue *default_value, int construct, array *lifetimes) {
+Attr *create_attr(Attr *a, AttrValue *default_value, int construct,
+                  array *lifetimes) {
     a->default_value = default_value;
     a->construct = construct;
     a->lifetimes = lifetimes;
