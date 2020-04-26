@@ -279,6 +279,24 @@ typedef struct AttrValue {
     struct NodeCommonInfo *common_info;
 } AttrValue;
 
+typedef struct TravDataConstructor {
+    char *constructor;
+    array *arglist;
+    char *include;
+} TravDataConstructor;
+
+typedef struct TravData {
+    enum AttrType type;
+    char *type_id;
+    char *id;
+    union {
+        AttrValue *primitive_value;
+        TravDataConstructor *constructor;
+    } value;
+
+    struct NodeCommonInfo *common_info;
+} TravData;
+
 /**
  * @struct SetOperation
  * @brief The structure to store a set operation on two expressions.

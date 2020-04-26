@@ -63,3 +63,9 @@ AttrValue *create_attrval_float(float value);
 AttrValue *create_attrval_double(double value);
 
 AttrValue *create_attrval_id(char *id);
+
+TravData *create_travdata_primitive(enum AttrType type, char *id,
+                                    AttrValue *value);
+
+TravData *create_travdata_struct(char *type, char *id, char *constructor,
+                                 array *arglist, char *include);
