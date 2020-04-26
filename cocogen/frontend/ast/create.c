@@ -275,6 +275,37 @@ Action *create_action(enum ActionType type, void *action, char *id) {
     return _action;
 }
 
+TravData *create_travdata_primitive(enum AttrType type, char *id,
+                                    AttrValue *value) {
+
+    TravData *td = mem_alloc(sizeof(TravData));
+    td->type = type;
+    td->type_id = NULL;
+    td->id = id;
+    td->value.primitive_value = value;
+
+    td->common_info = create_commoninfo();
+    return td;
+}
+
+TravData *create_travdata_struct(char *type, char *id, char *constructor,
+                                 array *arglist, char *include) {
+
+    TravData *td = mem_alloc(sizeof(TravData));
+    td->type = AT_link_or_enum;
+    td->type_id = type;
+    td->id = id;
+
+    TravDataConstructor *tdc = mem_alloc(sizeof(TravDataConstructor));
+    tdc->arglist = arglist;
+    tdc->constructor = constructor;
+    tdc->include = include;
+    td->value.constructor = tdc;
+
+    td->common_info = create_commoninfo();
+    return td;
+}
+
 Attr *create_attr(Attr *a, AttrValue *default_value, int construct,
                   array *lifetimes) {
     a->default_value = default_value;

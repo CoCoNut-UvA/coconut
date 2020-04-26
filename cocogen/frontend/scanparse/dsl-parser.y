@@ -70,6 +70,7 @@ static void new_location(void *ptr, struct ParserLocation *loc);
     struct Phase *phase;
     struct Pass *pass;
     struct Traversal *traversal;
+    struct TravData *travdata;
     struct Enum *attr_enum;
     struct Nodeset *nodeset;
     struct SetExpr *setexpr;
@@ -148,7 +149,8 @@ static void new_location(void *ptr, struct ParserLocation *loc);
 
 %type<string> info func prefix
 %type<array> idlist actionsbody actions lifetimelistwithvalues namespacelist
-             travdata attrlist attrs childlist children enumvalues lifetimelist
+             travdata travdatalist attrlist attrs attrvallist
+             childlist children enumvalues lifetimelist
 %type<attrval> attrval
 %type<attrtype> attrprimitivetype
 %type<attr> attr attrhead
@@ -159,6 +161,7 @@ static void new_location(void *ptr, struct ParserLocation *loc);
 %type<phase> phase phaseheader
 %type<attr_enum> enum
 %type<traversal> traversal
+%type<travdata> travdataitem
 %type<config> root
 %type<setexpr> setexpr traversalnodes
 %type<setoperation> setoperation
@@ -896,6 +899,24 @@ attrval: T_STRINGVAL
        { $$ = NULL; }
        ;
 
+/* Comma seperated list of attrvalues. */
+attrvallist: attrvallist ',' attrval
+      {
+          array_append($1, $3);
+          $$ = $1;
+          // $$ is an array and should not be added to location list.
+          new_location($3, &@3);
+      }
+      | attrval
+      {
+          array *tmp = create_array();
+          array_append(tmp, $1);
+          $$ = tmp;
+          // $$ is an array and should not be added to location list.
+          new_location($1, &@1);
+      }
+      ;
+
 /* Comma seperated list of identifiers. */
 idlist: idlist ',' T_ID
       {
@@ -921,9 +942,40 @@ info: T_INFO '=' T_STRINGVAL
         new_location($3, &@3);
     }
 
-travdata: T_TRAVDATA '=' '{' attrlist '}'
+travdata: T_TRAVDATA '=' '{' travdatalist '}'
     { $$ = $4; }
      ;
+
+travdatalist: travdatalist ',' travdataitem
+        {
+            array_append($1, $3);
+            $$ = $1;
+            // $$ is an array and should not be in the locations list
+        }
+        | travdataitem
+        {
+            array *tmp = create_array();
+            array_append(tmp, $1);
+            $$ = tmp;
+            // $$ is an array and should not be in the locations list
+        }
+        ;
+
+travdataitem: T_ID T_ID '=' T_ID '(' attrvallist ')' '{' T_STRINGVAL '}'
+    {
+        $$ = create_travdata_struct($1, $2, $4, $6, $9);
+        new_location($$, &@$);
+        new_location($2, &@2);
+        new_location($4, &@4);
+        new_location($9, &@9);
+    }
+    | attrprimitivetype T_ID '=' attrval
+    {
+        $$ = create_travdata_primitive($1, $2, $4);
+        new_location($$, &@$);
+        new_location($2, &@2);
+    }
+    ;
 %%
 
 static void new_location(void *ptr, struct ParserLocation *loc) {

@@ -680,6 +680,45 @@ static int check_traversal(Traversal *traversal, struct Info *info) {
         }
     }
 
+    smap_t *td_name = smap_init(16);
+
+    if (traversal->data) {
+        for (int i = 0; i < array_size(traversal->data); i++) {
+            TravData *td = (TravData *)array_get(traversal->data, i);
+            TravData *orig_td;
+
+            if ((orig_td = smap_retrieve(td_name, td->id)) != NULL) {
+                print_error(
+                    td->id,
+                    "Duplicate name '%s' in atributes of traversal '%s'",
+                    td->id, traversal->id);
+                print_note(orig_td->id, "Previously declared here");
+                error = 1;
+            } else {
+                smap_insert(td_name, td->id, td);
+            }
+
+            if (td->type == AT_link_or_enum) {
+                Node *attr_node =
+                    (Node *)smap_retrieve(info->node_name, td->type_id);
+                Enum *attr_enum =
+                    (Enum *)smap_retrieve(info->enum_name, td->type_id);
+
+                if (attr_node) {
+                    td->type = AT_link;
+                } else if (attr_enum) {
+                    td->type = AT_enum;
+                } else {
+                    print_error(
+                        td->type_id,
+                        "Unknown type '%s' of attribute '%s' of traversal '%s'",
+                        td->type_id, td->id, traversal->id);
+                    error = 1;
+                }
+            }
+        }
+    }
+
     /// TODO: Something with cleaning the array? probably happens somewhere else
     // array_cleanup(traversal->nodes, NULL);
     // traversal->nodes = nodes_expanded;
