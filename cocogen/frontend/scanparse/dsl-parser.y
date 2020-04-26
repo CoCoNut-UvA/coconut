@@ -145,6 +145,7 @@ static void new_location(void *ptr, struct ParserLocation *loc);
 %token T_DISALLOWED "disallowed"
 %token T_GATE "gate"
 %token T_ARROW "->"
+%token T_UNSAFE "unsafe"
 %token END 0 "End-of-file (EOF)"
 
 %type<string> info func prefix
@@ -961,13 +962,13 @@ travdatalist: travdatalist ',' travdataitem
         }
         ;
 
-travdataitem: T_ID T_ID '=' T_ID '(' attrvallist ')' '{' T_STRINGVAL '}'
+travdataitem: T_UNSAFE T_ID T_ID '=' T_ID '(' attrvallist ')' '{' T_STRINGVAL '}'
     {
-        $$ = create_travdata_struct($1, $2, $4, $6, $9);
+        $$ = create_travdata_struct($2, $3, $5, $7, $10);
         new_location($$, &@$);
-        new_location($2, &@2);
-        new_location($4, &@4);
-        new_location($9, &@9);
+        new_location($3, &@2);
+        new_location($5, &@4);
+        new_location($10, &@9);
     }
     | attrprimitivetype T_ID '=' attrval
     {
