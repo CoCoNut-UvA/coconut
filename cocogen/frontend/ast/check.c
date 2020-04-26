@@ -697,25 +697,6 @@ static int check_traversal(Traversal *traversal, struct Info *info) {
             } else {
                 smap_insert(td_name, td->id, td);
             }
-
-            if (td->type == AT_link_or_enum) {
-                Node *attr_node =
-                    (Node *)smap_retrieve(info->node_name, td->type_id);
-                Enum *attr_enum =
-                    (Enum *)smap_retrieve(info->enum_name, td->type_id);
-
-                if (attr_node) {
-                    td->type = AT_link;
-                } else if (attr_enum) {
-                    td->type = AT_enum;
-                } else {
-                    print_error(
-                        td->type_id,
-                        "Unknown type '%s' of attribute '%s' of traversal '%s'",
-                        td->type_id, td->id, traversal->id);
-                    error = 1;
-                }
-            }
         }
     }
 
