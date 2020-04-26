@@ -680,39 +680,39 @@ static int check_traversal(Traversal *traversal, struct Info *info) {
         }
     }
 
-    smap_t *attr_name = smap_init(16);
+    smap_t *td_name = smap_init(16);
 
     if (traversal->data) {
         for (int i = 0; i < array_size(traversal->data); i++) {
-            Attr *attr = (Attr *)array_get(traversal->data, i);
-            Attr *orig_attr;
+            TravData *td = (TravData *)array_get(traversal->data, i);
+            TravData *orig_td;
 
-            if ((orig_attr = smap_retrieve(attr_name, attr->id)) != NULL) {
+            if ((orig_td = smap_retrieve(td_name, td->id)) != NULL) {
                 print_error(
-                    attr->id,
+                    td->id,
                     "Duplicate name '%s' in atributes of traversal '%s'",
-                    attr->id, traversal->id);
-                print_note(orig_attr->id, "Previously declared here");
+                    td->id, traversal->id);
+                print_note(orig_td->id, "Previously declared here");
                 error = 1;
             } else {
-                smap_insert(attr_name, attr->id, attr);
+                smap_insert(td_name, td->id, td);
             }
 
-            if (attr->type == AT_link_or_enum) {
+            if (td->type == AT_link_or_enum) {
                 Node *attr_node =
-                    (Node *)smap_retrieve(info->node_name, attr->type_id);
+                    (Node *)smap_retrieve(info->node_name, td->type_id);
                 Enum *attr_enum =
-                    (Enum *)smap_retrieve(info->enum_name, attr->type_id);
+                    (Enum *)smap_retrieve(info->enum_name, td->type_id);
 
                 if (attr_node) {
-                    attr->type = AT_link;
+                    td->type = AT_link;
                 } else if (attr_enum) {
-                    attr->type = AT_enum;
+                    td->type = AT_enum;
                 } else {
                     print_error(
-                        attr->type_id,
+                        td->type_id,
                         "Unknown type '%s' of attribute '%s' of traversal '%s'",
-                        attr->type_id, attr->id, traversal->id);
+                        td->type_id, td->id, traversal->id);
                     error = 1;
                 }
             }
