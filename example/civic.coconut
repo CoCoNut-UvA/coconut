@@ -70,7 +70,7 @@ traversal Print {
     prefix = PRT,
     travdata = {
         int test2 = 0,
-        smap_t testmap = smap_init(10) { "lib/smap.h" }
+        unsafe smap_t testmap = smap_init(10) { "lib/smap.h" }
     }
 };
 
