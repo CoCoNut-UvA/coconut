@@ -37,8 +37,8 @@ void gen_trav_user_header(Config *config, FILE *fp, Traversal *trav) {
     out("#include \"core/ast_core.h\"\n");
     out("\n");
     out_comment("Traversal %s", trav->id);
-    out_field("TravData *%s_init_data()", travlwr);
-    out_field("void %s_free_data(TravData *data)", travlwr);
+    out_field("Trav *trav_init_%s()", travlwr);
+    out_field("void trav_free_%s(Trav *trav)", travlwr);
     for (int i = 0; i < array_size(trav->nodes); i++) {
         Node *node = array_get(trav->nodes, i);
         char *nodelwr = strlwr(node->id);
@@ -51,24 +51,42 @@ void gen_trav_user_header(Config *config, FILE *fp, Traversal *trav) {
     free(travupr);
 }
 
+void gen_trav_constructor(Config *config, FILE *fp, Traversal *trav) {
+    char *travupr = strupr(trav->id);
+    char *travlwr = strlwr(trav->id);
+    out_start_func("Trav *trav_init_%s()", travlwr);
+    out_field("Trav *trav = trav_init()");
+    out_field("trav->travdata.TD_%s = mem_alloc(sizeof(struct TRAV_DATA_%s))",
+              travlwr, travupr);
+    out_comment("Define data here");
+    out_field("return trav");
+    out_end_func();
+    free(travupr);
+    free(travlwr);
+}
+
+void gen_trav_destructor(Config *config, FILE *fp, Traversal *trav) {
+    char *travlwr = strlwr(trav->id);
+    out_comment("%s", trav->id);
+    out_start_func("void trav_free_%s(Trav *trav)", travlwr);
+    out_comment("Free attributes here");
+    out_field("mem_free(trav->travdata.TD_%s)", travlwr);
+    out_field("mem_free(trav)");
+    out_end_func();
+    free(travlwr);
+}
+
 void gen_trav_user_src(Config *config, FILE *fp, Traversal *trav) {
     char *travlwr = strlwr(trav->id);
     char *travupr = strupr(trav->id);
+    out("#include \"user/trav_%s.h\"\n", travlwr);
     out("#include \"core/trav_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("\n");
-    out_typedef_struct("TRAV_DATA");
-    out_comment("Define your data here");
-    out_typedef_struct_end("TravData");
-    out_start_func("TravData *%s_init_data()", travlwr);
-    out_field("TravData *data = mem_alloc(sizeof(TravData))");
-    out_comment("Initialise your data here");
-    out_field("return data");
-    out_end_func();
-    out_start_func("void %s_free_data(TravData *data)", travlwr);
-    out_comment("Free your data here");
-    out_field("mem_free(data)");
-    out_end_func();
+    if (trav->data) {
+        gen_trav_constructor(config, fp, trav);
+        gen_trav_destructor(config, fp, trav);
+    }
     for (int i = 0; i < array_size(trav->nodes); i++) {
         Node *node = array_get(trav->nodes, i);
         char *nodelwr = strlwr(node->id);

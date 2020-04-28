@@ -12,11 +12,11 @@
  * with their respective "static" struct declaration, which is not what we want.
  * Instead, the resulting type should become "node *".
  */
-bool type_is_link(Config *config, Attr *attr) {
+bool type_is_link(Config *config, char *type_id) {
     bool islink = false;
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
-        if (strcmp(attr->type_id, node->id) == 0) {
+        if (strcmp(type_id, node->id) == 0) {
             islink = true;
             break;
         }
@@ -24,9 +24,9 @@ bool type_is_link(Config *config, Attr *attr) {
     return islink;
 }
 
-char *get_attr_str(Config *config, Attr *attr) {
+char *get_attr_str(Config *config, enum AttrType type, char *type_id) {
     char *type_str = NULL;
-    switch (attr->type) {
+    switch (type) {
     case AT_int:
         type_str = "int";
         break;
@@ -70,17 +70,17 @@ char *get_attr_str(Config *config, Attr *attr) {
         type_str = "char*";
         break;
     case AT_link_or_enum:
-        if (type_is_link(config, attr)) {
+        if (type_is_link(config, type_id)) {
             type_str = "Node*";
         } else {
-            type_str = attr->type_id;
+            type_str = type_id;
         }
         break;
     case AT_link:
         type_str = "Node*";
         break;
     case AT_enum:
-        type_str = attr->type_id;
+        type_str = type_id;
         break;
     }
 
