@@ -5,11 +5,12 @@
 #include "lib/memory.h"
 #include "lib/print.h"
 
-Trav *trav_init() {
+Trav *trav_init(void) {
     Trav *trav = (Trav *)mem_alloc(sizeof(Trav));
-    TRAV_TYPE(trav) = TRAV_NULL;
     return trav;
 }
+
+void trav_free(Trav *trav) { mem_free(trav); }
 
 void trav_push(TravType travtype, Trav *init_data_func(void)) {
     Trav *ts = init_data_func();
@@ -38,9 +39,3 @@ Node *trav_start(Node *syntaxtree, TravType trav, Trav *init_data_func(void),
     trav_pop(free_data_func);
     return syntaxtree;
 }
-
-Trav *noop_init(void) {
-    Trav *trav = trav_init();
-    return trav;
-}
-void noop_free(Trav *trav) { mem_free(trav); }

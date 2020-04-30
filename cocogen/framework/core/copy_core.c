@@ -8,7 +8,7 @@
 #include "core/copy_core.h"
 
 Node *copy_node(Node *node) {
-    trav_start(node, TRAV_copy, &noop_init, &noop_free);
+    trav_start(node, TRAV_copy, &trav_init, &trav_free);
 }
 
 char *copy_string(char *str) {

@@ -150,7 +150,7 @@ static void new_location(void *ptr, struct ParserLocation *loc);
 
 %type<string> info func prefix
 %type<array> idlist actionsbody actions lifetimelistwithvalues namespacelist
-             travdata travdatalist attrlist attrs attrvallist
+             travdata travdatalist attrlist attrs
              childlist children enumvalues lifetimelist
 %type<attrval> attrval
 %type<attrtype> attrprimitivetype
@@ -900,24 +900,6 @@ attrval: T_STRINGVAL
        { $$ = NULL; }
        ;
 
-/* Comma seperated list of attrvalues. */
-attrvallist: attrvallist ',' attrval
-      {
-          array_append($1, $3);
-          $$ = $1;
-          // $$ is an array and should not be added to location list.
-          new_location($3, &@3);
-      }
-      | attrval
-      {
-          array *tmp = create_array();
-          array_append(tmp, $1);
-          $$ = tmp;
-          // $$ is an array and should not be added to location list.
-          new_location($1, &@1);
-      }
-      ;
-
 /* Comma seperated list of identifiers. */
 idlist: idlist ',' T_ID
       {
@@ -962,17 +944,22 @@ travdatalist: travdatalist ',' travdataitem
         }
         ;
 
-travdataitem: T_UNSAFE T_ID T_ID '=' T_ID '(' attrvallist ')' '{' T_STRINGVAL '}'
+travdataitem: T_UNSAFE T_ID T_ID '{' T_STRINGVAL '}'
     {
-        $$ = create_travdata_struct($2, $3, $5, $7, $10);
+        $$ = create_travdata_struct($2, $3, $5);
         new_location($$, &@$);
         new_location($3, &@2);
-        new_location($5, &@4);
-        new_location($10, &@9);
+        new_location($5, &@5);
     }
     | attrprimitivetype T_ID '=' attrval
     {
         $$ = create_travdata_primitive($1, $2, $4);
+        new_location($$, &@$);
+        new_location($2, &@2);
+    }
+    | attrprimitivetype T_ID
+    {
+        $$ = create_travdata_primitive($1, $2, NULL);
         new_location($$, &@$);
         new_location($2, &@2);
     }

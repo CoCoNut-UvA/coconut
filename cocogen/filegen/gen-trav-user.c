@@ -67,7 +67,6 @@ void gen_trav_constructor(Config *config, FILE *fp, Traversal *trav) {
 
 void gen_trav_destructor(Config *config, FILE *fp, Traversal *trav) {
     char *travlwr = strlwr(trav->id);
-    out_comment("%s", trav->id);
     out_start_func("void trav_free_%s(Trav *trav)", travlwr);
     out_comment("Free attributes here");
     out_field("mem_free(trav->travdata.TD_%s)", travlwr);
