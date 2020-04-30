@@ -290,8 +290,10 @@ typedef struct TravData {
     char *type_id;
     char *id;
     union {
+        // Either an include file in case of a user defined type, or a primitive
+        // value
+        char *include;
         AttrValue *primitive_value;
-        TravDataConstructor *constructor;
     } value;
 
     struct NodeCommonInfo *common_info;
