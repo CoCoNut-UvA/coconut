@@ -38,7 +38,7 @@ void gen_free_func(Config *config, FILE *fp, Node *node) {
         } else if (attr->type == AT_link) {
             freefunc = "free_node";
         } else if (attr->type == AT_link_or_enum) {
-            if (type_is_link(config, attr)) {
+            if (type_is_link(config, attr->id)) {
                 freefunc = "free_node";
             } else {
                 freefunc = "mem_free";

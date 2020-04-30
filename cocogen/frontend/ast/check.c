@@ -680,6 +680,26 @@ static int check_traversal(Traversal *traversal, struct Info *info) {
         }
     }
 
+    smap_t *td_name = smap_init(16);
+
+    if (traversal->data) {
+        for (int i = 0; i < array_size(traversal->data); i++) {
+            TravData *td = (TravData *)array_get(traversal->data, i);
+            TravData *orig_td;
+
+            if ((orig_td = smap_retrieve(td_name, td->id)) != NULL) {
+                print_error(
+                    td->id,
+                    "Duplicate name '%s' in atributes of traversal '%s'",
+                    td->id, traversal->id);
+                print_note(orig_td->id, "Previously declared here");
+                error = 1;
+            } else {
+                smap_insert(td_name, td->id, td);
+            }
+        }
+    }
+
     /// TODO: Something with cleaning the array? probably happens somewhere else
     // array_cleanup(traversal->nodes, NULL);
     // traversal->nodes = nodes_expanded;

@@ -22,7 +22,7 @@ void gen_init_function(Config *config, FILE *fp, Node *node) {
     }
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
-        out("%s %s", get_attr_str(config, attr), attr->id);
+        out("%s %s", get_attr_str(config, attr->type, attr->type_id), attr->id);
         if (i != array_size(node->attrs) - 1) {
             out(", ");
         }
@@ -31,7 +31,7 @@ void gen_init_function(Config *config, FILE *fp, Node *node) {
     free(nodelwr);
 }
 
-void gen_struct(Config *config, FILE *fp, Node *node) {
+void gen_node_struct(Config *config, FILE *fp, Node *node) {
     char *nodeupr = strupr(node->id);
     out_comment("Node %s Attributes", node->id);
     out_struct("NODE_DATA_%s", nodeupr);
@@ -43,14 +43,14 @@ void gen_struct(Config *config, FILE *fp, Node *node) {
     out_comment("Attributes");
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
-        char *type_str = get_attr_str(config, attr);
+        char *type_str = get_attr_str(config, attr->type, attr->type_id);
         out_field("%s %s", type_str, attr->id);
     }
     out_struct_end();
     free(nodeupr);
 }
 
-void gen_union(Config *config, FILE *fp) {
+void gen_node_union(Config *config, FILE *fp) {
     out_comment("Attributes");
     out_union("NODE_DATA");
     for (int i = 0; i < array_size(config->nodes); ++i) {
@@ -64,7 +64,7 @@ void gen_union(Config *config, FILE *fp) {
     out_struct_end();
 }
 
-void gen_macros(Config *config, FILE *fp, Node *node) {
+void gen_node_macros(Config *config, FILE *fp, Node *node) {
     out_comment("Macros for Node %s", node->id);
     char *nodeupr = strupr(node->id);
     char *nodelwr = strlwr(node->id);
@@ -95,14 +95,13 @@ void gen_ast_header(Config *config, FILE *fp) {
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
-        gen_struct(config, fp, node);
+        gen_node_struct(config, fp, node);
     }
-    gen_union(config, fp);
+    gen_node_union(config, fp);
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
-        gen_macros(config, fp, node);
+        gen_node_macros(config, fp, node);
         out_comment("Constructor for Node %s", node->id);
-        out("extern ");
         gen_init_function(config, fp, node);
         out(";\n\n");
     }

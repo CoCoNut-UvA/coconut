@@ -5,43 +5,35 @@
 #include "lib/memory.h"
 #include "lib/print.h"
 
-// Stack of traversals, so that new traversals can be started inside other
-// traversals.
-struct TRAV_STACK {
-    struct TRAV_STACK *prev;
-    TravType travtype;
-    TravData *travdata;
-};
-
-static TravStack *current_traversal;
-
-void trav_push(TravType trav, TravData *init_data_func(void)) {
-    TravStack *new = (TravStack *)mem_alloc(sizeof(TravStack));
-    new->travdata = init_data_func();
-    new->travtype = trav;
-    new->prev = current_traversal;
-    current_traversal = new;
+Trav *trav_init(void) {
+    Trav *trav = (Trav *)mem_alloc(sizeof(Trav));
+    return trav;
 }
 
-void trav_pop(void free_data_func(TravData *)) {
+void trav_free(Trav *trav) { mem_free(trav); }
+
+void trav_push(TravType travtype, Trav *init_data_func(void)) {
+    Trav *ts = init_data_func();
+    ts->travtype = travtype;
+    ts->prev = current_traversal;
+    current_traversal = ts;
+}
+
+void trav_pop(void free_data_func(Trav *)) {
     if (current_traversal == NULL) {
         print_user_error("traversal-driver",
                          "Cannot pop of empty traversal stack.");
         return;
     }
-    TravStack *prev = current_traversal->prev;
-    free_data_func(current_traversal->travdata);
-    mem_free(current_traversal);
+    Trav *prev = current_traversal->prev;
+    free_data_func(current_traversal);
     current_traversal = prev;
 }
 
-TravStack *trav_current(void) { return current_traversal; }
-TravData *trav_data(void) { return current_traversal->travdata; }
-TravType trav_type(void) { return current_traversal->travtype; }
+Trav *trav_current(void) { return current_traversal; }
 
-Node *trav_start(Node *syntaxtree, TravType trav,
-                 TravData *init_data_func(void),
-                 void free_data_func(TravData *)) {
+Node *trav_start(Node *syntaxtree, TravType trav, Trav *init_data_func(void),
+                 void free_data_func(Trav *)) {
     trav_push(trav, init_data_func);
     syntaxtree = traverse(syntaxtree);
     trav_pop(free_data_func);
