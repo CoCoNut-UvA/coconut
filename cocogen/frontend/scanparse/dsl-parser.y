@@ -948,7 +948,8 @@ travdataitem: T_UNSAFE T_ID T_ID '{' T_STRINGVAL '}'
     {
         $$ = create_travdata_struct($2, $3, $5);
         new_location($$, &@$);
-        new_location($3, &@2);
+        new_location($2, &@2);
+        new_location($3, &@3);
         new_location($5, &@5);
     }
     | attrprimitivetype T_ID '=' attrval
