@@ -294,10 +294,7 @@ TravData *create_travdata_struct(char *type, char *id, char *include) {
     td->type = AT_link_or_enum;
     td->type_id = type;
     td->id = id;
-
-    TravDataConstructor *tdc = mem_alloc(sizeof(TravDataConstructor));
-    tdc->include = include;
-    td->value.constructor = tdc;
+    td->value.include = include;
 
     td->common_info = create_commoninfo();
     return td;
