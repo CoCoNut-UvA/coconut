@@ -288,8 +288,7 @@ TravData *create_travdata_primitive(enum AttrType type, char *id,
     return td;
 }
 
-TravData *create_travdata_struct(char *type, char *id, char *constructor,
-                                 array *arglist, char *include) {
+TravData *create_travdata_struct(char *type, char *id, char *include) {
 
     TravData *td = mem_alloc(sizeof(TravData));
     td->type = AT_link_or_enum;
@@ -297,8 +296,6 @@ TravData *create_travdata_struct(char *type, char *id, char *constructor,
     td->id = id;
 
     TravDataConstructor *tdc = mem_alloc(sizeof(TravDataConstructor));
-    tdc->arglist = arglist;
-    tdc->constructor = constructor;
     tdc->include = include;
     td->value.constructor = tdc;
 
