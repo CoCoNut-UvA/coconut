@@ -39,3 +39,14 @@ Node *trav_start(Node *syntaxtree, TravType trav, Trav *init_data_func(void),
     trav_pop(free_data_func);
     return syntaxtree;
 }
+
+Node *traverse(Node *arg_node) {
+    arg_node = trav_mat[TRAV_TYPE][NODE_TYPE(arg_node)](arg_node);
+    return arg_node;
+}
+
+Node *trav_noop(Node *arg_node) { return arg_node; }
+Node *trav_error(Node *arg_node) {
+    // do error handling here
+    return arg_node;
+}

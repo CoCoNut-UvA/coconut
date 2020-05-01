@@ -221,172 +221,154 @@ void gen_trav_header(Config *config, FILE *fp) {
         Traversal *trav = array_get(config->traversals, i);
         gen_trav_macros(config, fp, trav);
     }
-    out_comment("Traversal functions");
-    out_field("Node *traverse(Node *arg_node)");
-    for (int i = 0; i < array_size(config->nodes); i++) {
-        Node *node = array_get(config->nodes, i);
-        char *nodelwr = strlwr(node->id);
-        out_field("Node *" TRAV_PREFIX "%s(Node *arg_node)", nodelwr);
-        for (int i = 0; i < array_size(node->children); ++i) {
-            Child *child = (Child *)array_get(node->children, i);
-            if (child->node != NULL) {
-                continue;
-            }
-            char *childlwr = strlwr(child->id);
-
-            out_field("Node *" TRAV_PREFIX "%s_%s(Node *arg_node)", nodelwr,
-                      childlwr);
-            free(childlwr);
+    out("\n");
+    for (int j = 0; j < array_size(config->nodes); j++) {
+        Node *node = array_get(config->nodes, j);
+        if (!node->children) {
+            continue;
         }
+        char *nodelwr = strlwr(node->id);
+        out_field("Node *trav_%s(Node *arg_node)", nodelwr);
         free(nodelwr);
     }
-    out("\n");
-    for (int i = 0; i < array_size(config->traversals); i++) {
-        Traversal *trav = array_get(config->traversals, i);
-        char *travlwr = strlwr(trav->id);
-        if (trav->data) {
-            out_field("Trav *%s_init()", travlwr);
-            out_field("void %s_free(Trav *trav)", travlwr);
-        }
-        free(travlwr);
+    for (int j = 0; j < array_size(config->nodesets); j++) {
+        Nodeset *nodeset = array_get(config->nodesets, j);
+        char *nodesetlwr = strlwr(nodeset->id);
+        out_field("Node *trav_%s(Node *arg_node)", nodesetlwr);
+        free(nodesetlwr);
     }
     out("\n");
     out("#endif /* _CCN_TRAV_H_ */\n");
 }
 
-// Main Traversal Function
-static void gen_trav_func(Config *config, FILE *fp) {
-    out_start_func("Node *traverse(Node *arg_node)");
-    out_begin_if("!arg_node");
-    out_field("return arg_node");
-    out_end_if();
-    out_begin_switch("NODE_TYPE(arg_node)");
-    for (int i = 0; i < array_size(config->nodes); i++) {
-        Node *node = array_get(config->nodes, i);
-        char *nodelwr = strlwr(node->id);
-        out_begin_case(NT_FORMAT, nodelwr);
-        out_field("arg_node = " TRAV_PREFIX "%s(arg_node)", nodelwr);
-        out_field("break");
-        out_end_case();
-        free(nodelwr);
-    }
-    out_end_switch();
-    out_field("return arg_node");
-    out_end_func();
-}
-
-// Traversal function for nodesets
-static void gen_trav_nodeset(Config *config, FILE *fp, Node *node,
-                             Child *child) {
-    Nodeset *nodeset = child->nodeset;
-
-    char *childlwr = strlwr(child->id);
+void gen_trav_pass(Config *config, FILE *fp, Node *node) {
     char *nodelwr = strlwr(node->id);
     char *nodeupr = strupr(node->id);
-    char *childupr = strupr(child->id);
 
-    out_start_func("Node *" TRAV_PREFIX "%s_%s(Node *arg_node)", nodelwr,
-                   childlwr);
-    out_begin_if("!arg_node");
+    free(nodeupr);
+    free(nodelwr);
+}
+
+void gen_system_trav_array(Config *config, FILE *fp, char *trav) {
+    out("{");
+    out("&trav_error, ");
+    for (int j = 0; j < array_size(config->nodes); j++) {
+        Node *node = array_get(config->nodes, j);
+        char *nodelwr = strlwr(node->id);
+        out("&%s_%s, ", trav, nodelwr);
+        free(nodelwr);
+    }
+    for (int j = 0; j < array_size(config->nodesets); j++) {
+        Nodeset *nodeset = array_get(config->nodesets, j);
+        char *nodesetlwr = strlwr(nodeset->id);
+        out("&trav_%s, ", nodesetlwr);
+        free(nodesetlwr);
+    }
+    out("}, \n");
+}
+
+void gen_error_array(Config *config, FILE *fp) {
+    out("{");
+    out("&trav_error, ");
+    for (int j = 0; j < array_size(config->nodes); j++) {
+        Node *node = array_get(config->nodes, j);
+        out("&trav_error, ");
+    }
+    for (int j = 0; j < array_size(config->nodesets); j++) {
+        Nodeset *nodeset = array_get(config->nodesets, j);
+        out("&trav_error, ");
+    }
+    out("}, \n");
+}
+
+void gen_matrix(Config *config, FILE *fp) {
+    out("const trav_func trav_mat[_TRAV_SIZE][_NT_SIZE] = {");
+    gen_error_array(config, fp);
+    for (int i = 0; i < array_size(config->traversals); i++) {
+        out("{");
+        Traversal *trav = array_get(config->traversals, i);
+        char *travlwr = strlwr(trav->id);
+        out("&trav_error, ");
+        for (int j = 0; j < array_size(config->nodes); j++) {
+            Node *node = array_get(config->nodes, j);
+            char *nodelwr = strlwr(node->id);
+            if (is_traversal_node(config, trav, node)) {
+                out("&%s_%s, ", travlwr, nodelwr);
+            } else {
+                int *index = smap_retrieve(node_index, node->id);
+                bool is_pass_node = pass_nodes[i][*index];
+                if (is_pass_node) {
+                    out("&trav_%s, ", nodelwr);
+                } else {
+                    out("&trav_noop, ");
+                }
+            }
+            free(nodelwr);
+        }
+        for (int j = 0; j < array_size(config->nodesets); j++) {
+            Nodeset *nodeset = array_get(config->nodesets, j);
+            char *nodesetlwr = strlwr(nodeset->id);
+            int *index = smap_retrieve(node_index, nodeset->id);
+            bool is_pass_node = pass_nodes[i][*index];
+            if (is_pass_node) {
+                out("&trav_%s, ", nodesetlwr);
+            } else {
+                out("&trav_noop, ");
+            }
+            free(nodesetlwr);
+        }
+        free(travlwr);
+        out("},\n");
+    }
+    gen_system_trav_array(config, fp, "free");
+    gen_system_trav_array(config, fp, "copy");
+    out("};\n\n");
+}
+
+void gen_trav_node_func(Config *config, FILE *fp, Node *node) {
+    if (!node->children) {
+        return;
+    }
+    char *nodelwr = strlwr(node->id);
+    char *nodeupr = strupr(node->id);
+
+    out_start_func("Node *trav_%s(Node *arg_node)", nodelwr);
+    for (int i = 0; i < array_size(node->children); i++) {
+        Child *child = array_get(node->children, i);
+        char *childupr = strupr(child->id);
+        out_field("%s_%s(arg_node) = traverse(%s_%s(arg_node))", nodeupr,
+                  childupr, nodeupr, childupr);
+        free(childupr);
+    }
     out_field("return arg_node");
-    out_end_if();
+    out_end_func();
 
-    out_begin_if("!%s_%s(arg_node)", nodeupr, childupr);
-    out_field("return arg_node");
-    out_end_if();
+    free(nodelwr);
+    free(nodeupr);
+}
 
-    out_begin_switch("NODE_TYPE(%s_%s(arg_node))", nodeupr, childupr);
+void gen_trav_nodeset_func(Config *config, FILE *fp, Nodeset *nodeset) {
+    char *nodesetlwr = strlwr(nodeset->id);
+
+    out_start_func("Node *trav_%s(Node *arg_node)", nodesetlwr);
+    out_begin_switch("NODE_TYPE(arg_node)");
     for (int i = 0; i < array_size(nodeset->nodes); ++i) {
         Node *cnode = (Node *)array_get(nodeset->nodes, i);
+        if (!cnode->children) {
+            continue;
+        }
         char *cnodelwr = strlwr(cnode->id);
         out_begin_case(NT_FORMAT, cnodelwr);
-        out_field("arg_node = " TRAV_PREFIX "%s(%s_%s(arg_node))", cnodelwr,
-                  nodeupr, childupr);
+        out_field("arg_node = trav_%s(arg_node)", cnodelwr);
         out_field("break");
         out_end_case();
         free(cnodelwr);
     }
     out_end_switch();
     out_field("return arg_node");
-
     out_end_func();
 
-    free(nodeupr);
-    free(childupr);
-    free(nodelwr);
-    free(childlwr);
-}
-
-// Traversal function for nodes
-static void gen_trav_node(Config *config, FILE *fp, Node *node) {
-    char *nodelwr = strlwr(node->id);
-    char *nodeupr = strupr(node->id);
-    out_start_func("Node *" TRAV_PREFIX "%s(Node *arg_node)", nodelwr);
-    out_begin_if("!arg_node");
-    out_field("return arg_node");
-    out_end_if();
-    out_begin_switch("TRAV_TYPE");
-    for (int i = 0; i < array_size(config->traversals); i++) {
-        Traversal *trav = array_get(config->traversals, i);
-        char *travlwr = strlwr(trav->id);
-        if (is_traversal_node(config, trav, node)) {
-            out_begin_case(TRAV_FORMAT, travlwr);
-            out_field("arg_node = " TRAVERSAL_HANDLER_FORMAT "(arg_node)",
-                      travlwr, nodelwr);
-            out_field("break");
-            out_end_case();
-        } else {
-            bool madecase = false;
-            for (int j = 0; j < array_size(node->children); j++) {
-                Child *child = array_get(node->children, j);
-                char *childlwr = strlwr(child->id);
-                char *ctypelwr = strlwr(child->type);
-                char *childupr = strupr(child->id);
-
-                int *index = smap_retrieve(node_index, child->type);
-                bool is_pass_node = pass_nodes[i][*index];
-                if (is_pass_node) {
-                    if (!madecase) {
-                        out_begin_case(TRAV_FORMAT, travlwr);
-                        madecase = true;
-                    }
-                    if (child->nodeset == NULL) {
-                        out_field("arg_node = " TRAV_PREFIX
-                                  "%s(%s_%s(arg_node))",
-                                  ctypelwr, nodeupr, childupr);
-                    } else {
-                        out_field("arg_node = " TRAV_PREFIX "%s_%s(arg_node)",
-                                  nodelwr, childlwr);
-                    }
-                }
-                free(ctypelwr);
-                free(childupr);
-                free(childlwr);
-            }
-            if (madecase) {
-                out_field("break");
-                out_end_case();
-            }
-        }
-        free(travlwr);
-    }
-    out_begin_case(TRAV_FORMAT, "free");
-    out_field("arg_node = free_%s(arg_node)", nodelwr);
-    out_field("break");
-    out_end_case();
-    out_begin_case(TRAV_FORMAT, "copy");
-    out_field("arg_node = copy_%s(arg_node)", nodelwr);
-    out_field("break");
-    out_end_case();
-    out_begin_default_case();
-    out_field("break");
-    out_end_case();
-    out_end_switch();
-    out_field("return arg_node");
-    out_end_func();
-
-    free(nodeupr);
-    free(nodelwr);
+    free(nodesetlwr);
 }
 
 void gen_trav_src(Config *config, FILE *fp) {
@@ -405,16 +387,13 @@ void gen_trav_src(Config *config, FILE *fp) {
         free(travlwr);
     }
     out("\n");
-    gen_trav_func(config, fp);
-    for (int i = 0; i < array_size(config->nodes); i++) {
-        Node *node = array_get(config->nodes, i);
-        gen_trav_node(config, fp, node);
-        for (int i = 0; i < array_size(node->children); ++i) {
-            Child *child = (Child *)array_get(node->children, i);
-            if (child->node != NULL) {
-                continue;
-            }
-            gen_trav_nodeset(config, fp, node, child);
-        }
+    gen_matrix(config, fp);
+    for (int j = 0; j < array_size(config->nodes); j++) {
+        Node *node = array_get(config->nodes, j);
+        gen_trav_node_func(config, fp, node);
+    }
+    for (int j = 0; j < array_size(config->nodesets); j++) {
+        Nodeset *nodeset = array_get(config->nodesets, j);
+        gen_trav_nodeset_func(config, fp, nodeset);
     }
 }
