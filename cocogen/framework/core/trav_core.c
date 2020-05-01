@@ -41,6 +41,9 @@ Node *trav_start(Node *syntaxtree, TravType trav, Trav *init_data_func(void),
 }
 
 Node *traverse(Node *arg_node) {
+    if (!arg_node) {
+        return arg_node;
+    }
     arg_node = trav_mat[TRAV_TYPE][NODE_TYPE(arg_node)](arg_node);
     return arg_node;
 }

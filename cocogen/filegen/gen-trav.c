@@ -231,12 +231,6 @@ void gen_trav_header(Config *config, FILE *fp) {
         out_field("Node *trav_%s(Node *arg_node)", nodelwr);
         free(nodelwr);
     }
-    for (int j = 0; j < array_size(config->nodesets); j++) {
-        Nodeset *nodeset = array_get(config->nodesets, j);
-        char *nodesetlwr = strlwr(nodeset->id);
-        out_field("Node *trav_%s(Node *arg_node)", nodesetlwr);
-        free(nodesetlwr);
-    }
     out("\n");
     out("#endif /* _CCN_TRAV_H_ */\n");
 }
@@ -258,12 +252,6 @@ void gen_system_trav_array(Config *config, FILE *fp, char *trav) {
         out("&%s_%s, ", trav, nodelwr);
         free(nodelwr);
     }
-    for (int j = 0; j < array_size(config->nodesets); j++) {
-        Nodeset *nodeset = array_get(config->nodesets, j);
-        char *nodesetlwr = strlwr(nodeset->id);
-        out("&trav_%s, ", nodesetlwr);
-        free(nodesetlwr);
-    }
     out("}, \n");
 }
 
@@ -272,10 +260,6 @@ void gen_error_array(Config *config, FILE *fp) {
     out("&trav_error, ");
     for (int j = 0; j < array_size(config->nodes); j++) {
         Node *node = array_get(config->nodes, j);
-        out("&trav_error, ");
-    }
-    for (int j = 0; j < array_size(config->nodesets); j++) {
-        Nodeset *nodeset = array_get(config->nodesets, j);
         out("&trav_error, ");
     }
     out("}, \n");
@@ -304,18 +288,6 @@ void gen_matrix(Config *config, FILE *fp) {
                 }
             }
             free(nodelwr);
-        }
-        for (int j = 0; j < array_size(config->nodesets); j++) {
-            Nodeset *nodeset = array_get(config->nodesets, j);
-            char *nodesetlwr = strlwr(nodeset->id);
-            int *index = smap_retrieve(node_index, nodeset->id);
-            bool is_pass_node = pass_nodes[i][*index];
-            if (is_pass_node) {
-                out("&trav_%s, ", nodesetlwr);
-            } else {
-                out("&trav_noop, ");
-            }
-            free(nodesetlwr);
         }
         free(travlwr);
         out("},\n");
@@ -347,30 +319,6 @@ void gen_trav_node_func(Config *config, FILE *fp, Node *node) {
     free(nodeupr);
 }
 
-void gen_trav_nodeset_func(Config *config, FILE *fp, Nodeset *nodeset) {
-    char *nodesetlwr = strlwr(nodeset->id);
-
-    out_start_func("Node *trav_%s(Node *arg_node)", nodesetlwr);
-    out_begin_switch("NODE_TYPE(arg_node)");
-    for (int i = 0; i < array_size(nodeset->nodes); ++i) {
-        Node *cnode = (Node *)array_get(nodeset->nodes, i);
-        if (!cnode->children) {
-            continue;
-        }
-        char *cnodelwr = strlwr(cnode->id);
-        out_begin_case(NT_FORMAT, cnodelwr);
-        out_field("arg_node = trav_%s(arg_node)", cnodelwr);
-        out_field("break");
-        out_end_case();
-        free(cnodelwr);
-    }
-    out_end_switch();
-    out_field("return arg_node");
-    out_end_func();
-
-    free(nodesetlwr);
-}
-
 void gen_trav_src(Config *config, FILE *fp) {
     compute_reachable_nodes(config);
 
@@ -391,9 +339,5 @@ void gen_trav_src(Config *config, FILE *fp) {
     for (int j = 0; j < array_size(config->nodes); j++) {
         Node *node = array_get(config->nodes, j);
         gen_trav_node_func(config, fp, node);
-    }
-    for (int j = 0; j < array_size(config->nodesets); j++) {
-        Nodeset *nodeset = array_get(config->nodesets, j);
-        gen_trav_nodeset_func(config, fp, nodeset);
     }
 }
