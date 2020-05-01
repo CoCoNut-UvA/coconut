@@ -9,8 +9,8 @@ typedef struct TRAV {
     union TRAV_DATA travdata;
 } Trav;
 
-typedef Node *(*trav_func)(Node *);
-const trav_func trav_mat[_TRAV_SIZE][_NT_SIZE];
+typedef Node *(*TravFunc)(Node *);
+const TravFunc trav_mat[_TRAV_SIZE][_NT_SIZE];
 
 static Trav *current_traversal;
 

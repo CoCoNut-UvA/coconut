@@ -235,14 +235,6 @@ void gen_trav_header(Config *config, FILE *fp) {
     out("#endif /* _CCN_TRAV_H_ */\n");
 }
 
-void gen_trav_pass(Config *config, FILE *fp, Node *node) {
-    char *nodelwr = strlwr(node->id);
-    char *nodeupr = strupr(node->id);
-
-    free(nodeupr);
-    free(nodelwr);
-}
-
 void gen_system_trav_array(Config *config, FILE *fp, char *trav) {
     out("{");
     out("&trav_error, ");
@@ -259,14 +251,13 @@ void gen_error_array(Config *config, FILE *fp) {
     out("{");
     out("&trav_error, ");
     for (int j = 0; j < array_size(config->nodes); j++) {
-        Node *node = array_get(config->nodes, j);
         out("&trav_error, ");
     }
     out("}, \n");
 }
 
 void gen_matrix(Config *config, FILE *fp) {
-    out("const trav_func trav_mat[_TRAV_SIZE][_NT_SIZE] = {");
+    out("const TravFunc trav_mat[_TRAV_SIZE][_NT_SIZE] = {");
     gen_error_array(config, fp);
     for (int i = 0; i < array_size(config->traversals); i++) {
         out("{");
