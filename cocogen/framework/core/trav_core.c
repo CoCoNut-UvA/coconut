@@ -10,33 +10,44 @@ Trav *trav_init(void) {
     return trav;
 }
 
+Trav *trav_init_error(void) {
+    print_user_error("traversal-driver",
+                     "Trying to init data of unknown traversal.");
+    return NULL;
+}
+
+void trav_free_error(Trav *trav) {
+    (void)trav;
+    print_user_error("traversal-driver",
+                     "Trying to free data of unknown traversal.");
+}
+
 void trav_free(Trav *trav) { mem_free(trav); }
 
-void trav_push(TravType travtype, Trav *init_data_func(void)) {
-    Trav *ts = init_data_func();
+void trav_push(TravType travtype) {
+    Trav *ts = trav_data_init_array[travtype]();
     ts->travtype = travtype;
     ts->prev = current_traversal;
     current_traversal = ts;
 }
 
-void trav_pop(void free_data_func(Trav *)) {
+void trav_pop() {
     if (current_traversal == NULL) {
         print_user_error("traversal-driver",
                          "Cannot pop of empty traversal stack.");
         return;
     }
     Trav *prev = current_traversal->prev;
-    free_data_func(current_traversal);
+    trav_data_free_array[TRAV_TYPE](current_traversal);
     current_traversal = prev;
 }
 
 Trav *trav_current(void) { return current_traversal; }
 
-Node *trav_start(Node *syntaxtree, TravType trav, Trav *init_data_func(void),
-                 void free_data_func(Trav *)) {
-    trav_push(trav, init_data_func);
+Node *trav_start(Node *syntaxtree, TravType travtype) {
+    trav_push(travtype);
     syntaxtree = traverse(syntaxtree);
-    trav_pop(free_data_func);
+    trav_pop();
     return syntaxtree;
 }
 
@@ -50,6 +61,7 @@ Node *traverse(Node *arg_node) {
 
 Node *trav_noop(Node *arg_node) { return arg_node; }
 Node *trav_error(Node *arg_node) {
-    // do error handling here
+    print_user_error("traversal-driver",
+                     "Trying to traverse through node of unknown type.");
     return arg_node;
 }

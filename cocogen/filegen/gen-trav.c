@@ -288,6 +288,24 @@ void gen_matrix(Config *config, FILE *fp) {
     out("};\n\n");
 }
 
+void gen_travdata_arrays(Config *config, FILE *fp, char *version) {
+    char *verlwr = strlwr(version);
+    out("const %sFunc trav_data_%s_array[_TRAV_SIZE] = {", version, verlwr);
+    out("&trav_%s_error, ", verlwr);
+    for (int i = 0; i < array_size(config->traversals); i++) {
+        Traversal *trav = array_get(config->traversals, i);
+        char *travlwr = strlwr(trav->id);
+        if (trav->data) {
+            out("&trav_%s_%s, ", verlwr, travlwr);
+        } else {
+            out("&trav_%s, ", verlwr);
+        }
+        free(travlwr);
+    }
+    out("};\n\n");
+    free(verlwr);
+}
+
 void gen_trav_node_func(Config *config, FILE *fp, Node *node) {
     if (!node->children) {
         return;
@@ -327,6 +345,8 @@ void gen_trav_src(Config *config, FILE *fp) {
     }
     out("\n");
     gen_matrix(config, fp);
+    gen_travdata_arrays(config, fp, "Init");
+    gen_travdata_arrays(config, fp, "Free");
     for (int j = 0; j < array_size(config->nodes); j++) {
         Node *node = array_get(config->nodes, j);
         gen_trav_node_func(config, fp, node);

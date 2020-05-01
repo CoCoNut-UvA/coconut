@@ -6,6 +6,4 @@
 
 #include "core/free_core.h"
 
-Node *free_node(Node *node) {
-    trav_start(node, TRAV_free, &trav_init, &trav_free);
-}
+Node *free_node(Node *node) { trav_start(node, TRAV_free); }
