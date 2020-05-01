@@ -8,6 +8,7 @@
 #include "filegen/formatting.h"
 #include "filegen/gen-util.h"
 #include "filegen/genmacros.h"
+#include "lib/print.h"
 #include "lib/smap.h"
 
 static int indent = 0;
@@ -29,7 +30,6 @@ static void compute_reachable_nodes(Config *config) {
     node_index = smap_init(32);
 
     size_t num_nodes = array_size(config->nodes);
-    size_t num_nodesets = array_size(config->nodesets);
 
     // Add nodes to node_index map
     for (int i = 0; i < num_nodes; i++) {
@@ -39,22 +39,13 @@ static void compute_reachable_nodes(Config *config) {
         smap_insert(node_index, node->id, index);
     }
 
-    for (int i = 0; i < num_nodesets; i++) {
-        Nodeset *nodeset = array_get(config->nodesets, i);
-        int *index = mem_alloc(sizeof(int));
-        *index = i + num_nodes;
-        smap_insert(node_index, nodeset->id, index);
-    }
-
     // Allocate node reachability matrix
 
-    size_t num_total = num_nodes + num_nodesets;
+    node_reachability = mem_alloc(sizeof(bool *) * num_nodes);
 
-    node_reachability = mem_alloc(sizeof(bool *) * num_total);
-
-    for (int i = 0; i < num_total; i++) {
-        node_reachability[i] = mem_alloc(sizeof(bool) * num_total);
-        memset(node_reachability[i], 0, sizeof(bool) * num_total);
+    for (int i = 0; i < num_nodes; i++) {
+        node_reachability[i] = mem_alloc(sizeof(bool) * num_nodes);
+        memset(node_reachability[i], 0, sizeof(bool) * num_nodes);
     }
 
     // Initialise reachability matrix with adjacency matrix
@@ -64,26 +55,27 @@ static void compute_reachable_nodes(Config *config) {
 
         for (int j = 0; j < array_size(node->children); j++) {
             Child *child = array_get(node->children, j);
-
-            int *index = smap_retrieve(node_index, child->type);
-            node_reachability[*index][i] = true;
-        }
-    }
-
-    for (int i = 0; i < num_nodesets; i++) {
-        Nodeset *nodeset = array_get(config->nodesets, i);
-
-        for (int j = 0; j < array_size(nodeset->nodes); j++) {
-            Node *node = array_get(nodeset->nodes, j);
-            int *index = smap_retrieve(node_index, node->id);
-            node_reachability[*index][num_nodes + i] = true;
+            if (!child->node) {
+                for (int k = 0; k < array_size(child->nodeset->nodes); k++) {
+                    Node *nodesetnode = array_get(child->nodeset->nodes, k);
+                    int *index = smap_retrieve(node_index, nodesetnode->id);
+                    node_reachability[*index][i] = true;
+                }
+            } else if (!child->nodeset) {
+                int *index = smap_retrieve(node_index, child->type);
+                node_reachability[*index][i] = true;
+            } else {
+                print_user_error(
+                    "traversal-driver",
+                    "Child is somehow neither a node or a nodeset.")
+            }
         }
     }
 
     // Compute reachability of nodes using the Floyd-Warshall algorithm
-    for (int k = 0; k < num_total; k++) {
-        for (int i = 0; i < num_total; i++) {
-            for (int j = 0; j < num_total; j++) {
+    for (int k = 0; k < num_nodes; k++) {
+        for (int i = 0; i < num_nodes; i++) {
+            for (int j = 0; j < num_nodes; j++) {
 
                 if (node_reachability[k][i] && node_reachability[j][k])
                     node_reachability[j][i] = true;
@@ -100,15 +92,15 @@ static void compute_reachable_nodes(Config *config) {
     for (int i = 0; i < num_traversals; i++) {
         Traversal *trav = array_get(config->traversals, i);
 
-        pass_nodes[i] = mem_alloc(sizeof(bool) * num_total);
+        pass_nodes[i] = mem_alloc(sizeof(bool) * num_nodes);
 
         // Traversal handles all nodes
         if (trav->nodes == NULL) {
-            for (int j = 0; j < num_total; j++) {
+            for (int j = 0; j < num_nodes; j++) {
                 pass_nodes[i][j] = true;
             }
         } else {
-            memset(pass_nodes[i], 0, sizeof(bool) * num_total);
+            memset(pass_nodes[i], 0, sizeof(bool) * num_nodes);
 
             for (int j = 0; j < array_size(trav->nodes); j++) {
                 Node *trav_node = array_get(trav->nodes, j);
@@ -122,7 +114,7 @@ static void compute_reachable_nodes(Config *config) {
                 pass_nodes[i][*index] = true;
 
                 // Add the nodes in reach_node
-                for (int k = 0; k < num_total; k++) {
+                for (int k = 0; k < num_nodes; k++) {
                     if (reach_nodes[k])
                         pass_nodes[i][k] = true;
                 }
