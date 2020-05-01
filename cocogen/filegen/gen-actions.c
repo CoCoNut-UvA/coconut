@@ -40,19 +40,6 @@ void gen_handle_pass(Config *config, FILE *fp, Pass *pass) {
     }
 }
 
-void gen_handle_traversal(Config *config, FILE *fp, Traversal *trav) {
-    char *travlwr = strlwr(trav->id);
-    if (trav->data) {
-        out_field("trav_start(root, TRAV_%s, &trav_init_%s, &trav_init_%s)",
-                  travlwr, travlwr, travlwr);
-    } else {
-        out_field("trav_start(root, TRAV_%s, &trav_init, &trav_init)", travlwr);
-    }
-    free(travlwr);
-}
-
-void gen_call_phase_func(Config *config, FILE *fp, Phase *phase) {}
-
 void gen_handle_phase(Config *config, FILE *fp, Phase *phase) {
     for (int i = 0; i < array_size(phase->actions); i++) {
         Action *action = array_get(phase->actions, i);
@@ -73,8 +60,11 @@ void gen_handle_phase(Config *config, FILE *fp, Phase *phase) {
             }
             free(phaselwr);
             break;
-        case ACTION_TRAVERSAL:
-            gen_handle_traversal(config, fp, action->action);
+        case ACTION_TRAVERSAL:;
+            Traversal *action_trav = (Traversal *)action->action;
+            char *travlwr = strlwr(action_trav->id);
+            out_field("trav_start(root, TRAV_%s)", travlwr);
+            free(travlwr);
             break;
         case ACTION_REFERENCE:
             // TODO: What is this?

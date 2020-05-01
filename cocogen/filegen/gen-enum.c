@@ -34,15 +34,23 @@ void gen_nodetype_enum(Config *config, FILE *fp) {
         out_enum_field(NT_ENUM_PREFIX "%s", nodelwr);
         free(nodelwr);
     }
+    out_enum_field("_" NT_ENUM_PREFIX "SIZE");
+    out_enum_end(NT_ENUM_NAME);
+}
+
+void gen_nodeset_enum(Config *config, FILE *fp) {
+    out_comment("Enum NodeSetType");
+    out_enum("NODESETTYPE");
+    out_enum_field(NS_ENUM_PREFIX "NULL");
     out_comment("Nodesets");
     for (int i = 0; i < array_size(config->nodesets); ++i) {
         Nodeset *nodeset = (Nodeset *)array_get(config->nodesets, i);
         char *nodesetlwr = strlwr(nodeset->id);
-        out_enum_field(NT_ENUM_PREFIX "%s", nodesetlwr);
+        out_enum_field(NS_ENUM_PREFIX "%s", nodesetlwr);
         free(nodesetlwr);
     }
-    out_enum_field("_" NT_ENUM_PREFIX "SIZE");
-    out_enum_end(NT_ENUM_NAME);
+    out_enum_field("_" NS_ENUM_PREFIX "SIZE");
+    out_enum_end(NS_ENUM_NAME);
 }
 
 void gen_traversal_enum(Config *config, FILE *fp) {
@@ -65,6 +73,7 @@ void gen_enum_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_ENUM_H_\n");
     out("#define _CCN_ENUM_H_\n\n");
     gen_nodetype_enum(config, fp);
+    gen_nodeset_enum(config, fp);
     gen_traversal_enum(config, fp);
     for (int i = 0; i < array_size(config->enums); ++i) {
         Enum *arg_enum = (Enum *)array_get(config->enums, i);

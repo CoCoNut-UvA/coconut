@@ -33,8 +33,11 @@
 
 // ******************** Names of enum types ********************
 
-// Name of the enum type containing all nodes and nodesets
+// Name of the enum type containing all nodes
 #define NT_ENUM_NAME                "NodeType"
+
+// Name of the enum type containing all nodesets
+#define NS_ENUM_NAME                "NodeSetType"
 
 // Name of the enum type containing all traversals
 #define TRAV_ENUM_NAME              "TravType"
