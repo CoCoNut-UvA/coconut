@@ -121,6 +121,7 @@ static inline void check_c_keyword(const char *);
 "subphases"     { LEX_KEYWORD(T_SUBPHASES);}
 "to"            { LEX_KEYWORD(T_TO);}
 "traversal"     { LEX_KEYWORD(T_TRAVERSAL);}
+"travdata"      { LEX_KEYWORD(T_TRAVDATA);}
 "values"        { LEX_KEYWORD(T_VALUES) ; }
 "info"          { LEX_KEYWORD(T_INFO) ; }
 "func"          { LEX_KEYWORD(T_FUNC) ; }
@@ -146,6 +147,7 @@ static inline void check_c_keyword(const char *);
 "false"         { LEX_KEYWORD(T_FALSE);}
 "true"          { LEX_KEYWORD(T_TRUE);}
 "gate"          { LEX_KEYWORD(T_GATE);}
+"unsafe"        { LEX_KEYWORD(T_UNSAFE);}
 
 "NULL"          { return T_NULL;}
 

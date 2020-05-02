@@ -65,7 +65,14 @@ enum BinOpEnum {
 
 pass Test;
 
-traversal Print;
+traversal Print {
+    prefix = PRT,
+    travdata = {
+        int test2 = 0,
+        unsafe smap_t testmap { "lib/smap.h" }
+    }
+};
+
 traversal ByteCode = {BinOp, FunDef};
 
 traversal RenameFor {

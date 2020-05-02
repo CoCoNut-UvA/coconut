@@ -44,7 +44,7 @@ void array_cleanup(struct array *a, void free_func(void *)) {
 
 // TODO: make conditional a contract.
 int array_set(struct array *a, int index, void *p) {
-    if (index >= a->size)
+    if (index >= a->capacity)
         return -1;
 
     a->data[index] = p;
