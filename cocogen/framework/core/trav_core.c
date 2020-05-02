@@ -55,6 +55,18 @@ Node *traverse(Node *arg_node) {
     if (!arg_node) {
         return arg_node;
     }
+    return trav_node(arg_node);
+}
+
+Node *trav_mandatory(Node *arg_node) {
+    if (!arg_node) {
+        print_user_error("traversal-driver", "Mandatory subtree is NULL");
+        return arg_node;
+    }
+    return trav_node(arg_node);
+}
+
+Node *trav_node(Node *arg_node) {
     arg_node = trav_mat[TRAV_TYPE][NODE_TYPE(arg_node)](arg_node);
     return arg_node;
 }

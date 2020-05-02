@@ -67,7 +67,7 @@ static void compute_reachable_nodes(Config *config) {
             } else {
                 print_user_error(
                     "traversal-driver",
-                    "Child is somehow neither a node or a nodeset.")
+                    "Child is somehow neither a node or a nodeset.");
             }
         }
     }
