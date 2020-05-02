@@ -1,38 +1,45 @@
 set(COCONUT_ROOT_DIR ${CMAKE_CURRENT_LIST_DIR})
 
-if(NOT DEFINED ${COCONUT_INSTALL_DIR})
-    set(COCONUT_INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-endif()
-
 if(NOT DEFINED ${COCONUT_BUILD_DIR})
-    set(COCONUT_BUILD_DIR ${COCONUT_ROOT_DIR}/build)
+    set(COCONUT_BUILD_DIR "${COCONUT_ROOT_DIR}/build")
 endif()
 
-include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
-ExternalProject_Add(coconut
-    SOURCE_DIR ${COCONUT_ROOT_DIR}
-    BINARY_DIR ${COCONUT_BUILD_DIR}
-    CMAKE_ARGS
-        -DCMAKE_INSTALL_PREFIX:PATH=${COCONUT_INSTALL_DIR}
-    CMAKE_GENERATOR "Unix Makefiles"
-)
-
-
-macro(coconut_generate DSL_FILE)
-    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${DSL_FILE}")
-    message("*********************** GENERATING WITH COCOGEN ***********************")
-    execute_process(COMMAND ${COCONUT_INSTALL_DIR}/bin/cocogen "${DSL_FILE}"
-        RESULT_VARIABLE COCOGEN_RET
-        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-        INPUT_FILE "${IN_FILE}"
-        OUTPUT_VARIABLE COCONUT_GENERATED_FILES
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    if(${COCOGEN_RET})
-        message(${MESSAGE})
-        message(FATAL_ERROR ">>>> ERROR: COULD NOT GENERATE FILES, STOPPING...")
-    endif()
-    set(COCONUT_GENERATED_INCLUDE_DIR ${CMAKE_BINARY_DIR}/coconut-generated)
-endmacro()
+if(NOT DEFINED ${COCOGEN_DIR})
+    set(COCOGEN_DIR "${COCONUT_BUILD_DIR}/cocogen")
+endif()
 
 add_subdirectory(${COCONUT_ROOT_DIR}/palm ${CMAKE_CURRENT_BINARY_DIR}/palm)
+
+function(cocogen_do_generate DSL_FILE)
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${DSL_FILE}")
+    if (NOT EXISTS "${COCOGEN_DIR}/cocogen")
+        message(FATAL_ERROR "Could not find the cocogen executable in path: ${COCOGEN_DIR}
+Maybe you forgot building the coconut project?")
+    endif()
+
+    message(STATUS "Generating with cocogen
+    ") # Forces newline
+    execute_process(COMMAND "${COCOGEN_DIR}/cocogen" "${DSL_FILE}"
+        RESULT_VARIABLE COCOGEN_RET
+        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+        INPUT_FILE "${DSL_FILE}"
+    )
+    if(${COCOGEN_RET})
+        message(FATAL_ERROR "cocogen generation failed, stopping CMake.")
+    endif()
+endfunction()
+
+# IF people want control over interfaces of src and includes.
+macro(coconut_generate DSL_FILE)
+    cocogen_do_generate("${DSL_FILE}")
+    set(COCONUT_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/generated/include/ ${COCONUT_ROOT_DIR}/copra/)
+    file(GLOB COCONUT_SOURCES ${CMAKE_BINARY_DIR}/generated/source/*.c ${COCONUT_ROOT_DIR}/copra/*.c)
+endmacro()
+
+function(coconut_target_generate TARGET DSL_FILE)
+    cocogen_do_generate("${DSL_FILE}")
+    file(GLOB COCONUT_SOURCES ${CMAKE_BINARY_DIR}/generated/source/*.c ${COCONUT_ROOT_DIR}/copra/*.c)
+    target_sources("${TARGET}" PRIVATE "${COCONUT_SOURCES}")
+    target_include_directories("${TARGET}" PRIVATE ${CMAKE_BINARY_DIR}/generated/include/ ${COCONUT_ROOT_DIR}/copra/)
+    target_link_libraries("${TARGET}" PRIVATE coconut::palm)
+endfunction()
