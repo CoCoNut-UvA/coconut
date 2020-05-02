@@ -9,5 +9,10 @@ target_sources(${PROJECT_NAME}
         gen-pass-header.c
         gen-gate-header.c
         gen-copy-functions.c
+        gen-user-trav-header.c
+        gen-trav-functions.c
+        gen-trav-core-functions.c
+        gen-action-handling.c
+        gen-subtree-functions.c
         API.c
 )
