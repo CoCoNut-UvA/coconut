@@ -51,6 +51,10 @@ static void generate_stack_functions(FILE *fp, bool header) {
         out("    return current_traversal->current;\n");
         out("}\n\n");
     }
+
+    if (header) {
+        out("void trav_start(void *node, TraversalType travtype, NodeType nodetype);\n");
+    }
 }
 
 void generate_trav_core_header(Config *config, FILE *fp) {
@@ -68,6 +72,56 @@ void generate_trav_core_header(Config *config, FILE *fp) {
     out("void *node_replacement;\n");
 
     generate_stack_functions(fp, true);
+
+    for (size_t i = 0; i < array_size(config->nodes); i++) {
+        Node *n = array_get(config->nodes, i);
+        out("extern %s *_" TRAV_PREFIX "%s(struct %s*, struct Info*);\n", n->id, n->id, n->id);
+    }
+}
+
+static void generate_info_funcs_table(Config *config, FILE *fp) {
+    out("static Info *(*info_create_funcs[%ld])(void) =\n", array_size(config->traversals));
+    out("{\n");
+    for(size_t i = 0; i < array_size(config->traversals); i++) {
+        Traversal *trav = array_get(config->traversals, i);
+        out("%s_createinfo,\n", trav->id);
+    }
+    out("};\n\n");
+
+    out("static void (*info_free_funcs[%ld])(Info *) =\n", array_size(config->traversals));
+    out("{\n");
+    for(size_t i = 0; i < array_size(config->traversals); i++) {
+        Traversal *trav = array_get(config->traversals, i);
+        out("%s_freeinfo,\n", trav->id);
+    }
+    out("};\n\n");
+
+
+}
+
+void generate_trav_start(Config *config, FILE *fp) {
+    int indent = 0;
+    out_start_func("void trav_start(void *node, TraversalType travtype, NodeType nodetype)");
+    {
+        out_statement("void *info");
+        out_statement("trav_push(travtype)");
+        out_statement("info = (*info_create_funcs[travtype])()");
+        out_statement("(*trav_node_funcs[nodetype])(node, info)");
+        out_statement("(*info_free_funcs[travtype])(info)");
+        out_statement("trav_pop()");
+    }
+    out_end_func();
+
+}
+
+void generate_node_trav_table(Config *config, FILE *fp) {
+    out("static void *(*trav_node_funcs[%ld])() =\n", array_size(config->nodes));
+    out("{\n");
+    for (size_t i = 0; i < array_size(config->nodes); i++) {
+        Node *n = array_get(config->nodes, i);
+        out("(void *(*)())_" TRAV_PREFIX "%s,\n", n->id);
+    }
+    out("};\n\n");
 }
 
 void generate_trav_core_definitions(Config *config, FILE *fp) {
@@ -85,4 +139,7 @@ void generate_trav_core_definitions(Config *config, FILE *fp) {
     out("void *node_replacement;\n");
 
     generate_stack_functions(fp, false);
+    generate_info_funcs_table(config, fp);
+    generate_node_trav_table(config, fp);
 }
+
