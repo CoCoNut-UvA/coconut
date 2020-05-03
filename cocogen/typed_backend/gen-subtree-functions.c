@@ -19,10 +19,10 @@
 #include "lib/set.h"
 #include "lib/str.h"
 #include "lib/set_implementations.h"
-#include "cocogen/ast.h"
-#include "cocogen/create-ast.h"
-#include "cocogen/filegen-util.h"
-#include "cocogen/filegen-driver.h"
+#include "ast/ast.h"
+#include "ast/create.h"
+#include "filegen/util.h"
+#include "filegen/driver.h"
 
 
 static inline void generate_include(char *filename, FILE *fp) {
@@ -153,7 +153,7 @@ void subtree_generate_find_traversal(Phase *phase, char *root, Node *original_ro
     array *literal = create_array();
     array_append(literal, strdup(root));
     SetExpr *expr = create_set_expr(SET_LITERAL, literal);
-    Traversal *trav = create_traversal(trav_name, NULL, ccn_str_cpy("CCN"), expr);
+    Traversal *trav = create_traversal(trav_name, NULL, ccn_str_cpy("CCN"), expr, NULL);
     array_append(config->traversals, trav);
     subtree_generate_set_handler(root, funcs, config);
     subtree_generate_find_traversal_body(trav_name, root, config);
@@ -232,7 +232,7 @@ static void require_phase_root(Phase *phase, char *root, ccn_set_t *generated, C
 
         fp = get_fp(source, "a");
         out("\n");
-        generate_phase_body(phase, fp, root, false);
+        //generate_phase_body(phase, fp, root, false);
         out("\n");
         fclose(fp);
     }
