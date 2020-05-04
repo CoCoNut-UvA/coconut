@@ -294,6 +294,8 @@ void gen_travdata_arrays(Config *config, FILE *fp, char *version) {
         }
         free(travlwr);
     }
+    out("&trav_%s, ", verlwr); // Free
+    out("&trav_%s, ", verlwr); // Copy
     out("};\n\n");
     free(verlwr);
 }
@@ -318,6 +320,14 @@ void gen_trav_node_func(Config *config, FILE *fp, Node *node) {
 
     free(nodelwr);
     free(nodeupr);
+}
+
+void lifetimes(Config *config, FILE *fp) {
+    for (int i = 0; i < array_size(config->nodes); i++) {
+        Node *node = array_get(config->nodes, i);
+        for (int j = 0; j < array_size(node->lifetimes); j++) {
+        }
+    }
 }
 
 void gen_trav_src(Config *config, FILE *fp) {
