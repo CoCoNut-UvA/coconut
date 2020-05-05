@@ -7,6 +7,7 @@
 #include "filegen/gen-trav-user.h"
 #include "filegen/gen-util.h"
 #include "filegen/genmacros.h"
+#include "filegen/reachability-matrix.h"
 
 static int indent = 0;
 
@@ -16,6 +17,7 @@ void gen_trav_user_header(Config *config, FILE *fp, Traversal *trav) {
     out("#ifndef _CCN_TRAV_%s_H_\n", travupr);
     out("#define _CCN_TRAV_%s_H_\n\n", travupr);
     out("#include \"core/ast_core.h\"\n");
+    out("#include \"core/trav_core.h\"\n");
     out("\n");
     out_comment("Traversal %s", trav->id);
     out_field("Trav *trav_init_%s()", travlwr);
@@ -26,6 +28,8 @@ void gen_trav_user_header(Config *config, FILE *fp, Traversal *trav) {
         out_field("Node *%s_%s(Node *arg_node)", travlwr, nodelwr);
         free(nodelwr);
     }
+    out("\n");
+    out("extern TravFunc vtable_%s[_NT_SIZE];", travlwr);
     out("\n");
     out("#endif /* _CCN_TRAV_%s_H_ */\n", travupr);
     free(travlwr);
@@ -59,7 +63,7 @@ void gen_trav_destructor(Config *config, FILE *fp, Traversal *trav) {
 void gen_trav_user_src(Config *config, FILE *fp, Traversal *trav) {
     char *travlwr = strlwr(trav->id);
     char *travupr = strupr(trav->id);
-    out("#include \"user/trav_%s.h\"\n", travlwr);
+    out("#include \"generated/trav_%s.h\"\n", travlwr);
     out("#include \"core/trav_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("\n");

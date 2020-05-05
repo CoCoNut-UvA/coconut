@@ -13,6 +13,7 @@ target_sources(${PROJECT_NAME}
         gen-copy.h
         gen-actions.h
         gen-cmakelists.h
+        reachability-matrix.h
     PRIVATE
         util.c
         driver.c
@@ -25,4 +26,5 @@ target_sources(${PROJECT_NAME}
         gen-copy.c
         gen-actions.c
         gen-cmakelists.c
+        reachability-matrix.c
 )

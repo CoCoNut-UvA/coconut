@@ -33,14 +33,11 @@ void gen_init_function(Config *config, FILE *fp, Node *node) {
 
 void gen_node_struct(Config *config, FILE *fp, Node *node) {
     char *nodeupr = strupr(node->id);
-    out_comment("Node %s Attributes", node->id);
     out_struct("NODE_DATA_%s", nodeupr);
-    out_comment("Children");
     for (int i = 0; i < array_size(node->children); ++i) {
         Child *child = (Child *)array_get(node->children, i);
         out_field("Node *%s", child->id);
     }
-    out_comment("Attributes");
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
         char *type_str = get_attr_str(config, attr->type, attr->type_id);
@@ -65,7 +62,6 @@ void gen_node_union(Config *config, FILE *fp) {
 }
 
 void gen_node_macros(Config *config, FILE *fp, Node *node) {
-    out_comment("Macros for Node %s", node->id);
     char *nodeupr = strupr(node->id);
     char *nodelwr = strlwr(node->id);
     for (int i = 0; i < array_size(node->children); ++i) {
@@ -100,11 +96,15 @@ void gen_ast_header(Config *config, FILE *fp) {
     gen_node_union(config, fp);
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
-        gen_node_macros(config, fp, node);
-        out_comment("Constructor for Node %s", node->id);
         gen_init_function(config, fp, node);
-        out(";\n\n");
+        out(";\n");
     }
+    out("\n");
+    for (int i = 0; i < array_size(config->nodes); ++i) {
+        Node *node = (Node *)array_get(config->nodes, i);
+        gen_node_macros(config, fp, node);
+    }
+    out("\n");
     out("#endif /* _CCN_AST_H_ */\n");
 }
 
@@ -133,6 +133,11 @@ void gen_node_constructor(Config *config, FILE *fp, Node *node) {
     out_field("Node *node = node_init()");
     out_field("node->data.N_%s = mem_alloc(sizeof(struct NODE_DATA_%s))",
               nodelwr, nodeupr);
+    if (node->children) {
+        out_field("node->trav_func = &trav_%s", nodelwr);
+    } else {
+        out_field("node->trav_func = &trav_noop");
+    }
     out_field("NODE_TYPE(node) = " NT_ENUM_PREFIX "%s", nodelwr);
     gen_members(config, fp, node);
     // TODO: Checks here or in another file?
@@ -146,6 +151,7 @@ void gen_ast_src(Config *config, FILE *fp) {
     out("#include <stdlib.h>\n");
     out("\n");
     out("#include \"core/ast_core.h\"\n");
+    out("#include \"core/trav_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {

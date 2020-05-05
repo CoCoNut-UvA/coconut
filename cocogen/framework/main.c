@@ -4,7 +4,7 @@
 #include "core/copy_core.h"
 #include "core/free_core.h"
 #include "core/trav_core.h"
-#include "user/trav_print.h"
+#include "generated/trav_print.h"
 
 int main(int argc, char *argv[]) {
     Node *left = node_init_intconst(4);

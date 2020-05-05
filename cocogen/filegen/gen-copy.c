@@ -67,10 +67,22 @@ void gen_init_arguments(Config *config, FILE *fp, Node *node) {
     }
 }
 
+void gen_copy_vtable(Config *config, FILE *fp) {
+    out("TravFunc vtable_copy[_NT_SIZE] = { &trav_error, ");
+    for (int j = 0; j < array_size(config->nodes); j++) {
+        Node *node = array_get(config->nodes, j);
+        char *nodelwr = strlwr(node->id);
+        out("&copy_%s, ", nodelwr);
+        free(nodelwr);
+    }
+    out(" };\n\n");
+}
+
 void gen_copy_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_COPY_H_\n");
     out("#define _CCN_COPY_H_\n\n");
     out("#include \"core/ast_core.h\"\n");
+    out("#include \"core/trav_core.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = array_get(config->nodes, i);
@@ -78,6 +90,8 @@ void gen_copy_header(Config *config, FILE *fp) {
         out("extern Node *copy_%s(Node *arg_node);\n", nodelwr);
         free(nodelwr);
     }
+    out("\n");
+    out("extern TravFunc vtable_copy[_NT_SIZE];");
     out("\n");
     out("#endif /* _CCN_COPY_H_ */\n");
 }
@@ -133,4 +147,5 @@ void gen_copy_src(Config *config, FILE *fp) {
         Node *node = array_get(config->nodes, i);
         gen_copy_func(config, fp, node);
     }
+    gen_copy_vtable(config, fp);
 }

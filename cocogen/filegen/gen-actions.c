@@ -80,7 +80,7 @@ void gen_actions_src(Config *config, FILE *fp) {
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
         char *travlwr = strlwr(trav->id);
-        out("#include \"user/trav_%s.h\"\n", travlwr);
+        out("#include \"generated/trav_%s.h\"\n", travlwr);
         free(travlwr);
     }
     out("\n");

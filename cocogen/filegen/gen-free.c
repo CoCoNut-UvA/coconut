@@ -9,17 +9,31 @@
 
 static int indent = 0;
 
+void gen_free_vtable(Config *config, FILE *fp) {
+    out("TravFunc vtable_free[_NT_SIZE] = { &trav_error, ");
+    for (int j = 0; j < array_size(config->nodes); j++) {
+        Node *node = array_get(config->nodes, j);
+        char *nodelwr = strlwr(node->id);
+        out("&free_%s, ", nodelwr);
+        free(nodelwr);
+    }
+    out(" };\n\n");
+}
+
 void gen_free_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_FREE_H_\n");
     out("#define _CCN_FREE_H_\n\n");
     out("#include \"core/ast_core.h\"\n");
+    out("#include \"core/trav_core.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = array_get(config->nodes, i);
         char *nodelwr = strlwr(node->id);
-        out("extern Node *free_%s(Node *arg_node);\n", nodelwr);
+        out_field("Node *free_%s(Node *arg_node)", nodelwr);
         free(nodelwr);
     }
+    out("\n");
+    out("extern TravFunc vtable_free[_NT_SIZE];");
     out("\n");
     out("#endif /* _CCN_FREE_H_ */\n");
 }
@@ -75,4 +89,5 @@ void gen_free_src(Config *config, FILE *fp) {
         Node *node = array_get(config->nodes, i);
         gen_free_func(config, fp, node);
     }
+    gen_free_vtable(config, fp);
 }

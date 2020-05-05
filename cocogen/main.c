@@ -18,6 +18,7 @@
 #include "filegen/gen-free.h"
 #include "filegen/gen-trav-user.h"
 #include "filegen/gen-trav.h"
+#include "filegen/reachability-matrix.h"
 
 // Defined in the parser.
 extern struct Config *parseDSL(FILE *fp);
@@ -37,10 +38,9 @@ int main(int argc, char *argv[]) {
     if (check_config(config)) {
         exit_compile_error();
     }
-
+    compute_reachable_nodes(config);
     filegen_init(config, false);
     filegen_dir("cocogen/framework/generated/");
-    filegen_generate("CMakeLists.txt", &gen_generated_cmakelists);
     filegen_generate("enum.h", &gen_enum_header);
     filegen_generate("ast.h", &gen_ast_header);
     filegen_generate("ast.c", &gen_ast_src);
@@ -53,9 +53,10 @@ int main(int argc, char *argv[]) {
     filegen_generate("actions.h", &gen_actions_header);
     filegen_generate("actions.c", &gen_actions_src);
     filegen_all_traversals("trav_%s.h", &gen_trav_user_header);
+    filegen_generate("CMakeLists.txt", &gen_generated_cmakelists);
     if (global_command_options.gen_user_files) {
         filegen_dir("cocogen/framework/user/");
-        filegen_generate("CMakeLists.txt", &gen_user_cmakelists);
         filegen_all_traversals("trav_%s.c", &gen_trav_user_src);
+        filegen_generate("CMakeLists.txt", &gen_user_cmakelists);
     }
 }
