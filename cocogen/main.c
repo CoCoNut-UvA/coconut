@@ -12,6 +12,7 @@
 #include "filegen/driver.h"
 #include "filegen/gen-actions.h"
 #include "filegen/gen-ast.h"
+#include "filegen/gen-cmakelists.h"
 #include "filegen/gen-copy.h"
 #include "filegen/gen-enum.h"
 #include "filegen/gen-free.h"
@@ -39,6 +40,7 @@ int main(int argc, char *argv[]) {
 
     filegen_init(config, false);
     filegen_dir("cocogen/framework/generated/");
+    filegen_generate("CMakeLists.txt", &gen_generated_cmakelists);
     filegen_generate("enum.h", &gen_enum_header);
     filegen_generate("ast.h", &gen_ast_header);
     filegen_generate("ast.c", &gen_ast_src);
@@ -50,11 +52,10 @@ int main(int argc, char *argv[]) {
     filegen_generate("copy.c", &gen_copy_src);
     filegen_generate("actions.h", &gen_actions_header);
     filegen_generate("actions.c", &gen_actions_src);
-
+    filegen_all_traversals("trav_%s.h", &gen_trav_user_header);
     if (global_command_options.gen_user_files) {
         filegen_dir("cocogen/framework/user/");
-        filegen_generate("CMakeLists.txt", &gen_trav_user_cmakelists);
-        filegen_all_traversals("trav_%s.h", &gen_trav_user_header);
+        filegen_generate("CMakeLists.txt", &gen_user_cmakelists);
         filegen_all_traversals("trav_%s.c", &gen_trav_user_src);
     }
 }

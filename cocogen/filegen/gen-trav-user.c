@@ -10,25 +10,6 @@
 
 static int indent = 0;
 
-void gen_trav_user_cmakelists(Config *config, FILE *fp) {
-    out("target_sources(${PROJECT_NAME}\n");
-    out("    PUBLIC\n");
-    for (int i = 0; i < array_size(config->traversals); i++) {
-        Traversal *trav = array_get(config->traversals, i);
-        char *travlwr = strlwr(trav->id);
-        out("        trav_%s.h\n", travlwr);
-        free(travlwr);
-    }
-    out("    PRIVATE\n");
-    for (int i = 0; i < array_size(config->traversals); i++) {
-        Traversal *trav = array_get(config->traversals, i);
-        char *travlwr = strlwr(trav->id);
-        out("        trav_%s.c\n", travlwr);
-        free(travlwr);
-    }
-    out(")\n");
-}
-
 void gen_trav_user_header(Config *config, FILE *fp, Traversal *trav) {
     char *travlwr = strlwr(trav->id);
     char *travupr = strupr(trav->id);

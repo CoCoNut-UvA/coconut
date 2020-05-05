@@ -12,6 +12,7 @@ target_sources(${PROJECT_NAME}
         gen-free.h
         gen-copy.h
         gen-actions.h
+        gen-cmakelists.h
     PRIVATE
         util.c
         driver.c
@@ -23,4 +24,5 @@ target_sources(${PROJECT_NAME}
         gen-free.c
         gen-copy.c
         gen-actions.c
+        gen-cmakelists.c
 )
