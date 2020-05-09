@@ -453,7 +453,12 @@ void filegen_all_passes(char *fileformatter,
 
     for (int i = 0; i < array_size(ast_definition->passes); ++i) {
         Pass *pass = array_get(ast_definition->passes, i);
-        char *passlwr = strlwr(pass->id);
+        char *passlwr;
+        if (pass->func) {
+            passlwr = strlwr(pass->func);
+        } else {
+            passlwr = strlwr(pass->id);
+        }
         char *filename = format_with_formatter(fileformatter, passlwr);
         // full_path = get_full_path(fileformatter, pass->id);
         full_path = get_full_path_with_dir(current_directory, filename, NULL);

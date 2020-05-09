@@ -17,17 +17,24 @@ void gen_actions_header(Config *config, FILE *fp) {
     for (int i = 0; i < array_size(config->phases); i++) {
         Phase *phase = array_get(config->phases, i);
         char *phaselwr = strlwr(phase->id);
+        char *type;
         if (phase->cycle) {
-            out_field("void cycle_start_%s(Node *root)", phaselwr);
+            type = "cycle";
         } else {
-            out_field("void phase_start_%s(Node *root)", phaselwr);
+            type = "phase";
         }
+        out_field("void %s_start_%s(Node *root)", type, phaselwr);
         free(phaselwr);
     }
     for (int i = 0; i < array_size(config->passes); i++) {
         Pass *pass = array_get(config->passes, i);
-        char *passlwr = strlwr(pass->id);
-        out_field("void pass_start_%s()", passlwr);
+        char *passlwr;
+        if (pass->func) {
+            passlwr = strlwr(pass->func);
+        } else {
+            passlwr = strlwr(pass->id);
+        }
+        out_field("void pass_start_%s(Node *root, PassType type)", passlwr);
         free(passlwr);
     }
     out("\n");
@@ -46,18 +53,25 @@ void gen_handle_phase(Config *config, FILE *fp, Phase *phase) {
         switch (action->type) {
         case ACTION_PASS:;
             Pass *action_pass = (Pass *)action->action;
-            char *passlwr = strlwr(action_pass->id);
-            out_field("pass_start_%s()", passlwr);
+            char *passlwr;
+            if (action_pass->func) {
+                passlwr = strlwr(action_pass->func);
+            } else {
+                passlwr = strlwr(action_pass->id);
+            }
+            out_field("pass_start(root, PASS_%s)", passlwr);
             free(passlwr);
             break;
         case ACTION_PHASE:;
             Phase *action_phase = (Phase *)action->action;
             char *phaselwr = strlwr(action_phase->id);
+            char *type;
             if (action_phase->cycle) {
-                out_field("cycle_start_%s(root)", phaselwr);
+                type = "cycle";
             } else {
-                out_field("phase_start_%s(root)", phaselwr);
+                type = "phase";
             }
+            out_field("%s_start_%s(root)", type, phaselwr);
             free(phaselwr);
             break;
         case ACTION_TRAVERSAL:;
@@ -76,33 +90,21 @@ void gen_handle_phase(Config *config, FILE *fp, Phase *phase) {
 void gen_actions_src(Config *config, FILE *fp) {
     out("#include \"inc_generated/actions.h\"\n");
     out("#include \"inc_core/trav_core.h\"\n");
-    out("\n");
-    for (int i = 0; i < array_size(config->traversals); i++) {
-        Traversal *trav = array_get(config->traversals, i);
-        char *travlwr = strlwr(trav->id);
-        out("#include \"inc_generated/trav_%s.h\"\n", travlwr);
-        free(travlwr);
-    }
+    out("#include \"inc_core/actions_core.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->phases); i++) {
         Phase *phase = array_get(config->phases, i);
         char *phaselwr = strlwr(phase->id);
+        char *type;
         if (phase->cycle) {
-            out_start_func("void cycle_start_%s(Node *root)", phaselwr);
+            type = "cycle";
         } else {
-            out_start_func("void phase_start_%s(Node *root)", phaselwr);
+            type = "phase";
         }
+        out_start_func("void %s_start_%s(Node *root)", type, phaselwr);
         gen_handle_phase(config, fp, phase);
         out_end_func();
         free(phaselwr);
     }
     out("\n");
-    for (int i = 0; i < array_size(config->passes); i++) {
-        Pass *pass = array_get(config->passes, i);
-        char *passlwr = strlwr(pass->id);
-        out_start_func("void pass_start_%s()", passlwr);
-        gen_handle_pass(config, fp, pass);
-        out_end_func();
-        free(passlwr);
-    }
 }

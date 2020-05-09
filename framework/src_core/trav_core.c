@@ -26,7 +26,7 @@ void trav_free_error(Trav *trav) {
 void trav_free(Trav *trav) { mem_free(trav); }
 
 void trav_push(TravType travtype) {
-    Trav *ts = trav_data_init_array[travtype]();
+    Trav *ts = travdata_init_vtable[travtype]();
     ts->travtype = travtype;
     ts->prev = current_traversal;
     current_traversal = ts;
@@ -39,7 +39,7 @@ void trav_pop() {
         return;
     }
     Trav *prev = current_traversal->prev;
-    trav_data_free_array[TRAV_TYPE](current_traversal);
+    travdata_free_vtable[TRAV_TYPE](current_traversal);
     current_traversal = prev;
 }
 
@@ -52,26 +52,21 @@ Node *trav_start(Node *syntaxtree, TravType travtype) {
     return syntaxtree;
 }
 
-Node *trav_pass(Node *arg_node) {
-    if (!arg_node) {
-        return arg_node;
-    }
-    return trav_mat[TRAV_TYPE][NODE_TYPE(arg_node)](arg_node);
-}
-
 Node *trav_node(Node *arg_node) {
     if (!arg_node) {
         print_user_error("traversal-driver", "Mandatory subtree is NULL");
         return arg_node;
     }
-    return trav_mat[TRAV_TYPE][NODE_TYPE(arg_node)](arg_node);
+    TravFunc trav_func = trav_mat[TRAV_TYPE][NODE_TYPE(arg_node)];
+    return trav_func(arg_node);
 }
 
 Node *traverse(Node *arg_node) {
     if (!arg_node) {
         return arg_node;
     }
-    return trav_mat[TRAV_TYPE][NODE_TYPE(arg_node)](arg_node);
+    TravFunc trav_func = trav_mat[TRAV_TYPE][NODE_TYPE(arg_node)];
+    return trav_func(arg_node);
 }
 
 Node *trav_noop(Node *arg_node) { return arg_node; }

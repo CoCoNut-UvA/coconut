@@ -1,9 +1,21 @@
+#ifndef _CCN_VTABLES_CORE_H_
+#define _CCN_VTABLES_CORE_H_
+
 #include "inc_core/ast_core.h"
 
 typedef Node *(*TravFunc)(Node *);
 typedef Trav *(*InitFunc)(void);
 typedef void (*FreeFunc)(Trav *);
+typedef Node *(*PassFunc)(Node *);
 
-const TravFunc *trav_mat[_TRAV_SIZE];
-const InitFunc trav_data_init_array[_TRAV_SIZE];
-const FreeFunc trav_data_free_array[_TRAV_SIZE];
+extern const TravFunc *trav_mat[_TRAV_SIZE];
+extern const InitFunc travdata_init_vtable[_TRAV_SIZE];
+extern const FreeFunc travdata_free_vtable[_TRAV_SIZE];
+extern const PassFunc pass_vtable[_PASS_SIZE];
+
+TravFunc get_travfunc(TravType, NodeType);
+InitFunc get_initfunc(TravType);
+FreeFunc get_freefunc(TravType);
+PassFunc get_passfunc(PassType);
+
+#endif /* __CCN_VTABLES_CORE_H_ */

@@ -3,6 +3,7 @@
 #include "inc_core/ast_core.h"
 #include "inc_core/free_core.h"
 #include "inc_core/trav_core.h"
+#include "inc_core/vtables_core.h"
 
 int main(int argc, char *argv[]) {
     Node *left = node_init_intconst(4);

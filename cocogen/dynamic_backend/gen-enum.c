@@ -51,7 +51,7 @@ void gen_nodeset_enum(Config *config, FILE *fp) {
 }
 
 void gen_traversal_enum(Config *config, FILE *fp) {
-    out_comment("Enum " TRAV_ENUM_NAME);
+    out_comment("Enum TravType");
     out_enum("TRAVERSALS");
     out_enum_field(TRAV_ENUM_PREFIX "NULL");
     for (int i = 0; i < array_size(config->traversals); ++i) {
@@ -66,12 +66,32 @@ void gen_traversal_enum(Config *config, FILE *fp) {
     out_enum_end("TravType");
 }
 
+void gen_pass_enum(Config *config, FILE *fp) {
+    out_comment("Enum PassType");
+    out_enum("PASSES");
+    out_enum_field("PASS_NULL");
+    for (int i = 0; i < array_size(config->passes); ++i) {
+        Pass *pass = (Pass *)array_get(config->passes, i);
+        char *passlwr;
+        if (pass->func) {
+            passlwr = strlwr(pass->func);
+        } else {
+            passlwr = strlwr(pass->id);
+        }
+        out_enum_field("PASS_%s", passlwr);
+        free(passlwr);
+    }
+    out_enum_field("_PASS_SIZE");
+    out_enum_end("PassType");
+}
+
 void gen_enum_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_ENUM_H_\n");
     out("#define _CCN_ENUM_H_\n\n");
     gen_nodetype_enum(config, fp);
     // gen_nodeset_enum(config, fp);
     gen_traversal_enum(config, fp);
+    gen_pass_enum(config, fp);
     for (int i = 0; i < array_size(config->enums); ++i) {
         Enum *arg_enum = (Enum *)array_get(config->enums, i);
         gen_enum(config, fp, arg_enum);

@@ -12,16 +12,16 @@ start phase RootPhase {
 phase LoadProgram {
     prefix = LP, 
     actions {
-        pass ScanAndParse;
+        pass ScanAndParse = ScanParse;
     }
 };
 
 cycle Optimisations {
     prefix = OPT,
     actions {
-        pass Optimisation1;
-        pass Optimisation2;
-        pass Optimisation3;
+        pass Optimisation1 = opt1;
+        pass Optimisation2 = opt2;
+        pass Optimisation3 = opt3;
     }
 };
 

@@ -47,7 +47,7 @@ void gen_trav_vtable(Config *config, FILE *fp, Traversal *trav) {
         if (is_traversal_node(trav, node)) {
             out("&%s_%s, ", travlwr, nodelwr);
         } else if (is_pass_node(trav, node)) {
-            out("&trav_pass, ");
+            out("&trav_%s, ", nodelwr);
         } else {
             out("&trav_noop, ");
         }
@@ -79,7 +79,7 @@ void gen_vtables(Config *config, FILE *fp) {
 
 void gen_travdata_vtable(Config *config, FILE *fp, char *version) {
     char *verlwr = strlwr(version);
-    out("const %sFunc trav_data_%s_array[_TRAV_SIZE] = {", version, verlwr);
+    out("const %sFunc travdata_%s_vtable[_TRAV_SIZE] = {", version, verlwr);
     out("&trav_%s_error, ", verlwr);
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
@@ -97,6 +97,22 @@ void gen_travdata_vtable(Config *config, FILE *fp, char *version) {
     free(verlwr);
 }
 
+void gen_pass_vtable(Config *config, FILE *fp) {
+    out("const PassFunc pass_vtable[_PASS_SIZE] = { &pass_error, ");
+    for (int i = 0; i < array_size(config->passes); i++) {
+        Pass *pass = array_get(config->passes, i);
+        char *passlwr;
+        if (pass->func) {
+            passlwr = strlwr(pass->func);
+        } else {
+            passlwr = strlwr(pass->id);
+        }
+        out("&pass_%s, ", passlwr);
+        free(passlwr);
+    }
+    out(" };\n\n");
+}
+
 void gen_vtables_src(Config *config, FILE *fp) {
     out("#include <stdio.h>\n");
     out("\n");
@@ -111,8 +127,20 @@ void gen_vtables_src(Config *config, FILE *fp) {
         out("#include \"inc_generated/trav_%s.h\"\n", travlwr);
         free(travlwr);
     }
+    for (int i = 0; i < array_size(config->passes); i++) {
+        Pass *pass = array_get(config->passes, i);
+        char *passlwr;
+        if (pass->func) {
+            passlwr = strlwr(pass->func);
+        } else {
+            passlwr = strlwr(pass->id);
+        }
+        out("#include \"inc_generated/pass_%s.h\"\n", passlwr);
+        free(passlwr);
+    }
     out("\n");
     gen_vtables(config, fp);
     gen_travdata_vtable(config, fp, "Init");
     gen_travdata_vtable(config, fp, "Free");
+    gen_pass_vtable(config, fp);
 }

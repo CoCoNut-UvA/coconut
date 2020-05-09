@@ -130,7 +130,7 @@ void gen_trav_node_func(Config *config, FILE *fp, Node *node) {
     for (int i = 0; i < array_size(node->children); i++) {
         Child *child = array_get(node->children, i);
         char *childupr = strupr(child->id);
-        out_field("%s_%s(arg_node) = trav_pass(%s_%s(arg_node))", nodeupr,
+        out_field("%s_%s(arg_node) = traverse(%s_%s(arg_node))", nodeupr,
                   childupr, nodeupr, childupr);
         free(childupr);
     }

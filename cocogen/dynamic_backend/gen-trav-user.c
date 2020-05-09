@@ -56,11 +56,31 @@ void gen_trav_destructor(Config *config, FILE *fp, Traversal *trav) {
     free(travlwr);
 }
 
+void gen_trav_user_func(Config *config, FILE *fp, Traversal *trav, Node *node) {
+    char *travlwr = strlwr(trav->id);
+    char *nodelwr = strlwr(node->id);
+    char *nodeupr = strupr(node->id);
+
+    out_start_func("Node *%s_%s(Node *arg_node)", travlwr, nodelwr);
+    for (int i = 0; i < array_size(node->children); i++) {
+        Child *child = array_get(node->children, i);
+        char *childupr = strupr(child->id);
+        out_field("%s_%s(arg_node) = traverse(%s_%s(arg_node))", nodeupr,
+                  childupr, nodeupr, childupr);
+        free(childupr);
+    }
+    out_field("return arg_node");
+    out_end_func();
+
+    free(nodelwr);
+    free(nodeupr);
+    free(travlwr);
+}
+
 void gen_trav_user_src(Config *config, FILE *fp, Traversal *trav) {
     char *travlwr = strlwr(trav->id);
     char *travupr = strupr(trav->id);
     out("#include \"inc_generated/trav_%s.h\"\n", travlwr);
-    out("#include \"inc_core/trav_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("\n");
     if (trav->data) {
@@ -69,23 +89,7 @@ void gen_trav_user_src(Config *config, FILE *fp, Traversal *trav) {
     }
     for (int i = 0; i < array_size(trav->nodes); i++) {
         Node *node = array_get(trav->nodes, i);
-        char *nodelwr = strlwr(node->id);
-        char *nodeupr = strupr(node->id);
-
-        // Traversal Function
-        out_start_func("Node *%s_%s(Node *arg_node)", travlwr, nodelwr);
-        for (int i = 0; i < array_size(node->children); i++) {
-            Child *child = array_get(node->children, i);
-            char *childupr = strupr(child->id);
-            out_field("%s_%s(arg_node) = traverse(%s_%s(arg_node))", nodeupr,
-                      childupr, nodeupr, childupr);
-            free(childupr);
-        }
-        out_field("return arg_node");
-        out_end_func();
-
-        free(nodelwr);
-        free(nodeupr);
+        gen_trav_user_func(config, fp, trav, node);
     }
     free(travlwr);
     free(travupr);

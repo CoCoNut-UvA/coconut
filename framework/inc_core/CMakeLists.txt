@@ -5,4 +5,6 @@ target_sources(${PROJECT_NAME}
         free_core.h
         trav_core.h
         types.h
+        actions_core.h
+        vtables_core.h
 )
