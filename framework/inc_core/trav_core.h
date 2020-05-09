@@ -9,6 +9,7 @@ typedef struct TRAV {
     union TRAV_DATA travdata;
 } Trav;
 
+typedef Node *(*TravFunc)(Node *);
 typedef Trav *(*InitFunc)(void);
 typedef void (*FreeFunc)(Trav *);
 

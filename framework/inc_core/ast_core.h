@@ -3,10 +3,7 @@
 
 #include "inc_generated/ast.h"
 
-typedef Node *(*TravFunc)(Node *);
-
 typedef struct NODE {
-    TravFunc trav_func;
     NodeType nodetype;
     int lineno;
     int colno;

@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
     // TODO: add commandline flags for the right backend.
     // typed_backend(ir);
     dynamic_backend(ir);
-    pretty_print(ir);
+    // pretty_print(ir);
 
     cleanup_tracking_data();
 }

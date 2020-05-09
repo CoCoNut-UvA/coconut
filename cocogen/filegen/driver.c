@@ -250,6 +250,7 @@ void add_filename_to_set(char *filename) {
 }
 
 static bool hash_match(NodeCommonInfo *info, char *full_path) {
+    print_file_gen(full_path);
     return false; // TODO: remove this
 
     char *current_hash = mem_alloc(43 * sizeof(char));
