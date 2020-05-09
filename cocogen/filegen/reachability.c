@@ -7,6 +7,7 @@
 #include "filegen/driver.h"
 #include "filegen/formatting.h"
 #include "filegen/genmacros.h"
+#include "filegen/util.h"
 #include "lib/print.h"
 #include "lib/smap.h"
 

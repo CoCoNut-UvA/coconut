@@ -72,8 +72,8 @@ int main(int argc, char *argv[]) {
     filegen_init(ir, false);
 
     // TODO: add commandline flags for the right backend.
-    typed_backend(ir);
-    // dynamic_backend(ir);
+    // typed_backend(ir);
+    dynamic_backend(ir);
     pretty_print(ir);
 
     cleanup_tracking_data();

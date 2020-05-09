@@ -4,6 +4,7 @@
 #include "ast/ast.h"
 #include "filegen/driver.h"
 #include "filegen/genmacros.h"
+#include "filegen/util.h"
 #include "gen-functions.h"
 
 static int indent = 0;

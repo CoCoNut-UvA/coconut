@@ -4,9 +4,10 @@
 #include "ast/ast.h"
 #include "filegen/driver.h"
 #include "filegen/genmacros.h"
+#include "filegen/util.h"
 #include "gen-functions.h"
 
-void gen_generated_cmakelists(Config *config, FILE *fp) {
+void gen_header_cmakelists(Config *config, FILE *fp) {
     out("target_sources(${PROJECT_NAME}\n");
     out("    PUBLIC\n");
     out("        actions.h\n");
@@ -21,18 +22,17 @@ void gen_generated_cmakelists(Config *config, FILE *fp) {
         out("        trav_%s.h\n", travlwr);
         free(travlwr);
     }
+    out(")\n");
+}
+
+void gen_source_cmakelists(Config *config, FILE *fp) {
+    out("target_sources(${PROJECT_NAME}\n");
     out("    PRIVATE\n");
     out("        actions.c\n");
     out("        ast.c\n");
     out("        copy.c\n");
     out("        free.c\n");
     out("        trav.c\n");
-    out(")\n");
-}
-
-void gen_user_cmakelists(Config *config, FILE *fp) {
-    out("target_sources(${PROJECT_NAME}\n");
-    out("    PRIVATE\n");
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
         char *travlwr = strlwr(trav->id);

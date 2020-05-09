@@ -1,6 +1,7 @@
 #include "API.h"
 #include "commandline.h"
 #include "filegen/driver.h"
+#include "filegen/reachability.h"
 #include "filegen/util.h"
 #include "lib/assert.h"
 
@@ -17,6 +18,7 @@ static void generate_headers(Config *ir) {
     filegen_generate("copy.h", &gen_copy_header);
     filegen_generate("actions.h", &gen_actions_header);
     filegen_all_traversals("trav_%s.h", &gen_trav_user_header);
+    filegen_generate("CMakeLists.txt", &gen_header_cmakelists);
 }
 
 static void generate_sources(Config *ir) {
@@ -29,6 +31,7 @@ static void generate_sources(Config *ir) {
     filegen_generate("copy.c", &gen_copy_src);
     filegen_generate("actions.c", &gen_actions_src);
     filegen_all_traversals("trav_%s.c", &gen_trav_user_src);
+    filegen_generate("CMakeLissts.txt", &gen_source_cmakelists);
 }
 
 void dynamic_backend(Config *ir) {
@@ -39,9 +42,3 @@ void dynamic_backend(Config *ir) {
     generate_headers(ir);
     generate_sources(ir);
 }
-
-// filegen_generate("CMakeLists.txt", &gen_generated_cmakelists);
-// if (global_command_options.gen_user_files) {
-//     filegen_dir("cocogen/framework/user/");
-//     filegen_generate("CMakeLissts.txt", &gen_user_cmakelists);
-// }

@@ -8,6 +8,8 @@
 #include "filegen/driver.h"
 #include "filegen/formatting.h"
 #include "filegen/genmacros.h"
+#include "filegen/reachability.h"
+#include "filegen/util.h"
 #include "gen-functions.h"
 #include "lib/print.h"
 #include "lib/smap.h"

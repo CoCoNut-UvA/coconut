@@ -5,13 +5,11 @@ target_sources(${PROJECT_NAME}
         gen-functions.h
         gen-ast.c
         gen-enum.c
-        gen-util.c
         gen-trav-user.c
         gen-trav.c
         gen-free.c
         gen-copy.c
         gen-actions.c
         gen-cmakelists.c
-        reachability-matrix.c
         API.c
 )

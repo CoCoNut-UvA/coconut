@@ -1,4 +1,4 @@
-#include "ast_core.h"
+#include "include/core/ast_core.h"
 #include "lib/memory.h"
 
 Node *node_init() {

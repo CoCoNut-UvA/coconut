@@ -1,7 +1,7 @@
 #ifndef _CCN_AST_CORE_H_
 #define _CCN_AST_CORE_H_
 
-#include "generated/ast.h"
+#include "ast.h"
 
 typedef Node *(*TravFunc)(Node *);
 
