@@ -154,7 +154,7 @@ static void new_location(void *ptr, struct ParserLocation *loc);
              childlist children enumvalues lifetimelist
 %type<attrval> attrval
 %type<attrtype> attrprimitivetype
-%type<attr> attr attrhead
+%type<attr> attr attrhead travdataitem
 %type<child> child
 %type<pass> pass
 %type<node> nodebody node
@@ -162,7 +162,6 @@ static void new_location(void *ptr, struct ParserLocation *loc);
 %type<phase> phase phaseheader
 %type<attr_enum> enum
 %type<traversal> traversal
-%type<travdata> travdataitem
 %type<config> root
 %type<setexpr> setexpr traversalnodes
 %type<setoperation> setoperation
@@ -823,17 +822,17 @@ attrlist: attrlist ',' attr
         ;
 attr: attrhead '{' T_CONSTRUCTOR ',' lifetimelistwithvalues '}'
     {
-        $$ = create_attr($1, NULL, 1, $5);
+        $$ = create_attr($1, NULL, 1, $5, NULL);
         new_location($$, &@$);
     }
     | attrhead '{' T_CONSTRUCTOR '}'
     {
-        $$ = create_attr($1, NULL, 1, NULL);
+        $$ = create_attr($1, NULL, 1, NULL, NULL);
         new_location($$, &@$);
     }
     | attrhead '=' attrval
     {
-        $$ = create_attr($1, $3, 0, NULL);
+        $$ = create_attr($1, $3, 0, NULL, NULL);
         new_location($$, &@$);
     }
     ;
@@ -944,25 +943,21 @@ travdatalist: travdatalist ',' travdataitem
         }
         ;
 
-travdataitem: T_UNSAFE T_ID T_ID '{' T_STRINGVAL '}'
+travdataitem: T_UNSAFE attrhead '{' T_STRINGVAL '}'
     {
-        $$ = create_travdata_struct($2, $3, $5);
+        $$ = create_attr($2, NULL, 0, NULL, $4);
         new_location($$, &@$);
-        new_location($2, &@2);
-        new_location($3, &@3);
-        new_location($5, &@5);
+        new_location($4, &@3);
     }
-    | attrprimitivetype T_ID '=' attrval
+    | attrhead '=' attrval
     {
-        $$ = create_travdata_primitive($1, $2, $4);
+        $$ = create_attr($1, $3, 0, NULL, NULL);
         new_location($$, &@$);
-        new_location($2, &@2);
     }
-    | attrprimitivetype T_ID
+    | attrhead
     {
-        $$ = create_travdata_primitive($1, $2, NULL);
+        $$ = create_attr($1, NULL, 0, NULL, NULL);
         new_location($$, &@$);
-        new_location($2, &@2);
     }
     ;
 %%

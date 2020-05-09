@@ -43,5 +43,5 @@ void dynamic_backend(Config *ir) {
 // filegen_generate("CMakeLists.txt", &gen_generated_cmakelists);
 // if (global_command_options.gen_user_files) {
 //     filegen_dir("cocogen/framework/user/");
-//     filegen_generate("CMakeLists.txt", &gen_user_cmakelists);
+//     filegen_generate("CMakeLissts.txt", &gen_user_cmakelists);
 // }

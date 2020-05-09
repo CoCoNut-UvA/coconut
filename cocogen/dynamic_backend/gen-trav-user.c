@@ -26,8 +26,6 @@ void gen_trav_user_header(Config *config, FILE *fp, Traversal *trav) {
         free(nodelwr);
     }
     out("\n");
-    out("extern TravFunc vtable_%s[_NT_SIZE];", travlwr);
-    out("\n");
     out("#endif /* _CCN_TRAV_%s_H_ */\n", travupr);
     free(travlwr);
     free(travupr);

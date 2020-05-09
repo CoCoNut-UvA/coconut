@@ -51,19 +51,20 @@ int main(int argc, char *argv[]) {
 
     // TODO(damian): Create recursive ensure_dir_exists
     if (global_command_options.header_dir == NULL) {
-        global_command_options.header_dir = "generated/include/generated/";
-        ensure_dir_exists("generated/",
+        global_command_options.header_dir = "framework/include/generated/";
+        ensure_dir_exists("framework/",
                           0777); // FIXME(damian): transform to recursive.
-        ensure_dir_exists("generated/include/", 0777);
-        ensure_dir_exists("generated/include/generated", 0777);
+        ensure_dir_exists("framework/include/", 0777);
+        ensure_dir_exists("framework/include/generated/", 0777);
     }
     ensure_dir_exists(global_command_options.header_dir, 0777);
 
     if (global_command_options.source_dir == NULL) {
-        global_command_options.source_dir = "generated/source/";
-        ensure_dir_exists("generated/",
+        global_command_options.source_dir = "framework/source/generated/";
+        ensure_dir_exists("framework/",
                           0777); // FIXME(damian): transform to recursive.
-        ensure_dir_exists("generated/source/", 0777);
+        ensure_dir_exists("framework/source/", 0777);
+        ensure_dir_exists("framework/source/generated/", 0777);
     }
     ensure_dir_exists(global_command_options.source_dir, 0777);
 
@@ -71,8 +72,8 @@ int main(int argc, char *argv[]) {
     filegen_init(ir, false);
 
     // TODO: add commandline flags for the right backend.
-    // typed_backend(ir);
-    dynamic_backend(ir);
+    typed_backend(ir);
+    // dynamic_backend(ir);
     pretty_print(ir);
 
     cleanup_tracking_data();

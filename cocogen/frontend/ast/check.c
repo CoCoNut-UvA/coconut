@@ -684,8 +684,8 @@ static int check_traversal(Traversal *traversal, struct Info *info) {
 
     if (traversal->data) {
         for (int i = 0; i < array_size(traversal->data); i++) {
-            TravData *td = (TravData *)array_get(traversal->data, i);
-            TravData *orig_td;
+            Attr *td = (Attr *)array_get(traversal->data, i);
+            Attr *orig_td;
 
             if ((orig_td = smap_retrieve(td_name, td->id)) != NULL) {
                 print_error(

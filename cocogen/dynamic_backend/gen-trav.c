@@ -22,7 +22,7 @@ void gen_trav_struct(Config *config, FILE *fp, Traversal *trav) {
     out_comment("Traversal %s Attributes", trav->id);
     out_struct("TRAV_DATA_%s", travupr);
     for (int i = 0; i < array_size(trav->data); ++i) {
-        TravData *td = (TravData *)array_get(trav->data, i);
+        Attr *td = (Attr *)array_get(trav->data, i);
         char *type_str = str_attr_type(td);
         if (td->type == AT_link_or_enum) {
             out_field("%s *%s", type_str, td->id);
@@ -59,7 +59,7 @@ void gen_trav_macros(Config *config, FILE *fp, Traversal *trav) {
     char *travupr = strupr(trav->id);
     char *travlwr = strlwr(trav->id);
     for (int i = 0; i < array_size(trav->data); ++i) {
-        TravData *td = (TravData *)array_get(trav->data, i);
+        Attr *td = (Attr *)array_get(trav->data, i);
         char *attrupr = strupr(td->id);
         out("#define %s_%s (trav_current()->travdata.TD_%s->%s)\n", travupr,
             attrupr, travlwr, td->id);
@@ -81,9 +81,9 @@ void gen_trav_header(Config *config, FILE *fp) {
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
         for (int i = 0; i < array_size(trav->data); i++) {
-            TravData *td = array_get(trav->data, i);
+            Attr *td = array_get(trav->data, i);
             if (td->type == AT_link_or_enum) {
-                char *include = td->value.include;
+                char *include = td->include;
                 if (!smap_retrieve(include_names, include)) {
                     smap_insert(include_names, include, td);
                     out("#include \"%s\"\n", include);
