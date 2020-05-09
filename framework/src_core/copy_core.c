@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "core/ast_core.h"
-#include "core/trav_core.h"
+#include "inc_core/ast_core.h"
+#include "inc_core/trav_core.h"
 #include "lib/memory.h"
 
-#include "core/copy_core.h"
+#include "inc_core/copy_core.h"
 
 Node *copy_node(Node *node) { trav_start(node, TRAV_copy); }
 

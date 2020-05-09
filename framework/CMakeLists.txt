@@ -5,10 +5,10 @@ project(ccncc)
 
 add_executable(${PROJECT_NAME} main.c)
 
-add_subdirectory(include/core)
-add_subdirectory(include/generated)
-add_subdirectory(source/core)
-add_subdirectory(source/generated)
+add_subdirectory(inc_core)
+add_subdirectory(src_core)
+add_subdirectory(inc_generated)
+add_subdirectory(src_generated)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE coconut::palm -fsanitize=address -fsanitize=undefined)
 

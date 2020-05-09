@@ -57,7 +57,7 @@ build/
 # Bin dir
 bin/
 
-/framework/include/generated
-/framework/source/generated
+/framework/inc_generated
+/framework/src_generated
 
 .vscode

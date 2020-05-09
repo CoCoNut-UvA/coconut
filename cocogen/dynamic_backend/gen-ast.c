@@ -23,7 +23,11 @@ void gen_init_function(Config *config, FILE *fp, Node *node) {
     }
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
-        out("%s %s", str_attr_type(attr), attr->id);
+        if (attr->type == AT_link) {
+            out("Node *%s", attr->id);
+        } else {
+            out("%s %s", str_attr_type(attr), attr->id);
+        }
         if (i != array_size(node->attrs) - 1) {
             out(", ");
         }
@@ -41,7 +45,11 @@ void gen_node_struct(Config *config, FILE *fp, Node *node) {
     }
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
-        out_field("%s %s", str_attr_type(attr), attr->id);
+        if (attr->type == AT_link) {
+            out_field("Node *%s", attr->id);
+        } else {
+            out_field("%s %s", str_attr_type(attr), attr->id);
+        }
     }
     out_struct_end();
     free(nodeupr);
@@ -87,7 +95,7 @@ void gen_ast_header(Config *config, FILE *fp) {
     out("#define _CCN_AST_H_\n\n");
     out("#include <stdbool.h>\n");
     out("\n");
-    out("#include \"core/types.h\"\n");
+    out("#include \"inc_core/types.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
@@ -150,8 +158,8 @@ void gen_node_constructor(Config *config, FILE *fp, Node *node) {
 void gen_ast_src(Config *config, FILE *fp) {
     out("#include <stdlib.h>\n");
     out("\n");
-    out("#include \"core/ast_core.h\"\n");
-    out("#include \"core/trav_core.h\"\n");
+    out("#include \"inc_core/ast_core.h\"\n");
+    out("#include \"inc_core/trav_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {

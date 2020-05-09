@@ -250,6 +250,7 @@ void add_filename_to_set(char *filename) {
 }
 
 static bool hash_match(NodeCommonInfo *info, char *full_path) {
+    return false; // TODO: remove this
 
     char *current_hash = mem_alloc(43 * sizeof(char));
     bool rv = false;
@@ -358,7 +359,9 @@ void filegen_all_nodes(char *fileformatter,
 
     for (int i = 0; i < array_size(ast_definition->nodes); ++i) {
         Node *node = array_get(ast_definition->nodes, i);
-        char *filename = format_with_formatter(fileformatter, node->id);
+        char *nodelwr = strlwr(node->id);
+        char *filename = format_with_formatter(fileformatter, nodelwr);
+
         full_path = get_full_path_with_dir(current_directory, filename, NULL);
         add_filename_to_tracked(filename);
 
@@ -374,6 +377,7 @@ void filegen_all_nodes(char *fileformatter,
             out("\n");
             fclose(fp);
         }
+        mem_free(nodelwr);
         mem_free(filename);
         mem_free(full_path);
     }
@@ -386,7 +390,8 @@ void filegen_all_nodesets(char *fileformatter,
 
     for (int i = 0; i < array_size(ast_definition->nodesets); ++i) {
         Nodeset *nodeset = array_get(ast_definition->nodesets, i);
-        char *filename = format_with_formatter(fileformatter, nodeset->id);
+        char *nodesetlwr = strlwr(nodeset->id);
+        char *filename = format_with_formatter(fileformatter, nodesetlwr);
         // full_path = get_full_path(fileformatter, nodeset->id);
         full_path = get_full_path_with_dir(current_directory, filename, NULL);
         add_filename_to_tracked(filename);
@@ -403,6 +408,7 @@ void filegen_all_nodesets(char *fileformatter,
             out("\n");
             fclose(fp);
         }
+        mem_free(nodesetlwr);
         mem_free(filename);
         mem_free(full_path);
     }
@@ -414,24 +420,26 @@ void filegen_all_traversals(char *fileformatter,
     FILE *fp;
 
     for (int i = 0; i < array_size(ast_definition->traversals); ++i) {
-        Traversal *traversal = array_get(ast_definition->traversals, i);
-        char *filename = format_with_formatter(fileformatter, traversal->id);
-        // full_path = get_full_path(fileformatter, traversal->id);
+        Traversal *trav = array_get(ast_definition->traversals, i);
+        char *travlwr = strlwr(trav->id);
+        char *filename = format_with_formatter(fileformatter, travlwr);
+        // full_path = get_full_path(fileformatter, trav->id);
         full_path = get_full_path_with_dir(current_directory, filename, NULL);
         add_filename_to_tracked(filename);
 
-        if (hash_match(traversal->common_info, full_path)) {
+        if (hash_match(trav->common_info, full_path)) {
             mem_free(full_path);
             continue;
         }
 
         if (!only_list_files) {
             fp = get_fp(full_path, "w");
-            out(HASH_HEADER, traversal->common_info->hash);
-            func(ast_definition, fp, traversal);
+            out(HASH_HEADER, trav->common_info->hash);
+            func(ast_definition, fp, trav);
             out("\n");
             fclose(fp);
         }
+        mem_free(travlwr);
         mem_free(filename);
         mem_free(full_path);
     }
@@ -444,7 +452,8 @@ void filegen_all_passes(char *fileformatter,
 
     for (int i = 0; i < array_size(ast_definition->passes); ++i) {
         Pass *pass = array_get(ast_definition->passes, i);
-        char *filename = format_with_formatter(fileformatter, pass->id);
+        char *passlwr = strlwr(pass->id);
+        char *filename = format_with_formatter(fileformatter, passlwr);
         // full_path = get_full_path(fileformatter, pass->id);
         full_path = get_full_path_with_dir(current_directory, filename, NULL);
         add_filename_to_tracked(filename);
@@ -461,20 +470,22 @@ void filegen_all_passes(char *fileformatter,
             out("\n");
             fclose(fp);
         }
+        mem_free(passlwr);
         mem_free(filename);
         mem_free(full_path);
     }
 }
 
-void filegen_all_phases(char *fileFormatter,
+void filegen_all_phases(char *fileformatter,
                         void (*func)(Config *, FILE *, Phase *)) {
 
     char *full_path;
     FILE *fp;
     for (int i = 0; i < array_size(ast_definition->phases); ++i) {
         Phase *phase = array_get(ast_definition->phases, i);
-        char *filename = format_with_formatter(fileFormatter, phase->id);
-        // full_path = get_full_path(fileFormatter, phase->id);
+        char *phaselwr = strlwr(phase->id);
+        char *filename = format_with_formatter(fileformatter, phaselwr);
+        // full_path = get_full_path(fileformatter, phase->id);
         full_path = get_full_path_with_dir(current_directory, filename, NULL);
         add_filename_to_tracked(filename);
 
@@ -491,6 +502,7 @@ void filegen_all_phases(char *fileFormatter,
             out("\n");
             fclose(fp);
         }
+        mem_free(phaselwr);
         mem_free(filename);
         mem_free(full_path);
     }

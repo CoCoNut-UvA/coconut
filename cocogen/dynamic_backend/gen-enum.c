@@ -63,7 +63,7 @@ void gen_traversal_enum(Config *config, FILE *fp) {
     out_enum_field(TRAV_ENUM_PREFIX "free");
     out_enum_field(TRAV_ENUM_PREFIX "copy");
     out_enum_field("_" TRAV_ENUM_PREFIX "SIZE");
-    out_enum_end(TRAV_ENUM_NAME);
+    out_enum_end("TravType");
 }
 
 void gen_enum_header(Config *config, FILE *fp) {

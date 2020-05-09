@@ -31,7 +31,7 @@ static void generate_sources(Config *ir) {
     filegen_generate("copy.c", &gen_copy_src);
     filegen_generate("actions.c", &gen_actions_src);
     filegen_all_traversals("trav_%s.c", &gen_trav_user_src);
-    filegen_generate("CMakeLissts.txt", &gen_source_cmakelists);
+    filegen_generate("CMakeLists.txt", &gen_source_cmakelists);
 }
 
 void dynamic_backend(Config *ir) {

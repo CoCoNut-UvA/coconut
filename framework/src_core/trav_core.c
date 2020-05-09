@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-#include "core/trav_core.h"
-#include "generated/enum.h"
+#include "inc_core/trav_core.h"
+#include "inc_generated/enum.h"
 #include "lib/memory.h"
 #include "lib/print.h"
 

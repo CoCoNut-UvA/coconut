@@ -14,8 +14,8 @@ void gen_trav_user_header(Config *config, FILE *fp, Traversal *trav) {
     char *travupr = strupr(trav->id);
     out("#ifndef _CCN_TRAV_%s_H_\n", travupr);
     out("#define _CCN_TRAV_%s_H_\n\n", travupr);
-    out("#include \"core/ast_core.h\"\n");
-    out("#include \"core/trav_core.h\"\n");
+    out("#include \"inc_core/ast_core.h\"\n");
+    out("#include \"inc_core/trav_core.h\"\n");
     out("\n");
     out_comment("Traversal %s", trav->id);
     out_field("Trav *trav_init_%s()", travlwr);
@@ -59,8 +59,8 @@ void gen_trav_destructor(Config *config, FILE *fp, Traversal *trav) {
 void gen_trav_user_src(Config *config, FILE *fp, Traversal *trav) {
     char *travlwr = strlwr(trav->id);
     char *travupr = strupr(trav->id);
-    out("#include \"generated/trav_%s.h\"\n", travlwr);
-    out("#include \"core/trav_core.h\"\n");
+    out("#include \"inc_generated/trav_%s.h\"\n", travlwr);
+    out("#include \"inc_core/trav_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("\n");
     if (trav->data) {
