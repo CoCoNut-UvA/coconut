@@ -3,11 +3,8 @@
 
 #include "ast/ast.h"
 #include "filegen/driver.h"
-#include "filegen/gen-ast.h"
-#include "filegen/gen-trav-user.h"
-#include "filegen/gen-util.h"
 #include "filegen/genmacros.h"
-#include "filegen/reachability-matrix.h"
+#include "gen-functions.h"
 
 static int indent = 0;
 

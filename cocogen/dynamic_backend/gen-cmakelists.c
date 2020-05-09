@@ -3,10 +3,8 @@
 
 #include "ast/ast.h"
 #include "filegen/driver.h"
-#include "filegen/gen-ast.h"
-#include "filegen/gen-trav-user.h"
-#include "filegen/gen-util.h"
 #include "filegen/genmacros.h"
+#include "gen-functions.h"
 
 void gen_generated_cmakelists(Config *config, FILE *fp) {
     out("target_sources(${PROJECT_NAME}\n");

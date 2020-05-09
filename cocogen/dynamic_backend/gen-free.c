@@ -3,9 +3,8 @@
 
 #include "ast/ast.h"
 #include "filegen/driver.h"
-#include "filegen/gen-free.h"
-#include "filegen/gen-util.h"
 #include "filegen/genmacros.h"
+#include "gen-functions.h"
 
 static int indent = 0;
 
@@ -51,12 +50,6 @@ void gen_free_func(Config *config, FILE *fp, Node *node) {
             freefunc = "mem_free";
         } else if (attr->type == AT_link) {
             freefunc = "free_node";
-        } else if (attr->type == AT_link_or_enum) {
-            if (type_is_link(config, attr->id)) {
-                freefunc = "free_node";
-            } else {
-                freefunc = "mem_free";
-            }
         } else {
             continue;
         }

@@ -3,9 +3,8 @@
 
 #include "ast/ast.h"
 #include "filegen/driver.h"
-#include "filegen/gen-copy.h"
-#include "filegen/gen-util.h"
 #include "filegen/genmacros.h"
+#include "gen-functions.h"
 
 static int indent = 0;
 
@@ -35,13 +34,6 @@ void gen_default_values(Config *config, FILE *fp, Attr *attr) {
     case AT_string:
     case AT_link:
         out("NULL");
-        break;
-    case AT_link_or_enum:
-        if (type_is_link(config, attr->id)) {
-            out("NULL");
-        } else {
-            out("%d", 0);
-        }
         break;
     case AT_enum:
         out("%d", 0);
@@ -112,12 +104,6 @@ void gen_copy_func(Config *config, FILE *fp, Node *node) {
             copyfunc = "ccn_str_cpy";
         } else if (attr->type == AT_link) {
             copyfunc = "copy_node";
-        } else if (attr->type == AT_link_or_enum) {
-            if (type_is_link(config, attr->id)) {
-                copyfunc = "copy_node";
-            } else {
-                copyfunc = "ccn_str_cpy";
-            }
         } else {
             continue;
         }

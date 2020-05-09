@@ -2,10 +2,10 @@
 #include <string.h>
 
 #include "ast/ast.h"
+#include "ast/to-string.h"
 #include "filegen/driver.h"
-#include "filegen/gen-ast.h"
-#include "filegen/gen-util.h"
 #include "filegen/genmacros.h"
+#include "gen-functions.h"
 
 static int indent = 0;
 
@@ -22,7 +22,7 @@ void gen_init_function(Config *config, FILE *fp, Node *node) {
     }
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
-        out("%s %s", get_attr_str(config, attr->type, attr->type_id), attr->id);
+        out("%s %s", str_attr_type(attr), attr->id);
         if (i != array_size(node->attrs) - 1) {
             out(", ");
         }
@@ -40,8 +40,7 @@ void gen_node_struct(Config *config, FILE *fp, Node *node) {
     }
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
-        char *type_str = get_attr_str(config, attr->type, attr->type_id);
-        out_field("%s %s", type_str, attr->id);
+        out_field("%s %s", str_attr_type(attr), attr->id);
     }
     out_struct_end();
     free(nodeupr);

@@ -3,9 +3,7 @@
 #include "ast/ast.h"
 #include "filegen/driver.h"
 #include "filegen/genmacros.h"
-
-#include "filegen/gen-enum.h"
-#include "filegen/gen-util.h"
+#include "gen-functions.h"
 
 static int indent = 0;
 
@@ -48,7 +46,7 @@ void gen_nodeset_enum(Config *config, FILE *fp) {
         free(nodesetlwr);
     }
     out_enum_field("_" NS_ENUM_PREFIX "SIZE");
-    out_enum_end(NS_ENUM_NAME);
+    out_enum_end("NodesetType");
 }
 
 void gen_traversal_enum(Config *config, FILE *fp) {

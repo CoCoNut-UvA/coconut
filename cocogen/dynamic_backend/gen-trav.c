@@ -4,11 +4,11 @@
 #include <string.h>
 
 #include "ast/ast.h"
+#include "ast/to-string.h"
 #include "filegen/driver.h"
 #include "filegen/formatting.h"
-#include "filegen/gen-util.h"
 #include "filegen/genmacros.h"
-#include "filegen/reachability-matrix.h"
+#include "gen-functions.h"
 #include "lib/print.h"
 #include "lib/smap.h"
 
@@ -23,7 +23,7 @@ void gen_trav_struct(Config *config, FILE *fp, Traversal *trav) {
     out_struct("TRAV_DATA_%s", travupr);
     for (int i = 0; i < array_size(trav->data); ++i) {
         TravData *td = (TravData *)array_get(trav->data, i);
-        char *type_str = get_attr_str(config, td->type, td->type_id);
+        char *type_str = str_attr_type(td);
         if (td->type == AT_link_or_enum) {
             out_field("%s *%s", type_str, td->id);
         } else {

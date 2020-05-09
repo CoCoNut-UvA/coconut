@@ -3,9 +3,8 @@
 
 #include "ast/ast.h"
 #include "filegen/driver.h"
-#include "filegen/gen-actions.h"
-#include "filegen/gen-util.h"
 #include "filegen/genmacros.h"
+#include "gen-functions.h"
 
 static int indent = 0;
 

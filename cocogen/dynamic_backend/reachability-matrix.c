@@ -6,9 +6,7 @@
 #include "ast/ast.h"
 #include "filegen/driver.h"
 #include "filegen/formatting.h"
-#include "filegen/gen-util.h"
 #include "filegen/genmacros.h"
-#include "filegen/reachability-matrix.h"
 #include "lib/print.h"
 #include "lib/smap.h"
 

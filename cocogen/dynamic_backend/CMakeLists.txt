@@ -1,22 +1,8 @@
 target_sources(${PROJECT_NAME}
     PUBLIC
-        driver.h
-        formatting.h
-        genmacros.h
-        util.h
-        gen-ast.h
-        gen-enum.h
-        gen-util.h
-        gen-trav.h
-        gen-trav-user.h
-        gen-free.h
-        gen-copy.h
-        gen-actions.h
-        gen-cmakelists.h
-        reachability-matrix.h
+        API.h
     PRIVATE
-        util.c
-        driver.c
+        gen-functions.h
         gen-ast.c
         gen-enum.c
         gen-util.c
@@ -27,4 +13,5 @@ target_sources(${PROJECT_NAME}
         gen-actions.c
         gen-cmakelists.c
         reachability-matrix.c
+        API.c
 )

@@ -57,8 +57,6 @@ build/
 # Bin dir
 bin/
 
-cocogen/framework/generated
-cocogen/framework/user
-old_framework/
+/generated
 
 .vscode
