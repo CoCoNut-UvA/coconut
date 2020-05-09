@@ -18,7 +18,6 @@ phase LoadProgram {
 
 cycle Optimisations {
     prefix = OPT,
-    root = FunDef,
     actions {
         pass Optimisation1;
         pass Optimisation2;
