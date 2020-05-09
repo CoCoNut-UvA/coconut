@@ -17,6 +17,5 @@ Node *node_init();
 #define NODE_LINE(n) ((n)->lineno)
 #define NODE_COL(n) ((n)->colno)
 #define NODE_ERROR(n) ((n)->error)
-#define NODE_TRAV(n) ((n)->trav_func(n))
 
 #endif /* _CCN_AST_CORE_H_ */

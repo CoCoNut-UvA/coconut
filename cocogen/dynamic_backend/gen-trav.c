@@ -119,72 +119,6 @@ void gen_trav_header(Config *config, FILE *fp) {
     out("#endif /* _CCN_TRAV_H_ */\n");
 }
 
-void gen_error_vtable(Config *config, FILE *fp) {
-    out("TravFunc vtable_error[_NT_SIZE] = { &trav_error, ");
-    for (int j = 0; j < array_size(config->nodes); j++) {
-        out("&trav_error, ");
-    }
-    out("};\n");
-}
-
-void gen_trav_vtable(Config *config, FILE *fp, Traversal *trav) {
-    char *travlwr = strlwr(trav->id);
-    out("TravFunc vtable_%s[_NT_SIZE] = { &trav_error, ", travlwr);
-    int tindex = get_trav_index(trav->id);
-    for (int j = 0; j < array_size(config->nodes); j++) {
-        Node *node = array_get(config->nodes, j);
-        char *nodelwr = strlwr(node->id);
-        if (is_traversal_node(trav, node)) {
-            out("&%s_%s, ", travlwr, nodelwr);
-        } else if (is_pass_node(trav, node)) {
-            out("&trav_pass, ");
-        } else {
-            out("&trav_noop, ");
-        }
-        free(nodelwr);
-    }
-    out(" };\n\n");
-    free(travlwr);
-}
-
-void gen_vtables(Config *config, FILE *fp) {
-    gen_error_vtable(config, fp);
-    for (int i = 0; i < array_size(config->traversals); i++) {
-        Traversal *trav = array_get(config->traversals, i);
-        gen_trav_vtable(config, fp, trav);
-    }
-    out("const TravFunc *trav_mat[_TRAV_SIZE] = { vtable_error, ");
-    for (int i = 0; i < array_size(config->traversals); i++) {
-        Traversal *trav = array_get(config->traversals, i);
-        char *travlwr = strlwr(trav->id);
-        out("vtable_%s, ", travlwr);
-        free(travlwr);
-    }
-    out("vtable_free, ");
-    out("vtable_copy");
-    out("};\n\n");
-}
-
-void gen_travdata_arrays(Config *config, FILE *fp, char *version) {
-    char *verlwr = strlwr(version);
-    out("const %sFunc trav_data_%s_array[_TRAV_SIZE] = {", version, verlwr);
-    out("&trav_%s_error, ", verlwr);
-    for (int i = 0; i < array_size(config->traversals); i++) {
-        Traversal *trav = array_get(config->traversals, i);
-        char *travlwr = strlwr(trav->id);
-        if (trav->data) {
-            out("&trav_%s_%s, ", verlwr, travlwr);
-        } else {
-            out("&trav_%s, ", verlwr);
-        }
-        free(travlwr);
-    }
-    out("&trav_%s, ", verlwr); // Free
-    out("&trav_%s, ", verlwr); // Copy
-    out("};\n\n");
-    free(verlwr);
-}
-
 void gen_trav_node_func(Config *config, FILE *fp, Node *node) {
     if (!node->children) {
         return;
@@ -207,14 +141,6 @@ void gen_trav_node_func(Config *config, FILE *fp, Node *node) {
     free(nodeupr);
 }
 
-void lifetimes(Config *config, FILE *fp) {
-    for (int i = 0; i < array_size(config->nodes); i++) {
-        Node *node = array_get(config->nodes, i);
-        for (int j = 0; j < array_size(node->lifetimes); j++) {
-        }
-    }
-}
-
 void gen_trav_src(Config *config, FILE *fp) {
     out("#include <stdio.h>\n");
     out("\n");
@@ -229,9 +155,6 @@ void gen_trav_src(Config *config, FILE *fp) {
         free(travlwr);
     }
     out("\n");
-    gen_vtables(config, fp);
-    gen_travdata_arrays(config, fp, "Init");
-    gen_travdata_arrays(config, fp, "Free");
     for (int j = 0; j < array_size(config->nodes); j++) {
         Node *node = array_get(config->nodes, j);
         gen_trav_node_func(config, fp, node);

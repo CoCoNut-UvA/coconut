@@ -141,11 +141,6 @@ void gen_node_constructor(Config *config, FILE *fp, Node *node) {
     out_field("Node *node = node_init()");
     out_field("node->data.N_%s = mem_alloc(sizeof(struct NODE_DATA_%s))",
               nodelwr, nodeupr);
-    if (node->children) {
-        out_field("node->trav_func = &trav_%s", nodelwr);
-    } else {
-        out_field("node->trav_func = &trav_noop");
-    }
     out_field("NODE_TYPE(node) = " NT_ENUM_PREFIX "%s", nodelwr);
     gen_members(config, fp, node);
     // TODO: Checks here or in another file?

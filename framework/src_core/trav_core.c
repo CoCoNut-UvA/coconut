@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "inc_core/trav_core.h"
+#include "inc_core/vtables_core.h"
 #include "inc_generated/enum.h"
 #include "lib/memory.h"
 #include "lib/print.h"
@@ -55,7 +56,7 @@ Node *trav_pass(Node *arg_node) {
     if (!arg_node) {
         return arg_node;
     }
-    return NODE_TRAV(arg_node);
+    return trav_mat[TRAV_TYPE][NODE_TYPE(arg_node)](arg_node);
 }
 
 Node *trav_node(Node *arg_node) {
@@ -63,7 +64,7 @@ Node *trav_node(Node *arg_node) {
         print_user_error("traversal-driver", "Mandatory subtree is NULL");
         return arg_node;
     }
-    return NODE_TRAV(arg_node);
+    return trav_mat[TRAV_TYPE][NODE_TYPE(arg_node)](arg_node);
 }
 
 Node *traverse(Node *arg_node) {

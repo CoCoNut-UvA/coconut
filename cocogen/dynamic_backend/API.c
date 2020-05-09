@@ -26,6 +26,7 @@ static void generate_sources(Config *ir) {
     filegen_dir(global_command_options.source_dir);
 
     filegen_generate("ast.c", &gen_ast_src);
+    filegen_generate("vtables.c", &gen_vtables_src);
     filegen_generate("trav.c", &gen_trav_src);
     filegen_generate("free.c", &gen_free_src);
     filegen_generate("copy.c", &gen_copy_src);
