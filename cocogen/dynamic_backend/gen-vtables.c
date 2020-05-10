@@ -18,7 +18,7 @@ static int indent = 0;
 
 void gen_system_vtable(Config *config, FILE *fp, char *version) {
     char *verlwr = strlwr(version);
-    out("TravFunc vtable_%s[_NT_SIZE] = { &trav_error, ", verlwr);
+    out("const TravFunc vtable_%s[_NT_SIZE] = { &trav_error, ", verlwr);
     for (int j = 0; j < array_size(config->nodes); j++) {
         Node *node = array_get(config->nodes, j);
         char *nodelwr = strlwr(node->id);
@@ -34,7 +34,7 @@ void gen_error_vtable(Config *config, FILE *fp) {
     for (int j = 0; j < array_size(config->nodes); j++) {
         out("&trav_error, ");
     }
-    out("};\n");
+    out("};\n\n");
 }
 
 void gen_trav_vtable(Config *config, FILE *fp, Traversal *trav) {
@@ -77,9 +77,9 @@ void gen_vtables(Config *config, FILE *fp) {
     out("};\n\n");
 }
 
-void gen_travdata_vtable(Config *config, FILE *fp, char *version) {
+void gen_trav_data_vtable(Config *config, FILE *fp, char *version) {
     char *verlwr = strlwr(version);
-    out("const %sFunc travdata_%s_vtable[_TRAV_SIZE] = {", version, verlwr);
+    out("const %sFunc trav_data_%s_vtable[_TRAV_SIZE] = { ", version, verlwr);
     out("&trav_%s_error, ", verlwr);
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
@@ -140,7 +140,7 @@ void gen_vtables_src(Config *config, FILE *fp) {
     }
     out("\n");
     gen_vtables(config, fp);
-    gen_travdata_vtable(config, fp, "Init");
-    gen_travdata_vtable(config, fp, "Free");
+    gen_trav_data_vtable(config, fp, "Init");
+    gen_trav_data_vtable(config, fp, "Free");
     gen_pass_vtable(config, fp);
 }

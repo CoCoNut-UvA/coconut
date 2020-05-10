@@ -25,9 +25,10 @@ void trav_free_error(Trav *trav) {
 
 void trav_free(Trav *trav) { mem_free(trav); }
 
-void trav_push(TravType travtype) {
-    Trav *ts = travdata_init_vtable[travtype]();
-    ts->travtype = travtype;
+void trav_push(TravType trav_type) {
+    InitFunc init_func = trav_data_init_vtable[trav_type];
+    Trav *ts = init_func();
+    ts->trav_type = trav_type;
     ts->prev = current_traversal;
     current_traversal = ts;
 }
@@ -39,14 +40,15 @@ void trav_pop() {
         return;
     }
     Trav *prev = current_traversal->prev;
-    travdata_free_vtable[TRAV_TYPE](current_traversal);
+    FreeFunc free_func = trav_data_free_vtable[TRAV_TYPE];
+    free_func(current_traversal);
     current_traversal = prev;
 }
 
 Trav *trav_current(void) { return current_traversal; }
 
-Node *trav_start(Node *syntaxtree, TravType travtype) {
-    trav_push(travtype);
+Node *trav_start(Node *syntaxtree, TravType trav_type) {
+    trav_push(trav_type);
     syntaxtree = traverse(syntaxtree);
     trav_pop();
     return syntaxtree;

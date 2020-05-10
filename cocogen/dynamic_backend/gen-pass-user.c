@@ -10,7 +10,12 @@
 static int indent = 0;
 
 void gen_pass_user_header(Config *config, FILE *fp, Pass *pass) {
-    char *passupr = strupr(pass->id);
+    char *passupr;
+    if (pass->func) {
+        passupr = strupr(pass->func);
+    } else {
+        passupr = strupr(pass->id);
+    }
     char *passlwr;
     if (pass->func) {
         passlwr = strlwr(pass->func);

@@ -3,8 +3,9 @@
 #include "inc_core/vtables_core.h"
 #include "lib/print.h"
 
-Node *pass_start(Node *syntaxtree, PassType passtype) {
-    pass_vtable[passtype](syntaxtree);
+Node *pass_start(Node *syntaxtree, PassType pass_type) {
+    PassFunc pass_func = pass_vtable[pass_type];
+    pass_func(syntaxtree);
 }
 
 Node *pass_error(Node *arg_node) {

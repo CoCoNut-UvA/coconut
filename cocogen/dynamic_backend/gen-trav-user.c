@@ -37,7 +37,7 @@ void gen_trav_constructor(Config *config, FILE *fp, Traversal *trav) {
     char *travlwr = strlwr(trav->id);
     out_start_func("Trav *trav_init_%s()", travlwr);
     out_field("Trav *trav = trav_init()");
-    out_field("trav->travdata.TD_%s = mem_alloc(sizeof(struct TRAV_DATA_%s))",
+    out_field("trav->trav_data.TD_%s = mem_alloc(sizeof(struct TRAV_DATA_%s))",
               travlwr, travupr);
     out_comment("Define data here");
     out_field("return trav");
@@ -50,7 +50,7 @@ void gen_trav_destructor(Config *config, FILE *fp, Traversal *trav) {
     char *travlwr = strlwr(trav->id);
     out_start_func("void trav_free_%s(Trav *trav)", travlwr);
     out_comment("Free attributes here");
-    out_field("mem_free(trav->travdata.TD_%s)", travlwr);
+    out_field("mem_free(trav->trav_data.TD_%s)", travlwr);
     out_field("mem_free(trav)");
     out_end_func();
     free(travlwr);

@@ -5,8 +5,8 @@
 
 typedef struct TRAV {
     struct TRAV *prev;
-    TravType travtype;
-    union TRAV_DATA travdata;
+    TravType trav_type;
+    union TRAV_DATA trav_data;
 } Trav;
 
 static Trav *current_traversal;
@@ -15,7 +15,7 @@ Trav *trav_init(void);
 Trav *trav_init_error(void);
 void trav_free_error(Trav *trav);
 void trav_free(Trav *trav);
-void trav_push(TravType travtype);
+void trav_push(TravType trav_type);
 void trav_pop();
 Trav *trav_current(void);
 TravType trav_type(void);
@@ -24,6 +24,6 @@ Node *trav_noop(Node *arg_node);
 Node *trav_pass(Node *arg_node);
 Node *trav_error(Node *arg_node);
 Node *traverse(Node *arg_node);
-#define TRAV_TYPE ((trav_current())->travtype)
+#define TRAV_TYPE ((trav_current())->trav_type)
 
 #endif /* _CCN_TRAV_CORE_H_ */

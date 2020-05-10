@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+#include "inc_core/actions_core.h"
 #include "inc_core/ast_core.h"
 #include "inc_core/free_core.h"
 #include "inc_core/trav_core.h"
@@ -12,5 +13,6 @@ int main(int argc, char *argv[]) {
     Node *expr = node_init_exprlist(binop, NULL);
     trav_start(expr, TRAV_print);
     trav_start(expr, TRAV_context);
+    pass_start(expr, PASS_scanparse);
     free_node(expr);
 }
