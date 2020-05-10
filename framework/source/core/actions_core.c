@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "inc_core/vtables_core.h"
+#include "include/core/vtables_core.h"
 #include "lib/print.h"
 
 Node *pass_start(Node *syntaxtree, PassType pass_type) {

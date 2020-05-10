@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-#include "inc_core/trav_core.h"
-#include "inc_core/vtables_core.h"
-#include "inc_generated/enum.h"
+#include "include/core/trav_core.h"
+#include "include/core/vtables_core.h"
+#include "include/generated/enum.h"
 #include "lib/memory.h"
 #include "lib/print.h"
 

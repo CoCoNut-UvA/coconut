@@ -1,7 +1,7 @@
 #ifndef _CCN_AST_CORE_H_
 #define _CCN_AST_CORE_H_
 
-#include "inc_generated/ast.h"
+#include "include/generated/ast.h"
 
 typedef struct NODE {
     NodeType nodetype;

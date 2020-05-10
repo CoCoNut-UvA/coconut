@@ -12,7 +12,7 @@ static int indent = 0;
 void gen_actions_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_ACTIONS_H_\n");
     out("#define _CCN_ACTIONS_H_\n\n");
-    out("#include \"inc_core/ast_core.h\"\n");
+    out("#include \"include/core/ast_core.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->phases); i++) {
         Phase *phase = array_get(config->phases, i);
@@ -88,9 +88,9 @@ void gen_handle_phase(Config *config, FILE *fp, Phase *phase) {
 }
 
 void gen_actions_src(Config *config, FILE *fp) {
-    out("#include \"inc_generated/actions.h\"\n");
-    out("#include \"inc_core/trav_core.h\"\n");
-    out("#include \"inc_core/actions_core.h\"\n");
+    out("#include \"include/generated/actions.h\"\n");
+    out("#include \"include/core/trav_core.h\"\n");
+    out("#include \"include/core/actions_core.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->phases); i++) {
         Phase *phase = array_get(config->phases, i);

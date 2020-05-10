@@ -51,18 +51,20 @@ int main(int argc, char *argv[]) {
 
     // TODO(damian): Create recursive ensure_dir_exists
     if (global_command_options.header_dir == NULL) {
-        global_command_options.header_dir = "framework/inc_generated/";
+        global_command_options.header_dir = "framework/include/generated/";
         ensure_dir_exists("framework/",
                           0777); // FIXME(damian): transform to recursive.
-        ensure_dir_exists("framework/inc_generated/", 0777);
+        ensure_dir_exists("framework/include/", 0777);
+        ensure_dir_exists("framework/include/generated/", 0777);
     }
     ensure_dir_exists(global_command_options.header_dir, 0777);
 
     if (global_command_options.source_dir == NULL) {
-        global_command_options.source_dir = "framework/src_generated/";
+        global_command_options.source_dir = "framework/source/generated/";
         ensure_dir_exists("framework/",
                           0777); // FIXME(damian): transform to recursive.
-        ensure_dir_exists("framework/src_generated/", 0777);
+        ensure_dir_exists("framework/source/", 0777);
+        ensure_dir_exists("framework/source/generated/", 0777);
     }
     ensure_dir_exists(global_command_options.source_dir, 0777);
 

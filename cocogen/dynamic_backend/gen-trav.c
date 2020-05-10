@@ -75,7 +75,7 @@ void gen_trav_macros(Config *config, FILE *fp, Traversal *trav) {
 void gen_trav_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_TRAV_H_\n");
     out("#define _CCN_TRAV_H_\n\n");
-    out("#include \"inc_core/ast_core.h\"\n");
+    out("#include \"include/core/ast_core.h\"\n");
     out("\n");
 
     out_comment("Includes for user defined types");
@@ -144,14 +144,14 @@ void gen_trav_node_func(Config *config, FILE *fp, Node *node) {
 void gen_trav_src(Config *config, FILE *fp) {
     out("#include <stdio.h>\n");
     out("\n");
-    out("#include \"inc_core/copy_core.h\"\n");
-    out("#include \"inc_core/free_core.h\"\n");
-    out("#include \"inc_core/trav_core.h\"\n");
+    out("#include \"include/core/copy_core.h\"\n");
+    out("#include \"include/core/free_core.h\"\n");
+    out("#include \"include/core/trav_core.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
         char *travlwr = strlwr(trav->id);
-        out("#include \"inc_generated/trav_%s.h\"\n", travlwr);
+        out("#include \"include/generated/trav_%s.h\"\n", travlwr);
         free(travlwr);
     }
     out("\n");

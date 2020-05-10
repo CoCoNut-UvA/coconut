@@ -116,15 +116,15 @@ void gen_pass_vtable(Config *config, FILE *fp) {
 void gen_vtables_src(Config *config, FILE *fp) {
     out("#include <stdio.h>\n");
     out("\n");
-    out("#include \"inc_core/copy_core.h\"\n");
-    out("#include \"inc_core/free_core.h\"\n");
-    out("#include \"inc_core/trav_core.h\"\n");
-    out("#include \"inc_core/vtables_core.h\"");
+    out("#include \"include/core/copy_core.h\"\n");
+    out("#include \"include/core/free_core.h\"\n");
+    out("#include \"include/core/trav_core.h\"\n");
+    out("#include \"include/core/vtables_core.h\"");
     out("\n");
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
         char *travlwr = strlwr(trav->id);
-        out("#include \"inc_generated/trav_%s.h\"\n", travlwr);
+        out("#include \"include/generated/trav_%s.h\"\n", travlwr);
         free(travlwr);
     }
     for (int i = 0; i < array_size(config->passes); i++) {
@@ -135,7 +135,7 @@ void gen_vtables_src(Config *config, FILE *fp) {
         } else {
             passlwr = strlwr(pass->id);
         }
-        out("#include \"inc_generated/pass_%s.h\"\n", passlwr);
+        out("#include \"include/generated/pass_%s.h\"\n", passlwr);
         free(passlwr);
     }
     out("\n");

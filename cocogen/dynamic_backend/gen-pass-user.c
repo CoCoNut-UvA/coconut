@@ -24,8 +24,8 @@ void gen_pass_user_header(Config *config, FILE *fp, Pass *pass) {
     }
     out("#ifndef _CCN_PASS_%s_H_\n", passupr);
     out("#define _CCN_PASS_%s_H_\n\n", passupr);
-    out("#include \"inc_core/ast_core.h\"\n");
-    out("#include \"inc_core/actions_core.h\"\n");
+    out("#include \"include/core/ast_core.h\"\n");
+    out("#include \"include/core/actions_core.h\"\n");
     out("\n");
     out_field("Node *pass_%s(Node *arg_node)", passlwr);
     out("\n");
@@ -41,7 +41,7 @@ void gen_pass_user_src(Config *config, FILE *fp, Pass *pass) {
     } else {
         passlwr = strlwr(pass->id);
     }
-    out("#include \"inc_generated/pass_%s.h\"\n", passlwr);
+    out("#include \"include/generated/pass_%s.h\"\n", passlwr);
     out("\n");
 
     out_start_func("Node *pass_%s(Node *arg_node)", passlwr);
