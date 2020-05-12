@@ -4,16 +4,14 @@
 
 #include "lib/errors.h"
 #include "lib/print.h"
-#include "lib/str.h"
 #include "lib/smap.h"
+#include "lib/str.h"
 
-
-static void* (*allocator)(size_t) = malloc;
-static void (*deallocator)(void*) = free;
-
+static void *(*allocator)(size_t) = malloc;
+static void (*deallocator)(void *) = free;
 
 void *mem_alloc(size_t size) {
-    void *ptr = malloc(size);
+    void *ptr = allocator(size);
     if (ptr == NULL) {
         print_user_error("memory", "malloc allocation returned NULL.");
         exit(MALLOC_NULL);
@@ -23,7 +21,7 @@ void *mem_alloc(size_t size) {
 
 void mem_free(void *ptr) {
     if (ptr != NULL)
-        free(ptr);
+        deallocator(ptr);
 }
 
 void *mem_copy(const void *src, size_t size) {
@@ -32,10 +30,8 @@ void *mem_copy(const void *src, size_t size) {
     return new;
 }
 
-void set_allocator(void *(*_allocator)(size_t)) {
-    allocator = _allocator;
-}
+void set_allocator(void *(*_allocator)(size_t)) { allocator = _allocator; }
 
-void set_deallocator(void (*_deallocator)(void*)) {
+void set_deallocator(void (*_deallocator)(void *)) {
     deallocator = _deallocator;
 }

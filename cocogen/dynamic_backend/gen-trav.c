@@ -33,7 +33,7 @@ void gen_trav_struct(Config *config, FILE *fp, Traversal *trav) {
         }
     }
     out_struct_end();
-    free(travupr);
+    mem_free(travupr);
 }
 
 void gen_trav_union(Config *config, FILE *fp) {
@@ -47,8 +47,8 @@ void gen_trav_union(Config *config, FILE *fp) {
         char *travupr = strupr(trav->id);
         char *travlwr = strlwr(trav->id);
         out_field("struct TRAV_DATA_%s *TD_%s", travupr, travlwr);
-        free(travupr);
-        free(travlwr);
+        mem_free(travupr);
+        mem_free(travlwr);
     }
     out_struct_end();
 }
@@ -65,11 +65,11 @@ void gen_trav_macros(Config *config, FILE *fp, Traversal *trav) {
         char *attrupr = strupr(td->id);
         out("#define %s_%s (trav_current()->travdata.TD_%s->%s)\n", travupr,
             attrupr, travlwr, td->id);
-        free(attrupr);
+        mem_free(attrupr);
     }
     out("\n");
-    free(travupr);
-    free(travlwr);
+    mem_free(travupr);
+    mem_free(travlwr);
 }
 
 void gen_trav_header(Config *config, FILE *fp) {
@@ -113,7 +113,7 @@ void gen_trav_header(Config *config, FILE *fp) {
         }
         char *nodelwr = strlwr(node->id);
         out_field("Node *trav_%s(Node *arg_node)", nodelwr);
-        free(nodelwr);
+        mem_free(nodelwr);
     }
     out("\n");
     out("#endif /* _CCN_TRAV_H_ */\n");
@@ -132,13 +132,13 @@ void gen_trav_node_func(Config *config, FILE *fp, Node *node) {
         char *childupr = strupr(child->id);
         out_field("%s_%s(arg_node) = traverse(%s_%s(arg_node))", nodeupr,
                   childupr, nodeupr, childupr);
-        free(childupr);
+        mem_free(childupr);
     }
     out_field("return arg_node");
     out_end_func();
 
-    free(nodelwr);
-    free(nodeupr);
+    mem_free(nodelwr);
+    mem_free(nodeupr);
 }
 
 void gen_trav_src(Config *config, FILE *fp) {
@@ -152,7 +152,7 @@ void gen_trav_src(Config *config, FILE *fp) {
         Traversal *trav = array_get(config->traversals, i);
         char *travlwr = strlwr(trav->id);
         out("#include \"include/generated/trav_%s.h\"\n", travlwr);
-        free(travlwr);
+        mem_free(travlwr);
     }
     out("\n");
     for (int j = 0; j < array_size(config->nodes); j++) {

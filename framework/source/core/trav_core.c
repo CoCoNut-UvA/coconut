@@ -54,7 +54,7 @@ Node *trav_start(Node *syntaxtree, TravType trav_type) {
     return syntaxtree;
 }
 
-Node *trav_node(Node *arg_node) {
+Node *trav_mandatory(Node *arg_node) {
     if (!arg_node) {
         print_user_error("traversal-driver", "Mandatory subtree is NULL");
         return arg_node;
@@ -71,7 +71,9 @@ Node *traverse(Node *arg_node) {
     return trav_func(arg_node);
 }
 
-Node *trav_noop(Node *arg_node) { return arg_node; }
+/* Don't traverse through children and return */
+Node *trav_stop(Node *arg_node) { return arg_node; }
+
 Node *trav_error(Node *arg_node) {
     print_user_error("traversal-driver",
                      "Trying to traverse through node of unknown type.");

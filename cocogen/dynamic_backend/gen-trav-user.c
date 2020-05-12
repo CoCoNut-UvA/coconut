@@ -24,12 +24,12 @@ void gen_trav_user_header(Config *config, FILE *fp, Traversal *trav) {
         Node *node = array_get(trav->nodes, i);
         char *nodelwr = strlwr(node->id);
         out_field("Node *%s_%s(Node *arg_node)", travlwr, nodelwr);
-        free(nodelwr);
+        mem_free(nodelwr);
     }
     out("\n");
     out("#endif /* _CCN_TRAV_%s_H_ */\n", travupr);
-    free(travlwr);
-    free(travupr);
+    mem_free(travlwr);
+    mem_free(travupr);
 }
 
 void gen_trav_constructor(Config *config, FILE *fp, Traversal *trav) {
@@ -42,8 +42,8 @@ void gen_trav_constructor(Config *config, FILE *fp, Traversal *trav) {
     out_comment("Define data here");
     out_field("return trav");
     out_end_func();
-    free(travupr);
-    free(travlwr);
+    mem_free(travupr);
+    mem_free(travlwr);
 }
 
 void gen_trav_destructor(Config *config, FILE *fp, Traversal *trav) {
@@ -53,7 +53,7 @@ void gen_trav_destructor(Config *config, FILE *fp, Traversal *trav) {
     out_field("mem_free(trav->trav_data.TD_%s)", travlwr);
     out_field("mem_free(trav)");
     out_end_func();
-    free(travlwr);
+    mem_free(travlwr);
 }
 
 void gen_trav_user_func(Config *config, FILE *fp, Traversal *trav, Node *node) {
@@ -67,14 +67,14 @@ void gen_trav_user_func(Config *config, FILE *fp, Traversal *trav, Node *node) {
         char *childupr = strupr(child->id);
         out_field("%s_%s(arg_node) = traverse(%s_%s(arg_node))", nodeupr,
                   childupr, nodeupr, childupr);
-        free(childupr);
+        mem_free(childupr);
     }
     out_field("return arg_node");
     out_end_func();
 
-    free(nodelwr);
-    free(nodeupr);
-    free(travlwr);
+    mem_free(nodelwr);
+    mem_free(nodeupr);
+    mem_free(travlwr);
 }
 
 void gen_trav_user_src(Config *config, FILE *fp, Traversal *trav) {
@@ -91,6 +91,6 @@ void gen_trav_user_src(Config *config, FILE *fp, Traversal *trav) {
         Node *node = array_get(trav->nodes, i);
         gen_trav_user_func(config, fp, trav, node);
     }
-    free(travlwr);
-    free(travupr);
+    mem_free(travlwr);
+    mem_free(travupr);
 }

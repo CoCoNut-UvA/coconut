@@ -19,7 +19,7 @@ void gen_enum(Config *config, FILE *fp, Enum *arg_enum) {
     }
     out_enum_field("_%s_SIZE", arg_enum->prefix);
     out_enum_end("%s", arg_enum->id);
-    free(arg_enumupr);
+    mem_free(arg_enumupr);
 }
 
 void gen_nodetype_enum(Config *config, FILE *fp) {
@@ -30,7 +30,7 @@ void gen_nodetype_enum(Config *config, FILE *fp) {
         Node *node = (Node *)array_get(config->nodes, i);
         char *nodelwr = strlwr(node->id);
         out_enum_field(NT_ENUM_PREFIX "%s", nodelwr);
-        free(nodelwr);
+        mem_free(nodelwr);
     }
     out_enum_field("_" NT_ENUM_PREFIX "SIZE");
     out_enum_end(NT_ENUM_NAME);
@@ -44,7 +44,7 @@ void gen_nodeset_enum(Config *config, FILE *fp) {
         Nodeset *nodeset = (Nodeset *)array_get(config->nodesets, i);
         char *nodesetlwr = strlwr(nodeset->id);
         out_enum_field(NS_ENUM_PREFIX "%s", nodesetlwr);
-        free(nodesetlwr);
+        mem_free(nodesetlwr);
     }
     out_enum_field("_" NS_ENUM_PREFIX "SIZE");
     out_enum_end("NodesetType");
@@ -58,7 +58,7 @@ void gen_traversal_enum(Config *config, FILE *fp) {
         Traversal *trav = (Traversal *)array_get(config->traversals, i);
         char *travlwr = strlwr(trav->id);
         out_enum_field(TRAV_ENUM_PREFIX "%s", travlwr);
-        free(travlwr);
+        mem_free(travlwr);
     }
     out_enum_field(TRAV_ENUM_PREFIX "free");
     out_enum_field(TRAV_ENUM_PREFIX "copy");
@@ -79,7 +79,7 @@ void gen_pass_enum(Config *config, FILE *fp) {
             passlwr = strlwr(pass->id);
         }
         out_enum_field("PASS_%s", passlwr);
-        free(passlwr);
+        mem_free(passlwr);
     }
     out_enum_field("_PASS_SIZE");
     out_enum_end("PassType");

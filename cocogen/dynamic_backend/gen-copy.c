@@ -70,7 +70,7 @@ void gen_copy_header(Config *config, FILE *fp) {
         Node *node = array_get(config->nodes, i);
         char *nodelwr = strlwr(node->id);
         out("extern Node *copy_%s(Node *arg_node);\n", nodelwr);
-        free(nodelwr);
+        mem_free(nodelwr);
     }
     out("\n");
     out("#endif /* _CCN_COPY_H_ */\n");
@@ -97,19 +97,19 @@ void gen_copy_func(Config *config, FILE *fp, Node *node) {
         }
         out_field("%s_%s(new_node) = %s(%s_%s(arg_node))", nodeupr, attrupr,
                   copyfunc, nodeupr, attrupr);
-        free(attrupr);
+        mem_free(attrupr);
     }
     for (int i = 0; i < array_size(node->children); i++) {
         Child *child = array_get(node->children, i);
         char *childupr = strupr(child->id);
         out_field("%s_%s(new_node) = traverse(%s_%s(arg_node))", nodeupr,
                   childupr, nodeupr, childupr);
-        free(childupr);
+        mem_free(childupr);
     }
     out_field("return new_node");
     out_end_func();
-    free(nodelwr);
-    free(nodeupr);
+    mem_free(nodelwr);
+    mem_free(nodeupr);
 }
 
 void gen_copy_src(Config *config, FILE *fp) {

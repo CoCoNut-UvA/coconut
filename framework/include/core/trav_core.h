@@ -20,8 +20,7 @@ void trav_pop();
 Trav *trav_current(void);
 TravType trav_type(void);
 Node *trav_start(Node *syntaxtree, TravType trav);
-Node *trav_noop(Node *arg_node);
-Node *trav_pass(Node *arg_node);
+Node *trav_stop(Node *arg_node);
 Node *trav_error(Node *arg_node);
 Node *traverse(Node *arg_node);
 #define TRAV_TYPE ((trav_current())->trav_type)

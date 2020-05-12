@@ -20,7 +20,7 @@ void gen_header_cmakelists(Config *config, FILE *fp) {
         Traversal *trav = array_get(config->traversals, i);
         char *travlwr = strlwr(trav->id);
         out("        trav_%s.h\n", travlwr);
-        free(travlwr);
+        mem_free(travlwr);
     }
     for (int i = 0; i < array_size(config->passes); i++) {
         Pass *pass = array_get(config->passes, i);
@@ -31,7 +31,7 @@ void gen_header_cmakelists(Config *config, FILE *fp) {
             passlwr = strlwr(pass->id);
         }
         out("        pass_%s.h\n", passlwr);
-        free(passlwr);
+        mem_free(passlwr);
     }
     out(")\n");
 }
@@ -49,7 +49,7 @@ void gen_source_cmakelists(Config *config, FILE *fp) {
         Traversal *trav = array_get(config->traversals, i);
         char *travlwr = strlwr(trav->id);
         out("        trav_%s.c\n", travlwr);
-        free(travlwr);
+        mem_free(travlwr);
     }
     for (int i = 0; i < array_size(config->passes); i++) {
         Pass *pass = array_get(config->passes, i);
@@ -60,7 +60,7 @@ void gen_source_cmakelists(Config *config, FILE *fp) {
             passlwr = strlwr(pass->id);
         }
         out("        pass_%s.c\n", passlwr);
-        free(passlwr);
+        mem_free(passlwr);
     }
     out(")\n");
 }

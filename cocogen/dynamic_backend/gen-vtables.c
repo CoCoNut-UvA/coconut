@@ -23,10 +23,10 @@ void gen_system_vtable(Config *config, FILE *fp, char *version) {
         Node *node = array_get(config->nodes, j);
         char *nodelwr = strlwr(node->id);
         out("&%s_%s, ", verlwr, nodelwr);
-        free(nodelwr);
+        mem_free(nodelwr);
     }
     out(" };\n\n");
-    free(verlwr);
+    mem_free(verlwr);
 }
 
 void gen_error_vtable(Config *config, FILE *fp) {
@@ -49,12 +49,12 @@ void gen_trav_vtable(Config *config, FILE *fp, Traversal *trav) {
         } else if (is_pass_node(trav, node)) {
             out("&trav_%s, ", nodelwr);
         } else {
-            out("&trav_noop, ");
+            out("&trav_stop, ");
         }
-        free(nodelwr);
+        mem_free(nodelwr);
     }
     out(" };\n\n");
-    free(travlwr);
+    mem_free(travlwr);
 }
 
 void gen_vtables(Config *config, FILE *fp) {
@@ -70,10 +70,10 @@ void gen_vtables(Config *config, FILE *fp) {
         Traversal *trav = array_get(config->traversals, i);
         char *travlwr = strlwr(trav->id);
         out("vtable_%s, ", travlwr);
-        free(travlwr);
+        mem_free(travlwr);
     }
     out("vtable_free, ");
-    out("vtable_copy");
+    out("vtable_copy, ");
     out("};\n\n");
 }
 
@@ -89,12 +89,12 @@ void gen_trav_data_vtable(Config *config, FILE *fp, char *version) {
         } else {
             out("&trav_%s, ", verlwr);
         }
-        free(travlwr);
+        mem_free(travlwr);
     }
     out("&trav_%s, ", verlwr); // Free
     out("&trav_%s, ", verlwr); // Copy
     out("};\n\n");
-    free(verlwr);
+    mem_free(verlwr);
 }
 
 void gen_pass_vtable(Config *config, FILE *fp) {
@@ -108,7 +108,7 @@ void gen_pass_vtable(Config *config, FILE *fp) {
             passlwr = strlwr(pass->id);
         }
         out("&pass_%s, ", passlwr);
-        free(passlwr);
+        mem_free(passlwr);
     }
     out(" };\n\n");
 }
@@ -125,7 +125,7 @@ void gen_vtables_src(Config *config, FILE *fp) {
         Traversal *trav = array_get(config->traversals, i);
         char *travlwr = strlwr(trav->id);
         out("#include \"include/generated/trav_%s.h\"\n", travlwr);
-        free(travlwr);
+        mem_free(travlwr);
     }
     for (int i = 0; i < array_size(config->passes); i++) {
         Pass *pass = array_get(config->passes, i);
@@ -136,7 +136,7 @@ void gen_vtables_src(Config *config, FILE *fp) {
             passlwr = strlwr(pass->id);
         }
         out("#include \"include/generated/pass_%s.h\"\n", passlwr);
-        free(passlwr);
+        mem_free(passlwr);
     }
     out("\n");
     gen_vtables(config, fp);

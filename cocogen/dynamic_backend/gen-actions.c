@@ -24,7 +24,7 @@ void gen_actions_header(Config *config, FILE *fp) {
             type = "phase";
         }
         out_field("void %s_start_%s(Node *root)", type, phaselwr);
-        free(phaselwr);
+        mem_free(phaselwr);
     }
     for (int i = 0; i < array_size(config->passes); i++) {
         Pass *pass = array_get(config->passes, i);
@@ -35,7 +35,7 @@ void gen_actions_header(Config *config, FILE *fp) {
             passlwr = strlwr(pass->id);
         }
         out_field("void pass_start_%s(Node *root, PassType type)", passlwr);
-        free(passlwr);
+        mem_free(passlwr);
     }
     out("\n");
     out("#endif /* _CCN_ACTIONS_H_ */\n");
@@ -60,7 +60,7 @@ void gen_handle_phase(Config *config, FILE *fp, Phase *phase) {
                 passlwr = strlwr(action_pass->id);
             }
             out_field("pass_start(root, PASS_%s)", passlwr);
-            free(passlwr);
+            mem_free(passlwr);
             break;
         case ACTION_PHASE:;
             Phase *action_phase = (Phase *)action->action;
@@ -72,13 +72,13 @@ void gen_handle_phase(Config *config, FILE *fp, Phase *phase) {
                 type = "phase";
             }
             out_field("%s_start_%s(root)", type, phaselwr);
-            free(phaselwr);
+            mem_free(phaselwr);
             break;
         case ACTION_TRAVERSAL:;
             Traversal *action_trav = (Traversal *)action->action;
             char *travlwr = strlwr(action_trav->id);
             out_field("trav_start(root, TRAV_%s)", travlwr);
-            free(travlwr);
+            mem_free(travlwr);
             break;
         case ACTION_REFERENCE:
             // TODO: What is this?
@@ -104,7 +104,7 @@ void gen_actions_src(Config *config, FILE *fp) {
         out_start_func("void %s_start_%s(Node *root)", type, phaselwr);
         gen_handle_phase(config, fp, phase);
         out_end_func();
-        free(phaselwr);
+        mem_free(phaselwr);
     }
     out("\n");
 }

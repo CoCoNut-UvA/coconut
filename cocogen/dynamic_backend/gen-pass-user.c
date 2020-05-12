@@ -30,8 +30,8 @@ void gen_pass_user_header(Config *config, FILE *fp, Pass *pass) {
     out_field("Node *pass_%s(Node *arg_node)", passlwr);
     out("\n");
     out("#endif /* _CCN_PASS_%s_H_ */\n", passupr);
-    free(passlwr);
-    free(passupr);
+    mem_free(passlwr);
+    mem_free(passupr);
 }
 
 void gen_pass_user_src(Config *config, FILE *fp, Pass *pass) {
@@ -49,5 +49,5 @@ void gen_pass_user_src(Config *config, FILE *fp, Pass *pass) {
     out_field("return arg_node");
     out_end_func();
 
-    free(passlwr);
+    mem_free(passlwr);
 }

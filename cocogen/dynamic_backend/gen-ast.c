@@ -33,7 +33,7 @@ void gen_init_function(Config *config, FILE *fp, Node *node) {
         }
     }
     out(")");
-    free(nodelwr);
+    mem_free(nodelwr);
 }
 
 void gen_node_struct(Config *config, FILE *fp, Node *node) {
@@ -52,7 +52,7 @@ void gen_node_struct(Config *config, FILE *fp, Node *node) {
         }
     }
     out_struct_end();
-    free(nodeupr);
+    mem_free(nodeupr);
 }
 
 void gen_node_union(Config *config, FILE *fp) {
@@ -63,8 +63,8 @@ void gen_node_union(Config *config, FILE *fp) {
         char *nodeupr = strupr(node->id);
         char *nodelwr = strlwr(node->id);
         out_field("struct NODE_DATA_%s *N_%s", nodeupr, nodelwr);
-        free(nodeupr);
-        free(nodelwr);
+        mem_free(nodeupr);
+        mem_free(nodelwr);
     }
     out_struct_end();
 }
@@ -77,17 +77,17 @@ void gen_node_macros(Config *config, FILE *fp, Node *node) {
         char *childupr = strupr(child->id);
         out("#define %s_%s(n) ((n)->data.N_%s->%s)\n", nodeupr, childupr,
             nodelwr, child->id);
-        free(childupr);
+        mem_free(childupr);
     }
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
         char *attrupr = strupr(attr->id);
         out("#define %s_%s(n) ((n)->data.N_%s->%s)\n", nodeupr, attrupr,
             nodelwr, attr->id);
-        free(attrupr);
+        mem_free(attrupr);
     }
-    free(nodeupr);
-    free(nodelwr);
+    mem_free(nodeupr);
+    mem_free(nodelwr);
 }
 
 void gen_ast_header(Config *config, FILE *fp) {
@@ -122,15 +122,15 @@ void gen_members(Config *config, FILE *fp, Node *node) {
         Child *child = (Child *)array_get(node->children, i);
         char *childupr = strupr(child->id);
         out_field("%s_%s(node) = %s", nodeupr, childupr, child->id);
-        free(childupr);
+        mem_free(childupr);
     }
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
         char *attrupr = strupr(attr->id);
         out_field("%s_%s(node) = %s", nodeupr, attrupr, attr->id);
-        free(attrupr);
+        mem_free(attrupr);
     }
-    free(nodeupr);
+    mem_free(nodeupr);
 }
 
 void gen_node_constructor(Config *config, FILE *fp, Node *node) {
@@ -146,8 +146,8 @@ void gen_node_constructor(Config *config, FILE *fp, Node *node) {
     // TODO: Checks here or in another file?
     out_field("return node");
     out_end_func();
-    free(nodeupr);
-    free(nodelwr);
+    mem_free(nodeupr);
+    mem_free(nodelwr);
 }
 
 void gen_ast_src(Config *config, FILE *fp) {

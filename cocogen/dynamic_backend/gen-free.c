@@ -19,7 +19,7 @@ void gen_free_header(Config *config, FILE *fp) {
         Node *node = array_get(config->nodes, i);
         char *nodelwr = strlwr(node->id);
         out_field("Node *free_%s(Node *arg_node)", nodelwr);
-        free(nodelwr);
+        mem_free(nodelwr);
     }
     out("\n");
     out("#endif /* _CCN_FREE_H_ */\n");
@@ -42,21 +42,21 @@ void gen_free_func(Config *config, FILE *fp, Node *node) {
             continue;
         }
         out_field("%s(%s_%s(arg_node))", freefunc, nodeupr, attrupr);
-        free(attrupr);
+        mem_free(attrupr);
     }
     for (int i = 0; i < array_size(node->children); i++) {
         Child *child = array_get(node->children, i);
         char *childupr = strupr(child->id);
         out_field("%s_%s(arg_node) = traverse(%s_%s(arg_node))", nodeupr,
                   childupr, nodeupr, childupr);
-        free(childupr);
+        mem_free(childupr);
     }
     out_field("mem_free(arg_node->data.N_%s)", nodelwr);
     out_field("mem_free(arg_node)");
     out_field("return NULL");
     out_end_func();
-    free(nodelwr);
-    free(nodeupr);
+    mem_free(nodelwr);
+    mem_free(nodeupr);
 }
 
 void gen_free_src(Config *config, FILE *fp) {
