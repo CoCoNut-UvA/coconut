@@ -43,9 +43,16 @@ void gen_node_struct(Config *config, FILE *fp, Node *node) {
     if (node->children) {
         out_union("NODE_CHILDREN_%s", nodeupr);
         out_struct("NODE_CHILDREN_%s_STRUCT", nodeupr);
+        print_indent_level(indent, fp);
+        out("Node ");
         for (int i = 0; i < array_size(node->children); ++i) {
             Child *child = (Child *)array_get(node->children, i);
-            out_field("Node *%s", child->id);
+            out("*%s", child->id);
+            if (i != array_size(node->children) - 1) {
+                out(", ");
+            } else {
+                out(";\n");
+            }
         }
         out_typedef_struct_end("%s_children_s", nodelwr);
         out_field("Node *%s_children_a[%ld]", nodelwr,
