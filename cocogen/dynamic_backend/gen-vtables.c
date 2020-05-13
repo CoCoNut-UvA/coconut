@@ -47,9 +47,9 @@ void gen_trav_vtable(Config *config, FILE *fp, Traversal *trav) {
         if (is_traversal_node(trav, node)) {
             out("&%s_%s, ", travlwr, nodelwr);
         } else if (is_pass_node(trav, node)) {
-            out("&trav_%s, ", nodelwr);
+            out("&trav_children, ");
         } else {
-            out("&trav_stop, ");
+            out("&trav_return, ");
         }
         mem_free(nodelwr);
     }
