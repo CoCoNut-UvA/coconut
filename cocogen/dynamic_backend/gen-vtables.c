@@ -87,12 +87,12 @@ void gen_trav_data_vtable(Config *config, FILE *fp, char *version) {
         if (trav->data) {
             out("&trav_%s_%s, ", verlwr, travlwr);
         } else {
-            out("&trav_%s, ", verlwr);
+            out("&trav_%s_return, ", verlwr);
         }
         mem_free(travlwr);
     }
-    out("&trav_%s, ", verlwr); // Free
-    out("&trav_%s, ", verlwr); // Copy
+    out("&trav_%s_return, ", verlwr); // Free
+    out("&trav_%s_return, ", verlwr); // Copy
     out("};\n\n");
     mem_free(verlwr);
 }

@@ -1,20 +1,20 @@
 #include <stdio.h>
 
+#include "include/core/ast_core.h"
 #include "include/core/trav_core.h"
 #include "include/core/vtables_core.h"
-#include "include/generated/enum.h"
 #include "lib/memory.h"
 #include "lib/print.h"
 
-Trav *trav_init(void) {
-    Trav *trav = (Trav *)mem_alloc(sizeof(Trav));
-    return trav;
-}
+static Trav *current_traversal = NULL;
 
-Trav *trav_init_error(void) {
+Trav *trav_init_return(Trav *trav) { return trav; }
+void trav_free_return(Trav *trav) {}
+
+Trav *trav_init_error(Trav *trav) {
     print_user_error("traversal-driver",
                      "Trying to init data of unknown traversal.");
-    return NULL;
+    return trav;
 }
 
 void trav_free_error(Trav *trav) {
@@ -23,14 +23,13 @@ void trav_free_error(Trav *trav) {
                      "Trying to free data of unknown traversal.");
 }
 
-void trav_free(Trav *trav) { mem_free(trav); }
-
 void trav_push(TravType trav_type) {
+    Trav *trav = (Trav *)mem_alloc(sizeof(Trav));
+    trav->trav_type = trav_type;
+    trav->prev = current_traversal;
+    current_traversal = trav;
     InitFunc init_func = trav_data_init_vtable[trav_type];
-    Trav *ts = init_func();
-    ts->trav_type = trav_type;
-    ts->prev = current_traversal;
-    current_traversal = ts;
+    init_func(trav);
 }
 
 void trav_pop() {
@@ -42,6 +41,7 @@ void trav_pop() {
     Trav *prev = current_traversal->prev;
     FreeFunc free_func = trav_data_free_vtable[TRAV_TYPE];
     free_func(current_traversal);
+    mem_free(current_traversal);
     current_traversal = prev;
 }
 

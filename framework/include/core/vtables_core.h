@@ -4,7 +4,7 @@
 #include "include/core/ast_core.h"
 
 typedef Node *(*TravFunc)(Node *);
-typedef Trav *(*InitFunc)(void);
+typedef Trav *(*InitFunc)(Trav *);
 typedef void (*FreeFunc)(Trav *);
 typedef Node *(*PassFunc)(Node *);
 

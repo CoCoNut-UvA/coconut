@@ -11,10 +11,10 @@ typedef struct TRAV {
 
 static Trav *current_traversal;
 
-Trav *trav_init(void);
-Trav *trav_init_error(void);
+Trav *trav_init_return(Trav *);
+Trav *trav_init_error(Trav *);
 void trav_free_error(Trav *trav);
-void trav_free(Trav *trav);
+void trav_free_return(Trav *trav);
 void trav_push(TravType trav_type);
 void trav_pop();
 Trav *trav_current(void);

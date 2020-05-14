@@ -63,7 +63,7 @@ void gen_trav_data_macros(Config *config, FILE *fp, Traversal *trav) {
     for (int i = 0; i < array_size(trav->data); ++i) {
         Attr *td = (Attr *)array_get(trav->data, i);
         char *attrupr = strupr(td->id);
-        out("#define %s_%s (trav_current()->travdata.TD_%s->%s)\n", travupr,
+        out("#define %s_%s (trav_current()->trav_data.TD_%s->%s)\n", travupr,
             attrupr, travlwr, td->id);
         mem_free(attrupr);
     }
@@ -99,7 +99,6 @@ void gen_trav_data_header(Config *config, FILE *fp) {
         gen_trav_data_struct(config, fp, trav);
     }
     gen_trav_data_union(config, fp);
-    out("\n");
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
         if (trav->data) {
@@ -109,6 +108,7 @@ void gen_trav_data_header(Config *config, FILE *fp) {
             mem_free(travlwr);
         }
     }
+    out("\n");
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
         gen_trav_data_macros(config, fp, trav);
@@ -120,8 +120,7 @@ void gen_trav_data_header(Config *config, FILE *fp) {
 void gen_trav_data_constructor(Config *config, FILE *fp, Traversal *trav) {
     char *travupr = strupr(trav->id);
     char *travlwr = strlwr(trav->id);
-    out_start_func("Trav *trav_init_%s()", travlwr);
-    out_field("Trav *trav = trav_init()");
+    out_start_func("Trav *trav_init_%s(Trav *trav)", travlwr);
     out_field("trav->trav_data.TD_%s = mem_alloc(sizeof(struct TRAV_DATA_%s))",
               travlwr, travupr);
     out_field("%s_init_trav_data(trav)", travlwr);
@@ -136,7 +135,6 @@ void gen_trav_data_destructor(Config *config, FILE *fp, Traversal *trav) {
     out_start_func("void trav_free_%s(Trav *trav)", travlwr);
     out_field("%s_free_trav_data(trav)", travlwr);
     out_field("mem_free(trav->trav_data.TD_%s)", travlwr);
-    out_field("mem_free(trav)");
     out_end_func();
     mem_free(travlwr);
 }
