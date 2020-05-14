@@ -13,10 +13,29 @@ void gen_actions_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_ACTIONS_H_\n");
     out("#define _CCN_ACTIONS_H_\n\n");
     out("#include \"include/core/ast_core.h\"\n");
+    out("#include \"include/core/trav_core.h\"\n");
     out("\n");
+    for (int i = 0; i < array_size(config->traversals); i++) {
+        Traversal *trav = array_get(config->traversals, i);
+        char *travlwr = strlwr(trav->id);
+        char *travupr = strupr(trav->id);
+        out_comment("Traversal %s", trav->id);
+        out_field("Trav *trav_init_%s()", travlwr);
+        out_field("void trav_free_%s(Trav *trav)", travlwr);
+        for (int i = 0; i < array_size(trav->nodes); i++) {
+            Node *node = array_get(trav->nodes, i);
+            char *nodelwr = strlwr(node->id);
+            out_field("Node *%s_%s(Node *arg_node)", travlwr, nodelwr);
+            mem_free(nodelwr);
+        }
+        out("\n");
+        mem_free(travlwr);
+        mem_free(travupr);
+    }
     for (int i = 0; i < array_size(config->phases); i++) {
         Phase *phase = array_get(config->phases, i);
         char *phaselwr = strlwr(phase->id);
+        out_comment("Phase %s", phase->id);
         char *type;
         if (phase->cycle) {
             type = "cycle";
@@ -25,9 +44,11 @@ void gen_actions_header(Config *config, FILE *fp) {
         }
         out_field("void %s_start_%s(Node *root)", type, phaselwr);
         mem_free(phaselwr);
+        out("\n");
     }
     for (int i = 0; i < array_size(config->passes); i++) {
         Pass *pass = array_get(config->passes, i);
+        out_comment("Pass %s", pass->id);
         char *passlwr;
         if (pass->func) {
             passlwr = strlwr(pass->func);
@@ -35,19 +56,14 @@ void gen_actions_header(Config *config, FILE *fp) {
             passlwr = strlwr(pass->id);
         }
         out_field("void pass_start_%s(Node *root, PassType type)", passlwr);
+        out_field("Node *pass_%s(Node *arg_node)", passlwr);
         mem_free(passlwr);
+        out("\n");
     }
-    out("\n");
     out("#endif /* _CCN_ACTIONS_H_ */\n");
 }
 
-void gen_handle_pass(Config *config, FILE *fp, Pass *pass) {
-    if (pass->func) {
-        out_field("%s()", pass->func);
-    }
-}
-
-void gen_handle_phase(Config *config, FILE *fp, Phase *phase) {
+void gen_phase(Config *config, FILE *fp, Phase *phase) {
     for (int i = 0; i < array_size(phase->actions); i++) {
         Action *action = array_get(phase->actions, i);
         switch (action->type) {
@@ -102,9 +118,85 @@ void gen_actions_src(Config *config, FILE *fp) {
             type = "phase";
         }
         out_start_func("void %s_start_%s(Node *root)", type, phaselwr);
-        gen_handle_phase(config, fp, phase);
+        gen_phase(config, fp, phase);
         out_end_func();
         mem_free(phaselwr);
     }
     out("\n");
+}
+
+void gen_pass_user_src(Config *config, FILE *fp, Pass *pass) {
+    char *passlwr;
+    if (pass->func) {
+        passlwr = strlwr(pass->func);
+    } else {
+        passlwr = strlwr(pass->id);
+    }
+    out("#include \"include/core/actions_core.h\"\n");
+    out("\n");
+    out_start_func("Node *pass_%s(Node *arg_node)", passlwr);
+    out_comment("User code here");
+    out_field("return arg_node");
+    out_end_func();
+
+    mem_free(passlwr);
+}
+
+void gen_trav_constructor(Config *config, FILE *fp, Traversal *trav) {
+    char *travupr = strupr(trav->id);
+    char *travlwr = strlwr(trav->id);
+    out_start_func("Trav *trav_init_%s()", travlwr);
+    out_field("Trav *trav = trav_init()");
+    out_field("trav->trav_data.TD_%s = mem_alloc(sizeof(struct TRAV_DATA_%s))",
+              travlwr, travupr);
+    out_comment("Define data here");
+    out_field("return trav");
+    out_end_func();
+    mem_free(travupr);
+    mem_free(travlwr);
+}
+
+void gen_trav_destructor(Config *config, FILE *fp, Traversal *trav) {
+    char *travlwr = strlwr(trav->id);
+    out_start_func("void trav_free_%s(Trav *trav)", travlwr);
+    out_comment("Free attributes here");
+    out_field("mem_free(trav->trav_data.TD_%s)", travlwr);
+    out_field("mem_free(trav)");
+    out_end_func();
+    mem_free(travlwr);
+}
+
+void gen_trav_user_func(Config *config, FILE *fp, Traversal *trav, Node *node) {
+    char *travlwr = strlwr(trav->id);
+    char *nodelwr = strlwr(node->id);
+    char *nodeupr = strupr(node->id);
+
+    out_start_func("Node *%s_%s(Node *arg_node)", travlwr, nodelwr);
+    if (node->children) {
+        out_field("arg_node = trav_children(arg_node)");
+    }
+    out_field("return arg_node");
+    out_end_func();
+
+    mem_free(nodelwr);
+    mem_free(nodeupr);
+    mem_free(travlwr);
+}
+
+void gen_trav_user_src(Config *config, FILE *fp, Traversal *trav) {
+    char *travlwr = strlwr(trav->id);
+    char *travupr = strupr(trav->id);
+    out("#include \"include/generated/actions.h\"\n");
+    out("#include \"lib/memory.h\"\n");
+    out("\n");
+    if (trav->data) {
+        gen_trav_constructor(config, fp, trav);
+        gen_trav_destructor(config, fp, trav);
+    }
+    for (int i = 0; i < array_size(trav->nodes); i++) {
+        Node *node = array_get(trav->nodes, i);
+        gen_trav_user_func(config, fp, trav, node);
+    }
+    mem_free(travlwr);
+    mem_free(travupr);
 }

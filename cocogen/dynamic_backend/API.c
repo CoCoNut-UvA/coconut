@@ -17,8 +17,6 @@ static void generate_headers(Config *ir) {
     filegen_generate("free.h", &gen_free_header);
     filegen_generate("copy.h", &gen_copy_header);
     filegen_generate("actions.h", &gen_actions_header);
-    filegen_all_traversals("trav_%s.h", &gen_trav_user_header);
-    filegen_all_passes("pass_%s.h", &gen_pass_user_header);
     filegen_generate("CMakeLists.txt", &gen_header_cmakelists);
 }
 
@@ -31,8 +29,12 @@ static void generate_sources(Config *ir) {
     filegen_generate("free.c", &gen_free_src);
     filegen_generate("copy.c", &gen_copy_src);
     filegen_generate("actions.c", &gen_actions_src);
-    filegen_all_traversals("trav_%s.c", &gen_trav_user_src);
-    filegen_all_passes("pass_%s.c", &gen_pass_user_src);
+    if (global_command_options.gen_user_files) {
+        /* Generate user traversal and pass files.
+        /* WARNING, THIS WILL OVERWRITE CURRENT FILES */
+        filegen_all_traversals("trav_%s.c", &gen_trav_user_src);
+        filegen_all_passes("pass_%s.c", &gen_pass_user_src);
+    }
     filegen_generate("CMakeLists.txt", &gen_source_cmakelists);
 }
 

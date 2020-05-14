@@ -16,23 +16,6 @@ void gen_header_cmakelists(Config *config, FILE *fp) {
     out("        enum.h\n");
     out("        free.h\n");
     out("        trav_data.h\n");
-    for (int i = 0; i < array_size(config->traversals); i++) {
-        Traversal *trav = array_get(config->traversals, i);
-        char *travlwr = strlwr(trav->id);
-        out("        trav_%s.h\n", travlwr);
-        mem_free(travlwr);
-    }
-    for (int i = 0; i < array_size(config->passes); i++) {
-        Pass *pass = array_get(config->passes, i);
-        char *passlwr;
-        if (pass->func) {
-            passlwr = strlwr(pass->func);
-        } else {
-            passlwr = strlwr(pass->id);
-        }
-        out("        pass_%s.h\n", passlwr);
-        mem_free(passlwr);
-    }
     out(")\n");
 }
 

@@ -5,8 +5,6 @@ target_sources(${PROJECT_NAME}
         gen-functions.h
         gen-ast.c
         gen-enum.c
-        gen-trav-user.c
-        gen-pass-user.c
         gen-trav-data.c
         gen-free.c
         gen-copy.c
