@@ -1,7 +1,7 @@
 #ifndef _CCN_TRAV_CORE_H_
 #define _CCN_TRAV_CORE_H_
 
-#include "include/generated/trav_data.h"
+#include "include/generated/trav.h"
 
 typedef struct TRAV {
     struct TRAV *prev;

@@ -55,16 +55,6 @@ Node *trav_start(Node *syntaxtree, TravType trav_type) {
     return syntaxtree;
 }
 
-/* Traverse through mandatory subtree */
-Node *trav_mandatory(Node *arg_node) {
-    if (!arg_node) {
-        print_user_error("traversal-driver", "Mandatory subtree is NULL");
-        return arg_node;
-    }
-    TravFunc trav_func = trav_mat[TRAV_TYPE][NODE_TYPE(arg_node)];
-    return trav_func(arg_node);
-}
-
 /* Main traverse function, to be called by the user */
 Node *trav(Node *arg_node) {
     TravFunc trav_func = trav_mat[TRAV_TYPE][NODE_TYPE(arg_node)];

@@ -13,7 +13,7 @@ static void generate_headers(Config *ir) {
 
     filegen_generate("enum.h", &gen_enum_header);
     filegen_generate("ast.h", &gen_ast_header);
-    filegen_generate("trav_data.h", &gen_trav_data_header);
+    filegen_generate("trav.h", &gen_trav_data_header);
     filegen_generate("free.h", &gen_free_header);
     filegen_generate("copy.h", &gen_copy_header);
     filegen_generate("actions.h", &gen_actions_header);
@@ -25,6 +25,7 @@ static void generate_sources(Config *ir) {
     filegen_dir(global_command_options.source_dir);
 
     filegen_generate("ast.c", &gen_ast_src);
+    filegen_generate("trav.c", &gen_trav_data_src);
     filegen_generate("vtables.c", &gen_vtables_src);
     filegen_generate("free.c", &gen_free_src);
     filegen_generate("copy.c", &gen_copy_src);

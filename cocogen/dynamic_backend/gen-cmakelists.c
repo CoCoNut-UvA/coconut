@@ -10,20 +10,22 @@
 void gen_header_cmakelists(Config *config, FILE *fp) {
     out("target_sources(${PROJECT_NAME}\n");
     out("    PUBLIC\n");
-    out("        actions.h\n");
     out("        ast.h\n");
+    out("        trav.h\n");
+    out("        actions.h\n");
     out("        copy.h\n");
     out("        enum.h\n");
     out("        free.h\n");
-    out("        trav_data.h\n");
+    out("        trav.h\n");
     out(")\n");
 }
 
 void gen_source_cmakelists(Config *config, FILE *fp) {
     out("target_sources(${PROJECT_NAME}\n");
     out("    PRIVATE\n");
-    out("        actions.c\n");
     out("        ast.c\n");
+    out("        trav.c\n");
+    out("        actions.c\n");
     out("        copy.c\n");
     out("        free.c\n");
     out("        vtables.c\n");

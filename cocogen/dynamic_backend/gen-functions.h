@@ -20,4 +20,5 @@ void gen_trav_user_src(Config *, FILE *, Traversal *);
 void gen_pass_user_header(Config *, FILE *, Pass *);
 void gen_pass_user_src(Config *, FILE *, Pass *);
 void gen_trav_data_header(Config *, FILE *);
+void gen_trav_data_src(Config *, FILE *);
 void gen_vtables_src(Config *, FILE *);

@@ -85,12 +85,27 @@ void gen_pass_enum(Config *config, FILE *fp) {
     out_enum_end("PassType");
 }
 
+void gen_phase_enum(Config *config, FILE *fp) {
+    out_comment("Enum PhaseType");
+    out_enum("PHASES");
+    out_enum_field("PHASE_NULL");
+    for (int i = 0; i < array_size(config->phases); ++i) {
+        Phase *phase = (Phase *)array_get(config->phases, i);
+        char *phaselwr = strlwr(phase->id);
+        out_enum_field("PHASE_%s", phaselwr);
+        mem_free(phaselwr);
+    }
+    out_enum_field("_PHASE_SIZE");
+    out_enum_end("PhaseType");
+}
+
 void gen_enum_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_ENUM_H_\n");
     out("#define _CCN_ENUM_H_\n\n");
     gen_nodetype_enum(config, fp);
-    // gen_nodeset_enum(config, fp);
+    gen_nodeset_enum(config, fp);
     gen_traversal_enum(config, fp);
+    gen_phase_enum(config, fp);
     gen_pass_enum(config, fp);
     for (int i = 0; i < array_size(config->enums); ++i) {
         Enum *arg_enum = (Enum *)array_get(config->enums, i);
