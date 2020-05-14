@@ -6,8 +6,6 @@
 #include "lib/memory.h"
 #include "lib/print.h"
 
-#define SIZE(a) (sizeof(a) / sizeof(a[0]))
-
 Trav *trav_init(void) {
     Trav *trav = (Trav *)mem_alloc(sizeof(Trav));
     return trav;
@@ -52,7 +50,7 @@ Trav *trav_current(void) { return current_traversal; }
 /* Start new traversal and push it to the traversal stack */
 Node *trav_start(Node *syntaxtree, TravType trav_type) {
     trav_push(trav_type);
-    syntaxtree = traverse(syntaxtree);
+    syntaxtree = trav(syntaxtree);
     trav_pop();
     return syntaxtree;
 }
@@ -68,12 +66,18 @@ Node *trav_mandatory(Node *arg_node) {
 }
 
 /* Main traverse function, to be called by the user */
-Node *traverse(Node *arg_node) {
+Node *trav(Node *arg_node) {
+    TravFunc trav_func = trav_mat[TRAV_TYPE][NODE_TYPE(arg_node)];
+    return trav_func(arg_node);
+}
+
+/* Optional traverse function, to be called by the user. Adds a null check to
+ * signify optional child nodes */
+Node *trav_opt(Node *arg_node) {
     if (!arg_node) {
         return arg_node;
     }
-    TravFunc trav_func = trav_mat[TRAV_TYPE][NODE_TYPE(arg_node)];
-    return trav_func(arg_node);
+    return trav(arg_node);
 }
 
 /* Don't traverse through children and return */
@@ -81,8 +85,10 @@ Node *trav_return(Node *arg_node) { return arg_node; }
 
 /* Traverse through each child node and return */
 Node *trav_children(Node *arg_node) {
-    for (int i = 0; i < SIZE(NODE_CHILDREN(arg_node)); i++) {
-        NODE_CHILDREN(arg_node)[i] = traverse(NODE_CHILDREN(arg_node)[i]);
+    if (NODE_CHILDREN(arg_node)) {
+        for (int i = 0; i < NODE_NUMCHILDREN(arg_node); i++) {
+            NODE_CHILDREN(arg_node)[i] = trav_opt(NODE_CHILDREN(arg_node)[i]);
+        }
     }
     return arg_node;
 }

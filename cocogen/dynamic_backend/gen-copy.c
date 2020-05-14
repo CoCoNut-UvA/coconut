@@ -99,13 +99,7 @@ void gen_copy_func(Config *config, FILE *fp, Node *node) {
                   copyfunc, nodeupr, attrupr);
         mem_free(attrupr);
     }
-    for (int i = 0; i < array_size(node->children); i++) {
-        Child *child = array_get(node->children, i);
-        char *childupr = strupr(child->id);
-        out_field("%s_%s(new_node) = traverse(%s_%s(arg_node))", nodeupr,
-                  childupr, nodeupr, childupr);
-        mem_free(childupr);
-    }
+    out_field("arg_node = trav_children(arg_node)");
     out_field("return new_node");
     out_end_func();
     mem_free(nodelwr);

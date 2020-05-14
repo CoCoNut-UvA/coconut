@@ -67,7 +67,6 @@ void gen_trav_data_macros(Config *config, FILE *fp, Traversal *trav) {
             attrupr, travlwr, td->id);
         mem_free(attrupr);
     }
-    out("\n");
     mem_free(travupr);
     mem_free(travlwr);
 }

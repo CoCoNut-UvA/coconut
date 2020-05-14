@@ -23,7 +23,7 @@ Node *trav_start(Node *syntaxtree, TravType trav);
 Node *trav_return(Node *arg_node);
 Node *trav_error(Node *arg_node);
 Node *trav_children(Node *arg_node);
-Node *traverse(Node *arg_node);
+Node *trav(Node *arg_node);
 #define TRAV_TYPE ((trav_current())->trav_type)
 
 #endif /* _CCN_TRAV_CORE_H_ */

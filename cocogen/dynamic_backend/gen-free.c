@@ -44,12 +44,8 @@ void gen_free_func(Config *config, FILE *fp, Node *node) {
         out_field("%s(%s_%s(arg_node))", freefunc, nodeupr, attrupr);
         mem_free(attrupr);
     }
-    for (int i = 0; i < array_size(node->children); i++) {
-        Child *child = array_get(node->children, i);
-        char *childupr = strupr(child->id);
-        out_field("%s_%s(arg_node) = traverse(%s_%s(arg_node))", nodeupr,
-                  childupr, nodeupr, childupr);
-        mem_free(childupr);
+    if (node->children) {
+        out_field("arg_node = trav_children(arg_node)");
     }
     out_field("mem_free(arg_node->data.N_%s)", nodelwr);
     out_field("mem_free(arg_node)");

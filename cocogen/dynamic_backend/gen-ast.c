@@ -97,11 +97,6 @@ void gen_node_macros(Config *config, FILE *fp, Node *node) {
             nodeupr, childupr, nodelwr, nodelwr, nodelwr, child->id);
         mem_free(childupr);
     }
-    if (node->children) {
-        out("#define %s_CHILDREN(n) "
-            "((n)->data.N_%s->%s_children.%s_children_a)\n",
-            nodeupr, nodelwr, nodelwr, nodelwr);
-    }
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
         char *attrupr = strupr(attr->id);
@@ -170,6 +165,7 @@ void gen_node_constructor(Config *config, FILE *fp, Node *node) {
         out_field(
             "NODE_CHILDREN(node) = node->data.N_%s->%s_children.%s_children_a",
             nodelwr, nodelwr, nodelwr);
+        out_field("NODE_NUMCHILDREN(node) = %ld", array_size(node->children));
     }
     gen_members(config, fp, node);
     // TODO: Checks here or in another file?
