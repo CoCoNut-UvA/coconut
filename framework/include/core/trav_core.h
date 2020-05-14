@@ -1,7 +1,7 @@
 #ifndef _CCN_TRAV_CORE_H_
 #define _CCN_TRAV_CORE_H_
 
-#include "include/generated/trav.h"
+#include "include/generated/trav_data.h"
 
 typedef struct TRAV {
     struct TRAV *prev;
@@ -20,9 +20,10 @@ void trav_pop();
 Trav *trav_current(void);
 TravType trav_type(void);
 Node *trav_start(Node *syntaxtree, TravType trav);
-Node *trav_stop(Node *arg_node);
+Node *trav_return(Node *arg_node);
 Node *trav_error(Node *arg_node);
-Node *traverse(Node *arg_node);
+Node *trav_children(Node *arg_node);
+Node *trav(Node *arg_node);
 #define TRAV_TYPE ((trav_current())->trav_type)
 
 #endif /* _CCN_TRAV_CORE_H_ */

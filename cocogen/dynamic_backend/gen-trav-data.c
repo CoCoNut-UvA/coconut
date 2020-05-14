@@ -16,7 +16,7 @@
 
 static int indent = 0;
 
-void gen_trav_struct(Config *config, FILE *fp, Traversal *trav) {
+void gen_trav_data_struct(Config *config, FILE *fp, Traversal *trav) {
     if (!trav->data) {
         return;
     }
@@ -36,7 +36,7 @@ void gen_trav_struct(Config *config, FILE *fp, Traversal *trav) {
     mem_free(travupr);
 }
 
-void gen_trav_union(Config *config, FILE *fp) {
+void gen_trav_data_union(Config *config, FILE *fp) {
     out_comment("Attributes");
     out_union("TRAV_DATA");
     for (int i = 0; i < array_size(config->traversals); ++i) {
@@ -53,7 +53,7 @@ void gen_trav_union(Config *config, FILE *fp) {
     out_struct_end();
 }
 
-void gen_trav_macros(Config *config, FILE *fp, Traversal *trav) {
+void gen_trav_data_macros(Config *config, FILE *fp, Traversal *trav) {
     if (!trav->data) {
         return;
     }
@@ -67,14 +67,13 @@ void gen_trav_macros(Config *config, FILE *fp, Traversal *trav) {
             attrupr, travlwr, td->id);
         mem_free(attrupr);
     }
-    out("\n");
     mem_free(travupr);
     mem_free(travlwr);
 }
 
-void gen_trav_header(Config *config, FILE *fp) {
-    out("#ifndef _CCN_TRAV_H_\n");
-    out("#define _CCN_TRAV_H_\n\n");
+void gen_trav_data_header(Config *config, FILE *fp) {
+    out("#ifndef _CCN_TRAV_DATA_H_\n");
+    out("#define _CCN_TRAV_DATA_H_\n\n");
     out("#include \"include/core/ast_core.h\"\n");
     out("\n");
 
@@ -98,65 +97,13 @@ void gen_trav_header(Config *config, FILE *fp) {
 
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
-        gen_trav_struct(config, fp, trav);
+        gen_trav_data_struct(config, fp, trav);
     }
-    gen_trav_union(config, fp);
+    gen_trav_data_union(config, fp);
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
-        gen_trav_macros(config, fp, trav);
+        gen_trav_data_macros(config, fp, trav);
     }
     out("\n");
-    for (int j = 0; j < array_size(config->nodes); j++) {
-        Node *node = array_get(config->nodes, j);
-        if (!node->children) {
-            continue;
-        }
-        char *nodelwr = strlwr(node->id);
-        out_field("Node *trav_%s(Node *arg_node)", nodelwr);
-        mem_free(nodelwr);
-    }
-    out("\n");
-    out("#endif /* _CCN_TRAV_H_ */\n");
-}
-
-void gen_trav_node_func(Config *config, FILE *fp, Node *node) {
-    if (!node->children) {
-        return;
-    }
-    char *nodelwr = strlwr(node->id);
-    char *nodeupr = strupr(node->id);
-
-    out_start_func("Node *trav_%s(Node *arg_node)", nodelwr);
-    for (int i = 0; i < array_size(node->children); i++) {
-        Child *child = array_get(node->children, i);
-        char *childupr = strupr(child->id);
-        out_field("%s_%s(arg_node) = traverse(%s_%s(arg_node))", nodeupr,
-                  childupr, nodeupr, childupr);
-        mem_free(childupr);
-    }
-    out_field("return arg_node");
-    out_end_func();
-
-    mem_free(nodelwr);
-    mem_free(nodeupr);
-}
-
-void gen_trav_src(Config *config, FILE *fp) {
-    out("#include <stdio.h>\n");
-    out("\n");
-    out("#include \"include/core/copy_core.h\"\n");
-    out("#include \"include/core/free_core.h\"\n");
-    out("#include \"include/core/trav_core.h\"\n");
-    out("\n");
-    for (int i = 0; i < array_size(config->traversals); i++) {
-        Traversal *trav = array_get(config->traversals, i);
-        char *travlwr = strlwr(trav->id);
-        out("#include \"include/generated/trav_%s.h\"\n", travlwr);
-        mem_free(travlwr);
-    }
-    out("\n");
-    for (int j = 0; j < array_size(config->nodes); j++) {
-        Node *node = array_get(config->nodes, j);
-        gen_trav_node_func(config, fp, node);
-    }
+    out("#endif /* _CCN_TRAV_DATA_H_ */\n");
 }

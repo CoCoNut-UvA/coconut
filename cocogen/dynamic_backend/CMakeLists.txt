@@ -7,7 +7,7 @@ target_sources(${PROJECT_NAME}
         gen-enum.c
         gen-trav-user.c
         gen-pass-user.c
-        gen-trav.c
+        gen-trav-data.c
         gen-free.c
         gen-copy.c
         gen-actions.c

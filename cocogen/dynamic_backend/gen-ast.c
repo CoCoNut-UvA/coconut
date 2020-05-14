@@ -38,10 +38,26 @@ void gen_init_function(Config *config, FILE *fp, Node *node) {
 
 void gen_node_struct(Config *config, FILE *fp, Node *node) {
     char *nodeupr = strupr(node->id);
+    char *nodelwr = strlwr(node->id);
     out_struct("NODE_DATA_%s", nodeupr);
-    for (int i = 0; i < array_size(node->children); ++i) {
-        Child *child = (Child *)array_get(node->children, i);
-        out_field("Node *%s", child->id);
+    if (node->children) {
+        out_union("NODE_CHILDREN_%s", nodeupr);
+        out_struct("NODE_CHILDREN_%s_STRUCT", nodeupr);
+        print_indent_level(indent, fp);
+        out("Node ");
+        for (int i = 0; i < array_size(node->children); ++i) {
+            Child *child = (Child *)array_get(node->children, i);
+            out("*%s", child->id);
+            if (i != array_size(node->children) - 1) {
+                out(", ");
+            } else {
+                out(";\n");
+            }
+        }
+        out_typedef_struct_end("%s_children_s", nodelwr);
+        out_field("Node *%s_children_a[%ld]", nodelwr,
+                  array_size(node->children));
+        out_typedef_struct_end("%s_children", nodelwr);
     }
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
@@ -53,6 +69,7 @@ void gen_node_struct(Config *config, FILE *fp, Node *node) {
     }
     out_struct_end();
     mem_free(nodeupr);
+    mem_free(nodelwr);
 }
 
 void gen_node_union(Config *config, FILE *fp) {
@@ -75,8 +92,9 @@ void gen_node_macros(Config *config, FILE *fp, Node *node) {
     for (int i = 0; i < array_size(node->children); ++i) {
         Child *child = (Child *)array_get(node->children, i);
         char *childupr = strupr(child->id);
-        out("#define %s_%s(n) ((n)->data.N_%s->%s)\n", nodeupr, childupr,
-            nodelwr, child->id);
+        out("#define %s_%s(n) "
+            "((n)->data.N_%s->%s_children.%s_children_s.%s)\n",
+            nodeupr, childupr, nodelwr, nodelwr, nodelwr, child->id);
         mem_free(childupr);
     }
     for (int i = 0; i < array_size(node->attrs); ++i) {
@@ -86,6 +104,7 @@ void gen_node_macros(Config *config, FILE *fp, Node *node) {
             nodelwr, attr->id);
         mem_free(attrupr);
     }
+    out("\n");
     mem_free(nodeupr);
     mem_free(nodelwr);
 }
@@ -142,6 +161,12 @@ void gen_node_constructor(Config *config, FILE *fp, Node *node) {
     out_field("node->data.N_%s = mem_alloc(sizeof(struct NODE_DATA_%s))",
               nodelwr, nodeupr);
     out_field("NODE_TYPE(node) = " NT_ENUM_PREFIX "%s", nodelwr);
+    if (node->children) {
+        out_field(
+            "NODE_CHILDREN(node) = node->data.N_%s->%s_children.%s_children_a",
+            nodelwr, nodelwr, nodelwr);
+        out_field("NODE_NUMCHILDREN(node) = %ld", array_size(node->children));
+    }
     gen_members(config, fp, node);
     // TODO: Checks here or in another file?
     out_field("return node");
