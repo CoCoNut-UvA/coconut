@@ -116,8 +116,6 @@ void gen_pass_vtable(Config *config, FILE *fp) {
 void gen_vtables_src(Config *config, FILE *fp) {
     out("#include <stdio.h>\n");
     out("\n");
-    out("#include \"include/core/copy_core.h\"\n");
-    out("#include \"include/core/free_core.h\"\n");
     out("#include \"include/core/trav_core.h\"\n");
     out("#include \"include/core/vtables_core.h\"\n");
     out("#include \"include/core/actions_core.h\"\n");

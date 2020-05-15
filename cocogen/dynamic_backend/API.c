@@ -14,8 +14,6 @@ static void generate_headers(Config *ir) {
     filegen_generate("enum.h", &gen_enum_header);
     filegen_generate("ast.h", &gen_ast_header);
     filegen_generate("trav.h", &gen_trav_data_header);
-    filegen_generate("free.h", &gen_free_header);
-    filegen_generate("copy.h", &gen_copy_header);
     filegen_generate("actions.h", &gen_actions_header);
     filegen_generate("CMakeLists.txt", &gen_header_cmakelists);
 }

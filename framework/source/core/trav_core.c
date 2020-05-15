@@ -88,3 +88,6 @@ Node *trav_error(Node *arg_node) {
                      "Trying to traverse through node of unknown type.");
     return arg_node;
 }
+
+Node *node_copy(Node *arg_node) { return trav_start(arg_node, TRAV_copy); }
+Node *node_free(Node *arg_node) { return trav_start(arg_node, TRAV_free); }

@@ -20,8 +20,10 @@ void gen_actions_header(Config *config, FILE *fp) {
         char *travlwr = strlwr(trav->id);
         char *travupr = strupr(trav->id);
         out_comment("Traversal %s", trav->id);
-        out_field("Trav *%s_init_trav_data(Trav *)", travlwr);
-        out_field("void %s_free_trav_data(Trav *trav)", travlwr);
+        if (trav->data) {
+            out_field("Trav *%s_init_trav_data(Trav *)", travlwr);
+            out_field("void %s_free_trav_data(Trav *trav)", travlwr);
+        }
         for (int i = 0; i < array_size(trav->nodes); i++) {
             Node *node = array_get(trav->nodes, i);
             char *nodelwr = strlwr(node->id);
@@ -32,6 +34,22 @@ void gen_actions_header(Config *config, FILE *fp) {
         mem_free(travlwr);
         mem_free(travupr);
     }
+    out_comment("Traversal Copy");
+    for (int i = 0; i < array_size(config->nodes); ++i) {
+        Node *node = array_get(config->nodes, i);
+        char *nodelwr = strlwr(node->id);
+        out_field("Node *copy_%s(Node *arg_node)", nodelwr);
+        mem_free(nodelwr);
+    }
+    out("\n");
+    out_comment("Traversal Free");
+    for (int i = 0; i < array_size(config->nodes); ++i) {
+        Node *node = array_get(config->nodes, i);
+        char *nodelwr = strlwr(node->id);
+        out_field("Node *free_%s(Node *arg_node)", nodelwr);
+        mem_free(nodelwr);
+    }
+    out("\n");
     for (int i = 0; i < array_size(config->phases); i++) {
         Phase *phase = array_get(config->phases, i);
         char *phaselwr = strlwr(phase->id);
@@ -55,7 +73,6 @@ void gen_actions_header(Config *config, FILE *fp) {
         } else {
             passlwr = strlwr(pass->id);
         }
-        out_field("Node *pass_start_%s(Node *root, PassType type)", passlwr);
         out_field("Node *pass_%s(Node *arg_node)", passlwr);
         mem_free(passlwr);
         out("\n");

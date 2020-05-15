@@ -9,22 +9,6 @@
 
 static int indent = 0;
 
-void gen_free_header(Config *config, FILE *fp) {
-    out("#ifndef _CCN_FREE_H_\n");
-    out("#define _CCN_FREE_H_\n\n");
-    out("#include \"include/core/ast_core.h\"\n");
-    out("#include \"include/core/trav_core.h\"\n");
-    out("\n");
-    for (int i = 0; i < array_size(config->nodes); ++i) {
-        Node *node = array_get(config->nodes, i);
-        char *nodelwr = strlwr(node->id);
-        out_field("Node *free_%s(Node *arg_node)", nodelwr);
-        mem_free(nodelwr);
-    }
-    out("\n");
-    out("#endif /* _CCN_FREE_H_ */\n");
-}
-
 void gen_free_func(Config *config, FILE *fp, Node *node) {
     char *nodelwr = strlwr(node->id);
     char *nodeupr = strupr(node->id);
@@ -37,7 +21,7 @@ void gen_free_func(Config *config, FILE *fp, Node *node) {
         if (attr->type == AT_string) {
             freefunc = "mem_free";
         } else if (attr->type == AT_link) {
-            freefunc = "free_node";
+            freefunc = "node_free";
         } else {
             continue;
         }
@@ -58,7 +42,6 @@ void gen_free_func(Config *config, FILE *fp, Node *node) {
 void gen_free_src(Config *config, FILE *fp) {
     out("#include <stdlib.h>\n");
     out("\n");
-    out("#include \"include/core/free_core.h\"\n");
     out("#include \"include/core/trav_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("\n");

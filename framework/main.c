@@ -2,7 +2,6 @@
 
 #include "include/core/actions_core.h"
 #include "include/core/ast_core.h"
-#include "include/core/free_core.h"
 #include "include/core/trav_core.h"
 #include "include/core/vtables_core.h"
 
@@ -14,5 +13,5 @@ int main(int argc, char *argv[]) {
     trav_start(expr, TRAV_print);
     trav_start(expr, TRAV_context);
     pass_start(expr, PASS_scanparse);
-    free_node(expr);
+    node_free(expr);
 }

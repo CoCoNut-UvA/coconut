@@ -60,22 +60,6 @@ void gen_init_arguments(Config *config, FILE *fp, Node *node) {
     }
 }
 
-void gen_copy_header(Config *config, FILE *fp) {
-    out("#ifndef _CCN_COPY_H_\n");
-    out("#define _CCN_COPY_H_\n\n");
-    out("#include \"include/core/ast_core.h\"\n");
-    out("#include \"include/core/trav_core.h\"\n");
-    out("\n");
-    for (int i = 0; i < array_size(config->nodes); ++i) {
-        Node *node = array_get(config->nodes, i);
-        char *nodelwr = strlwr(node->id);
-        out("extern Node *copy_%s(Node *arg_node);\n", nodelwr);
-        mem_free(nodelwr);
-    }
-    out("\n");
-    out("#endif /* _CCN_COPY_H_ */\n");
-}
-
 void gen_copy_func(Config *config, FILE *fp, Node *node) {
     char *nodelwr = strlwr(node->id);
     char *nodeupr = strupr(node->id);
@@ -91,7 +75,7 @@ void gen_copy_func(Config *config, FILE *fp, Node *node) {
         if (attr->type == AT_string) {
             copyfunc = "ccn_str_cpy";
         } else if (attr->type == AT_link) {
-            copyfunc = "copy_node";
+            copyfunc = "node_copy";
         } else {
             continue;
         }
@@ -107,7 +91,6 @@ void gen_copy_func(Config *config, FILE *fp, Node *node) {
 }
 
 void gen_copy_src(Config *config, FILE *fp) {
-    out("#include \"include/core/copy_core.h\"\n");
     out("#include \"include/core/trav_core.h\"\n");
     out("#include \"lib/str.h\"\n");
     out("\n");
