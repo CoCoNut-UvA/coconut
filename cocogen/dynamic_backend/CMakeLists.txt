@@ -6,6 +6,7 @@ target_sources(${PROJECT_NAME}
         gen-ast.c
         gen-enum.c
         gen-trav.c
+        gen-trav-data.c
         gen-free.c
         gen-copy.c
         gen-actions.c

@@ -33,7 +33,7 @@ void gen_free_func(Config *config, FILE *fp, Node *node) {
     }
     out_field("mem_free(arg_node->data.N_%s)", nodelwr);
     out_field("mem_free(arg_node)");
-    out_field("return NULL");
+    out_field("return arg_node");
     out_end_func();
     mem_free(nodelwr);
     mem_free(nodeupr);
@@ -43,6 +43,7 @@ void gen_free_src(Config *config, FILE *fp) {
     out("#include <stdlib.h>\n");
     out("\n");
     out("#include \"include/core/trav_core.h\"\n");
+    out("#include \"include/core/ast_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {

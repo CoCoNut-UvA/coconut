@@ -13,9 +13,7 @@ void gen_header_cmakelists(Config *config, FILE *fp) {
     out("        ast.h\n");
     out("        trav.h\n");
     out("        actions.h\n");
-    out("        copy.h\n");
     out("        enum.h\n");
-    out("        free.h\n");
     out("        trav.h\n");
     out(")\n");
 }
@@ -26,9 +24,9 @@ void gen_source_cmakelists(Config *config, FILE *fp) {
     out("        ast.c\n");
     out("        trav.c\n");
     out("        actions.c\n");
-    out("        copy.c\n");
-    out("        free.c\n");
     out("        vtables.c\n");
+    out("        trav_copy.c\n");
+    out("        trav_free.c\n");
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
         char *travlwr = strlwr(trav->id);
