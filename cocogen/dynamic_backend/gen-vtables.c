@@ -113,6 +113,17 @@ void gen_pass_vtable(Config *config, FILE *fp) {
     out(" };\n\n");
 }
 
+void gen_phase_vtable(Config *config, FILE *fp) {
+    out("const PhaseFunc phase_vtable[_PHASE_SIZE] = { &phase_error, ");
+    for (int i = 0; i < array_size(config->phases); i++) {
+        Phase *phase = array_get(config->phases, i);
+        char *phaselwr = strlwr(phase->id);
+        out("&phase_%s, ", phaselwr);
+        mem_free(phaselwr);
+    }
+    out(" };\n\n");
+}
+
 void gen_vtables_src(Config *config, FILE *fp) {
     out("#include <stdio.h>\n");
     out("\n");
@@ -124,4 +135,5 @@ void gen_vtables_src(Config *config, FILE *fp) {
     gen_trav_data_vtable(config, fp, "Init");
     gen_trav_data_vtable(config, fp, "Free");
     gen_pass_vtable(config, fp);
+    gen_phase_vtable(config, fp);
 }

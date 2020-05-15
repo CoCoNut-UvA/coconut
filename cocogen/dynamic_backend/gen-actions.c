@@ -54,13 +54,7 @@ void gen_actions_header(Config *config, FILE *fp) {
         Phase *phase = array_get(config->phases, i);
         char *phaselwr = strlwr(phase->id);
         out_comment("Phase %s", phase->id);
-        char *type;
-        if (phase->cycle) {
-            type = "cycle";
-        } else {
-            type = "phase";
-        }
-        out_field("Node *%s_start_%s(Node *root)", type, phaselwr);
+        out_field("Node *phase_%s(Node *root)", phaselwr);
         mem_free(phaselwr);
         out("\n");
     }
@@ -98,13 +92,7 @@ void gen_phase(Config *config, FILE *fp, Phase *phase) {
         case ACTION_PHASE:;
             Phase *action_phase = (Phase *)action->action;
             char *phaselwr = strlwr(action_phase->id);
-            char *type;
-            if (action_phase->cycle) {
-                type = "cycle";
-            } else {
-                type = "phase";
-            }
-            out_field("root = %s_start_%s(root)", type, phaselwr);
+            out_field("root = phase_start(root, PHASE_%s)", phaselwr);
             mem_free(phaselwr);
             break;
         case ACTION_TRAVERSAL:;
@@ -127,7 +115,7 @@ void gen_actions_src(Config *config, FILE *fp) {
     out("\n");
     out_start_func("Node *start_root_phase()");
     char *rootphaselwr = strlwr(config->start_phase->id);
-    out_field("Node *root = phase_start_%s(NULL)", rootphaselwr);
+    out_field("Node *root = phase_start(NULL, PHASE_%s)", rootphaselwr);
     mem_free(rootphaselwr);
     out_field("trav_start(root, TRAV_free)");
     out_end_func();
@@ -135,12 +123,7 @@ void gen_actions_src(Config *config, FILE *fp) {
         Phase *phase = array_get(config->phases, i);
         char *phaselwr = strlwr(phase->id);
         char *type;
-        if (phase->cycle) {
-            type = "cycle";
-        } else {
-            type = "phase";
-        }
-        out_start_func("Node *%s_start_%s(Node *root)", type, phaselwr);
+        out_start_func("Node *phase_%s(Node *root)", phaselwr);
         gen_phase(config, fp, phase);
         out_field("return root");
         out_end_func();
