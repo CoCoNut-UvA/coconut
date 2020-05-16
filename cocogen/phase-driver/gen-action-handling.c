@@ -353,7 +353,7 @@ void gen_action_array_c(Config *c, FILE *fp) {
 
     for (size_t i = 0; i < array_size(c->passes); i++) {
         Pass *p = array_get(c->passes, i);
-        out("{action_pass, ACTION_ID_%s, \"%s\", .pass = {}}\n", p->id, p->id);
+        out("{action_pass, ACTION_ID_%s, \"%s\", .pass = {PASS_%s}}\n", p->id, p->id, p->id);
     }
 
     out("};\n\n");
