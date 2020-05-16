@@ -1,9 +1,9 @@
 #include "commandline.h"
 
 #include <getopt.h>
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 extern char *yy_filename;
 
@@ -15,6 +15,7 @@ void init_global_options() {
     global_command_options.consistcheck = false;
     global_command_options.profiling = false;
     global_command_options.serialise = false;
+    global_command_options.gen_user_files = false;
     global_command_options.header_dir = NULL;
     global_command_options.source_dir = NULL;
     global_command_options.dot_dir = NULL;
@@ -44,23 +45,23 @@ void usage(char *program) {
            "<directory>.\n");
     printf("                               Prints the AST after parsing the "
            "input file\n");
-    printf("  --consistency-checks         Do consistency checks on the AST during runtime.\n");
-    printf("  --profiling                  Generate the requirements for a time and memory profile in your compiler.\n");
-    printf("  --breakpoints                Enable setting breakpoints in your compiler, generates an API for this.\n");
+    printf("  --consistency-checks         Do consistency checks on the AST "
+           "during runtime.\n");
+    printf("  --profiling                  Generate the requirements for a "
+           "time and memory profile in your compiler.\n");
+    printf("  --breakpoints                Enable setting breakpoints in your "
+           "compiler, generates an API for this.\n");
+    printf("  --gen_user_files             Generates user traversal files. "
+           "WARNING: This will overwrite your current traversal files.\n");
 }
 
-void version(void) {
-    printf("cocogen 0.1\nCoCoNut Metacompiler\n");
-}
+void version(void) { printf("cocogen 0.1\nCoCoNut Metacompiler\n"); }
 
-
-void process_commandline_args(int argc, char *argv[])
-{
+void process_commandline_args(int argc, char *argv[]) {
     init_global_options();
 
     // TODO: remove the hardcoded identifiers.
-    static struct option long_options[] =
-    {
+    static struct option long_options[] = {
         {"verbose", no_argument, &global_command_options.verbose, 1},
         {"help", no_argument, 0, 'h'},
         {"header-dir", required_argument, 0, 21},
@@ -72,8 +73,8 @@ void process_commandline_args(int argc, char *argv[])
         {"consistency-checks", no_argument, 0, 26},
         {"serialise", no_argument, 0, 27},
         {"inspectpoints", no_argument, 0, 28},
-        {0, 0, 0, 0}
-    };
+        {"gen-user-files", no_argument, 0, 29},
+        {0, 0, 0, 0}};
 
     int option_index;
     int c;
@@ -115,6 +116,9 @@ void process_commandline_args(int argc, char *argv[])
             break;
         case 28:
             global_command_options.break_inspect_points = true;
+            break;
+        case 29:
+            global_command_options.gen_user_files = true;
             break;
         case 'h':
             usage(argv[0]);

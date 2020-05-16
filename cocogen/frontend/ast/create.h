@@ -44,7 +44,7 @@ Lifetime_t *create_lifetime(Range_spec_t *start, Range_spec_t *end,
                             enum LifetimeType type, array *values);
 
 Attr *create_attr(Attr *attrhead, AttrValue *default_value, int construct,
-                  array *lifetimes);
+                  array *lifetimes, char *include);
 
 Attr *create_attrhead_primitive(enum AttrType type, char *id);
 
@@ -63,8 +63,3 @@ AttrValue *create_attrval_float(float value);
 AttrValue *create_attrval_double(double value);
 
 AttrValue *create_attrval_id(char *id);
-
-TravData *create_travdata_primitive(enum AttrType type, char *id,
-                                    AttrValue *value);
-
-TravData *create_travdata_struct(char *type, char *id, char *include);

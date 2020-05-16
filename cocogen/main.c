@@ -1,14 +1,15 @@
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
+#include <unistd.h>
 
-#include "commandline.h"
-#include "lib/color.h"
-#include "lib/errors.h"
 #include "ast/ast.h"
 #include "ast/check.h"
+#include "commandline.h"
+#include "dynamic_backend/API.h"
 #include "filegen/driver.h"
 #include "filegen/util.h"
+#include "lib/color.h"
+#include "lib/errors.h"
 #include "pretty/printer.h"
 #include "typed_backend/API.h"
 
@@ -40,8 +41,7 @@ void generate_enables(Config *c, FILE *fp) {
     out("\n");
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     process_commandline_args(argc, argv);
     FILE *f = fopen(yy_filename, "r");
     Config *ir = parseDSL(f);
@@ -51,18 +51,20 @@ int main(int argc, char *argv[])
 
     // TODO(damian): Create recursive ensure_dir_exists
     if (global_command_options.header_dir == NULL) {
-        global_command_options.header_dir = "generated/include/generated/";
-        ensure_dir_exists("generated/", 0777); //FIXME(damian): transform to recursive.
-        ensure_dir_exists("generated/include/", 0777);
-        ensure_dir_exists("generated/include/generated", 0777);
+        global_command_options.header_dir = "framework/include/generated/";
+        ensure_dir_exists("framework/",
+                          0777); // FIXME(damian): transform to recursive.
+        ensure_dir_exists("framework/include/", 0777);
+        ensure_dir_exists("framework/include/generated/", 0777);
     }
     ensure_dir_exists(global_command_options.header_dir, 0777);
 
     if (global_command_options.source_dir == NULL) {
-        global_command_options.source_dir = "generated/source/";
-        ensure_dir_exists("generated/", 0777); //FIXME(damian): transform to recursive.
-        ensure_dir_exists("generated/source/", 0777);
-
+        global_command_options.source_dir = "framework/source/generated/";
+        ensure_dir_exists("framework/",
+                          0777); // FIXME(damian): transform to recursive.
+        ensure_dir_exists("framework/source/", 0777);
+        ensure_dir_exists("framework/source/generated/", 0777);
     }
     ensure_dir_exists(global_command_options.source_dir, 0777);
 
@@ -70,9 +72,9 @@ int main(int argc, char *argv[])
     filegen_init(ir, false);
 
     // TODO: add commandline flags for the right backend.
-    typed_backend(ir);
-    pretty_print(ir);
-
+    // typed_backend(ir);
+    dynamic_backend(ir);
+    // pretty_print(ir);
 
     cleanup_tracking_data();
 }

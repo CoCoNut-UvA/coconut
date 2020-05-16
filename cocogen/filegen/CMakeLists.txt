@@ -4,7 +4,9 @@ target_sources(${PROJECT_NAME}
         formatting.h
         genmacros.h
         util.h
+        reachability.h
     PRIVATE
         util.c
         driver.c
+        reachability.c
 )

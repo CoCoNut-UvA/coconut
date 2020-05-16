@@ -259,6 +259,7 @@ typedef struct Attr {
     enum AttrType type;
     char *type_id;
     char *id;
+    char *include; // Optional include file for traversal data
     struct AttrValue *default_value;
     array *lifetimes;
 
@@ -278,26 +279,6 @@ typedef struct AttrValue {
 
     struct NodeCommonInfo *common_info;
 } AttrValue;
-
-typedef struct TravDataConstructor {
-    char *constructor;
-    array *arglist;
-    char *include;
-} TravDataConstructor;
-
-typedef struct TravData {
-    enum AttrType type;
-    char *type_id;
-    char *id;
-    union {
-        // Either an include file in case of a user defined type, or a primitive
-        // value
-        char *include;
-        AttrValue *primitive_value;
-    } value;
-
-    struct NodeCommonInfo *common_info;
-} TravData;
 
 /**
  * @struct SetOperation
