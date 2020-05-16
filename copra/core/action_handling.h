@@ -17,8 +17,7 @@ enum ACTION_TYPE {
 };
 
 typedef struct ccn_pass {
-    void *(*func)(void*, NodeType);
-    NodeType root_type;
+    PassType pass_type;
 } ccn_pass_t;
 
 typedef struct ccn_phase {
