@@ -12,7 +12,6 @@ target_sources(${PROJECT_NAME}
         gen-user-trav-header.c
         gen-trav-functions.c
         gen-trav-core-functions.c
-        gen-action-handling.c
         gen-subtree-functions.c
         API.c
 )
