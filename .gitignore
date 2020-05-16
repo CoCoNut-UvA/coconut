@@ -57,6 +57,9 @@ build/
 # Bin dir
 bin/
 
+# Doxygen generated docs file
+docs/
+
 /framework/include/generated
 /framework/source/generated
 
