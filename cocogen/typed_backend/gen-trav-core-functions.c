@@ -101,19 +101,27 @@ static void generate_info_funcs_table(Config *config, FILE *fp) {
 
 void generate_trav_start(Config *config, FILE *fp) {
     int indent = 0;
-    out_start_func("void trav_start(void *node, TraversalType travtype, NodeType nodetype)");
+    out_start_func("void *trav_start(void *node, TraversalType travtype, NodeType nodetype)");
     {
         out_statement("void *info");
         out_statement("trav_push(travtype)");
         out_statement("info = (*info_create_funcs[travtype])()");
-        out_statement("(*trav_node_funcs[nodetype])(node, info)");
+        out_statement("(*node = trav_node_funcs[nodetype])(node, info)");
         out_statement("(*info_free_funcs[travtype])(info)");
         out_statement("trav_pop()");
+        out_statement("return node");
     }
     out_end_func();
 
 }
 
+/**
+ * Every node has a function to execute a traversal.
+ * This functions creates a table where the index is the
+ * value of the NodeType enum. It is used to dispatch
+ * to the right function in the trav_start
+ * @see generate_trav_start
+ */
 void generate_node_trav_table(Config *config, FILE *fp) {
     out("static void *(*trav_node_funcs[%ld])() =\n", array_size(config->nodes));
     out("{\n");

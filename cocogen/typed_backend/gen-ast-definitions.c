@@ -49,11 +49,26 @@ static void generate_traversal_enum(Config *config, FILE *fp) {
     out("} " TRAV_ENUM_NAME ";\n\n");
 }
 
+static void generate_pass_enum(Config *config, FILE *fp) {
+    out("typedef enum {\n");
+    if (array_size(config->passes) == 0) {
+        out("PASS_PLACEHOLDER\n");
+    } else {
+        for (size_t i = 0; i < array_size(config->passes); i++) {
+            Pass *p = array_get(config->passes, i);
+            out("PASS_%s,\n", p->id);
+        }
+    }
+    out("PASS_NULL\n");
+    out("} PassType;\n\n");
+}
+
 void generate_enum_definitions(Config *config, FILE *fp) {
     out("#pragma once\n");
 
     generate_nodetype_enum(config, fp);
     generate_traversal_enum(config, fp);
+    generate_pass_enum(config, fp);
 
     for (int i = 0; i < array_size(config->enums); i++) {
         generate_enum((Enum *)array_get(config->enums, i), fp);

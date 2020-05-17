@@ -10,6 +10,7 @@ add_subdirectory(frontend/)
 add_subdirectory(pretty/)
 add_subdirectory(filegen/)
 add_subdirectory(typed_backend/)
+add_subdirectory(phase-driver/)
 add_subdirectory(dynamic_backend/)
 
 target_include_directories(${PROJECT_NAME}
