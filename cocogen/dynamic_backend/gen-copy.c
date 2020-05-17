@@ -76,13 +76,18 @@ void gen_copy_func(Config *config, FILE *fp, Node *node) {
         } else if (attr->type == AT_link) {
             copyfunc = "node_copy";
         } else {
+            out_field("%s_%s(new_node) = %s_%s(arg_node)", nodeupr, attrupr,
+                      nodeupr, attrupr);
+            mem_free(attrupr);
             continue;
         }
         out_field("%s_%s(new_node) = %s(%s_%s(arg_node))", nodeupr, attrupr,
                   copyfunc, nodeupr, attrupr);
         mem_free(attrupr);
     }
-    out_field("arg_node = trav_children(arg_node)");
+    if (node->children) {
+        out_field("arg_node = trav_children(arg_node)");
+    }
     out_field("return new_node");
     out_end_func();
     mem_free(nodelwr);

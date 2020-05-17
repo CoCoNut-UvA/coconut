@@ -1,0 +1,82 @@
+start phase RootPhase {
+    prefix = R,
+    actions {
+        LoadProgram;
+        Print;
+    }
+};
+
+
+phase LoadProgram {
+    prefix = LP, 
+    actions {
+        pass ScanAndParse = ScanParse;
+    }
+};
+
+enum UnOpType {
+    prefix = UO,
+    values = {
+        neg, not
+    }
+};
+
+enum BinOpType {
+    prefix = BO,
+    values = {
+        mul, add, sub, div, mod, lt, leq, eq, gt, geq, neq, and, or
+    }
+};
+
+traversal Print {
+    prefix = PRT,
+    travdata = {
+        int nodecount = 0
+    }
+};
+
+nodeset Expr = { UnOp, BinOp, Var, Num };
+
+root node Root {
+    children {
+        ExprList exprs { constructor, mandatory }
+    }
+};
+
+node ExprList {
+    children {
+        Expr expr { constructor, mandatory },
+        ExprList next { constructor }
+    }
+};
+
+node UnOp {
+    children {
+        Expr expr { constructor, mandatory }
+    },
+    attributes {
+        UnOpType op { constructor }
+    }
+};
+
+node BinOp {
+    children {
+        Expr left { constructor, mandatory},
+        Expr right { constructor, mandatory }
+    },
+    attributes {
+        BinOpType op { constructor, mandatory, disallowed = {and, or}}
+    }
+};
+
+node Var {
+    attributes {
+        string id { constructor }
+    }
+};
+
+node Num {
+    attributes {
+        int value { constructor }
+    }
+};

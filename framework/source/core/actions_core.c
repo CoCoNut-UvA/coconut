@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "include/core/vtables_core.h"
 #include "lib/print.h"
 

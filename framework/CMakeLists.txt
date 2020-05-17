@@ -5,6 +5,8 @@ project(ccncc)
 
 add_executable(${PROJECT_NAME} main.c)
 
+add_compile_options(-Wall -Wextra -pedantic -Werror)
+
 add_subdirectory(include)
 add_subdirectory(source)
 

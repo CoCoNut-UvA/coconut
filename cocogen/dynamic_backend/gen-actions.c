@@ -109,8 +109,8 @@ void gen_phase(Config *config, FILE *fp, Phase *phase) {
 }
 
 void gen_actions_src(Config *config, FILE *fp) {
-    out("#include \"include/core/trav_core.h\"\n");
-    out("#include \"include/core/ast_core.h\"\n");
+    out("#include <stddef.h>\n");
+    out("\n");
     out("#include \"include/core/actions_core.h\"\n");
     out("\n");
     out_start_func("Node *start_root_phase()");

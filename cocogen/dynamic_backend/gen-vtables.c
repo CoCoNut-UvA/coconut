@@ -34,7 +34,7 @@ void gen_error_vtable(Config *config, FILE *fp) {
     for (int j = 0; j < array_size(config->nodes); j++) {
         out("&trav_error, ");
     }
-    out("};\n\n");
+    out(" };\n\n");
 }
 
 void gen_trav_vtable(Config *config, FILE *fp, Traversal *trav) {
@@ -74,7 +74,7 @@ void gen_vtables(Config *config, FILE *fp) {
     }
     out("free_vtable, ");
     out("copy_vtable, ");
-    out("};\n\n");
+    out(" };\n\n");
 }
 
 void gen_trav_data_vtable(Config *config, FILE *fp, char *version) {
@@ -93,7 +93,7 @@ void gen_trav_data_vtable(Config *config, FILE *fp, char *version) {
     }
     out("&trav_%s_return, ", verlwr); // Free
     out("&trav_%s_return, ", verlwr); // Copy
-    out("};\n\n");
+    out(" };\n\n");
     mem_free(verlwr);
 }
 
@@ -127,9 +127,7 @@ void gen_phase_vtable(Config *config, FILE *fp) {
 void gen_vtables_src(Config *config, FILE *fp) {
     out("#include <stdio.h>\n");
     out("\n");
-    out("#include \"include/core/trav_core.h\"\n");
     out("#include \"include/core/vtables_core.h\"\n");
-    out("#include \"include/core/actions_core.h\"\n");
     out("\n");
     gen_vtables(config, fp);
     gen_trav_data_vtable(config, fp, "Init");

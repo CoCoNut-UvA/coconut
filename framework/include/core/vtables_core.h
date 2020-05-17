@@ -1,7 +1,7 @@
 #ifndef _CCN_VTABLES_CORE_H_
 #define _CCN_VTABLES_CORE_H_
 
-#include "include/core/ast_core.h"
+#include "include/core/actions_core.h"
 
 typedef Node *(*TravFunc)(Node *);
 typedef Trav *(*InitFunc)(Trav *);
