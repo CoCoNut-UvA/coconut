@@ -15,21 +15,24 @@ void gen_init_function(Config *config, FILE *fp, Node *node) {
     out("Node *node_init_%s(", nodelwr);
     for (int i = 0; i < array_size(node->children); ++i) {
         Child *child = (Child *)array_get(node->children, i);
-        out("Node *%s", child->id);
-        if (i != array_size(node->children) - 1 ||
-            array_size(node->attrs) > 0) {
-            out(", ");
+        if (child->construct) {
+            if (i > 0) {
+                out(", ");
+            }
+            out("Node *%s", child->id);
         }
     }
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
-        if (attr->type == AT_link) {
-            out("Node *%s", attr->id);
-        } else {
-            out("%s %s", str_attr_type(attr), attr->id);
-        }
-        if (i != array_size(node->attrs) - 1) {
-            out(", ");
+        if (attr->construct) {
+            if ((i == 0 && node->children > 0) || i > 0) {
+                out(", ");
+            }
+            if (attr->type == AT_link) {
+                out("Node *%s", attr->id);
+            } else {
+                out("%s %s", str_attr_type(attr), attr->id);
+            }
         }
     }
     out(")");
@@ -139,15 +142,19 @@ void gen_members(Config *config, FILE *fp, Node *node) {
     char *nodeupr = strupr(node->id);
     for (int i = 0; i < array_size(node->children); ++i) {
         Child *child = (Child *)array_get(node->children, i);
-        char *childupr = strupr(child->id);
-        out_field("%s_%s(node) = %s", nodeupr, childupr, child->id);
-        mem_free(childupr);
+        if (child->construct) {
+            char *childupr = strupr(child->id);
+            out_field("%s_%s(node) = %s", nodeupr, childupr, child->id);
+            mem_free(childupr);
+        }
     }
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
-        char *attrupr = strupr(attr->id);
-        out_field("%s_%s(node) = %s", nodeupr, attrupr, attr->id);
-        mem_free(attrupr);
+        if (attr->construct) {
+            char *attrupr = strupr(attr->id);
+            out_field("%s_%s(node) = %s", nodeupr, attrupr, attr->id);
+            mem_free(attrupr);
+        }
     }
     mem_free(nodeupr);
 }

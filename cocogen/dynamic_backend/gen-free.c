@@ -14,22 +14,22 @@ void gen_free_func(Config *config, FILE *fp, Node *node) {
     char *nodeupr = strupr(node->id);
     out_comment("%s", node->id);
     out_start_func("Node *free_%s(Node *arg_node)", nodelwr);
+    if (node->children) {
+        out_field("arg_node = trav_children(arg_node)");
+    }
     for (int i = 0; i < array_size(node->attrs); i++) {
         Attr *attr = array_get(node->attrs, i);
         char *attrupr = strupr(attr->id);
         char *freefunc;
-        if (attr->type == AT_string) {
-            freefunc = "mem_free";
-        } else if (attr->type == AT_link) {
+        if (attr->type == AT_link) {
             freefunc = "node_free";
         } else {
+            // Primitive type, do nothing
+            mem_free(attrupr);
             continue;
         }
         out_field("%s(%s_%s(arg_node))", freefunc, nodeupr, attrupr);
         mem_free(attrupr);
-    }
-    if (node->children) {
-        out_field("arg_node = trav_children(arg_node)");
     }
     out_field("mem_free(arg_node->data.N_%s)", nodelwr);
     out_field("mem_free(arg_node)");

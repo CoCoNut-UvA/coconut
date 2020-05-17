@@ -45,17 +45,20 @@ void gen_default_values(Config *config, FILE *fp, Attr *attr) {
 void gen_init_arguments(Config *config, FILE *fp, Node *node) {
     for (int i = 0; i < array_size(node->children); ++i) {
         Child *child = (Child *)array_get(node->children, i);
-        out("NULL");
-        if (i != array_size(node->children) - 1 ||
-            array_size(node->attrs) > 0) {
-            out(", ");
+        if (child->construct) {
+            if (i > 0) {
+                out(", ");
+            }
+            out("NULL");
         }
     }
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
-        gen_default_values(config, fp, attr);
-        if (i != array_size(node->attrs) - 1) {
-            out(", ");
+        if (attr->construct) {
+            if ((i == 0 && node->children > 0) || i > 0) {
+                out(", ");
+            }
+            gen_default_values(config, fp, attr);
         }
     }
 }

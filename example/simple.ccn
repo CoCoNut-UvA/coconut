@@ -2,7 +2,7 @@ start phase RootPhase {
     prefix = R,
     actions {
         LoadProgram;
-        Print;
+        SimplePrint;
     }
 };
 
@@ -10,7 +10,7 @@ start phase RootPhase {
 phase LoadProgram {
     prefix = LP, 
     actions {
-        pass ScanAndParse = ScanParse;
+        pass CreateAST;
     }
 };
 
@@ -28,7 +28,7 @@ enum BinOpType {
     }
 };
 
-traversal Print {
+traversal SimplePrint {
     prefix = PRT,
     travdata = {
         int nodecount = 0
