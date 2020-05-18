@@ -9,39 +9,6 @@
 
 static int indent = 0;
 
-void gen_default_values(Config *config, FILE *fp, Attr *attr) {
-    switch (attr->type) {
-    case AT_int:
-    case AT_int8:
-    case AT_int16:
-    case AT_int32:
-    case AT_int64:
-        out("%i", 0);
-        break;
-    case AT_uint:
-    case AT_uint8:
-    case AT_uint16:
-    case AT_uint32:
-    case AT_uint64:
-        out("%u", 0);
-        break;
-    case AT_float:
-    case AT_double:
-        out("%f", 0.0);
-        break;
-    case AT_bool:
-        out("%s", "false");
-        break;
-    case AT_string:
-    case AT_link:
-        out("NULL");
-        break;
-    case AT_enum:
-        out("%d", 0);
-        break;
-    }
-}
-
 void gen_init_arguments(Config *config, FILE *fp, Node *node) {
     for (int i = 0; i < array_size(node->children); ++i) {
         Child *child = (Child *)array_get(node->children, i);
@@ -58,7 +25,7 @@ void gen_init_arguments(Config *config, FILE *fp, Node *node) {
             if ((i == 0 && node->children > 0) || i > 0) {
                 out(", ");
             }
-            gen_default_values(config, fp, attr);
+            out("%s", attr_default_value(config, fp, attr->type));
         }
     }
 }

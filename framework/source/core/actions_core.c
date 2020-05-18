@@ -3,7 +3,7 @@
 
 Node *pass_start(Node *syntaxtree, PassType pass_type) {
     PassFunc pass_func = pass_vtable[pass_type];
-    pass_func(syntaxtree);
+    return pass_func(syntaxtree);
 }
 
 Node *pass_error(Node *arg_node) {
@@ -13,7 +13,7 @@ Node *pass_error(Node *arg_node) {
 
 Node *phase_start(Node *syntaxtree, PhaseType phase_type) {
     PhaseFunc phase_func = phase_vtable[phase_type];
-    phase_func(syntaxtree);
+    return phase_func(syntaxtree);
 }
 
 Node *phase_error(Node *arg_node) {

@@ -75,10 +75,11 @@ Node *trav_return(Node *arg_node) { return arg_node; }
 
 /* Traverse through each child node and return */
 Node *trav_children(Node *arg_node) {
-    if (NODE_CHILDREN(arg_node)) {
-        for (int i = 0; i < NODE_NUMCHILDREN(arg_node); i++) {
-            NODE_CHILDREN(arg_node)[i] = trav_opt(NODE_CHILDREN(arg_node)[i]);
-        }
+    if (!arg_node || !NODE_CHILDREN(arg_node)) {
+        return arg_node;
+    }
+    for (int i = 0; i < NODE_NUMCHILDREN(arg_node); i++) {
+        NODE_CHILDREN(arg_node)[i] = trav_opt(NODE_CHILDREN(arg_node)[i]);
     }
     return arg_node;
 }

@@ -22,13 +22,17 @@ void gen_free_func(Config *config, FILE *fp, Node *node) {
         char *attrupr = strupr(attr->id);
         char *freefunc;
         if (attr->type == AT_link) {
-            freefunc = "node_free";
-        } else {
-            // Primitive type, do nothing
-            mem_free(attrupr);
-            continue;
+            if (!attr->construct) {
+                out_begin_if("%s_%s(arg_node)", nodeupr, attrupr);
+            }
+            char *attrtypelwr = strlwr(attr->type_id);
+            out_field("free_%s(%s_%s(arg_node))", attrtypelwr, nodeupr,
+                      attrupr);
+            mem_free(attrtypelwr);
+            if (!attr->construct) {
+                out_end_if();
+            }
         }
-        out_field("%s(%s_%s(arg_node))", freefunc, nodeupr, attrupr);
         mem_free(attrupr);
     }
     out_field("mem_free(arg_node->data.N_%s)", nodelwr);
@@ -42,8 +46,7 @@ void gen_free_func(Config *config, FILE *fp, Node *node) {
 void gen_free_src(Config *config, FILE *fp) {
     out("#include <stdlib.h>\n");
     out("\n");
-    out("#include \"include/core/trav_core.h\"\n");
-    out("#include \"include/core/ast_core.h\"\n");
+    out("#include \"include/core/actions_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {

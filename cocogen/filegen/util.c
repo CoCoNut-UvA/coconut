@@ -4,6 +4,7 @@
 
 #include "ast/ast.h"
 #include "filegen/util.h"
+#include "lib/print.h"
 #include "lib/smap.h"
 
 void generate_node_header_includes(Config *config, FILE *fp, Node *node) {
@@ -107,4 +108,38 @@ bool is_traversal_node(Traversal *trav, Node *node) {
         }
     }
     return false;
+}
+
+char *attr_default_value(Config *config, FILE *fp, enum AttrType type) {
+    switch (type) {
+    case AT_int:
+    case AT_int8:
+    case AT_int16:
+    case AT_int32:
+    case AT_int64:
+    case AT_enum:
+    case AT_uint:
+    case AT_uint8:
+    case AT_uint16:
+    case AT_uint32:
+    case AT_uint64:
+        return "0";
+        break;
+    case AT_float:
+    case AT_double:
+        return "0.0";
+        break;
+    case AT_bool:
+        return "false";
+        break;
+    case AT_string:
+    case AT_link:
+        return "NULL";
+        break;
+    case AT_link_or_enum:
+        print_user_error("attr_default_value",
+                         "attrtype is somehow not converted to link or enum");
+        return "NULL";
+        break;
+    }
 }

@@ -142,19 +142,24 @@ void gen_members(Config *config, FILE *fp, Node *node) {
     char *nodeupr = strupr(node->id);
     for (int i = 0; i < array_size(node->children); ++i) {
         Child *child = (Child *)array_get(node->children, i);
+        char *childupr = strupr(child->id);
         if (child->construct) {
-            char *childupr = strupr(child->id);
             out_field("%s_%s(node) = %s", nodeupr, childupr, child->id);
-            mem_free(childupr);
+        } else {
+            out_field("%s_%s(node) = NULL", nodeupr, childupr);
         }
+        mem_free(childupr);
     }
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
+        char *attrupr = strupr(attr->id);
         if (attr->construct) {
-            char *attrupr = strupr(attr->id);
             out_field("%s_%s(node) = %s", nodeupr, attrupr, attr->id);
-            mem_free(attrupr);
+        } else {
+            out_field("%s_%s(node) = %s", nodeupr, attrupr,
+                      attr_default_value(config, fp, attr->type));
         }
+        mem_free(attrupr);
     }
     mem_free(nodeupr);
 }

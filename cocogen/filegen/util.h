@@ -10,5 +10,6 @@ char *strupr(char *string);
 char *strlwr(char *string);
 
 bool is_traversal_node(Traversal *trav, Node *node);
+char *attr_default_value(Config *config, FILE *fp, enum AttrType type);
 
 #include "genmacros.h"
