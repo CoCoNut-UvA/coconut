@@ -5,6 +5,8 @@
 
 void gen_actions_header(Config *, FILE *);
 void gen_actions_src(Config *, FILE *);
+void gen_check_header(Config *, FILE *);
+void gen_check_src(Config *, FILE *);
 void gen_ast_header(Config *, FILE *);
 void gen_ast_src(Config *, FILE *);
 void gen_header_cmakelists(Config *, FILE *);

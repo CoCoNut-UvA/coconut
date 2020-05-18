@@ -12,5 +12,6 @@ target_sources(${PROJECT_NAME}
         gen-actions.c
         gen-cmakelists.c
         gen-vtables.c
+        gen-check.c
         API.c
 )

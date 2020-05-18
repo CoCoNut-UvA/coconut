@@ -50,6 +50,14 @@ void gen_actions_header(Config *config, FILE *fp) {
         mem_free(nodelwr);
     }
     out("\n");
+    out_comment("Traversal Check");
+    for (int i = 0; i < array_size(config->nodes); ++i) {
+        Node *node = array_get(config->nodes, i);
+        char *nodelwr = strlwr(node->id);
+        out_field("Node *check_%s(Node *arg_node)", nodelwr);
+        mem_free(nodelwr);
+    }
+    out("\n");
     for (int i = 0; i < array_size(config->phases); i++) {
         Phase *phase = array_get(config->phases, i);
         char *phaselwr = strlwr(phase->id);
