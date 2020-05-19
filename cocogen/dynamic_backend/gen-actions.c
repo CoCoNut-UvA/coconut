@@ -125,7 +125,8 @@ void gen_actions_src(Config *config, FILE *fp) {
     char *rootphaselwr = strlwr(config->start_phase->id);
     out_field("Node *root = phase_start(NULL, PHASE_%s)", rootphaselwr);
     mem_free(rootphaselwr);
-    out_field("trav_start(root, TRAV_free)");
+    out_field("root = trav_start(root, TRAV_free)");
+    out_field("return root");
     out_end_func();
     for (int i = 0; i < array_size(config->phases); i++) {
         Phase *phase = array_get(config->phases, i);
@@ -133,6 +134,7 @@ void gen_actions_src(Config *config, FILE *fp) {
         char *type;
         out_start_func("Node *phase_%s(Node *root)", phaselwr);
         gen_phase(config, fp, phase);
+        out_field("root = trav_start(root, TRAV_check)");
         out_field("return root");
         out_end_func();
         mem_free(phaselwr);

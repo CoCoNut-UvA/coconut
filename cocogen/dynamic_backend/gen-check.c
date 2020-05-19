@@ -6,6 +6,7 @@
 #include "filegen/genmacros.h"
 #include "filegen/util.h"
 #include "gen-functions.h"
+#include "lib/print.h"
 
 static int indent = 0;
 
@@ -14,15 +15,17 @@ void gen_check_header(Config *config, FILE *fp) {}
 void gen_nodeset_func(Config *config, FILE *fp, Nodeset *nodeset) {
     char *nodesetlwr = strlwr(nodeset->id);
     out_start_func("bool type_is_%s(Node *arg_node)", nodesetlwr);
+    out("    return (");
     for (int i = 0; i < array_size(nodeset->nodes); i++) {
         Node *node = array_get(nodeset->nodes, i);
         char *nodelwr = strlwr(node->id);
-        out_begin_if("NODE_TYPE(arg_node) == NT_%s", nodelwr);
-        out_field("return true");
-        out_end_if();
+        out("NODE_TYPE(arg_node) == NT_%s", nodelwr);
+        if (i != array_size(nodeset->nodes) - 1) {
+            out(" || ");
+        }
         mem_free(nodelwr);
     }
-    out_field("return false");
+    out(");\n");
     out_end_func();
     mem_free(nodesetlwr);
 }
@@ -36,14 +39,19 @@ void gen_check_func(Config *config, FILE *fp, Node *node) {
         Child *child = array_get(node->children, i);
         char *childupr = strupr(child->id);
         char *childtypelwr = strlwr(child->type);
+        out_begin_if("%s_%s(arg_node)", nodeupr, childupr);
         if (child->node) {
-            out_begin_if(
-                "%s_%s(arg_node) && (NODE_TYPE(%s_%s(arg_node)) != NT_%s)",
-                nodeupr, childupr, nodeupr, childupr, childtypelwr);
+            out_begin_if("NODE_TYPE(%s_%s(arg_node)) != NT_%s", nodeupr,
+                         childupr, childtypelwr);
         } else if (child->nodeset) {
-            out_begin_if("%s_%s(arg_node) && !type_is_%s(%s_%s(arg_node))",
-                         nodeupr, childupr, childtypelwr, nodeupr, childupr);
+            out_begin_if("!type_is_%s(%s_%s(arg_node))", childtypelwr, nodeupr,
+                         childupr);
         }
+        out_field(
+            "print_user_error(\"consistency checking\", \"Child \\\"%s\\\" of "
+            "node \\\"%s\\\" has nonallowed type.\")",
+            child->id, node->id);
+        out_end_if();
         out_end_if();
         mem_free(childupr);
         mem_free(childtypelwr);
@@ -65,6 +73,7 @@ void gen_check_src(Config *config, FILE *fp) {
     out("\n");
     out("#include \"include/core/actions_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
+    out("#include \"lib/print.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodesets); i++) {
         Nodeset *nodeset = (Nodeset *)array_get(config->nodesets, i);
