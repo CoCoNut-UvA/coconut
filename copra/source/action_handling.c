@@ -5,6 +5,7 @@
 #include "../generated/include/ccn_enables.h"
 // #include "../generated/include/trav-ast.h"
 #include "include/action_handling.h"
+#include "include/actions_core.h"
 #include "include/internal_phase_functions.h"
 //#include "../generated/include/_sub_root_handlers.h"
 
@@ -186,13 +187,13 @@ void *ccn_dispatch_action(ccn_action_t *action, NodeType root_type, void *node,
     switch (action->type) {
     case action_pass:
         start = clock();
-        node = pass_start(node, action->pass.pass_type);
+        node = pass_start(node, action->pass->pass_type);
         end = clock();
         _ccn_new_pass_time_frame(action->name, (end - start) / CLOCKS_PER_SEC);
         break;
     case action_traversal:
         start = clock();
-        node = trav_start(node, action->traversal.trav_type);
+        node = trav_start(node, action->traversal->trav_type);
         end = clock();
         _ccn_new_pass_time_frame(action->name, (end - start) / CLOCKS_PER_SEC);
         break;
