@@ -20,6 +20,13 @@ typedef struct NodeCommonInfo {
     bool hash_matches;
 } NodeCommonInfo;
 
+typedef struct Id {
+    char *orig;
+    char *lwr;
+    char *upr;
+    struct NodeCommonInfo *common_info;
+} Id;
+
 enum NodeType { NT_node, NT_nodeset };
 
 enum MandatoryPhaseType { MP_single, MP_range };

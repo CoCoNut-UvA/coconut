@@ -63,3 +63,5 @@ AttrValue *create_attrval_float(float value);
 AttrValue *create_attrval_double(double value);
 
 AttrValue *create_attrval_id(char *id);
+
+Id *create_id(char *);

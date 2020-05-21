@@ -10,6 +10,7 @@
 #include "lib/array.h"
 #include "lib/memory.h"
 #include "lib/print.h"
+#include "lib/str.h"
 
 extern ParserLocation yy_parser_location;
 
@@ -368,4 +369,14 @@ AttrValue *create_attrval_id(char *id) {
 
     v->common_info = create_commoninfo();
     return v;
+}
+
+Id *create_id(char *string) {
+    Id *i = mem_alloc(sizeof(Id));
+    i->orig = string;
+    i->lwr = ccn_str_lwr(string);
+    i->upr = ccn_str_upr(string);
+
+    i->common_info = create_commoninfo();
+    return i;
 }

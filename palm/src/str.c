@@ -1,28 +1,42 @@
 
-#include <string.h>
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 
+#include "lib/array.h"
 #include "lib/assert.h"
 #include "lib/log.h"
-#include "lib/str.h"
 #include "lib/memory.h"
-#include "lib/array.h"
-
+#include "lib/str.h"
 
 char *ccn_str_cpy(const char *source) {
     ccn_contract_in(source != NULL);
 
     char *copy = strdup(source);
     if (copy == NULL) {
-	ccn_log_error("Could not duplicate strings");
-	exit(EXIT_FAILURE);
+        ccn_log_error("Could not duplicate strings");
+        exit(EXIT_FAILURE);
     }
 
     return copy;
 }
 
+char *ccn_str_lwr(const char *source) {
+    char *lower = ccn_str_cpy(source);
+    for (int i = 0; i < strlen(lower); ++i) {
+        lower[i] = tolower(lower[i]);
+    }
+    return lower;
+}
+
+char *ccn_str_upr(const char *source) {
+    char *upper = ccn_str_cpy(source);
+    for (int i = 0; i < strlen(upper); ++i) {
+        upper[i] = tolower(upper[i]);
+    }
+    return upper;
+}
 
 char *ccn_str_cat(const char *first, const char *second) {
     ccn_contract_in(first != NULL);
@@ -38,7 +52,6 @@ char *ccn_str_cat(const char *first, const char *second) {
     return result;
 }
 
-
 char *ccn_str_cat_n(const int n, ...) {
     ccn_contract_in(n > 0);
 
@@ -47,28 +60,28 @@ char *ccn_str_cat_n(const int n, ...) {
     va_start(va_args, n);
 
     for (int i = 0; i < n; i++) {
-        char *val = va_arg(va_args, char*);
-	ccn_contract_in(val != NULL);
+        char *val = va_arg(va_args, char *);
+        ccn_contract_in(val != NULL);
         size += strlen(val);
     }
     va_end(va_args);
 
-    char *result = (char*)mem_alloc(sizeof(char) * (size + 1));
+    char *result = (char *)mem_alloc(sizeof(char) * (size + 1));
     result[0] = '\0'; // We start with an empty string.
 
-    if (size == 0) return result;
+    if (size == 0)
+        return result;
 
     va_start(va_args, n);
 
     for (int i = 0; i < n; i++) {
-        char *val = va_arg(va_args, char*);
+        char *val = va_arg(va_args, char *);
         strcat(result, val);
     }
     va_end(va_args);
 
     return result;
 }
-
 
 char *ccn_str_cat_array(const array *strings) {
     ccn_contract_in(strings != NULL);
@@ -81,7 +94,7 @@ char *ccn_str_cat_array(const array *strings) {
         size += strlen(val);
     }
 
-    char *result = (char*)mem_alloc(sizeof(char) * (size + 1));
+    char *result = (char *)mem_alloc(sizeof(char) * (size + 1));
     result[0] = '\0'; // We start with an empty string.
 
     for (int i = 0; i < array_size(strings); ++i) {
@@ -92,12 +105,11 @@ char *ccn_str_cat_array(const array *strings) {
     return result;
 }
 
-
 bool ccn_str_equal(const char *first, const char *second) {
-    if (first == second) return true;
+    if (first == second)
+        return true;
     return strcmp(first, second) == 0;
 }
-
 
 array *ccn_str_split(char *target, const char delimeter) {
     array *matches = create_array();
@@ -124,7 +136,6 @@ array *ccn_str_split(char *target, const char delimeter) {
 
     return matches;
 }
-
 
 bool ccn_str_startswith(const char *str, const char *pre) {
     return strncmp(pre, str, strlen(pre)) == 0;
