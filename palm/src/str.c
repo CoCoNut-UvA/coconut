@@ -33,7 +33,7 @@ char *ccn_str_lwr(const char *source) {
 char *ccn_str_upr(const char *source) {
     char *upper = ccn_str_cpy(source);
     for (int i = 0; i < strlen(upper); ++i) {
-        upper[i] = tolower(upper[i]);
+        upper[i] = toupper(upper[i]);
     }
     return upper;
 }
