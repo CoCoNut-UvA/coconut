@@ -1,7 +1,7 @@
 #include "ast/ast.h"
+#include "ast/to-string.h"
 #include "filegen/driver.h"
 #include "filegen/util.h"
-#include "ast/to-string.h"
 #include "lib/memory.h"
 
 #include <assert.h>
@@ -11,14 +11,14 @@
 void generate_user_trav_header(Config *config, FILE *fp, Traversal *trav) {
 
     out("#pragma once\n\n");
-    out("#include \"generated/ast.h\"\n");
+    out("#include \"ast.h\"\n");
 
     if (trav->nodes == NULL) {
-        out("#include \"generated/trav-ast.h\"\n");
+        out("#include \"trav-ast.h\"\n");
     } else {
         for (int i = 0; i < array_size(trav->nodes); ++i) {
             Node *node = array_get(trav->nodes, i);
-            out("#include \"generated/trav-%s.h\"\n", node->id);
+            out("#include \"trav-%s.h\"\n", node->id);
         }
     }
 

@@ -10,7 +10,7 @@ void gen_action_array_h(Config *c, FILE *fp) {
 
     out("#pragma once\n\n");
 
-    out("#include \"generated/enum.h\"\n");
+    out("#include \"enum.h\"\n");
     out("#include <stddef.h>\n");
     out_statement("void ccn_init_action_array()");
     out_statement("void dispatch_traversals(NodeType type, void *node, "
@@ -106,11 +106,11 @@ void gen_pass_dispatchers(Config *config, Pass *pass, int indent, FILE *fp) {
 // void gen_action_array_c(Config *c, FILE *fp) {
 //     int indent = 0;
 
-//     out("#include \"generated/enum.h\"\n");
-//     out("#include \"generated/action_handlers.h\"\n");
+//     out("#include \"enum.h\"\n");
+//     out("#include \"action_handlers.h\"\n");
 //     out("#include \"core/action_handling.h\"\n");
-//     out("#include \"generated/gate_functions.h\"\n");
-//     out("#include \"generated/trav-ast.h\"\n");
+//     out("#include \"gate_functions.h\"\n");
+//     out("#include \"trav-ast.h\"\n");
 //     out("#include \"core/internal_phase_functions.h\"\n");
 //     out("#include \"lib/memory.h\"\n");
 //     out("#include \"lib/str.h\"\n");
@@ -120,7 +120,7 @@ void gen_pass_dispatchers(Config *config, Pass *pass, int indent, FILE *fp) {
 
 //     for (int i = 0; i < array_size(c->passes); ++i) {
 //         Pass *pass = array_get(c->passes, i);
-//         out("#include \"generated/pass-%s.h\"\n", pass->id);
+//         out("#include \"pass-%s.h\"\n", pass->id);
 //     }
 
 //     // Here we do + 1 to allow for an NULL action in the array, which denotes
@@ -320,11 +320,11 @@ void gen_pass_dispatchers(Config *config, Pass *pass, int indent, FILE *fp) {
 // }
 
 void gen_action_array_c(Config *c, FILE *fp) {
-    out("#include \"generated/enum.h\"\n");
-    out("#include \"generated/action_handlers.h\"\n");
+    out("#include \"enum.h\"\n");
+    out("#include \"action_handlers.h\"\n");
     out("#include \"core/action_handling.h\"\n");
-    out("#include \"generated/gate_functions.h\"\n");
-    out("#include \"generated/trav-ast.h\"\n");
+    out("#include \"gate_functions.h\"\n");
+    out("#include \"trav-ast.h\"\n");
     out("#include \"core/internal_phase_functions.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("#include \"lib/str.h\"\n");
@@ -375,7 +375,8 @@ void gen_action_array_c(Config *c, FILE *fp) {
 
     for (size_t i = 0; i < array_size(c->passes); i++) {
         Pass *p = array_get(c->passes, i);
-        out("{action_pass, ACTION_ID_%s, \"%s\", .pass = {PASS_%s}}\n", p->id, p->id, p->id);
+        out("{action_pass, ACTION_ID_%s, \"%s\", .pass = {PASS_%s}}\n", p->id,
+            p->id, p->id);
     }
 
     out("};\n\n");

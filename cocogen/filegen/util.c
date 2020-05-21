@@ -64,7 +64,7 @@ void generate_node_header_includes(Config *config, FILE *fp, Node *node) {
     smap_free(map);
 
     if (using_enum)
-        out("#include \"generated/enum.h\"\n");
+        out("#include \"enum.h\"\n");
     if (using_int)
         out("#include <stdint.h>\n");
     if (using_bool)

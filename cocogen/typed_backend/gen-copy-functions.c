@@ -1,9 +1,9 @@
 #include <stdio.h>
 
 #include "ast/ast.h"
+#include "ast/to-string.h"
 #include "filegen/driver.h"
 #include "filegen/util.h"
-#include "ast/to-string.h"
 
 #include "lib/memory.h"
 #include "lib/smap.h"
@@ -88,8 +88,8 @@ static void generate_nodeset(Nodeset *nodeset, FILE *fp, bool header) {
         out(";\n");
     } else {
         out(" {\n");
-        out("    struct %s *res = mem_alloc(sizeof(struct %s));\n",
-            nodeset->id, nodeset->id);
+        out("    struct %s *res = mem_alloc(sizeof(struct %s));\n", nodeset->id,
+            nodeset->id);
         out("    imap_insert(imap, nodeset, res);\n");
 
         out("    res->type = nodeset->type;\n");
@@ -139,8 +139,8 @@ void generate_copy_node_definitions(Config *config, FILE *fp, Node *node) {
 
     out("// Do not include \"lib/imap.h\", header does it for us.\n");
     out("#include \"lib/memory.h\"\n");
-    out("#include \"generated/copy-%s.h\"\n", node->id);
-    out("#include \"generated/ast-%s.h\"\n", node->id);
+    out("#include \"copy-%s.h\"\n", node->id);
+    out("#include \"ast-%s.h\"\n", node->id);
     out("\n");
 
     smap_t *map = smap_init(32);
@@ -194,8 +194,8 @@ void generate_copy_nodeset_header(Config *c, FILE *fp, Nodeset *n) {
 void generate_copy_nodeset_definitions(Config *c, FILE *fp, Nodeset *n) {
     out("// Do not include \"lib/imap.h\", header does it for us.\n");
     out("#include \"lib/memory.h\"\n");
-    out("#include \"generated/copy-%s.h\"\n", n->id);
-    out("#include \"generated/ast-%s.h\"\n", n->id);
+    out("#include \"copy-%s.h\"\n", n->id);
+    out("#include \"ast-%s.h\"\n", n->id);
     out("\n");
 
     smap_t *map = smap_init(32);
@@ -219,10 +219,10 @@ void generate_copy_header(Config *config, FILE *fp) {
     out("#pragma once\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = array_get(config->nodes, i);
-        out("#include \"generated/copy-%s.h\"\n", node->id);
+        out("#include \"copy-%s.h\"\n", node->id);
     }
     for (int i = 0; i < array_size(config->nodesets); ++i) {
         Nodeset *nodeset = array_get(config->nodesets, i);
-        out("#include \"generated/copy-%s.h\"\n", nodeset->id);
+        out("#include \"copy-%s.h\"\n", nodeset->id);
     }
 }

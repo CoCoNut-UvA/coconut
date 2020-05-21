@@ -1,7 +1,7 @@
 #include "ast/ast.h"
+#include "ast/to-string.h"
 #include "filegen/driver.h"
 #include "filegen/util.h"
-#include "ast/to-string.h"
 #include "lib/imap.h"
 #include "lib/memory.h"
 #include "lib/smap.h"
@@ -190,8 +190,7 @@ static void generate_node_child_node(Node *node, Child *child, FILE *fp) {
     out("    _" TRAV_PREFIX "%s(node->%s, info);\n", child->type, child->id);
 
     out("    if (node_replacement != NULL) {\n");
-    out("        if (node_replacement_type == " NT_FORMAT ") {\n",
-        child->type);
+    out("        if (node_replacement_type == " NT_FORMAT ") {\n", child->type);
     out("            node->%s = node_replacement;\n", child->id);
     out("        } else {\n");
     out("            print_user_error(\"" ERROR_HEADER
@@ -266,8 +265,8 @@ static void generate_trav_node(Node *node, FILE *fp, Config *config,
             out("   case " TRAV_FORMAT ":\n", t->id);
 
             if (handles_node) {
-                out("       " TRAVERSAL_HANDLER_FORMAT "(node, info);\n",
-                    t->id, node->id);
+                out("       " TRAVERSAL_HANDLER_FORMAT "(node, info);\n", t->id,
+                    node->id);
             } else {
 
                 for (int j = 0; j < array_size(node->children); j++) {
@@ -327,14 +326,14 @@ static void generate_trav_node(Node *node, FILE *fp, Config *config,
 void generate_trav_header(Config *config, FILE *fp) {
     for (int i = 0; i < array_size(config->nodes); i++) {
         Node *node = array_get(config->nodes, i);
-        out("#include \"generated/trav-%s.h\"\n", node->id);
+        out("#include \"trav-%s.h\"\n", node->id);
     }
 }
 
 void generate_trav_node_header(Config *config, FILE *fp, Node *node) {
     compute_reachable_nodes(config);
     out("#pragma once\n");
-    out("#include \"generated/trav-core.h\"\n");
+    out("#include \"trav-core.h\"\n");
 
     out("struct Info;\n");
 
@@ -348,7 +347,7 @@ void generate_trav_node_definitions(Config *config, FILE *fp, Node *node) {
 
     out("#include <stdio.h>\n");
     out("#include \"lib/print.h\"\n");
-    out("#include \"generated/trav-%s.h\"\n", node->id);
+    out("#include \"trav-%s.h\"\n", node->id);
     out("// generated/trav-core.h is included by my header.\n");
 
     out("extern " NT_ENUM_NAME " node_replacement_type;\n");
@@ -359,8 +358,7 @@ void generate_trav_node_definitions(Config *config, FILE *fp, Node *node) {
         Child *child = array_get(node->children, i);
 
         if (child->node) {
-            out("%s* _" TRAV_PREFIX
-                "%s(struct %s *node, struct Info *info);\n",
+            out("%s* _" TRAV_PREFIX "%s(struct %s *node, struct Info *info);\n",
                 child->type, child->type, child->type);
         } else if (child->nodeset) {
             for (int j = 0; j < array_size(child->nodeset->nodes); j++) {
