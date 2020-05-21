@@ -360,8 +360,7 @@ void filegen_all_nodes(char *fileformatter,
 
     for (int i = 0; i < array_size(ast_definition->nodes); ++i) {
         Node *node = array_get(ast_definition->nodes, i);
-        char *nodelwr = strlwr(node->id);
-        char *filename = format_with_formatter(fileformatter, nodelwr);
+        char *filename = format_with_formatter(fileformatter, node->id->lwr);
 
         full_path = get_full_path_with_dir(current_directory, filename, NULL);
         add_filename_to_tracked(filename);
@@ -378,7 +377,6 @@ void filegen_all_nodes(char *fileformatter,
             out("\n");
             fclose(fp);
         }
-        mem_free(nodelwr);
         mem_free(filename);
         mem_free(full_path);
     }
@@ -391,8 +389,7 @@ void filegen_all_nodesets(char *fileformatter,
 
     for (int i = 0; i < array_size(ast_definition->nodesets); ++i) {
         Nodeset *nodeset = array_get(ast_definition->nodesets, i);
-        char *nodesetlwr = strlwr(nodeset->id);
-        char *filename = format_with_formatter(fileformatter, nodesetlwr);
+        char *filename = format_with_formatter(fileformatter, nodeset->id->lwr);
         // full_path = get_full_path(fileformatter, nodeset->id);
         full_path = get_full_path_with_dir(current_directory, filename, NULL);
         add_filename_to_tracked(filename);
@@ -409,7 +406,6 @@ void filegen_all_nodesets(char *fileformatter,
             out("\n");
             fclose(fp);
         }
-        mem_free(nodesetlwr);
         mem_free(filename);
         mem_free(full_path);
     }
@@ -422,8 +418,7 @@ void filegen_all_traversals(char *fileformatter,
 
     for (int i = 0; i < array_size(ast_definition->traversals); ++i) {
         Traversal *trav = array_get(ast_definition->traversals, i);
-        char *travlwr = strlwr(trav->id);
-        char *filename = format_with_formatter(fileformatter, travlwr);
+        char *filename = format_with_formatter(fileformatter, trav->id->lwr);
         // full_path = get_full_path(fileformatter, trav->id);
         full_path = get_full_path_with_dir(current_directory, filename, NULL);
         add_filename_to_tracked(filename);
@@ -440,7 +435,6 @@ void filegen_all_traversals(char *fileformatter,
             out("\n");
             fclose(fp);
         }
-        mem_free(travlwr);
         mem_free(filename);
         mem_free(full_path);
     }
@@ -453,13 +447,13 @@ void filegen_all_passes(char *fileformatter,
 
     for (int i = 0; i < array_size(ast_definition->passes); ++i) {
         Pass *pass = array_get(ast_definition->passes, i);
-        char *passlwr;
+        char *passid = NULL;
         if (pass->func) {
-            passlwr = strlwr(pass->func);
+            passid = pass->func->lwr;
         } else {
-            passlwr = strlwr(pass->id);
+            passid = pass->id->lwr;
         }
-        char *filename = format_with_formatter(fileformatter, passlwr);
+        char *filename = format_with_formatter(fileformatter, passid);
         // full_path = get_full_path(fileformatter, pass->id);
         full_path = get_full_path_with_dir(current_directory, filename, NULL);
         add_filename_to_tracked(filename);
@@ -476,7 +470,6 @@ void filegen_all_passes(char *fileformatter,
             out("\n");
             fclose(fp);
         }
-        mem_free(passlwr);
         mem_free(filename);
         mem_free(full_path);
     }
@@ -489,8 +482,7 @@ void filegen_all_phases(char *fileformatter,
     FILE *fp;
     for (int i = 0; i < array_size(ast_definition->phases); ++i) {
         Phase *phase = array_get(ast_definition->phases, i);
-        char *phaselwr = strlwr(phase->id);
-        char *filename = format_with_formatter(fileformatter, phaselwr);
+        char *filename = format_with_formatter(fileformatter, phase->id->lwr);
         // full_path = get_full_path(fileformatter, phase->id);
         full_path = get_full_path_with_dir(current_directory, filename, NULL);
         add_filename_to_tracked(filename);
@@ -508,7 +500,6 @@ void filegen_all_phases(char *fileformatter,
             out("\n");
             fclose(fp);
         }
-        mem_free(phaselwr);
         mem_free(filename);
         mem_free(full_path);
     }

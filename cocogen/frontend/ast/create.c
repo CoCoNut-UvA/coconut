@@ -39,7 +39,7 @@ Config *create_config(array *phases, array *passes, array *traversals,
     return c;
 }
 
-Phase *create_phase_header(char *id, bool start, bool cycle) {
+Phase *create_phase_header(Id *id, bool start, bool cycle) {
     Phase *p = mem_alloc(sizeof(Phase));
     p->id = id;
     p->info = NULL;
@@ -55,8 +55,8 @@ Phase *create_phase_header(char *id, bool start, bool cycle) {
     return p;
 }
 
-Phase *create_phase(Phase *phase_header, char *root, char *prefix,
-                    array *actions, char *gate_func) {
+Phase *create_phase(Phase *phase_header, Id *root, Id *prefix, array *actions,
+                    Id *gate_func) {
 
     Phase *p = phase_header;
     p->root = root;
@@ -67,7 +67,7 @@ Phase *create_phase(Phase *phase_header, char *root, char *prefix,
     return p;
 }
 
-Pass *create_pass(char *id, char *func, char *prefix) {
+Pass *create_pass(Id *id, Id *func, Id *prefix) {
     Pass *p = mem_alloc(sizeof(Pass));
 
     p->id = id;
@@ -80,7 +80,7 @@ Pass *create_pass(char *id, char *func, char *prefix) {
     return p;
 }
 
-Traversal *create_traversal(char *id, char *func, char *prefix, SetExpr *expr,
+Traversal *create_traversal(Id *id, Id *func, Id *prefix, SetExpr *expr,
                             array *data) {
 
     Traversal *t = mem_alloc(sizeof(Traversal));
@@ -95,7 +95,7 @@ Traversal *create_traversal(char *id, char *func, char *prefix, SetExpr *expr,
     return t;
 }
 
-Enum *create_enum(char *id, char *prefix, array *values) {
+Enum *create_enum(Id *id, Id *prefix, array *values) {
 
     Enum *e = mem_alloc(sizeof(Enum));
 
@@ -108,7 +108,7 @@ Enum *create_enum(char *id, char *prefix, array *values) {
     return e;
 }
 
-Nodeset *create_nodeset(char *id, SetExpr *expr) {
+Nodeset *create_nodeset(Id *id, SetExpr *expr) {
     Nodeset *n = mem_alloc(sizeof(Nodeset));
     n->id = id;
     n->expr = expr;
@@ -175,7 +175,7 @@ SetExpr *create_set_expr(enum SetExprType type, void *value) {
     return expr;
 }
 
-Node *create_node(char *id, Node *nodebody) {
+Node *create_node(Id *id, Node *nodebody) {
 
     nodebody->id = id;
     nodebody->root = false;
@@ -223,7 +223,7 @@ Lifetime_t *create_lifetime(Range_spec_t *start, Range_spec_t *end,
     return lifetime;
 }
 
-Child *create_child(int construct, array *lifetimes, char *id, char *type) {
+Child *create_child(int construct, array *lifetimes, Id *id, Id *type) {
 
     Child *c = mem_alloc(sizeof(Child));
     c->construct = construct;
@@ -264,12 +264,12 @@ MandatoryPhase *create_mandatory_phaserange(char *phase_start, char *phase_end,
     return p;
 }
 
-Action *create_action(enum ActionType type, void *action, char *id) {
+Action *create_action(enum ActionType type, void *action, Id *id) {
     Action *_action = mem_alloc(sizeof(Action));
     _action->type = type;
     _action->action = action;
     _action->checked = false;
-    _action->id = strdup(id);
+    _action->id = id;
     _action->active_specs = smap_init(2);
     _action->action_owner = true;
     _action->id_counter = 0;
@@ -285,7 +285,7 @@ Attr *create_attr(Attr *a, AttrValue *default_value, int construct,
     return a;
 }
 
-Attr *create_attrhead_primitive(enum AttrType type, char *id) {
+Attr *create_attrhead_primitive(enum AttrType type, Id *id) {
 
     Attr *a = mem_alloc(sizeof(Attr));
     a->type = type;
@@ -296,7 +296,7 @@ Attr *create_attrhead_primitive(enum AttrType type, char *id) {
     return a;
 }
 
-Attr *create_attrhead_idtype(char *type, char *id) {
+Attr *create_attrhead_idtype(Id *type, Id *id) {
 
     Attr *a = mem_alloc(sizeof(Attr));
     a->type = AT_link_or_enum;
@@ -307,7 +307,7 @@ Attr *create_attrhead_idtype(char *type, char *id) {
     return a;
 }
 
-AttrValue *create_attrval_string(char *value) {
+AttrValue *create_attrval_string(Id *value) {
     AttrValue *v = mem_alloc(sizeof(AttrValue));
     v->type = AV_string;
 
@@ -362,7 +362,7 @@ AttrValue *create_attrval_bool(bool value) {
     return v;
 }
 
-AttrValue *create_attrval_id(char *id) {
+AttrValue *create_attrval_id(Id *id) {
     AttrValue *v = mem_alloc(sizeof(AttrValue));
     v->type = AV_id;
     v->value.string_value = id;

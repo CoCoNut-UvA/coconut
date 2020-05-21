@@ -130,11 +130,11 @@ typedef struct Config {
 } Config;
 
 struct Phase {
-    char *id;
+    Id *id;
     char *info;
-    char *prefix;
-    char *root;
-    char *gate_func;
+    Id *prefix;
+    Id *root;
+    Id *gate_func;
 
     bool cycle;
     bool start;
@@ -149,19 +149,19 @@ struct Phase {
 };
 
 typedef struct Pass {
-    char *id;
+    Id *id;
     char *info;
-    char *prefix;
-    char *func;
+    Id *prefix;
+    Id *func;
     struct NodeCommonInfo *common_info;
     ccn_set_t *roots;
 } Pass;
 
 typedef struct Traversal {
-    char *id;
+    Id *id;
     char *info;
-    char *prefix;
-    char *func;
+    Id *prefix;
+    Id *func;
 
     union {
         array *nodes;
@@ -180,13 +180,13 @@ typedef struct Action {
                        // action.
     bool checked;
     void *action;
-    char *id;
+    Id *id;
     smap_t *active_specs;
 } Action;
 
 typedef struct Enum {
-    char *id;
-    char *prefix;
+    Id *id;
+    Id *prefix;
     char *info;
 
     array *values;
@@ -195,7 +195,7 @@ typedef struct Enum {
 } Enum;
 
 typedef struct Nodeset {
-    char *id;
+    Id *id;
     char *info;
 
     // The set expr of this nodeset, will be transformed
@@ -209,8 +209,8 @@ typedef struct Nodeset {
 } Nodeset;
 
 typedef struct Node {
-    char *id;
-    char *info;
+    Id *id;
+    Id *info;
 
     // array of (struct Child *)
     array *children;
@@ -229,8 +229,8 @@ typedef struct Child {
     int construct;
     int mandatory;
     array *mandatory_phases;
-    char *id;
-    char *type;
+    Id *id;
+    Id *type;
 
     // One of these becomes a link to the actual child node(set), other NULL
     // after checking the ast.
@@ -264,8 +264,8 @@ typedef struct MandatoryPhase {
 typedef struct Attr {
     int construct;
     enum AttrType type;
-    char *type_id;
-    char *id;
+    Id *type_id;
+    Id *id;
     char *include; // Optional include file for traversal data
     struct AttrValue *default_value;
     array *lifetimes;
@@ -280,7 +280,7 @@ typedef struct AttrValue {
         int64_t int_value;
         float float_value;
         double double_value;
-        char *string_value;
+        Id *string_value;
         bool bool_value;
     } value;
 

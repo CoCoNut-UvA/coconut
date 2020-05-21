@@ -10,37 +10,29 @@
 static int indent = 0;
 
 void gen_free_func(Config *config, FILE *fp, Node *node) {
-    char *nodelwr = strlwr(node->id);
-    char *nodeupr = strupr(node->id);
-    out_comment("%s", node->id);
-    out_start_func("Node *free_%s(Node *arg_node)", nodelwr);
+    out_comment("%s", node->id->orig);
+    out_start_func("Node *free_%s(Node *arg_node)", node->id->lwr);
     if (node->children) {
         out_field("arg_node = trav_children(arg_node)");
     }
     for (int i = 0; i < array_size(node->attrs); i++) {
         Attr *attr = array_get(node->attrs, i);
-        char *attrupr = strupr(attr->id);
         char *freefunc;
         if (attr->type == AT_link) {
             if (!attr->construct) {
-                out_begin_if("%s_%s(arg_node)", nodeupr, attrupr);
+                out_begin_if("%s_%s(arg_node)", node->id->upr, attr->id->upr);
             }
-            char *attrtypelwr = strlwr(attr->type_id);
-            out_field("free_%s(%s_%s(arg_node))", attrtypelwr, nodeupr,
-                      attrupr);
-            mem_free(attrtypelwr);
+            out_field("free_%s(%s_%s(arg_node))", attr->type_id->lwr,
+                      node->id->upr, attr->id->upr);
             if (!attr->construct) {
                 out_end_if();
             }
         }
-        mem_free(attrupr);
     }
-    out_field("mem_free(arg_node->data.N_%s)", nodelwr);
+    out_field("mem_free(arg_node->data.N_%s)", node->id->lwr);
     out_field("mem_free(arg_node)");
     out_field("return arg_node");
     out_end_func();
-    mem_free(nodelwr);
-    mem_free(nodeupr);
 }
 
 void gen_free_src(Config *config, FILE *fp) {
