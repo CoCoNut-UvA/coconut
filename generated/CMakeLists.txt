@@ -1,7 +1,7 @@
-project(copra C)
+project(generated C)
 
-add_library(copra)
-add_library(coconut::copra ALIAS copra)
+add_library(generated)
+add_library(coconut::generated ALIAS generated)
 
 add_subdirectory(include)
 add_subdirectory(source)
