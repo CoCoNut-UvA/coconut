@@ -51,7 +51,7 @@ void gen_nodeset_enum(Config *config, FILE *fp) {
 }
 
 void gen_traversal_enum(Config *config, FILE *fp) {
-    out_comment("Enum TravType");
+    out_comment("Enum TraversalType");
     out_enum("TRAVERSALS");
     out_enum_field(TRAV_ENUM_PREFIX "NULL");
     for (int i = 0; i < array_size(config->traversals); ++i) {
@@ -64,7 +64,7 @@ void gen_traversal_enum(Config *config, FILE *fp) {
     out_enum_field(TRAV_ENUM_PREFIX "copy");
     out_enum_field(TRAV_ENUM_PREFIX "check");
     out_enum_field("_" TRAV_ENUM_PREFIX "SIZE");
-    out_enum_end("TravType");
+    out_enum_end("TraversalType");
 }
 
 void gen_pass_enum(Config *config, FILE *fp) {

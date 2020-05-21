@@ -1,19 +1,17 @@
 #include "API.h"
-#include "filegen/util.h"
-#include "filegen/driver.h"
 #include "commandline.h"
+#include "filegen/driver.h"
+#include "filegen/util.h"
 #include "lib/assert.h"
 
 #include "gen-functions.h"
-
 
 extern void gen_action_array_h(Config *c, FILE *fp);
 extern void gen_action_array_c(Config *c, FILE *fp);
 
 extern void generate_enables(Config *c, FILE *fp);
 
-static void generate_headers(Config *ir)
-{
+static void generate_headers(Config *ir) {
     set_current_directory_to_be_tracked(global_command_options.header_dir);
     filegen_dir(global_command_options.header_dir);
 
@@ -46,11 +44,9 @@ static void generate_headers(Config *ir)
     // TODO(Damian): serialization generation.
     filegen_generate("action_handlers.h", gen_action_array_h);
     filegen_generate("ccn_enables.h", generate_enables);
-
 }
 
-static void generate_sources(Config *ir)
-{
+static void generate_sources(Config *ir) {
     set_current_directory_to_be_tracked(global_command_options.source_dir);
     filegen_dir(global_command_options.source_dir);
 
@@ -67,11 +63,9 @@ static void generate_sources(Config *ir)
     filegen_all_nodes("trav-%s.c", generate_trav_node_definitions);
 
     filegen_generate("action_handlers.c", gen_action_array_c);
-
 }
 
-void typed_backend(Config *ir)
-{
+void typed_backend(Config *ir) {
     ccn_assert(global_command_options.header_dir != NULL, "No header dir");
     ccn_assert(global_command_options.source_dir != NULL, "No source dir");
 

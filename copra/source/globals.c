@@ -1,11 +1,7 @@
-#include "core/globals.h"
+#include "include/globals.h"
 
 static bool opt;
 
-void set_opt(bool _opt) {
-    opt = _opt;
-}
+void set_opt(bool _opt) { opt = _opt; }
 
-bool get_opt() {
-    return opt;
-}
+bool get_opt() { return opt; }

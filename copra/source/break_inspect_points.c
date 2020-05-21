@@ -1,9 +1,7 @@
-#include "core/break_inspect_points.h"
-#include "generated/ccn_enables.h"
+#include "include/break_inspect_points.h"
+#include "../generated/include/ccn_enables.h"
+#include "include/internal_phase_functions.h"
 #include <stdbool.h>
-#include "core/internal_phase_functions.h"
-
-#include "generated/ccn_enables.h"
 
 bool _ccn_set_breakpoint(char *breakpoint) {
 #ifndef CCN_ENABLE_POINTS
@@ -20,7 +18,6 @@ bool _ccn_set_breakpoint(char *breakpoint) {
     return true;
 #endif
 }
-
 
 bool _ccn_set_inspect_point(char *inspect) {
 #ifndef CCN_ENABLE_POINTS

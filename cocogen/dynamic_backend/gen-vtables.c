@@ -130,7 +130,7 @@ void gen_phase_vtable(Config *config, FILE *fp) {
 void gen_vtables_src(Config *config, FILE *fp) {
     out("#include <stdio.h>\n");
     out("\n");
-    out("#include \"include/core/vtables_core.h\"\n");
+    out("#include \"../copra/include/vtables_core.h\"\n");
     out("\n");
     gen_vtables(config, fp);
     gen_trav_data_vtable(config, fp, "Init");

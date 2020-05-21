@@ -12,8 +12,8 @@ static int indent = 0;
 void gen_actions_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_ACTIONS_H_\n");
     out("#define _CCN_ACTIONS_H_\n\n");
-    out("#include \"include/core/ast_core.h\"\n");
-    out("#include \"include/core/trav_core.h\"\n");
+    out("#include \"../copra/include/ast_core.h\"\n");
+    out("#include \"../copra/include/trav_core.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
@@ -119,7 +119,7 @@ void gen_phase(Config *config, FILE *fp, Phase *phase) {
 void gen_actions_src(Config *config, FILE *fp) {
     out("#include <stddef.h>\n");
     out("\n");
-    out("#include \"include/core/actions_core.h\"\n");
+    out("#include \"../copra/include/actions_core.h\"\n");
     out("\n");
     out_start_func("Node *start_root_phase()");
     char *rootphaselwr = strlwr(config->start_phase->id);
@@ -149,7 +149,7 @@ void gen_pass_user_src(Config *config, FILE *fp, Pass *pass) {
     } else {
         passlwr = strlwr(pass->id);
     }
-    out("#include \"include/core/actions_core.h\"\n");
+    out("#include \"../copra/include/actions_core.h\"\n");
     out("\n");
     out_start_func("Node *pass_%s(Node *arg_node)", passlwr);
     out_comment("User code here");

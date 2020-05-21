@@ -46,7 +46,7 @@ void gen_free_func(Config *config, FILE *fp, Node *node) {
 void gen_free_src(Config *config, FILE *fp) {
     out("#include <stdlib.h>\n");
     out("\n");
-    out("#include \"include/core/actions_core.h\"\n");
+    out("#include \"../copra/include/actions_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {

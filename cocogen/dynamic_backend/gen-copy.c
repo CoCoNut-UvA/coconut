@@ -65,8 +65,8 @@ void gen_copy_func(Config *config, FILE *fp, Node *node) {
 }
 
 void gen_copy_src(Config *config, FILE *fp) {
-    out("#include \"include/core/trav_core.h\"\n");
-    out("#include \"include/core/ast_core.h\"\n");
+    out("#include \"../copra/include/trav_core.h\"\n");
+    out("#include \"../copra/include/ast_core.h\"\n");
     out("#include \"lib/str.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {

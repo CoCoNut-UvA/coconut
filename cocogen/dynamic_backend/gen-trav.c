@@ -48,8 +48,8 @@ void gen_trav_user_func(Config *config, FILE *fp, Traversal *trav, Node *node) {
 void gen_trav_user_src(Config *config, FILE *fp, Traversal *trav) {
     char *travlwr = strlwr(trav->id);
     char *travupr = strupr(trav->id);
-    out("#include \"include/core/trav_core.h\"\n");
-    out("#include \"include/core/ast_core.h\"\n");
+    out("#include \"../copra/include/trav_core.h\"\n");
+    out("#include \"../copra/include/ast_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("\n");
     if (trav->data) {

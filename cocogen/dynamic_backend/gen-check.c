@@ -71,7 +71,7 @@ void gen_check_func(Config *config, FILE *fp, Node *node) {
 void gen_check_src(Config *config, FILE *fp) {
     out("#include <stdlib.h>\n");
     out("\n");
-    out("#include \"include/core/actions_core.h\"\n");
+    out("#include \"../copra/include/actions_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("#include \"lib/print.h\"\n");
     out("\n");
