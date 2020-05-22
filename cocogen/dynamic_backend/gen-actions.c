@@ -80,7 +80,7 @@ void gen_phase(Config *config, FILE *fp, Phase *phase) {
             } else {
                 passid = action_pass->id->lwr;
             }
-            out_field("root = pass_start(root, PASS_%s)", action_pass->id->lwr);
+            out_field("root = pass_start(root, PASS_%s)", passid);
             break;
         case ACTION_PHASE:;
             Phase *action_phase = (Phase *)action->action;
