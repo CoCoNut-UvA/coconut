@@ -210,7 +210,7 @@ typedef struct Nodeset {
 
 typedef struct Node {
     Id *id;
-    Id *info;
+    char *info;
 
     // array of (struct Child *)
     array *children;

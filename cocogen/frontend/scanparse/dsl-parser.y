@@ -189,8 +189,8 @@ root: entries { parse_result = create_config(config_phases,
 
 id: T_ID 
     { 
-        create_id($1); 
-        new_location($1, &@1);
+        $$ = create_id($1); 
+        new_location($$, &@$);
     };
 
 entries: entry ';' entries
@@ -229,17 +229,17 @@ phase: phaseheader '{' prefix ',' T_GATE ',' actionsbody '}'
      {
          $$ = create_phase($1, $7, $3, $11, create_id(ccn_str_cat($1->id->lwr, "_gate")));
      }
-     | phaseheader '{' prefix ',' T_ROOT '=' id ',' T_GATE '=' T_STRINGVAL ',' actionsbody '}'
+     | phaseheader '{' prefix ',' T_ROOT '=' id ',' T_GATE '=' id ',' actionsbody '}'
      {
          $$ = create_phase($1, $7, $3, $13, $11);
          new_location($11, &@11);
      }
-     | phaseheader '{' prefix ',' T_GATE '=' T_STRINGVAL ',' actionsbody '}'
+     | phaseheader '{' prefix ',' T_GATE '=' id ',' actionsbody '}'
      {
          $$ = create_phase($1, NULL, $3, $9, $7);
          new_location($7, &@7);
      }
-     | phaseheader '{' T_GATE '=' T_STRINGVAL ',' actionsbody '}'
+     | phaseheader '{' T_GATE '=' id ',' actionsbody '}'
      {
          $$ = create_phase($1, NULL, NULL, $7, $5);
          new_location($5, &@5);
@@ -275,19 +275,19 @@ actions: actions  action ';'
 
 action: traversal
       {
-          $$ = create_action(ACTION_TRAVERSAL, $1, $1->id->lwr);
+          $$ = create_action(ACTION_TRAVERSAL, $1, $1->id);
       }
       | pass
       {
-          $$ = create_action(ACTION_PASS, $1, $1->id->lwr);
+          $$ = create_action(ACTION_PASS, $1, $1->id);
       }
       | phase
       {
-          $$ = create_action(ACTION_PHASE, $1, $1->id->lwr);
+          $$ = create_action(ACTION_PHASE, $1, $1->id);
       }
       | T_ID
       {
-          $$ = create_action(ACTION_REFERENCE, $1, $1);
+          $$ = create_action(ACTION_REFERENCE, $1, create_id($1));
           new_location($1, &@1);
       }
       ;
@@ -839,7 +839,7 @@ attrprimitivetype: T_INT
                  { $$ = AT_string; }
                  ;
 attrval: T_STRINGVAL
-       { $$ = create_attrval_string($1); }
+       { $$ = create_attrval_string(create_id($1)); }
        | T_INTVAL
        { $$ = create_attrval_int($1); }
        | T_UINTVAL
@@ -847,7 +847,7 @@ attrval: T_STRINGVAL
        | T_FLOATVAL
        { $$ = create_attrval_float($1); }
        | T_ID
-       { $$ = create_attrval_id($1); }
+       { $$ = create_attrval_id(create_id($1)); }
        |  T_TRUE
        { $$ = create_attrval_bool(true); }
        | T_FALSE

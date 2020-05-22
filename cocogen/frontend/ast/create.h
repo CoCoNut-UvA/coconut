@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+NodeCommonInfo *create_commoninfo();
+
 Config *create_config(array *phases, array *passes, array *traversals,
                       array *attr_enums, array *nodesets, array *nodes);
 
@@ -22,7 +24,7 @@ Enum *create_enum(Id *id, Id *prefix, array *values);
 Nodeset *create_nodeset(Id *id, SetExpr *expr);
 
 SetOperation *create_set_operation(enum SetOperator operator,
-                                   SetExpr *left_child, SetExpr *right_child);
+                                   SetExpr * left_child, SetExpr * right_child);
 
 SetExpr *create_set_expr(enum SetExprType type, void *value);
 

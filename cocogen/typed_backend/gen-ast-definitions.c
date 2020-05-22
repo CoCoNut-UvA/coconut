@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "ast/ast.h"
-#include "ast/to-string.h"
+#include "ast/util.h"
 #include "filegen/driver.h"
 #include "filegen/util.h"
 

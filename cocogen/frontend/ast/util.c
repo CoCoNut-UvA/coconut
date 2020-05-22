@@ -1,5 +1,7 @@
 #include "ast/ast.h"
+#include "ast/create.h"
 #include "lib/memory.h"
+#include "lib/str.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,11 +41,21 @@ char *str_attr_type(Attr *attr) {
         return "char *";
     case AT_link_or_enum:
     case AT_enum:
-        return attr->type_id;
+        return attr->type_id->orig;
     case AT_link:
-        link_type = mem_alloc(strlen(attr->type_id) + 10);
-        sprintf(link_type, "struct %s *", attr->type_id);
+        link_type = mem_alloc(strlen(attr->type_id->orig) + 10);
+        sprintf(link_type, "struct %s *", attr->type_id->orig);
         return link_type;
     }
     return "";
+}
+
+Id *id_cpy(Id *source) {
+    Id *i = mem_alloc(sizeof(Id));
+    i->orig = ccn_str_cpy(source->orig);
+    i->lwr = ccn_str_cpy(source->lwr);
+    i->upr = ccn_str_cpy(source->upr);
+
+    i->common_info = create_commoninfo();
+    return i;
 }

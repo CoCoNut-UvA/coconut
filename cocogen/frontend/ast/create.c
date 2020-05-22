@@ -14,7 +14,7 @@
 
 extern ParserLocation yy_parser_location;
 
-static NodeCommonInfo *create_commoninfo() {
+NodeCommonInfo *create_commoninfo() {
     NodeCommonInfo *info = (NodeCommonInfo *)mem_alloc(sizeof(NodeCommonInfo));
     info->hash = NULL;
     info->hash_matches = false;
@@ -119,7 +119,8 @@ Nodeset *create_nodeset(Id *id, SetExpr *expr) {
 }
 
 SetOperation *create_set_operation(enum SetOperator operator,
-                                   SetExpr *left_child, SetExpr *right_child) {
+                                   SetExpr * left_child,
+                                   SetExpr * right_child) {
     SetOperation *operation = mem_alloc(sizeof(SetOperation));
     operation->operator= operator;
     operation->left_child = left_child;
