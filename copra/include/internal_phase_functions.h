@@ -11,13 +11,13 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "../generated/include/action_handlers.h"
+#include "../generated/include/ccn_enables.h"
+#include "../generated/include/enum.h"
 #include "lib/array.h"
 #include "lib/smap.h"
-#include "generated/ccn_enables.h"
-#include "generated/enum.h"
-#include "generated/action_handlers.h"
 #ifdef CCN_ENABLE_POINTS
-#include "generated/breakpoint-finder.h"
+#include "../generated/include/breakpoint-finder.h"
 #endif
 
 typedef struct ccn_subroot ccn_subroot;
@@ -50,7 +50,6 @@ typedef struct cycle_mark {
     bool notified;
     void *node;
 } cycle_mark_t;
-
 
 typedef struct phase_frame {
     char *phase_id;
@@ -96,7 +95,6 @@ typedef struct phase_driver {
     size_t total_allocated;
     size_t total_freed;
 } phase_driver_t;
-
 
 phase_frame_t *_top_frame();
 cycle_mark_t *_ccn_new_mark(void *);

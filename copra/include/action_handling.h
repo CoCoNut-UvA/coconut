@@ -1,20 +1,14 @@
 #pragma once
 
-#include "generated/enum.h"
-#include "generated/action_handlers.h"
-#include "generated/ast.h"
+#include "../generated/include/action_handlers.h"
+#include "../generated/include/ast.h"
+#include "../generated/include/enum.h"
 
 #include "lib/array.h"
 
 #include <stdbool.h>
 
-
-enum ACTION_TYPE {
-    action_pass,
-    action_phase,
-    action_traversal,
-    action_NULL
-};
+enum ACTION_TYPE { action_pass, action_phase, action_traversal, action_NULL };
 
 typedef struct ccn_pass {
     PassType pass_type;
@@ -44,5 +38,7 @@ typedef struct ccn_action {
 } ccn_action_t;
 
 ccn_action_t *get_ccn_action_from_id(enum ACTION_IDS);
-void *ccn_dispatch_phase(ccn_phase_t *phase, NodeType root_type, void * node, char *name);
-void *ccn_dispatch_action(ccn_action_t *action, NodeType root_type, void *node, bool is_root);
+void *ccn_dispatch_phase(ccn_phase_t *phase, NodeType root_type, void *node,
+                         char *name);
+void *ccn_dispatch_action(ccn_action_t *action, NodeType root_type, void *node,
+                          bool is_root);

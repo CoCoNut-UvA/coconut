@@ -1,16 +1,19 @@
 #include <string.h>
 #include <time.h>
 
-#include "generated/ccn_enables.h"
-#include "core/action_handling.h"
-#include "core/internal_phase_functions.h"
-#include "generated/action_handlers.h"
-#include "generated/trav-ast.h"
-//#include "generated/_sub_root_handlers.h"
+#include "../generated/include/action_handlers.h"
+#include "../generated/include/ccn_enables.h"
+// #include "../generated/include/trav-ast.h"
+#include "include/action_handling.h"
+#include "include/actions_core.h"
+#include "include/internal_phase_functions.h"
+//#include "../generated/include/_sub_root_handlers.h"
 
-// TODO: Important! Make sure changes of nodes and traversals is handled correctly.
+// TODO: Important! Make sure changes of nodes and traversals is handled
+// correctly.
 
-void *ccn_run_phase_actions(ccn_phase_t *phase, char *name, NodeType root, void *node);
+void *ccn_run_phase_actions(ccn_phase_t *phase, char *name, NodeType root,
+                            void *node);
 
 array *generate_mark_array_from_values_array(array *values) {
     array *marks = create_array();
@@ -26,8 +29,8 @@ array *generate_sub_roots_using_offset(void *main, size_t offset) {
     array *values = create_array();
 
     do {
-        char *base = (char*)main;
-        void **ref = (void**)(base + offset);
+        char *base = (char *)main;
+        void **ref = (void **)(base + offset);
         void *next = *ref;
         *ref = NULL;
         array_append(values, main);
@@ -48,8 +51,8 @@ void *collapse_sub_root_array(array *values, size_t offset) {
     while (index < size) {
         void *next = array_get(values, index);
         index++;
-        char *base = (char*)curr;
-        void **ref = (void**)(base + offset);
+        char *base = (char *)curr;
+        void **ref = (void **)(base + offset);
         *ref = next;
         curr = next;
     }
@@ -57,7 +60,8 @@ void *collapse_sub_root_array(array *values, size_t offset) {
     return first;
 }
 
-void ccn_cycle_mark_array(ccn_phase_t *phase, array *marks, NodeType root, char *name) {
+void ccn_cycle_mark_array(ccn_phase_t *phase, array *marks, NodeType root,
+                          char *name) {
     bool all_notified = false;
     phase_driver_t *pd = _get_phase_driver();
     const int action_id = pd->action_id;
@@ -81,7 +85,8 @@ void ccn_cycle_mark_array(ccn_phase_t *phase, array *marks, NodeType root, char 
     }
 }
 
-void *ccn_run_phase_actions(ccn_phase_t *phase, char *name, NodeType root, void *node) {
+void *ccn_run_phase_actions(ccn_phase_t *phase, char *name, NodeType root,
+                            void *node) {
     size_t index = 0;
     phase_driver_t *pd = _get_phase_driver();
     while (phase->action_types[index] != ACTION_ID_NULL) {
@@ -98,12 +103,15 @@ void *ccn_run_phase_actions(ccn_phase_t *phase, char *name, NodeType root, void 
     return node;
 }
 
-static void *handle_sub_root(ccn_phase_t *phase, void* node, NodeType root_type, char *name) {
+static void *handle_sub_root(ccn_phase_t *phase, void *node, NodeType root_type,
+                             char *name) {
     NodeType new_root = phase->root_type;
     void *temp = NULL;
 
-    TraversalType trav = get_sub_root_find_traversals(root_type, phase->root_type);
-    if (trav == TRAV_NULL) { // TODO: Signal error here, maybe only in dbug, with the new dbug options in ccn lib.
+    TraversalType trav =
+        get_sub_root_find_traversals(root_type, phase->root_type);
+    if (trav == TRAV_NULL) { // TODO: Signal error here, maybe only in dbug,
+                             // with the new dbug options in ccn lib.
         return node;
     }
 
@@ -147,12 +155,13 @@ static void *handle_sub_root(ccn_phase_t *phase, void* node, NodeType root_type,
     }
 }
 
-void *ccn_dispatch_phase(ccn_phase_t *phase, NodeType root_type, void *node, char *name) {
+void *ccn_dispatch_phase(ccn_phase_t *phase, NodeType root_type, void *node,
+                         char *name) {
 
     _ccn_start_phase(name, root_type);
     if (phase->root_type != CCN_ROOT_TYPE) {
         node = handle_sub_root(phase, node, root_type, name);
-    }  else {
+    } else {
         if (phase->is_cycle) {
             array *marks = array_init(1);
             array_append(marks, _ccn_new_mark(node));
@@ -168,7 +177,8 @@ void *ccn_dispatch_phase(ccn_phase_t *phase, NodeType root_type, void *node, cha
     return node;
 }
 
-void *ccn_dispatch_action(ccn_action_t *action, NodeType root_type, void *node, bool is_root) {
+void *ccn_dispatch_action(ccn_action_t *action, NodeType root_type, void *node,
+                          bool is_root) {
     double start, end;
     phase_driver_t *pd = _get_phase_driver();
 #ifdef CCN_ENABLE_CHECKS
@@ -177,22 +187,23 @@ void *ccn_dispatch_action(ccn_action_t *action, NodeType root_type, void *node, 
     switch (action->type) {
     case action_pass:
         start = clock();
-        node = pass_start(node, action->pass.pass_type);
+        node = pass_start(node, action->pass->pass_type);
         end = clock();
-        _ccn_new_pass_time_frame(action->name, (end - start)/CLOCKS_PER_SEC);
+        _ccn_new_pass_time_frame(action->name, (end - start) / CLOCKS_PER_SEC);
         break;
     case action_traversal:
         start = clock();
-        node = trav_start(node, action->traversal.trav_type);
+        node = trav_start(node, action->traversal->trav_type);
         end = clock();
-        _ccn_new_pass_time_frame(action->name, (end - start)/CLOCKS_PER_SEC);
+        _ccn_new_pass_time_frame(action->name, (end - start) / CLOCKS_PER_SEC);
         break;
     case action_phase:
         start = clock();
         node = ccn_dispatch_phase(action->phase, root_type, node, action->name);
         end = clock();
         if (!is_root) {
-            _ccn_new_phase_time_frame(action->name, (end - start)/CLOCKS_PER_SEC);
+            _ccn_new_phase_time_frame(action->name,
+                                      (end - start) / CLOCKS_PER_SEC);
         }
         break;
     }

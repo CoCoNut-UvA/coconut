@@ -1,7 +1,7 @@
 #ifndef _CCN_ACTIONS_CORE_H_
 #define _CCN_ACTIONS_CORE_H_
 
-#include "include/generated/actions.h"
+#include "../generated/include/actions.h"
 
 Node *pass_start(Node *syntaxtree, PassType passtype);
 Node *pass_error(Node *arg_node);

@@ -85,6 +85,7 @@ static void new_location(void *ptr, struct ParserLocation *loc);
     enum AttrType attrtype;
     struct Attr *attr;
     struct AttrValue *attrval;
+    struct Id *id;
 }
 
 %define parse.error verbose
@@ -148,7 +149,7 @@ static void new_location(void *ptr, struct ParserLocation *loc);
 %token T_UNSAFE "unsafe"
 %token END 0 "End-of-file (EOF)"
 
-%type<string> info func prefix
+%type<string> info
 %type<array> idlist actionsbody actions lifetimelistwithvalues namespacelist
              travdata travdatalist attrlist attrs
              childlist children enumvalues lifetimelist
@@ -168,6 +169,7 @@ static void new_location(void *ptr, struct ParserLocation *loc);
 %type<action> action
 %type<lifetime> lifetime lifetimewithvalues
 %type<range_spec> rangespec_start rangespec_end
+%type<id> id prefix func
 
 %left '&' '-' '|'
 
@@ -185,6 +187,12 @@ root: entries { parse_result = create_config(config_phases,
               }
               ;
 
+id: T_ID 
+    { 
+        $$ = create_id($1); 
+        new_location($$, &@$);
+    };
+
 entries: entry ';' entries
        | entry
        | %empty
@@ -199,49 +207,50 @@ entry: phase { array_append(config_phases, $1); }
      | node { array_append(config_nodes, $1);  }
      ;
 
-prefix: T_PREFIX '=' T_ID
+prefix: T_PREFIX '=' id
       {
           $$ = $3;
-          new_location($$, &@$);
       }
 
 phase: phaseheader '{' prefix ',' T_GATE ',' actionsbody '}'
      {
-         $$ = create_phase($1, NULL, $3, $7, ccn_str_cat($1->id, "_gate"));
+         $$ = create_phase($1, NULL, $3, $7, create_id(ccn_str_cat($1->id->lwr, "_gate")));
+         new_location($$, &@$);
      }
-     | phaseheader '{' prefix ',' T_ROOT '=' T_ID ',' actionsbody '}'
+     | phaseheader '{' prefix ',' T_ROOT '=' id ',' actionsbody '}'
      {
          $$ = create_phase($1, $7, $3, $9, NULL);
-         new_location($7, &@7);
+         new_location($$, &@$);
      }
      | phaseheader '{' prefix ',' actionsbody '}'
      {
          $$ = create_phase($1, NULL, $3, $5, NULL);
+         new_location($$, &@$);
      }
-     | phaseheader '{' prefix ',' T_ROOT '=' T_ID ',' T_GATE ',' actionsbody '}'
+     | phaseheader '{' prefix ',' T_ROOT '=' id ',' T_GATE ',' actionsbody '}'
      {
-         $$ = create_phase($1, $7, $3, $11, ccn_str_cat($1->id, "_gate"));
-         new_location($7, &@7);
+         $$ = create_phase($1, $7, $3, $11, create_id(ccn_str_cat($1->id->lwr, "_gate")));
+         new_location($$, &@$);
      }
-     | phaseheader '{' prefix ',' T_ROOT '=' T_ID ',' T_GATE '=' T_STRINGVAL ',' actionsbody '}'
+     | phaseheader '{' prefix ',' T_ROOT '=' id ',' T_GATE '=' id ',' actionsbody '}'
      {
          $$ = create_phase($1, $7, $3, $13, $11);
-         new_location($11, &@11);
-         new_location($7, &@7);
+         new_location($$, &@$);
      }
-     | phaseheader '{' prefix ',' T_GATE '=' T_STRINGVAL ',' actionsbody '}'
+     | phaseheader '{' prefix ',' T_GATE '=' id ',' actionsbody '}'
      {
          $$ = create_phase($1, NULL, $3, $9, $7);
-         new_location($7, &@7);
+         new_location($$, &@$);
      }
-     | phaseheader '{' T_GATE '=' T_STRINGVAL ',' actionsbody '}'
+     | phaseheader '{' T_GATE '=' id ',' actionsbody '}'
      {
          $$ = create_phase($1, NULL, NULL, $7, $5);
-         new_location($5, &@5);
+         new_location($$, &@$);
      }
      | phaseheader '{' T_GATE ',' actionsbody '}'
      {
-         $$ = create_phase($1, NULL, NULL, $5, ccn_str_cat($1->id, "_gate"));
+         $$ = create_phase($1, NULL, NULL, $5, create_id(ccn_str_cat($1->id->lwr, "_gate")));
+         new_location($$, &@$);
      }
 
 
@@ -271,205 +280,181 @@ actions: actions  action ';'
 action: traversal
       {
           $$ = create_action(ACTION_TRAVERSAL, $1, $1->id);
+          new_location($$, &@$);
       }
       | pass
       {
           $$ = create_action(ACTION_PASS, $1, $1->id);
+          new_location($$, &@$);
       }
       | phase
       {
           $$ = create_action(ACTION_PHASE, $1, $1->id);
+          new_location($$, &@$);
       }
       | T_ID
       {
-          $$ = create_action(ACTION_REFERENCE, $1, $1);
+          $$ = create_action(ACTION_REFERENCE, $1, create_id($1));
+          new_location($$, &@$);
           new_location($1, &@1);
       }
       ;
 
-phaseheader: T_PHASE T_ID
+phaseheader: T_PHASE id
            {
                $$ = create_phase_header($2, false, false);
                new_location($$, &@$);
-               new_location($2, &@2);
            }
-           | T_CYCLE T_ID
+           | T_CYCLE id
            {
                $$ = create_phase_header($2, false, true);
                new_location($$, &@$);
-               new_location($2, &@2);
            }
-           | T_START T_PHASE T_ID
+           | T_START T_PHASE id
            {
                $$ = create_phase_header($3, true, false);
                new_location($$, &@$);
-               new_location($3, &@3);
            }
-           | T_START T_CYCLE T_ID
+           | T_START T_CYCLE id
            {
                $$ = create_phase_header($3, true, true);
                new_location($$, &@$);
-               new_location($3, &@3);
            }
            ;
 
-pass: T_PASS T_ID '{' prefix ',' T_FUNC '=' T_ID '}'
+pass: T_PASS id '{' prefix ',' func '}'
     {
-        $$ = create_pass($2, $8, $4);
+        $$ = create_pass($2, $6, $4);
         new_location($$, &@$);
-        new_location($2, &@2);
-        new_location($8, &@8);
     }
-    | T_PASS T_ID '{' info ',' prefix ',' T_FUNC '=' T_ID '}'
+    | T_PASS id '{' info ',' prefix ',' func '}'
     {
-        $$ = create_pass($2, $10, $6);
+        $$ = create_pass($2, $8, $6);
         $$->info = $4;
         new_location($$, &@$);
-        new_location($2, &@2);
-        new_location($10, &@10);
     }
-    | T_PASS T_ID '{' info ',' prefix '}'
+    | T_PASS id '{' info ',' prefix '}'
     {
         $$ = create_pass($2, NULL, $6);
         $$->info = $4;
         new_location($$, &@$);
-        new_location($2, &@2);
     }
-    | T_PASS T_ID
+    | T_PASS id
     {
         $$ = create_pass($2, NULL, NULL);
         new_location($$, &@$);
-        new_location($2, &@2);
     }
-    | T_PASS T_ID '=' T_ID
+    | T_PASS id '=' id
     {
         $$ = create_pass($2, $4, NULL);
+        new_location($$, &@$);
     }
     ;
 
 
-traversal: T_TRAVERSAL T_ID
+traversal: T_TRAVERSAL id
          {
              $$ = create_traversal($2, NULL, NULL, NULL, NULL);
              new_location($$, &@$);
-             new_location($2, &@2);
          }
-         | T_TRAVERSAL T_ID '{' prefix ',' func '}'
+         | T_TRAVERSAL id '{' prefix ',' func '}'
          {
              $$ = create_traversal($2, $6, $4, NULL, NULL);
              new_location($$, &@$);
-             new_location($2, &@2);
          }
-         | T_TRAVERSAL T_ID '{' prefix ',' func ',' traversalnodes '}'
+         | T_TRAVERSAL id '{' prefix ',' func ',' traversalnodes '}'
          {
              $$ = create_traversal($2, $6, $4, $8, NULL);
              new_location($$, &@$);
-             new_location($2, &@2);
          }
-         | T_TRAVERSAL T_ID '{' prefix ',' traversalnodes '}'
+         | T_TRAVERSAL id '{' prefix ',' traversalnodes '}'
          {
              $$ = create_traversal($2, NULL, $4, $6, NULL);
              new_location($$, &@$);
-             new_location($2, &@2);
          }
-         | T_TRAVERSAL T_ID '{' info ',' prefix '}'
+         | T_TRAVERSAL id '{' info ',' prefix '}'
          {
              $$ = create_traversal($2, NULL, $6, NULL, NULL);
              $$->info = $4;
              new_location($$, &@$);
-             new_location($2, &@2);
          }
-         | T_TRAVERSAL T_ID '{' info ',' prefix ',' func '}'
+         | T_TRAVERSAL id '{' info ',' prefix ',' func '}'
          {
              $$ = create_traversal($2, $8, $6, NULL, NULL);
              $$->info = $4;
              new_location($$, &@$);
-             new_location($2, &@2);
          }
-         | T_TRAVERSAL T_ID '{' info ',' prefix ',' func ',' traversalnodes '}'
+         | T_TRAVERSAL id '{' info ',' prefix ',' func ',' traversalnodes '}'
          {
              $$ = create_traversal($2, $8, $6, $10, NULL);
              $$->info = $4;
              new_location($$, &@$);
-             new_location($2, &@2);
          }
-         | T_TRAVERSAL T_ID '{' info ',' prefix ',' traversalnodes '}'
+         | T_TRAVERSAL id '{' info ',' prefix ',' traversalnodes '}'
          {
              $$ = create_traversal($2, NULL, $6, $8, NULL);
              $$->info = $4;
              new_location($$, &@$);
-             new_location($2, &@2);
          }
-         | T_TRAVERSAL T_ID '{' travdata '}'
+         | T_TRAVERSAL id '{' travdata '}'
          {
              $$ = create_traversal($2, NULL, NULL, NULL, $4);
              new_location($$, &@$);
-             new_location($2, &@2);
          }
-         | T_TRAVERSAL T_ID '{' prefix ',' travdata '}'
+         | T_TRAVERSAL id '{' prefix ',' travdata '}'
          {
              $$ = create_traversal($2, NULL, $4, NULL, $6);
              new_location($$, &@$);
-             new_location($2, &@2);
          }
-         | T_TRAVERSAL T_ID '{' prefix ',' func ',' travdata '}'
+         | T_TRAVERSAL id '{' prefix ',' func ',' travdata '}'
          {
              $$ = create_traversal($2, $6, $4, NULL, $8);
              new_location($$, &@$);
-             new_location($2, &@2);
          }
-         | T_TRAVERSAL T_ID '{' prefix ',' func ',' traversalnodes ',' travdata '}'
+         | T_TRAVERSAL id '{' prefix ',' func ',' traversalnodes ',' travdata '}'
          {
              $$ = create_traversal($2, $6, $4, $8, $10);
              new_location($$, &@$);
-             new_location($2, &@2);
          }
-         | T_TRAVERSAL T_ID '{' prefix ',' traversalnodes ',' travdata '}'
+         | T_TRAVERSAL id '{' prefix ',' traversalnodes ',' travdata '}'
          {
              $$ = create_traversal($2, NULL, $4, $6, $8);
              new_location($$, &@$);
-             new_location($2, &@2);
          }
-         | T_TRAVERSAL T_ID '{' info ',' prefix ',' travdata '}'
+         | T_TRAVERSAL id '{' info ',' prefix ',' travdata '}'
          {
              $$ = create_traversal($2, NULL, $6, NULL, $8);
              $$->info = $4;
              new_location($$, &@$);
-             new_location($2, &@2);
          }
-         | T_TRAVERSAL T_ID '{' info ',' prefix ',' func ',' travdata '}'
+         | T_TRAVERSAL id '{' info ',' prefix ',' func ',' travdata '}'
          {
              $$ = create_traversal($2, $8, $6, NULL, $10);
              $$->info = $4;
              new_location($$, &@$);
-             new_location($2, &@2);
          }
-         | T_TRAVERSAL T_ID '{' info ',' prefix ',' func ',' traversalnodes ',' travdata '}'
+         | T_TRAVERSAL id '{' info ',' prefix ',' func ',' traversalnodes ',' travdata '}'
          {
              $$ = create_traversal($2, $8, $6, $10, $12);
              $$->info = $4;
              new_location($$, &@$);
-             new_location($2, &@2);
          }
-         | T_TRAVERSAL T_ID '{' info ',' prefix ',' traversalnodes ',' travdata '}'
+         | T_TRAVERSAL id '{' info ',' prefix ',' traversalnodes ',' travdata '}'
          {
              $$ = create_traversal($2, NULL, $6, $8, $10);
              $$->info = $4;
              new_location($$, &@$);
-             new_location($2, &@2);
          }
-         | T_TRAVERSAL T_ID '=' setexpr
+         | T_TRAVERSAL id '=' setexpr
          {
             $$ = create_traversal($2, NULL, NULL, $4, NULL);
             new_location($$, &@$);
-            new_location($2, &@2);
          }
          ;
 
-func: T_FUNC '=' T_ID
+func: T_FUNC '=' id
     {
         $$ = $3;
-        new_location($3, &@3);
     }
     ;
 
@@ -479,35 +464,27 @@ traversalnodes: T_NODES '=' setexpr
               }
               ;
 
-enum: T_ENUM T_ID '{' T_PREFIX '=' T_ID ',' enumvalues '}'
+enum: T_ENUM id '{' T_PREFIX '=' id ',' enumvalues '}'
     {
         $$ = create_enum($2, $6, $8);
         new_location($$, &@$);
-        new_location($2, &@2);
-        new_location($6, &@6);
     }
-    | T_ENUM T_ID '{' enumvalues ',' T_PREFIX '=' T_ID '}'
+    | T_ENUM id '{' enumvalues ',' T_PREFIX '=' id '}'
     {
         $$ = create_enum($2, $8, $4);
         new_location($$, &@$);
-        new_location($2, &@2);
-        new_location($8, &@6);
     }
-    | T_ENUM T_ID '{' info ',' T_PREFIX '=' T_ID ',' enumvalues '}'
+    | T_ENUM id '{' info ',' T_PREFIX '=' id ',' enumvalues '}'
     {
         $$ = create_enum($2, $8, $10);
         $$->info = $4;
         new_location($$, &@$);
-        new_location($2, &@2);
-        new_location($8, &@8);
     }
-    | T_ENUM T_ID '{' info ',' enumvalues ',' T_PREFIX '=' T_ID '}'
+    | T_ENUM id '{' info ',' enumvalues ',' T_PREFIX '=' id '}'
     {
         $$ = create_enum($2, $10, $6);
         $$->info = $4;
         new_location($$, &@$);
-        new_location($2, &@2);
-        new_location($10, &@10);
     }
     ;
 
@@ -523,24 +500,21 @@ enumvalues: T_VALUES '=' '{'
         }
         ;
 
-nodeset: T_NODESET T_ID '{' T_NODES '=' setexpr '}'
+nodeset: T_NODESET id '{' T_NODES '=' setexpr '}'
         {
             $$ = create_nodeset($2, $6);
             new_location($$, &@$);
-            new_location($2, &@2);
         }
-       | T_NODESET T_ID '{' info ',' T_NODES '=' setexpr '}'
+       | T_NODESET id '{' info ',' T_NODES '=' setexpr '}'
        {
            $$ = create_nodeset($2, $8);
            $$->info = $4;
            new_location($$, &@$);
-           new_location($2, &@2);
        }
-       | T_NODESET T_ID '=' setexpr
+       | T_NODESET id '=' setexpr
        {
            $$ = create_nodeset($2, $4);
            new_location($$, &@$);
-           new_location($2, &@2);
        }
        ;
 
@@ -580,25 +554,22 @@ setoperation: setexpr '|' setexpr
             }
             ;
 
-node: T_NODE T_ID '{' nodebody '}'
+node: T_NODE id '{' nodebody '}'
     {
         $$ = create_node($2, $4);
         new_location($$, &@$);
-        new_location($2, &@2);
     }
-    | T_ROOT T_NODE T_ID '{' nodebody '}'
+    | T_ROOT T_NODE id '{' nodebody '}'
     {
         $$ = create_node($3, $5);
         $$->root = true;
         new_location($$, &@$);
-        new_location($3, &@3);
     }
-    | T_NODE T_ID '{' nodebody T_LIFETIME '{' lifetimelist '}' '}'
+    | T_NODE id '{' nodebody T_LIFETIME '{' lifetimelist '}' '}'
     {
         $$ = create_node($2, $4);
         $$->lifetimes = $7;
         new_location($$, &@$);
-        new_location($2, &@2);
     }
     ;
 
@@ -767,40 +738,30 @@ childlist: childlist ',' child
          }
          ;
 /* [construct] [mandatory] ID ID */
-child: T_ID T_ID
+child: id id
      {
          $$ = create_child(0, NULL, $2, $1);
          new_location($$, &@$);
-         new_location($1, &@1);
-         new_location($2, &@2);
      }
-     | T_ID T_ID '{' T_CONSTRUCTOR ',' lifetimelist '}'
+     | id id '{' T_CONSTRUCTOR ',' lifetimelist '}'
      {
          $$ = create_child(1, $6, $2, $1);
          new_location($$, &@$);
-         new_location($1, &@1);
-         new_location($2, &@2);
      }
-     | T_ID T_ID '{' lifetimelist ',' T_CONSTRUCTOR '}'
+     | id id '{' lifetimelist ',' T_CONSTRUCTOR '}'
      {
          $$ = create_child(1, $4, $2, $1);
          new_location($$, &@$);
-         new_location($1, &@1);
-         new_location($2, &@2);
      }
-     | T_ID T_ID '{' T_CONSTRUCTOR '}'
+     | id id '{' T_CONSTRUCTOR '}'
      {
          $$ = create_child(1, NULL, $2, $1);
          new_location($$, &@$);
-         new_location($1, &@1);
-         new_location($2, &@2);
      }
-     | T_ID T_ID '{' lifetimelist '}'
+     | id id '{' lifetimelist '}'
      {
          $$ = create_child(0, $4, $2, $1);
          new_location($$, &@$);
-         new_location($1, &@1);
-         new_location($2, &@2);
      }
      ;
 attrs: T_ATTRIBUTES '{' attrlist '}'
@@ -837,18 +798,15 @@ attr: attrhead '{' T_CONSTRUCTOR ',' lifetimelistwithvalues '}'
     }
     ;
 /* Optional [construct] keyword, for adding to constructor. */
-attrhead: attrprimitivetype T_ID
+attrhead: attrprimitivetype id
         {
             $$ = create_attrhead_primitive($1, $2);
             new_location($$, &@$);
-            new_location($2, &@2);
         }
-        | T_ID T_ID
+        | id id
         {
             $$ = create_attrhead_idtype($1, $2);
             new_location($$, &@$);
-            new_location($1, &@1);
-            new_location($2, &@2);
         }
         ;
 
@@ -882,7 +840,7 @@ attrprimitivetype: T_INT
                  { $$ = AT_string; }
                  ;
 attrval: T_STRINGVAL
-       { $$ = create_attrval_string($1); }
+       { $$ = create_attrval_string(create_id($1)); }
        | T_INTVAL
        { $$ = create_attrval_int($1); }
        | T_UINTVAL
@@ -890,7 +848,7 @@ attrval: T_STRINGVAL
        | T_FLOATVAL
        { $$ = create_attrval_float($1); }
        | T_ID
-       { $$ = create_attrval_id($1); }
+       { $$ = create_attrval_id(create_id($1)); }
        |  T_TRUE
        { $$ = create_attrval_bool(true); }
        | T_FALSE
@@ -900,20 +858,18 @@ attrval: T_STRINGVAL
        ;
 
 /* Comma seperated list of identifiers. */
-idlist: idlist ',' T_ID
+idlist: idlist ',' id
       {
           array_append($1, $3);
           $$ = $1;
           // $$ is an array and should not be added to location list.
-          new_location($3, &@3);
       }
-      | T_ID
+      | id
       {
           array *tmp = create_array();
           array_append(tmp, $1);
           $$ = tmp;
           // $$ is an array and should not be added to location list.
-          new_location($1, &@1);
       }
       ;
 

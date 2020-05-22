@@ -7,6 +7,11 @@
 #include "lib/assert.h"
 #include "lib/print.h"
 
+extern void gen_action_array_h(Config *c, FILE *fp);
+extern void gen_action_array_c(Config *c, FILE *fp);
+
+extern void generate_enables(Config *c, FILE *fp);
+
 static void generate_headers(Config *ir) {
     set_current_directory_to_be_tracked(global_command_options.header_dir);
     filegen_dir(global_command_options.header_dir);
@@ -16,6 +21,8 @@ static void generate_headers(Config *ir) {
     filegen_generate("trav.h", &gen_trav_data_header);
     filegen_generate("actions.h", &gen_actions_header);
     filegen_generate("check.h", &gen_check_header);
+    filegen_generate("action_handlers.h", &gen_action_array_h);
+    filegen_generate("ccn_enables.h", &generate_enables);
     filegen_generate("CMakeLists.txt", &gen_header_cmakelists);
 }
 

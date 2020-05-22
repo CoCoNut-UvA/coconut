@@ -1,11 +1,11 @@
 #ifndef _CCN_TRAV_CORE_H_
 #define _CCN_TRAV_CORE_H_
 
-#include "include/generated/trav.h"
+#include "../generated/include/trav.h"
 
 typedef struct TRAV {
     struct TRAV *prev;
-    TravType trav_type;
+    TraversalType trav_type;
     union TRAV_DATA trav_data;
 } Trav;
 
@@ -15,11 +15,11 @@ Trav *trav_init_return(Trav *);
 Trav *trav_init_error(Trav *);
 void trav_free_error(Trav *trav);
 void trav_free_return(Trav *trav);
-void trav_push(TravType trav_type);
+void trav_push(TraversalType trav_type);
 void trav_pop();
 Trav *trav_current(void);
-TravType trav_type(void);
-Node *trav_start(Node *syntaxtree, TravType trav);
+TraversalType trav_type(void);
+Node *trav_start(Node *syntaxtree, TraversalType trav);
 Node *trav_return(Node *arg_node);
 Node *trav_error(Node *arg_node);
 Node *trav_children(Node *arg_node);

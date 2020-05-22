@@ -1,28 +1,28 @@
 /**
- * This module contains the functions used internally by the phase driver during compilation.
- * This creates a bridge between the API functions for errors and cycles and command options.
- * It is internal because the user should never include this file explicitly.
+ * This module contains the functions used internally by the phase driver during
+ * compilation. This creates a bridge between the API functions for errors and
+ * cycles and command options. It is internal because the user should never
+ * include this file explicitly.
  */
 
+#include "include/internal_phase_functions.h"
+#include "../generated/include/action_handlers.h"
+#include "../generated/include/enum.h"
+// #include "../generated/include/trav-ast.h"
+#include "include/action_handling.h"
+#include "include/error.h"
+#include "lib/array.h"
+#include "lib/color.h"
+#include "lib/memory.h"
+#include "lib/print.h"
+#include "lib/str.h"
+#include <assert.h>
+#include <malloc.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
-#include <unistd.h>
-#include <malloc.h>
 #include <time.h>
-#include "core/error.h"
-#include "core/internal_phase_functions.h"
-#include "core/action_handling.h"
-#include "lib/array.h"
-#include "lib/memory.h"
-#include "lib/str.h"
-#include "lib/print.h"
-#include "lib/color.h"
-#include "generated/trav-ast.h"
-#include "generated/enum.h"
-#include "generated/action_handlers.h"
-
+#include <unistd.h>
 
 static phase_driver_t phase_driver;
 
@@ -59,18 +59,20 @@ void _pop_chk_frame(char *key) {
 
 void _exit_on_action_error(const char *action) {
     if (phase_driver.action_error) {
-        print_user_error("CCN Error", "Reached action error.\n| Action: %s\n| Path: %s\n", action,  _ccn_get_path());
+        print_user_error("CCN Error",
+                         "Reached action error.\n| Action: %s\n| Path: %s\n",
+                         action, _ccn_get_path());
         exit(1);
     }
 }
 
 void _exit_on_phase_error() {
     if (_top_frame()->phase_error) {
-        print_user_error("CCN Error", "Reached phase error .\n| Path: %s\n", _ccn_get_path());
+        print_user_error("CCN Error", "Reached phase error .\n| Path: %s\n",
+                         _ccn_get_path());
         exit(1);
     }
 }
-
 
 void _reset_cycle() {
     phase_frame_t *frame = array_last(phase_driver.phase_stack);
@@ -85,13 +87,9 @@ bool _is_cycle_notified() {
     return frame->cycle_notified;
 }
 
-phase_driver_t *_get_phase_driver() {
-    return &phase_driver;
-}
+phase_driver_t *_get_phase_driver() { return &phase_driver; }
 
-phase_frame_t *_top_frame() {
-    return array_last(phase_driver.phase_stack);
-}
+phase_frame_t *_top_frame() { return array_last(phase_driver.phase_stack); }
 
 void _push_frame(char *id, NodeType root_type) {
     phase_frame_t *frame = mem_alloc(sizeof(phase_frame_t));
@@ -204,7 +202,6 @@ void _ccn_new_phase_time_frame(char *id, double time_sec) {
     time_frame->time_sec = time_sec;
     time_frame->path = _ccn_get_path();
     array_append(phase_driver.cycles_time_frames, time_frame);
-
 }
 
 void _ccn_new_pass_time_frame(char *id, double time_sec) {
@@ -216,8 +213,8 @@ void _ccn_new_pass_time_frame(char *id, double time_sec) {
 }
 
 int compare_time_frame_inverse(const void *a, const void *b) {
-    const time_frame_t *pass_a = *((time_frame_t**)a);
-    const time_frame_t *pass_b = *((time_frame_t**)b);
+    const time_frame_t *pass_a = *((time_frame_t **)a);
+    const time_frame_t *pass_b = *((time_frame_t **)b);
 
     if (pass_a->time_sec > pass_b->time_sec) {
         return -1;
@@ -236,7 +233,8 @@ void _ccn_print_time_frame(time_frame_t *time_frame) {
         printf("\n");
         return;
     }
-    printf("%% Time: %f\n\n" , (time_frame->time_sec / phase_driver.total_time) * 100);
+    printf("%% Time: %f\n\n",
+           (time_frame->time_sec / phase_driver.total_time) * 100);
 }
 
 void _ccn_print_top_n_time(int n) {
@@ -308,7 +306,8 @@ point_frame_t *_ccn_create_point_frame_from_string(char *target) {
     array *vals = ccn_str_split(array_get(cycle_counts, 0), '.');
     point_frame_t *frame = mem_alloc(sizeof(point_frame_t));
     char *curr_target = array_get(vals, 0);
-    frame->current_id = *((enum ACTION_IDS*)smap_retrieve(phase_driver.id_to_enum_map, curr_target));
+    frame->current_id = *((enum ACTION_IDS *)smap_retrieve(
+        phase_driver.id_to_enum_map, curr_target));
 
     frame->cycle_counter = cycle_count;
     frame->action = action;
@@ -323,14 +322,17 @@ point_frame_t *_ccn_create_point_frame_from_string(char *target) {
 #endif
 
 #ifdef CCN_ENABLE_POINTS
-bool _ccn_is_final_point(enum ACTION_IDS id, phase_frame_t *frame, point_frame_t *curr_point) {
-    if (curr_point->current_id == id && curr_point->cycle_counter == frame->cycles) {
+bool _ccn_is_final_point(enum ACTION_IDS id, phase_frame_t *frame,
+                         point_frame_t *curr_point) {
+    if (curr_point->current_id == id &&
+        curr_point->cycle_counter == frame->cycles) {
         if (curr_point->index == array_size(curr_point->ids) - 1) {
             return true;
         } else {
             curr_point->index++;
             char *target = array_get(curr_point->ids, curr_point->index);
-            curr_point->current_id = *((enum ACTION_IDS*)smap_retrieve(phase_driver.id_to_enum_map, target));
+            curr_point->current_id = *((enum ACTION_IDS *)smap_retrieve(
+                phase_driver.id_to_enum_map, target));
         }
     }
 
@@ -392,7 +394,8 @@ char *_ccn_get_path() {
         array_append(path_elements, ".");
     }
 
-    phase_frame_t *frame = array_get(phase_driver.phase_stack, array_size(phase_driver.phase_stack) - 1);
+    phase_frame_t *frame = array_get(phase_driver.phase_stack,
+                                     array_size(phase_driver.phase_stack) - 1);
     array_append(path_elements, frame->phase_id);
 
     char *path = ccn_str_cat_array(path_elements);
@@ -403,7 +406,6 @@ char *_ccn_get_path() {
     return path;
 }
 
-
 void _print_path() {
     if (array_size(phase_driver.phase_stack) <= 0)
         return;
@@ -413,7 +415,8 @@ void _print_path() {
         printf("%s.", frame->phase_id);
     }
 
-    phase_frame_t *frame = array_get(phase_driver.phase_stack, array_size(phase_driver.phase_stack) - 1);
+    phase_frame_t *frame = array_get(phase_driver.phase_stack,
+                                     array_size(phase_driver.phase_stack) - 1);
     printf("%s\n", frame->phase_id);
 }
 
@@ -422,8 +425,9 @@ void *ccn_malloc(size_t size) {
     return malloc(size);
 }
 
-void ccn_free(void* item) {
-    phase_driver.total_freed += malloc_usable_size(item); // glib deps, so not crossplatform.
+void ccn_free(void *item) {
+    phase_driver.total_freed +=
+        malloc_usable_size(item); // glib deps, so not crossplatform.
     free(item);
 }
 
@@ -439,7 +443,7 @@ void reset_allocators() {
 
 #ifdef CCN_ENABLE_POINTS
 void _ccn_destroy_points(void *item) {
-    point_frame_t *point = (point_frame_t*)item;
+    point_frame_t *point = (point_frame_t *)item;
     array_cleanup(point->ids, mem_free);
     mem_free(point->action);
     mem_free(point);
@@ -447,7 +451,7 @@ void _ccn_destroy_points(void *item) {
 #endif
 
 void _ccn_destroy_time_frame(void *item) {
-    time_frame_t *frame = (time_frame_t*)item;
+    time_frame_t *frame = (time_frame_t *)item;
     mem_free(frame->path);
     mem_free(frame);
 }
@@ -464,7 +468,6 @@ void phase_driver_destroy() {
 #endif
     ccn_destroy_action_array();
     reset_allocators();
-
 }
 
 void _ccn_destroy_sub_root() {
@@ -474,9 +477,7 @@ void _ccn_destroy_sub_root() {
     }
 }
 
-void ccn_set_print_n(size_t n) {
-    phase_driver.print_n = n;
-}
+void ccn_set_print_n(size_t n) { phase_driver.print_n = n; }
 
 void _ccn_phase_driver_start() {
     ccn_action_t *action = get_ccn_action_from_id(CCN_ROOT_ACTION);

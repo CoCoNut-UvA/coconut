@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-#include "include/core/ast_core.h"
-#include "include/core/trav_core.h"
-#include "include/core/vtables_core.h"
+#include "include/ast_core.h"
+#include "include/trav_core.h"
+#include "include/vtables_core.h"
 #include "lib/memory.h"
 #include "lib/print.h"
 
@@ -23,7 +23,7 @@ void trav_free_error(Trav *trav) {
                      "Trying to free data of unknown traversal.");
 }
 
-void trav_push(TravType trav_type) {
+void trav_push(TraversalType trav_type) {
     Trav *trav = (Trav *)mem_alloc(sizeof(Trav));
     trav->trav_type = trav_type;
     trav->prev = current_traversal;
@@ -48,7 +48,7 @@ void trav_pop() {
 Trav *trav_current(void) { return current_traversal; }
 
 /* Start new traversal and push it to the traversal stack */
-Node *trav_start(Node *syntaxtree, TravType trav_type) {
+Node *trav_start(Node *syntaxtree, TraversalType trav_type) {
     trav_push(trav_type);
     syntaxtree = trav(syntaxtree);
     trav_pop();

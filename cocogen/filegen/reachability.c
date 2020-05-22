@@ -31,8 +31,8 @@ int get_trav_index(char *id) {
 }
 
 bool is_pass_node(Traversal *trav, Node *node) {
-    int trav_index = get_trav_index(trav->id);
-    int node_index = get_node_index(node->id);
+    int trav_index = get_trav_index(trav->id->orig);
+    int node_index = get_node_index(node->id->orig);
     return pass_nodes[trav_index][node_index];
 }
 
@@ -51,7 +51,7 @@ void compute_reachable_nodes(Config *config) {
         Node *node = array_get(config->nodes, i);
         int *index = mem_alloc(sizeof(int));
         *index = i;
-        smap_insert(node_index, node->id, index);
+        smap_insert(node_index, node->id->orig, index);
     }
 
     // Add traversals to trav_index map
@@ -59,7 +59,7 @@ void compute_reachable_nodes(Config *config) {
         Traversal *trav = array_get(config->traversals, i);
         int *index = mem_alloc(sizeof(int));
         *index = i;
-        smap_insert(trav_index, trav->id, index);
+        smap_insert(trav_index, trav->id->orig, index);
     }
 
     // Allocate node reachability matrix
@@ -81,11 +81,11 @@ void compute_reachable_nodes(Config *config) {
             if (!child->node) {
                 for (int k = 0; k < array_size(child->nodeset->nodes); k++) {
                     Node *nodesetnode = array_get(child->nodeset->nodes, k);
-                    int index = get_node_index(nodesetnode->id);
+                    int index = get_node_index(nodesetnode->id->orig);
                     node_reachability[index][i] = true;
                 }
             } else if (!child->nodeset) {
-                int index = get_node_index(child->type);
+                int index = get_node_index(child->type->orig);
                 node_reachability[index][i] = true;
             } else {
                 print_user_error(
@@ -123,7 +123,7 @@ void compute_reachable_nodes(Config *config) {
 
             for (int j = 0; j < array_size(trav->nodes); j++) {
                 Node *trav_node = array_get(trav->nodes, j);
-                int index = get_node_index(trav_node->id);
+                int index = get_node_index(trav_node->id->orig);
 
                 // List of nodes from where the handled node can be reached
                 bool *reach_nodes = node_reachability[index];

@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include "ast/ast.h"
-#include "ast/to-string.h"
+#include "ast/util.h"
 #include "filegen/driver.h"
 #include "filegen/util.h"
 #include "lib/array.h"
@@ -140,8 +140,8 @@ static void generate_nodeset(Nodeset *nodeset, FILE *fp, bool header) {
     for (int i = 0; i < array_size(nodeset->nodes); i++) {
         Node *node = array_get(nodeset->nodes, i);
 
-        out("struct %s *" CREATE_NODESET_FORMAT "(struct %s *_%s)",
-            nodeset->id, nodeset->id, node->id, node->id, node->id);
+        out("struct %s *" CREATE_NODESET_FORMAT "(struct %s *_%s)", nodeset->id,
+            nodeset->id, node->id, node->id, node->id);
 
         if (header) {
             out(";\n\n");
@@ -160,7 +160,7 @@ static void generate_nodeset(Nodeset *nodeset, FILE *fp, bool header) {
 
 void generate_create_node_header(Config *config, FILE *fp, Node *node) {
     out("#pragma once\n");
-    out("#include \"generated/ast-%s.h\"\n", node->id);
+    out("#include \"ast-%s.h\"\n", node->id);
     out("\n");
 
     generate_node(node, fp, true);
@@ -168,7 +168,7 @@ void generate_create_node_header(Config *config, FILE *fp, Node *node) {
 
 void generate_create_node_definitions(Config *c, FILE *fp, Node *n) {
     out("#include \"lib/memory.h\"\n");
-    out("#include \"generated/ast-%s.h\"\n", n->id);
+    out("#include \"ast-%s.h\"\n", n->id);
     out("// ast-%s.h includes the neccesary attribute and children.\n", n->id);
 
     generate_node(n, fp, false);
@@ -177,12 +177,12 @@ void generate_create_node_definitions(Config *c, FILE *fp, Node *n) {
 void generate_create_nodeset_header(Config *c, FILE *fp, Nodeset *n) {
     out("#pragma once\n");
     out("#include \"lib/memory.h\"\n");
-    out("#include \"generated/ast.h\"\n\n");
+    out("#include \"ast.h\"\n\n");
     generate_nodeset(n, fp, true);
 }
 
 void generate_create_nodeset_definitions(Config *c, FILE *fp, Nodeset *n) {
-    out("#include \"generated/create-%s.h\"\n", n->id);
+    out("#include \"create-%s.h\"\n", n->id);
     out("\n");
 
     smap_t *map = smap_init(32);
@@ -190,7 +190,7 @@ void generate_create_nodeset_definitions(Config *c, FILE *fp, Nodeset *n) {
     for (int i = 0; i < array_size(n->nodes); ++i) {
         Node *node = (Node *)array_get(n->nodes, i);
         if (smap_retrieve(map, node->id) == NULL) {
-            out("#include \"generated/create-%s.h\"\n", node->id);
+            out("#include \"create-%s.h\"\n", node->id);
             smap_insert(map, node->id, node);
         }
     }
@@ -204,10 +204,10 @@ void generate_create_header(Config *config, FILE *fp) {
     out("#pragma once\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = array_get(config->nodes, i);
-        out("#include \"generated/create-%s.h\"\n", node->id);
+        out("#include \"create-%s.h\"\n", node->id);
     }
     for (int i = 0; i < array_size(config->nodesets); ++i) {
         Nodeset *nodeset = array_get(config->nodesets, i);
-        out("#include \"generated/create-%s.h\"\n", nodeset->id);
+        out("#include \"create-%s.h\"\n", nodeset->id);
     }
 }

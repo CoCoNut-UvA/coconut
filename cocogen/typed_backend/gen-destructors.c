@@ -7,8 +7,8 @@
 
 static void generate_nodeset(Nodeset *nodeset, FILE *fp, bool header) {
 
-    out("void " FREE_TREE_FORMAT "(struct %s *nodeset)", nodeset->id,
-        nodeset->id);
+    out("void " FREE_TREE_FORMAT "(struct %s *nodeset)", nodeset->id->orig,
+        nodeset->id->orig);
 
     if (header) {
         out(";");
@@ -22,9 +22,9 @@ static void generate_nodeset(Nodeset *nodeset, FILE *fp, bool header) {
         out("    switch(nodeset->type) {\n");
         for (int i = 0; i < array_size(nodeset->nodes); ++i) {
             Node *node = (Node *)array_get(nodeset->nodes, i);
-            out("    case " NS_FORMAT ":\n", nodeset->id, node->id);
+            out("    case " NS_FORMAT ":\n", nodeset->id->orig, node->id->orig);
             out("        " FREE_TREE_FORMAT "(nodeset->value.val_%s);\n",
-                node->id, node->id);
+                node->id->orig, node->id->orig);
             out("        break;\n");
         }
         out("    }\n");
@@ -32,8 +32,8 @@ static void generate_nodeset(Nodeset *nodeset, FILE *fp, bool header) {
         out("}\n");
     }
 
-    out("void " FREE_NODE_FORMAT "(struct %s* nodeset)", nodeset->id,
-        nodeset->id);
+    out("void " FREE_NODE_FORMAT "(struct %s* nodeset)", nodeset->id->orig,
+        nodeset->id->orig);
     if (header) {
         out(";");
     } else {
@@ -45,9 +45,9 @@ static void generate_nodeset(Nodeset *nodeset, FILE *fp, bool header) {
         out("    switch(nodeset->type) {\n");
         for (int i = 0; i < array_size(nodeset->nodes); ++i) {
             Node *node = (Node *)array_get(nodeset->nodes, i);
-            out("    case " NS_FORMAT ":\n", nodeset->id, node->id);
+            out("    case " NS_FORMAT ":\n", nodeset->id->orig, node->id->orig);
             out("        " FREE_NODE_FORMAT "(nodeset->value.val_%s);\n",
-                node->id, node->id);
+                node->id->orig, node->id->orig);
             out("        break;\n");
         }
         out("    }\n");
@@ -57,7 +57,8 @@ static void generate_nodeset(Nodeset *nodeset, FILE *fp, bool header) {
 }
 
 static void generate_node(Node *node, FILE *fp, bool header) {
-    out("void " FREE_TREE_FORMAT "(struct %s* node)", node->id, node->id);
+    out("void " FREE_TREE_FORMAT "(struct %s* node)", node->id->orig,
+        node->id->orig);
     int indent = 1;
     if (header) {
         out(";");
@@ -87,7 +88,8 @@ static void generate_node(Node *node, FILE *fp, bool header) {
         out("}\n");
     }
 
-    out("void " FREE_NODE_FORMAT "(struct %s* node)", node->id, node->id);
+    out("void " FREE_NODE_FORMAT "(struct %s* node)", node->id->orig,
+        node->id->orig);
     if (header) {
         out(";");
     } else {
@@ -112,12 +114,12 @@ void generate_free_node_header(Config *c, FILE *fp, Node *n) {
     out("#include <stdbool.h>\n");
     out("#include <string.h>\n");
     out("#include \"lib/memory.h\"\n");
-    out("#include \"generated/ast.h\"\n");
+    out("#include \"ast.h\"\n");
     generate_node(n, fp, true);
 }
 
 void generate_free_node_definitions(Config *c, FILE *fp, Node *n) {
-    out("#include \"generated/free-%s.h\"\n", n->id);
+    out("#include \"free-%s.h\"\n", n->id);
     out("\n");
 
     smap_t *map = smap_init(32);
@@ -125,7 +127,7 @@ void generate_free_node_definitions(Config *c, FILE *fp, Node *n) {
     for (int i = 0; i < array_size(n->children); ++i) {
         Child *child = (Child *)array_get(n->children, i);
         if (smap_retrieve(map, child->type) == NULL) {
-            out("#include \"generated/free-%s.h\"\n", child->type);
+            out("#include \"free-%s.h\"\n", child->type);
             smap_insert(map, child->type, child);
         }
     }
@@ -138,21 +140,21 @@ void generate_free_node_definitions(Config *c, FILE *fp, Node *n) {
 void generate_free_nodeset_header(Config *c, FILE *fp, Nodeset *n) {
     out("#pragma once\n");
     out("#include \"lib/memory.h\"\n");
-    out("#include \"generated/ast.h\"\n\n");
+    out("#include \"ast.h\"\n\n");
     generate_nodeset(n, fp, true);
 }
 
 void generate_free_nodeset_definitions(Config *c, FILE *fp, Nodeset *n) {
-    out("#include \"generated/free-%s.h\"\n", n->id);
+    out("#include \"free-%s.h\"\n", n->id);
     out("\n");
 
     smap_t *map = smap_init(32);
 
     for (int i = 0; i < array_size(n->nodes); ++i) {
         Node *node = (Node *)array_get(n->nodes, i);
-        if (smap_retrieve(map, node->id) == NULL) {
-            out("#include \"generated/free-%s.h\"\n", node->id);
-            smap_insert(map, node->id, node);
+        if (smap_retrieve(map, node->id->orig) == NULL) {
+            out("#include \"free-%s.h\"\n", node->id->orig);
+            smap_insert(map, node->id->orig, node);
         }
     }
 
@@ -165,10 +167,10 @@ void generate_free_header(Config *config, FILE *fp) {
     out("#pragma once\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = array_get(config->nodes, i);
-        out("#include \"generated/free-%s.h\"\n", node->id);
+        out("#include \"free-%s.h\"\n", node->id->orig);
     }
     for (int i = 0; i < array_size(config->nodesets); ++i) {
         Nodeset *nodeset = array_get(config->nodesets, i);
-        out("#include \"generated/free-%s.h\"\n", nodeset->id);
+        out("#include \"free-%s.h\"\n", nodeset->id->orig);
     }
 }

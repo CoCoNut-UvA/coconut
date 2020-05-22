@@ -1,12 +1,10 @@
-#include "core/error.h"
-#include "core/internal_phase_functions.h"
+#include "include/error.h"
+#include "include/internal_phase_functions.h"
 
 #include <stdlib.h>
 
 // TODO: maybe add a bit more information?
-static inline void error_fatal() {
-    exit(1);
-}
+static inline void error_fatal() { exit(1); }
 
 static inline void error_non_fatal() {
     phase_driver_t *pd = _get_phase_driver();

@@ -30,20 +30,17 @@ void gen_source_cmakelists(Config *config, FILE *fp) {
     out("        trav_check.c\n");
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
-        char *travlwr = strlwr(trav->id);
-        out("        trav_%s.c\n", travlwr);
-        mem_free(travlwr);
+        out("        trav_%s.c\n", trav->id->lwr);
     }
     for (int i = 0; i < array_size(config->passes); i++) {
         Pass *pass = array_get(config->passes, i);
-        char *passlwr;
+        char *passid = NULL;
         if (pass->func) {
-            passlwr = strlwr(pass->func);
+            passid = pass->func->lwr;
         } else {
-            passlwr = strlwr(pass->id);
+            passid = pass->id->lwr;
         }
-        out("        pass_%s.c\n", passlwr);
-        mem_free(passlwr);
+        out("        pass_%s.c\n", passid);
     }
     out(")\n");
 }

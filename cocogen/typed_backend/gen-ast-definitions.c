@@ -1,14 +1,14 @@
 #include <stdio.h>
 
 #include "ast/ast.h"
-#include "ast/to-string.h"
+#include "ast/util.h"
 #include "filegen/driver.h"
 #include "filegen/util.h"
 
 #include "lib/array.h"
+#include "lib/assert.h"
 #include "lib/memory.h"
 #include "lib/smap.h"
-#include "lib/assert.h"
 
 static void generate_enum(Enum *arg_enum, FILE *fp) {
     out("typedef enum {\n");
@@ -80,13 +80,13 @@ void generate_ast_definitions(Config *config, FILE *fp) {
 
     out("// Nodes\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
-        out("#include \"generated/ast-%s.h\"\n",
+        out("#include \"ast-%s.h\"\n",
             ((Node *)array_get(config->nodes, i))->id);
     }
     out("\n");
     out("// Nodesets\n");
     for (int i = 0; i < array_size(config->nodesets); ++i) {
-        out("#include \"generated/ast-%s.h\"\n",
+        out("#include \"ast-%s.h\"\n",
             ((Nodeset *)array_get(config->nodesets, i))->id);
     }
 }
@@ -109,7 +109,8 @@ void generate_ast_node_header(Config *config, FILE *fp, Node *node) {
             Attr *attr = (Attr *)array_get(node->attrs, j);
             char *attr_string = str_attr_type(attr);
             out("    %s %s;\n", attr_string, attr->id);
-            if (attr->type == AT_link) mem_free(attr_string);
+            if (attr->type == AT_link)
+                mem_free(attr_string);
         }
     }
     out("} %s;\n", node->id);

@@ -9,7 +9,6 @@ add_executable(${PROJECT_NAME} main.c commandline.c commandline.h ${FLEX_DslToke
 add_subdirectory(frontend/)
 add_subdirectory(pretty/)
 add_subdirectory(filegen/)
-add_subdirectory(typed_backend/)
 add_subdirectory(phase-driver/)
 add_subdirectory(dynamic_backend/)
 
