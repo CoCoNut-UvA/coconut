@@ -11,12 +11,12 @@ static int indent = 0;
 void gen_enum(Config *config, FILE *fp, Enum *arg_enum) {
     out_comment("Enum %s", arg_enum->id->orig);
     out_enum("%s", arg_enum->id->upr);
-    out_enum_field("%s_NULL", arg_enum->prefix->lwr);
+    out_enum_field("%s_NULL", arg_enum->prefix->upr);
     for (int i = 0; i < array_size(arg_enum->values); i++) {
-        char *id = (char *)array_get(arg_enum->values, i);
-        out_enum_field("%s_%s", arg_enum->prefix->lwr, id);
+        Id *id = (Id *)array_get(arg_enum->values, i);
+        out_enum_field("%s_%s", arg_enum->prefix->upr, id->lwr);
     }
-    out_enum_field("_%s_SIZE", arg_enum->prefix->lwr);
+    out_enum_field("_%s_SIZE", arg_enum->prefix->upr);
     out_enum_end("%s", arg_enum->id->orig);
 }
 

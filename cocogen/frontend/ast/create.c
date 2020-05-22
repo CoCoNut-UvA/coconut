@@ -138,12 +138,12 @@ ccn_set_t *idlist_to_set(array *ids) {
     ccn_set_t *set = ccn_set_string_create(20);
 
     for (int i = 0; i < array_size(ids); i++) {
-        void *item = array_get(ids, i);
-        char *id = (char *)item;
-        if (!ccn_set_insert(set, item)) {
-            char *id_def = (char *)ccn_set_get(set, item);
+        Id *id = array_get(ids, i);
+        if (!ccn_set_insert(set, id->orig)) {
+            char *id_def = (char *)ccn_set_get(set, id->orig);
             print_warning(
-                id, "Set element is already defined, so will be ignored.");
+                id->orig,
+                "Set element is already defined, so will be ignored.");
             print_note(id_def, "Set element already defined here.");
         }
     }

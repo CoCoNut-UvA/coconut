@@ -18,7 +18,7 @@ void gen_init_function(Config *config, FILE *fp, Node *node) {
             if (i > 0) {
                 out(", ");
             }
-            out("Node *%s", child->id);
+            out("Node *%s", child->id->lwr);
         }
     }
     for (int i = 0; i < array_size(node->attrs); ++i) {
@@ -28,9 +28,9 @@ void gen_init_function(Config *config, FILE *fp, Node *node) {
                 out(", ");
             }
             if (attr->type == AT_link) {
-                out("Node *%s", attr->id);
+                out("Node *%s", attr->id->lwr);
             } else {
-                out("%s %s", str_attr_type(attr), attr->id);
+                out("%s %s", str_attr_type(attr), attr->id->lwr);
             }
         }
     }
@@ -46,7 +46,7 @@ void gen_node_struct(Config *config, FILE *fp, Node *node) {
         out("Node ");
         for (int i = 0; i < array_size(node->children); ++i) {
             Child *child = (Child *)array_get(node->children, i);
-            out("*%s", child->id);
+            out("*%s", child->id->lwr);
             if (i != array_size(node->children) - 1) {
                 out(", ");
             } else {
@@ -61,9 +61,9 @@ void gen_node_struct(Config *config, FILE *fp, Node *node) {
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
         if (attr->type == AT_link) {
-            out_field("Node *%s", attr->id);
+            out_field("Node *%s", attr->id->lwr);
         } else {
-            out_field("%s %s", str_attr_type(attr), attr->id);
+            out_field("%s %s", str_attr_type(attr), attr->id->lwr);
         }
     }
     out_struct_end();
@@ -85,12 +85,12 @@ void gen_node_macros(Config *config, FILE *fp, Node *node) {
         out("#define %s_%s(n) "
             "((n)->data.N_%s->%s_children.%s_children_s.%s)\n",
             node->id->upr, child->id->upr, node->id->lwr, node->id->lwr,
-            node->id->lwr, child->id);
+            node->id->lwr, child->id->lwr);
     }
     for (int i = 0; i < array_size(node->attrs); ++i) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
         out("#define %s_%s(n) ((n)->data.N_%s->%s)\n", node->id->upr,
-            attr->id->upr, node->id->lwr, attr->id);
+            attr->id->upr, node->id->lwr, attr->id->lwr);
     }
     out("\n");
 }
@@ -126,7 +126,7 @@ void gen_members(Config *config, FILE *fp, Node *node) {
         Child *child = (Child *)array_get(node->children, i);
         if (child->construct) {
             out_field("%s_%s(node) = %s", node->id->upr, child->id->upr,
-                      child->id);
+                      child->id->lwr);
         } else {
             out_field("%s_%s(node) = NULL", node->id->upr, child->id->upr);
         }
@@ -135,7 +135,7 @@ void gen_members(Config *config, FILE *fp, Node *node) {
         Attr *attr = (Attr *)array_get(node->attrs, i);
         if (attr->construct) {
             out_field("%s_%s(node) = %s", node->id->upr, attr->id->upr,
-                      attr->id);
+                      attr->id->lwr);
         } else {
             out_field("%s_%s(node) = %s", node->id->upr, attr->id->upr,
                       attr_default_value(config, fp, attr->type));
@@ -171,7 +171,7 @@ void gen_ast_src(Config *config, FILE *fp) {
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
-        out("// Constructor for Node %s\n", node->id);
+        out("// Constructor for Node %s\n", node->id->lwr);
         gen_node_constructor(config, fp, node);
     }
 }

@@ -210,43 +210,47 @@ entry: phase { array_append(config_phases, $1); }
 prefix: T_PREFIX '=' id
       {
           $$ = $3;
-          new_location($$, &@$);
       }
 
 phase: phaseheader '{' prefix ',' T_GATE ',' actionsbody '}'
      {
          $$ = create_phase($1, NULL, $3, $7, create_id(ccn_str_cat($1->id->lwr, "_gate")));
+         new_location($$, &@$);
      }
      | phaseheader '{' prefix ',' T_ROOT '=' id ',' actionsbody '}'
      {
          $$ = create_phase($1, $7, $3, $9, NULL);
+         new_location($$, &@$);
      }
      | phaseheader '{' prefix ',' actionsbody '}'
      {
          $$ = create_phase($1, NULL, $3, $5, NULL);
+         new_location($$, &@$);
      }
      | phaseheader '{' prefix ',' T_ROOT '=' id ',' T_GATE ',' actionsbody '}'
      {
          $$ = create_phase($1, $7, $3, $11, create_id(ccn_str_cat($1->id->lwr, "_gate")));
+         new_location($$, &@$);
      }
      | phaseheader '{' prefix ',' T_ROOT '=' id ',' T_GATE '=' id ',' actionsbody '}'
      {
          $$ = create_phase($1, $7, $3, $13, $11);
-         new_location($11, &@11);
+         new_location($$, &@$);
      }
      | phaseheader '{' prefix ',' T_GATE '=' id ',' actionsbody '}'
      {
          $$ = create_phase($1, NULL, $3, $9, $7);
-         new_location($7, &@7);
+         new_location($$, &@$);
      }
      | phaseheader '{' T_GATE '=' id ',' actionsbody '}'
      {
          $$ = create_phase($1, NULL, NULL, $7, $5);
-         new_location($5, &@5);
+         new_location($$, &@$);
      }
      | phaseheader '{' T_GATE ',' actionsbody '}'
      {
          $$ = create_phase($1, NULL, NULL, $5, create_id(ccn_str_cat($1->id->lwr, "_gate")));
+         new_location($$, &@$);
      }
 
 
@@ -276,18 +280,22 @@ actions: actions  action ';'
 action: traversal
       {
           $$ = create_action(ACTION_TRAVERSAL, $1, $1->id);
+          new_location($$, &@$);
       }
       | pass
       {
           $$ = create_action(ACTION_PASS, $1, $1->id);
+          new_location($$, &@$);
       }
       | phase
       {
           $$ = create_action(ACTION_PHASE, $1, $1->id);
+          new_location($$, &@$);
       }
       | T_ID
       {
           $$ = create_action(ACTION_REFERENCE, $1, create_id($1));
+          new_location($$, &@$);
           new_location($1, &@1);
       }
       ;
@@ -318,14 +326,12 @@ pass: T_PASS id '{' prefix ',' func '}'
     {
         $$ = create_pass($2, $6, $4);
         new_location($$, &@$);
-        new_location($6, &@6);
     }
     | T_PASS id '{' info ',' prefix ',' func '}'
     {
         $$ = create_pass($2, $8, $6);
         $$->info = $4;
         new_location($$, &@$);
-        new_location($8, &@8);
     }
     | T_PASS id '{' info ',' prefix '}'
     {
@@ -449,7 +455,6 @@ traversal: T_TRAVERSAL id
 func: T_FUNC '=' id
     {
         $$ = $3;
-        new_location($3, &@3);
     }
     ;
 
@@ -463,27 +468,23 @@ enum: T_ENUM id '{' T_PREFIX '=' id ',' enumvalues '}'
     {
         $$ = create_enum($2, $6, $8);
         new_location($$, &@$);
-        new_location($6, &@6);
     }
     | T_ENUM id '{' enumvalues ',' T_PREFIX '=' id '}'
     {
         $$ = create_enum($2, $8, $4);
         new_location($$, &@$);
-        new_location($8, &@6);
     }
     | T_ENUM id '{' info ',' T_PREFIX '=' id ',' enumvalues '}'
     {
         $$ = create_enum($2, $8, $10);
         $$->info = $4;
         new_location($$, &@$);
-        new_location($8, &@8);
     }
     | T_ENUM id '{' info ',' enumvalues ',' T_PREFIX '=' id '}'
     {
         $$ = create_enum($2, $10, $6);
         $$->info = $4;
         new_location($$, &@$);
-        new_location($10, &@10);
     }
     ;
 
