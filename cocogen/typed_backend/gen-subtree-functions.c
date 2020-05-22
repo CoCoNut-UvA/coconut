@@ -37,7 +37,7 @@ void subtree_generate_call_find_sub_root(char *root, char *to_find, FILE *fp,
     out_begin_if("root == NULL");
     out_statement("printf(\"Could not find sub-root %s from parent %s\\n\")",
                   to_find, root);
-    out_statement("_ccn_end_phase(\"%s\")", phase->id);
+    out_statement("_ccn_end_phase(\"%s\")", phase->id->lwr);
     out_statement("return");
     out_end_if();
     out_statement("_ccn_destroy_sub_root()");
@@ -225,20 +225,20 @@ static void require_phase_root(Phase *phase, char *root, ccn_set_t *generated,
     if (is_only_list_files())
         return;
 
-    char *target = ccn_str_cat(phase->id, root);
+    char *target = ccn_str_cat(phase->id->lwr, root);
     if (!ccn_set_insert(generated, target)) {
         mem_free(target);
         return;
     }
-    char *header =
-        get_full_path_with_dir(config->header_dir, "phase-%s.h", phase->id);
-    char *source =
-        get_full_path_with_dir(config->source_dir, "phase-%s.c", phase->id);
+    char *header = get_full_path_with_dir(config->header_dir, "phase-%s.h",
+                                          phase->id->lwr);
+    char *source = get_full_path_with_dir(config->source_dir, "phase-%s.c",
+                                          phase->id->lwr);
 
     // Hash matches so do not append, will create a redefinition.
     if (!phase->common_info->hash_matches && phase->root_owner) {
         FILE *fp = get_fp(header, "a");
-        out("void %s_%s(%s *root);\n", phase->id, root, root);
+        out("void %s_%s(%s *root);\n", phase->id->lwr, root, root);
         fclose(fp);
 
         fp = get_fp(source, "a");

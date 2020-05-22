@@ -20,9 +20,10 @@ void generate_node_header_includes(Config *config, FILE *fp, Node *node) {
 
     for (int i = 0; i < array_size(node->children); ++i) {
         Child *child = (Child *)array_get(node->children, i);
-        if (smap_retrieve(map, child->type) == NULL) {
-            out("typedef struct %s %s;\n", child->type, child->type);
-            smap_insert(map, child->type, child);
+        if (smap_retrieve(map, child->type->orig) == NULL) {
+            out("typedef struct %s %s;\n", child->type->orig,
+                child->type->orig);
+            smap_insert(map, child->type->orig, child);
         }
     }
 
@@ -49,15 +50,15 @@ void generate_node_header_includes(Config *config, FILE *fp, Node *node) {
             break;
         }
 
-        if (smap_retrieve(map, attr->id) == NULL) {
+        if (smap_retrieve(map, attr->id->orig) == NULL) {
             switch (attr->type) {
             case AT_link:
-                out("struct %s;\n", attr->type_id);
+                out("struct %s;\n", attr->type_id->orig);
                 break;
             default:
                 break;
             }
-            smap_insert(map, attr->id, attr);
+            smap_insert(map, attr->id->orig, attr);
         }
     }
 
@@ -77,24 +78,6 @@ void print_indent_level(int indent_level, FILE *fp) {
     }
 }
 
-char *strupr(char *string) {
-    char *upper = malloc((strlen(string) + 1) * sizeof(char));
-    strcpy(upper, string);
-    for (int i = 0; i < strlen(upper); ++i) {
-        upper[i] = toupper(upper[i]);
-    }
-    return upper;
-}
-
-char *strlwr(char *string) {
-    char *lower = malloc((strlen(string) + 1) * sizeof(char));
-    strcpy(lower, string);
-    for (int i = 0; i < strlen(lower); ++i) {
-        lower[i] = tolower(lower[i]);
-    }
-    return lower;
-}
-
 /**
  * This this function goes over each node in the traversal and compares it to
  * the node given to the function. If the two nodes have an equal ID, then the
@@ -103,7 +86,7 @@ char *strlwr(char *string) {
 bool is_traversal_node(Traversal *trav, Node *node) {
     for (int i = 0; i < array_size(trav->nodes); i++) {
         Node *travnode = array_get(trav->nodes, i);
-        if (strcmp(travnode->id, node->id) == 0) {
+        if (strcmp(travnode->id->orig, node->id->orig) == 0) {
             return true;
         }
     }

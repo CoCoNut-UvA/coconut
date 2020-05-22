@@ -4,10 +4,10 @@ target_sources(${PROJECT_NAME}
         check.h
         create.h
         free.h
-        to-string.h
+        util.h
     PRIVATE
         check.c
         create.c
         free.c
-        to-string.c
+        util.c
 )

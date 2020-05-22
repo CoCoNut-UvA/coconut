@@ -31,37 +31,30 @@ void gen_init_arguments(Config *config, FILE *fp, Node *node) {
 }
 
 void gen_copy_func(Config *config, FILE *fp, Node *node) {
-    char *nodelwr = strlwr(node->id);
-    char *nodeupr = strupr(node->id);
-    out_start_func("Node *copy_%s(Node *arg_node)", nodelwr);
-    out("    Node *new_node = node_init_%s(", nodelwr);
+    out_start_func("Node *copy_%s(Node *arg_node)", node->id->lwr);
+    out("    Node *new_node = node_init_%s(", node->id->lwr);
     gen_init_arguments(config, fp, node);
     out(");\n");
     for (int i = 0; i < array_size(node->attrs); i++) {
         Attr *attr = array_get(node->attrs, i);
-        char *attrupr = strupr(attr->id);
         char *copyfunc;
         if (attr->type == AT_string) {
             copyfunc = "ccn_str_cpy";
         } else if (attr->type == AT_link) {
             copyfunc = "node_copy";
         } else {
-            out_field("%s_%s(new_node) = %s_%s(arg_node)", nodeupr, attrupr,
-                      nodeupr, attrupr);
-            mem_free(attrupr);
+            out_field("%s_%s(new_node) = %s_%s(arg_node)", node->id->upr,
+                      attr->id->upr, node->id->upr, attr->id->upr);
             continue;
         }
-        out_field("%s_%s(new_node) = %s(%s_%s(arg_node))", nodeupr, attrupr,
-                  copyfunc, nodeupr, attrupr);
-        mem_free(attrupr);
+        out_field("%s_%s(new_node) = %s(%s_%s(arg_node))", node->id->upr,
+                  attr->id->upr, copyfunc, node->id->upr, attr->id->upr);
     }
     if (node->children) {
         out_field("arg_node = trav_children(arg_node)");
     }
     out_field("return new_node");
     out_end_func();
-    mem_free(nodelwr);
-    mem_free(nodeupr);
 }
 
 void gen_copy_src(Config *config, FILE *fp) {
