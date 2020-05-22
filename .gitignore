@@ -60,7 +60,7 @@ bin/
 # Doxygen generated docs file
 docs/
 
-/generated/source
+/generated/src
 /generated/include
 
 .vscode

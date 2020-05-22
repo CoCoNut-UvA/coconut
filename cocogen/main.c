@@ -59,8 +59,8 @@ int main(int argc, char *argv[]) {
     ensure_dir_exists(global_command_options.header_dir, 0777);
 
     if (global_command_options.source_dir == NULL) {
-        global_command_options.source_dir = "generated/source/";
-        ensure_dir_exists("generated/source/",
+        global_command_options.source_dir = "generated/src/";
+        ensure_dir_exists("generated/src/",
                           0777); // FIXME(damian): transform to recursive.
     }
     ensure_dir_exists(global_command_options.source_dir, 0777);
