@@ -115,14 +115,13 @@ void gen_trav_data_constructor(Config *config, FILE *fp, Traversal *trav) {
 void gen_trav_data_destructor(Config *config, FILE *fp, Traversal *trav) {
     out_start_func("void trav_free_%s(Trav *trav)", trav->id->lwr);
     out_field("%s_free_trav_data(trav)", trav->id->lwr);
+    out_field("mem_free(trav->trav_data.TD_%s)", trav->id->lwr);
     out_end_func();
 }
 
 void gen_trav_data_src(Config *config, FILE *fp) {
     out("#include <stdlib.h>\n");
     out("\n");
-    out("#include \"../copra/include/ast_core.h\"\n");
-    out("#include \"../copra/include/trav_core.h\"\n");
     out("#include \"../copra/include/actions_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("\n");

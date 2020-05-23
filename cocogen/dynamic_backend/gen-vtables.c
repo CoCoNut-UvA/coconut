@@ -61,7 +61,7 @@ void gen_vtables(Config *config, FILE *fp) {
     gen_system_vtable(config, fp, "free");
     gen_system_vtable(config, fp, "copy");
     gen_system_vtable(config, fp, "check");
-    out("const TravFunc *trav_mat[_TRAV_SIZE] = { error_vtable, ");
+    out("const TravFunc *trav_table[_TRAV_SIZE] = { error_vtable, ");
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
         out("%s_vtable, ", trav->id->lwr);
