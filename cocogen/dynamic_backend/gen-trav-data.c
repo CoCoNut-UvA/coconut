@@ -107,7 +107,7 @@ void gen_trav_data_constructor(Config *config, FILE *fp, Traversal *trav) {
     out_start_func("Trav *trav_init_%s(Trav *trav)", trav->id->lwr);
     out_field("trav->trav_data.TD_%s = mem_alloc(sizeof(struct TRAV_DATA_%s))",
               trav->id->lwr, trav->id->upr);
-    out_field("%s_init_trav_data(trav)", trav->id->lwr);
+    out_field("trav = %s_init_trav_data(trav)", trav->id->lwr);
     out_field("return trav");
     out_end_func();
 }
