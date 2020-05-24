@@ -65,13 +65,7 @@ void gen_pass_enum(Config *config, FILE *fp) {
     out_enum_field("PASS_NULL");
     for (int i = 0; i < array_size(config->passes); ++i) {
         Pass *pass = (Pass *)array_get(config->passes, i);
-        char *passid = NULL;
-        if (pass->func) {
-            passid = pass->func->lwr;
-        } else {
-            passid = pass->id->lwr;
-        }
-        out_enum_field("PASS_%s", passid);
+        out_enum_field("PASS_%s", pass_func_or_id(pass));
     }
     out_enum_field("_PASS_SIZE");
     out_enum_end("PassType");

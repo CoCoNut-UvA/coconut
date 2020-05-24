@@ -34,13 +34,7 @@ void gen_source_cmakelists(Config *config, FILE *fp) {
     }
     for (int i = 0; i < array_size(config->passes); i++) {
         Pass *pass = array_get(config->passes, i);
-        char *passid = NULL;
-        if (pass->func) {
-            passid = pass->func->lwr;
-        } else {
-            passid = pass->id->lwr;
-        }
-        out("        pass_%s.c\n", passid);
+        out("        pass_%s.c\n", pass_func_or_id(pass));
     }
     out(")\n");
 }

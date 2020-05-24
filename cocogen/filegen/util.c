@@ -111,3 +111,11 @@ char *attr_default_value(Config *config, FILE *fp, enum AttrType type) {
         break;
     }
 }
+
+char *pass_func_or_id(Pass *pass) {
+    if (pass->func) {
+        return pass->func->lwr;
+    } else {
+        return pass->id->lwr;
+    }
+}

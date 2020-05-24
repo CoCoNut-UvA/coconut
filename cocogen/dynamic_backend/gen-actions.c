@@ -56,13 +56,7 @@ void gen_actions_header(Config *config, FILE *fp) {
     for (int i = 0; i < array_size(config->passes); i++) {
         Pass *pass = array_get(config->passes, i);
         out_comment("Pass %s", pass->id->orig);
-        char *passid = NULL;
-        if (pass->func) {
-            passid = pass->func->lwr;
-        } else {
-            passid = pass->id->lwr;
-        }
-        out_field("Node *pass_%s(Node *arg_node)", passid);
+        out_field("Node *pass_%s(Node *arg_node)", pass_func_or_id(pass));
         out("\n");
     }
     out("#endif /* _CCN_ACTIONS_H_ */\n");
@@ -74,13 +68,8 @@ void gen_phase(Config *config, FILE *fp, Phase *phase) {
         switch (action->type) {
         case ACTION_PASS:;
             Pass *action_pass = (Pass *)action->action;
-            char *passid = NULL;
-            if (action_pass->func) {
-                passid = action_pass->func->lwr;
-            } else {
-                passid = action_pass->id->lwr;
-            }
-            out_field("root = pass_start(root, PASS_%s)", passid);
+            out_field("root = pass_start(root, PASS_%s)",
+                      pass_func_or_id(action_pass));
             break;
         case ACTION_PHASE:;
             Phase *action_phase = (Phase *)action->action;
@@ -122,15 +111,9 @@ void gen_actions_src(Config *config, FILE *fp) {
 }
 
 void gen_pass_user_src(Config *config, FILE *fp, Pass *pass) {
-    char *passid = NULL;
-    if (pass->func) {
-        passid = pass->func->lwr;
-    } else {
-        passid = pass->id->lwr;
-    }
     out("#include \"../copra/include/actions_core.h\"\n");
     out("\n");
-    out_start_func("Node *pass_%s(Node *arg_node)", passid);
+    out_start_func("Node *pass_%s(Node *arg_node)", pass_func_or_id(pass));
     out_comment("User code here");
     out_field("return arg_node");
     out_end_func();

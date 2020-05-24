@@ -95,13 +95,7 @@ void gen_pass_vtable(Config *config, FILE *fp) {
     out("const PassFunc pass_vtable[_PASS_SIZE] = { &pass_error, ");
     for (int i = 0; i < array_size(config->passes); i++) {
         Pass *pass = array_get(config->passes, i);
-        char *passid = NULL;
-        if (pass->func) {
-            passid = pass->func->lwr;
-        } else {
-            passid = pass->id->lwr;
-        }
-        out("&pass_%s, ", passid);
+        out("&pass_%s, ", pass_func_or_id(pass));
     }
     out(" };\n\n");
 }
