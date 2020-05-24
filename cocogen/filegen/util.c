@@ -78,21 +78,6 @@ void print_indent_level(int indent_level, FILE *fp) {
     }
 }
 
-/**
- * This this function goes over each node in the traversal and compares it to
- * the node given to the function. If the two nodes have an equal ID, then the
- * node is a valid node in the traversal.
- */
-bool is_traversal_node(Traversal *trav, Node *node) {
-    for (int i = 0; i < array_size(trav->nodes); i++) {
-        Node *travnode = array_get(trav->nodes, i);
-        if (strcmp(travnode->id->orig, node->id->orig) == 0) {
-            return true;
-        }
-    }
-    return false;
-}
-
 char *attr_default_value(Config *config, FILE *fp, enum AttrType type) {
     switch (type) {
     case AT_int:

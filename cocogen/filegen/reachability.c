@@ -18,6 +18,7 @@ static smap_t *trav_index;
 // Node reachability matrix
 static bool **node_reachability;
 
+static bool **traversal_nodes;
 static bool **pass_nodes;
 
 int get_node_index(char *id) {
@@ -36,18 +37,18 @@ bool is_pass_node(Traversal *trav, Node *node) {
     return pass_nodes[trav_index][node_index];
 }
 
-void compute_reachable_nodes(Config *config) {
-    if (node_reachability && pass_nodes) {
-        return;
-    }
+bool is_traversal_node(Traversal *trav, Node *node) {
+    int trav_index = get_trav_index(trav->id->orig);
+    int node_index = get_node_index(node->id->orig);
+    return traversal_nodes[trav_index][node_index];
+}
+
+void create_indices(Config *config) {
     node_index = smap_init(32);
     trav_index = smap_init(32);
 
-    size_t num_nodes = array_size(config->nodes);
-    size_t num_traversals = array_size(config->traversals);
-
     // Add nodes to node_index map
-    for (int i = 0; i < num_nodes; i++) {
+    for (int i = 0; i < array_size(config->nodes); i++) {
         Node *node = array_get(config->nodes, i);
         int *index = mem_alloc(sizeof(int));
         *index = i;
@@ -55,12 +56,21 @@ void compute_reachable_nodes(Config *config) {
     }
 
     // Add traversals to trav_index map
-    for (int i = 0; i < num_traversals; i++) {
+    for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
         int *index = mem_alloc(sizeof(int));
         *index = i;
         smap_insert(trav_index, trav->id->orig, index);
     }
+}
+
+void compute_reachable_nodes(Config *config) {
+    if (node_reachability && pass_nodes) {
+        return;
+    }
+
+    size_t num_nodes = array_size(config->nodes);
+    size_t num_traversals = array_size(config->traversals);
 
     // Allocate node reachability matrix
 
@@ -136,6 +146,35 @@ void compute_reachable_nodes(Config *config) {
                 for (int k = 0; k < num_nodes; k++) {
                     if (reach_nodes[k])
                         pass_nodes[i][k] = true;
+                }
+            }
+        }
+    }
+}
+
+void compute_traversal_nodes(Config *config) {
+    size_t num_nodes = array_size(config->nodes);
+    size_t num_traversals = array_size(config->traversals);
+
+    traversal_nodes = mem_alloc(sizeof(bool *) * num_traversals);
+
+    for (int i = 0; i < array_size(config->traversals); i++) {
+        Traversal *trav = array_get(config->traversals, i);
+
+        traversal_nodes[i] = mem_alloc(sizeof(bool) * num_nodes);
+        if (!trav->nodes) {
+            for (int j = 0; j < num_nodes; j++) {
+                traversal_nodes[i][j] = true;
+            }
+        } else {
+            memset(traversal_nodes[i], 0, sizeof(bool) * num_nodes);
+            for (int j = 0; j < array_size(config->nodes); j++) {
+                Node *node = array_get(config->nodes, j);
+                for (int k = 0; k < array_size(trav->nodes); k++) {
+                    Node *trav_node = array_get(trav->nodes, k);
+                    if (strcmp(trav_node->id->orig, node->id->orig) == 0) {
+                        traversal_nodes[i][j] = true;
+                    }
                 }
             }
         }

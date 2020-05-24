@@ -56,7 +56,9 @@ void dynamic_backend(Config *ir) {
     ccn_assert(global_command_options.header_dir != NULL, "No header dir");
     ccn_assert(global_command_options.source_dir != NULL, "No source dir");
 
+    create_indices(ir);
     compute_reachable_nodes(ir);
+    compute_traversal_nodes(ir);
     generate_headers(ir);
     generate_sources(ir);
 }
