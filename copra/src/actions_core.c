@@ -1,4 +1,4 @@
-#include "include/vtables_core.h"
+#include "ccn/vtables_core.h"
 #include "lib/print.h"
 
 Node *pass_start(Node *syntaxtree, PassType pass_type) {

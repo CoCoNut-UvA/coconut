@@ -1,4 +1,4 @@
-#include "include/consist_checks.h"
+#include "ccn/consist_checks.h"
 #include "lib/print.h"
 #include <stdio.h>
 #include <stdlib.h>

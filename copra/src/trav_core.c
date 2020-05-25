@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-#include "include/ast_core.h"
-#include "include/trav_core.h"
-#include "include/vtables_core.h"
+#include "ccn/ast_core.h"
+#include "ccn/trav_core.h"
+#include "ccn/vtables_core.h"
 #include "lib/memory.h"
 #include "lib/print.h"
 

@@ -51,10 +51,11 @@ int main(int argc, char *argv[]) {
 
     // TODO(damian): Create recursive ensure_dir_exists
     if (global_command_options.header_dir == NULL) {
-        global_command_options.header_dir = "generated/include/";
+        global_command_options.header_dir = "generated/include/ccngen/";
         ensure_dir_exists("generated/",
                           0777); // FIXME(damian): transform to recursive.
         ensure_dir_exists("generated/include/", 0777);
+        ensure_dir_exists("generated/include/ccngen/", 0777);
     }
     ensure_dir_exists(global_command_options.header_dir, 0777);
 

@@ -5,12 +5,12 @@
  * include this file explicitly.
  */
 
-#include "include/internal_phase_functions.h"
-#include "../generated/include/action_handlers.h"
-#include "../generated/include/enum.h"
-// #include "../generated/include/trav-ast.h"
-#include "include/action_handling.h"
-#include "include/error.h"
+#include "ccn/internal_phase_functions.h"
+#include "ccngen/action_handlers.h"
+#include "ccngen/enum.h"
+// #include "ccngen/trav-ast.h"
+#include "ccn/action_handling.h"
+#include "ccn/error.h"
 #include "lib/array.h"
 #include "lib/color.h"
 #include "lib/memory.h"

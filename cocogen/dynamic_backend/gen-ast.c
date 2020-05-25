@@ -100,7 +100,7 @@ void gen_ast_header(Config *config, FILE *fp) {
     out("#define _CCN_AST_H_\n\n");
     out("#include <stdbool.h>\n");
     out("\n");
-    out("#include \"../copra/include/types.h\"\n");
+    out("#include \"ccn/types.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = (Node *)array_get(config->nodes, i);
@@ -165,8 +165,8 @@ void gen_node_constructor(Config *config, FILE *fp, Node *node) {
 void gen_ast_src(Config *config, FILE *fp) {
     out("#include <stdlib.h>\n");
     out("\n");
-    out("#include \"../copra/include/ast_core.h\"\n");
-    out("#include \"../copra/include/trav_core.h\"\n");
+    out("#include \"ccn/ast_core.h\"\n");
+    out("#include \"ccn/trav_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->nodes); ++i) {

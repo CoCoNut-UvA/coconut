@@ -61,6 +61,5 @@ bin/
 docs/
 
 /generated/src
-/generated/include
-
+/generated/include/ccngen/
 .vscode

@@ -62,7 +62,7 @@ void gen_trav_data_macros(Config *config, FILE *fp, Traversal *trav) {
 void gen_trav_data_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_TRAV_H_\n");
     out("#define _CCN_TRAV_H_\n\n");
-    out("#include \"../copra/include/types.h\"\n");
+    out("#include \"ccn/types.h\"\n");
     out("\n");
 
     out_comment("Includes for user defined types");
@@ -122,7 +122,7 @@ void gen_trav_data_destructor(Config *config, FILE *fp, Traversal *trav) {
 void gen_trav_data_src(Config *config, FILE *fp) {
     out("#include <stdlib.h>\n");
     out("\n");
-    out("#include \"../copra/include/actions_core.h\"\n");
+    out("#include \"ccn/actions_core.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("\n");
     for (int i = 0; i < array_size(config->traversals); i++) {

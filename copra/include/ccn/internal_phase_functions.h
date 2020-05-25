@@ -11,13 +11,13 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "../generated/include/action_handlers.h"
-#include "../generated/include/ccn_enables.h"
-#include "../generated/include/enum.h"
+#include "ccngen/action_handlers.h"
+#include "ccngen/ccn_enables.h"
+#include "ccngen/enum.h"
 #include "lib/array.h"
 #include "lib/smap.h"
 #ifdef CCN_ENABLE_POINTS
-#include "../generated/include/breakpoint-finder.h"
+#include "ccngen/breakpoint-finder.h"
 #endif
 
 typedef struct ccn_subroot ccn_subroot;

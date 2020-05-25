@@ -1,5 +1,5 @@
-#include "include/error.h"
-#include "include/internal_phase_functions.h"
+#include "ccn/error.h"
+#include "ccn/internal_phase_functions.h"
 
 #include <stdlib.h>
 

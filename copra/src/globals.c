@@ -1,4 +1,4 @@
-#include "include/globals.h"
+#include "ccn/globals.h"
 
 static bool opt;
 
