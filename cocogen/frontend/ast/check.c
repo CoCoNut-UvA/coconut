@@ -156,7 +156,7 @@ static int check_enums(array *enums, struct Info *info) {
         // TODO check if name of enum overlaps with autogen enum.
         if ((orig_def = check_name_exists(info, cur_enum->id->orig)) != NULL) {
             print_error(cur_enum->id, "Redefinition of name '%s'",
-                        cur_enum->id);
+                        cur_enum->id->orig);
             print_note(orig_def, "Previously declared here");
             error = 1;
         } else {
@@ -168,7 +168,7 @@ static int check_enums(array *enums, struct Info *info) {
         if ((orig_prefix = smap_retrieve(info->enum_prefix,
                                          cur_enum->prefix->orig)) != NULL) {
             print_error(cur_enum->prefix, "Redefinition of prefix '%s'",
-                        cur_enum->prefix);
+                        cur_enum->prefix->orig);
             print_note(orig_prefix, "Previously declared here");
             error = 1;
         } else {
@@ -189,7 +189,7 @@ static int check_nodes(array *nodes, struct Info *info) {
 
         if ((orig_def = check_name_exists(info, cur_node->id->orig))) {
             print_error(cur_node->id, "Redefinition of name '%s'",
-                        cur_node->id);
+                        cur_node->id->orig);
             print_note(orig_def, "Previously declared here");
             error = 1;
         } else {
@@ -221,7 +221,7 @@ static int check_nodesets(array *nodesets, struct Info *info) {
         if ((orig_def = check_name_exists(info, cur_nodeset->id->orig)) !=
             NULL) {
             print_error(cur_nodeset->id, "Redefinition of name '%s'",
-                        cur_nodeset->id);
+                        cur_nodeset->id->orig);
             print_note(orig_def, "Previously declared here");
             error = 1;
         } else {
@@ -322,7 +322,7 @@ static int check_phases(array *phases, struct Info *info) {
         void *orig_def;
         if ((orig_def = check_name_exists(info, cur_phase->id->orig)) != NULL) {
             print_error(cur_phase->id, "Redefinition of name '%s'",
-                        cur_phase->id);
+                        cur_phase->id->orig);
             print_note(orig_def, "Previously declared here");
             error = 1;
         } else {
@@ -355,7 +355,7 @@ static int check_phases(array *phases, struct Info *info) {
             if ((orig_def = check_prefix_exists(
                      info, cur_phase->prefix->orig)) != NULL) {
                 print_error(cur_phase->prefix, "Redefinition of prefix '%s'",
-                            cur_phase->prefix);
+                            cur_phase->prefix->orig);
                 print_note(orig_def, "Previously declared here");
                 error = 1;
             } else {
@@ -396,7 +396,7 @@ static int check_passes(array *passes, struct Info *info) {
 
         if ((orig_def = check_name_exists(info, cur_pass->id->orig)) != NULL) {
             print_error(cur_pass->id, "Redefinition of name '%s'",
-                        cur_pass->id);
+                        cur_pass->id->orig);
             print_note(orig_def, "Previously declared here");
         } else {
             smap_insert(info->pass_name, cur_pass->id->orig, cur_pass);
@@ -405,7 +405,7 @@ static int check_passes(array *passes, struct Info *info) {
             if ((orig_def = check_prefix_exists(
                      info, cur_pass->prefix->orig)) != NULL) {
                 print_error(cur_pass->prefix, "Redefinition of prefix '%s'",
-                            cur_pass->prefix);
+                            cur_pass->prefix->orig);
                 print_note(orig_def, "Previously declared here");
                 error = 1;
             } else {
@@ -437,7 +437,7 @@ static int check_traversals(array *traversals, struct Info *info) {
         if ((orig_def = check_name_exists(info, cur_traversal->id->orig)) !=
             NULL) {
             print_error(cur_traversal->id, "Redefinition of name '%s'",
-                        cur_traversal->id);
+                        cur_traversal->id->orig);
             print_note(orig_def, "Previously declared here");
             error = 1;
         } else {
@@ -450,7 +450,7 @@ static int check_traversals(array *traversals, struct Info *info) {
                      info, cur_traversal->prefix->orig)) != NULL) {
                 print_error(cur_traversal->prefix,
                             "Redefinition of prefix '%s'",
-                            cur_traversal->prefix);
+                            cur_traversal->prefix->orig);
                 print_note(orig_def, "Previously declared here");
                 error = 1;
             } else {
@@ -486,7 +486,7 @@ static int check_node(Node *node, struct Info *info) {
                 NULL) {
                 print_error(child->id,
                             "Duplicate name '%s' in children of node '%s'",
-                            child->id, node->id);
+                            child->id->orig, node->id->orig);
                 print_note(orig_child->id, "Previously declared here");
                 error = 1;
             } else {
@@ -501,7 +501,7 @@ static int check_node(Node *node, struct Info *info) {
             if (!child_node && !child_nodeset) {
                 print_error(child->type,
                             "Unknown type '%s' of child '%s' of node '%s'",
-                            child->type, child->id, node->id);
+                            child->type->orig, child->id->orig, node->id->orig);
                 error = 1;
             } else {
                 child->node = child_node;
@@ -512,7 +512,7 @@ static int check_node(Node *node, struct Info *info) {
                 print_error(
                     child->id,
                     "Child '%s' of node '%s' cannot use root node as type",
-                    child->id, node->id);
+                    child->id->orig, node->id->orig);
                 error = 1;
             }
         }
@@ -529,7 +529,7 @@ static int check_node(Node *node, struct Info *info) {
                 NULL) {
                 print_error(attr->id,
                             "Duplicate name '%s' in atributes of node '%s'",
-                            attr->id, node->id);
+                            attr->id->orig, node->id->orig);
                 print_note(orig_attr->id, "Previously declared here");
                 error = 1;
             } else {
@@ -550,7 +550,7 @@ static int check_node(Node *node, struct Info *info) {
                     print_error(
                         attr->type_id,
                         "Unknown type '%s' of attribute '%s' of node '%s'",
-                        attr->type_id, attr->id, node->id);
+                        attr->type_id->orig, attr->id->orig, node->id->orig);
                     error = 1;
                 }
             }
@@ -575,7 +575,7 @@ static int check_nodeset(Nodeset *nodeset, struct Info *info) {
         // Check if there is no duplicate naming.
         if (orig_node != NULL) {
             print_error(node, "Duplicate name '%s' in nodes of nodeset '%s'",
-                        node, nodeset->id);
+                        node, nodeset->id->orig);
             print_note(orig_node, "Previously declared here");
             error = 1;
         } else {
@@ -590,11 +590,11 @@ static int check_nodeset(Nodeset *nodeset, struct Info *info) {
 
         if (nodeset_nodeset) {
             print_error(node, "Nodeset '%s' contains other nodeset '%s'",
-                        nodeset->id, nodeset_nodeset->id);
+                        nodeset->id->orig, nodeset_nodeset->id->orig);
             error = 1;
         } else if (!nodeset_node) {
             print_error(node, "Unknown type of node '%s' in nodeset '%s'",
-                        node->id, nodeset->id);
+                        node->id->orig, nodeset->id->orig);
             error = 1;
         } else {
             /// TODO: Something with cleaning the array? probably happens
@@ -615,18 +615,18 @@ static int check_enum(Enum *arg_enum, struct Info *info) {
     smap_t *value_name = smap_init(16);
 
     for (int i = 0; i < array_size(arg_enum->values); ++i) {
-        char *cur_value = (char *)array_get(arg_enum->values, i);
-        char *orig_value;
+        Id *cur_value = (Id *)array_get(arg_enum->values, i);
+        Id *orig_value = smap_retrieve(value_name, cur_value->orig);
 
         // Check if there is no duplicate naming.
-        if ((orig_value = smap_retrieve(value_name, cur_value)) != NULL) {
+        if (orig_value != NULL) {
             print_error(cur_value, "Duplicate name '%s' in values of enum '%s'",
-                        cur_value, arg_enum->id);
+                        cur_value, arg_enum->id->orig);
             print_note(orig_value, "Previously declared here");
 
             error = 1;
         } else {
-            smap_insert(value_name, cur_value, cur_value);
+            smap_insert(value_name, cur_value->orig, cur_value);
         }
     }
 
@@ -655,7 +655,7 @@ static int check_traversal(Traversal *traversal, struct Info *info) {
         // Check if there is no duplicate naming.
         if (orig_node != NULL) {
             print_error(node, "Duplicate name '%s' in nodes of traversal '%s'",
-                        node->id, traversal->id);
+                        node->id->orig, traversal->id->orig);
             print_note(orig_node, "Previously declared here");
             error = 1;
         } else {
@@ -686,7 +686,7 @@ static int check_traversal(Traversal *traversal, struct Info *info) {
         } else {
             print_error(
                 node, "Unknown type of node or nodeset '%s' in traversal '%s'",
-                node->id, traversal->id);
+                node->id->orig, traversal->id->orig);
             error = 1;
         }
     }
@@ -702,7 +702,7 @@ static int check_traversal(Traversal *traversal, struct Info *info) {
                 print_error(
                     td->id,
                     "Duplicate name '%s' in atributes of traversal '%s'",
-                    td->id, traversal->id);
+                    td->id->orig, traversal->id->orig);
                 print_note(orig_td->id, "Previously declared here");
                 error = 1;
             } else {
@@ -727,9 +727,9 @@ static int check_pass(Pass *pass, struct Info *info) {
     if (pass->func != NULL) {
         if (ccn_set_contains(info->functions, pass->func)) {
             error = 1;
-            print_error(pass->func, "Function already used in another pass.");
+            print_error(pass, "Function already used in another pass.");
         } else {
-            ccn_set_insert(info->functions, pass->func);
+            ccn_set_insert(info->functions, pass->func->orig);
         }
     }
     return error;
@@ -749,8 +749,8 @@ static int check_phase(Phase *phase, struct Info *info, smap_t *phase_order) {
     if (phase->start) {
         if (info->root_phase !=
             NULL) { // TODO: rename root_phase to start_phase in info struct.
-            print_error(phase->id, "Double declaration of start phase");
-            print_note(info->root_phase->id, "Previously declared here");
+            print_error(phase, "Double declaration of start phase");
+            print_note(info->root_phase, "Previously declared here");
             error = 1;
         } else {
             info->root_phase = phase;
@@ -769,7 +769,6 @@ void print_cyclic_error(array *vals, SetExpr *to_add) {
     for (int i = 0; i < array_size(vals); ++i) {
         char *val = array_get(vals, i);
         printf("%s->", val);
-        ;
     }
     printf("%s\n", to_add->ref_id);
 }
