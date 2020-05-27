@@ -20,7 +20,7 @@ void init_global_options() {
     global_command_options.source_dir = NULL;
     global_command_options.dot_dir = NULL;
     global_command_options.doc_dir = NULL;
-    global_command_options.backend = false;
+    global_command_options.backend = NULL;
 }
 
 void usage(char *program) {
@@ -126,6 +126,7 @@ void process_commandline_args(int argc, char *argv[]) {
             break;
         case 30:
             global_command_options.backend = optarg;
+            break;
         case 'h':
             usage(argv[0]);
             exit(EXIT_SUCCESS);

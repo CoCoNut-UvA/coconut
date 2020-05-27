@@ -73,7 +73,8 @@ int main(int argc, char *argv[]) {
     // TODO: add commandline flags for the right backend.
     // pretty_print(ir);
     if (ccn_str_equal(global_command_options.backend, "typed")) {
-        typed_backend(ir);
+        /// TODO: (Damian) fix this
+        // typed_backend(ir);
     } else if (ccn_str_equal(global_command_options.backend, "dynamic")) {
         dynamic_backend(ir);
     } else {
