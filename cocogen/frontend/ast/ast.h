@@ -322,7 +322,7 @@ struct SetExpr {
     enum SetExprType type;
 
     union {
-        char *ref_id;
+        Id *ref_id;
         ccn_set_t *id_set;
         SetOperation *operation;
     };

@@ -119,8 +119,7 @@ Nodeset *create_nodeset(Id *id, SetExpr *expr) {
 }
 
 SetOperation *create_set_operation(enum SetOperator operator,
-                                   SetExpr * left_child,
-                                   SetExpr * right_child) {
+                                   SetExpr *left_child, SetExpr *right_child) {
     SetOperation *operation = mem_alloc(sizeof(SetOperation));
     operation->operator= operator;
     operation->left_child = left_child;
@@ -159,7 +158,7 @@ SetExpr *create_set_expr(enum SetExprType type, void *value) {
 
     switch (type) {
     case SET_REFERENCE:
-        expr->ref_id = (char *)value;
+        expr->ref_id = (Id *)value;
         break;
     case SET_LITERAL:
         expr->id_set = idlist_to_set((array *)value);

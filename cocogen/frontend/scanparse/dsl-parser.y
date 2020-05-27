@@ -151,7 +151,7 @@ static void new_location(void *ptr, struct ParserLocation *loc);
 
 %type<string> info
 %type<array> idlist actionsbody actions lifetimelistwithvalues namespacelist
-             travdata travdatalist attrlist attrs
+             travdata travdatalist attrlist attrs stringlist
              childlist children enumvalues lifetimelist
 %type<attrval> attrval
 %type<attrtype> attrprimitivetype
@@ -292,11 +292,10 @@ action: traversal
           $$ = create_action(ACTION_PHASE, $1, $1->id);
           new_location($$, &@$);
       }
-      | T_ID
+      | id
       {
-          $$ = create_action(ACTION_REFERENCE, $1, create_id($1));
+          $$ = create_action(ACTION_REFERENCE, $1, $1);
           new_location($$, &@$);
-          new_location($1, &@1);
       }
       ;
 
@@ -533,7 +532,7 @@ setexpr: setoperation
            $$ = create_set_expr(SET_LITERAL, $2);
            new_location($$, &@$);
        }
-       | T_ID
+       | id
        {
            $$ = create_set_expr(SET_REFERENCE, $1);
            new_location($$, &@$);
@@ -622,7 +621,7 @@ lifetimelistwithvalues: lifetimelistwithvalues ',' lifetimewithvalues
         }
         ;
 
-lifetimewithvalues: T_DISALLOWED rangespec_start T_ARROW rangespec_end '=' '{' idlist '}'
+lifetimewithvalues: T_DISALLOWED rangespec_start T_ARROW rangespec_end '=' '{' stringlist '}'
         {
             $$ = create_lifetime($2, $4, LIFETIME_DISALLOWED, $7);
             new_location($$, &@$);
@@ -632,7 +631,7 @@ lifetimewithvalues: T_DISALLOWED rangespec_start T_ARROW rangespec_end '=' '{' i
             $$ = $1;
 
         }
-        | T_DISALLOWED '=' '{' idlist '}'
+        | T_DISALLOWED '=' '{' stringlist '}'
         {
             $$ = create_lifetime(NULL, NULL, LIFETIME_DISALLOWED, $4);
             new_location($$, &@$);
@@ -847,8 +846,8 @@ attrval: T_STRINGVAL
        { $$ = create_attrval_uint($1); }
        | T_FLOATVAL
        { $$ = create_attrval_float($1); }
-       | T_ID
-       { $$ = create_attrval_id(create_id($1)); }
+       | id
+       { $$ = create_attrval_id($1); }
        |  T_TRUE
        { $$ = create_attrval_bool(true); }
        | T_FALSE
@@ -868,6 +867,24 @@ idlist: idlist ',' id
       {
           array *tmp = create_array();
           array_append(tmp, $1);
+          $$ = tmp;
+          // $$ is an array and should not be added to location list.
+      }
+      ;
+
+/* Comma seperated list of strings. Used for lifetimes */
+stringlist: stringlist ',' T_ID
+      {
+          array_append($1, $3);
+          new_location($3, &@3);
+          $$ = $1;
+          // $$ is an array and should not be added to location list.
+      }
+      | T_ID
+      {
+          array *tmp = create_array();
+          array_append(tmp, $1);
+          new_location($1, &@1);
           $$ = tmp;
           // $$ is an array and should not be added to location list.
       }

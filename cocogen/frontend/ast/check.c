@@ -265,34 +265,44 @@ static Phase *copy_phase_shallow(Phase *phase) {
     return new;
 }
 
+Id *get_action_id(const Action *action) {
+    switch (action->type) {
+    case ACTION_PASS:
+        return ((Pass *)action->action)->id;
+    case ACTION_TRAVERSAL:
+        return ((Traversal *)action->action)->id;
+    case ACTION_PHASE:
+        return ((Phase *)action->action)->id;
+    case ACTION_REFERENCE:
+        return action->action;
+    }
+}
+
 static int check_action_reference(Action *action, struct Info *info) {
-    char *ref = (char *)action->action;
-    void *item = smap_retrieve(info->phase_name, ref);
+    Id *ref = (Id *)get_action_id(action);
+    void *item = smap_retrieve(info->phase_name, ref->orig);
     if (item != NULL) {
         Phase *p = copy_phase_shallow(item);
         action->type = ACTION_PHASE;
         action->action = p;
         action->checked = true;
-        mem_free(ref);
         check_actions_reference(p->actions, info);
         return 0;
     }
 
-    item = smap_retrieve(info->traversal_name, ref);
+    item = smap_retrieve(info->traversal_name, ref->orig);
     if (item != NULL) {
         action->type = ACTION_TRAVERSAL;
         action->action = item;
         action->checked = true;
-        mem_free(ref);
         return 0;
     }
 
-    item = smap_retrieve(info->pass_name, ref);
+    item = smap_retrieve(info->pass_name, ref->orig);
     if (item != NULL) {
         action->type = ACTION_PASS;
         action->action = item;
         action->checked = true;
-        mem_free(ref);
         return 0;
     }
 
@@ -770,7 +780,7 @@ void print_cyclic_error(array *vals, SetExpr *to_add) {
         char *val = array_get(vals, i);
         printf("%s->", val);
     }
-    printf("%s\n", to_add->ref_id);
+    printf("%s\n", to_add->ref_id->orig);
 }
 
 bool is_cyclic_dependency(array *vals, char *new_to_add) {
@@ -787,16 +797,16 @@ static void evaluate_set_expr(SetExpr *expr, struct Info *info, int *error,
                               array *merged_sets, bool report) {
     ccn_set_t *new_set = NULL;
     if (expr->type == SET_REFERENCE) {
-        if (is_cyclic_dependency(merged_sets, expr->ref_id)) {
+        if (is_cyclic_dependency(merged_sets, expr->ref_id->orig)) {
             (*error)++;
             if (report) {
                 print_cyclic_error(merged_sets, expr);
             }
             return;
         } else {
-            array_append(merged_sets, expr->ref_id);
+            array_append(merged_sets, expr->ref_id->orig);
         }
-        Nodeset *target = smap_retrieve(info->nodeset_name, expr->ref_id);
+        Nodeset *target = smap_retrieve(info->nodeset_name, expr->ref_id->orig);
         if (target == NULL) {
             exit(EXIT_FAILURE);
         }
@@ -809,7 +819,7 @@ static void evaluate_set_expr(SetExpr *expr, struct Info *info, int *error,
 
         new_set = ccn_set_copy(target->expr->id_set);
 
-        mem_free(expr->ref_id);
+        mem_free(expr->ref_id->orig);
         expr->type = SET_LITERAL;
         expr->id_set = new_set;
     } else if (expr->type == SET_OPERATION) {
