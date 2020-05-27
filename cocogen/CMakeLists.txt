@@ -11,6 +11,7 @@ add_subdirectory(pretty/)
 add_subdirectory(filegen/)
 add_subdirectory(phase-driver/)
 add_subdirectory(dynamic_backend/)
+add_subdirectory(typed_backend/)
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE ${CMAKE_CURRENT_LIST_DIR}

@@ -10,6 +10,7 @@
 #include "filegen/util.h"
 #include "lib/color.h"
 #include "lib/errors.h"
+#include "lib/str.h"
 #include "pretty/printer.h"
 #include "typed_backend/API.h"
 
@@ -70,9 +71,18 @@ int main(int argc, char *argv[]) {
     filegen_init(ir, false);
 
     // TODO: add commandline flags for the right backend.
-    // typed_backend(ir);
-    dynamic_backend(ir);
     // pretty_print(ir);
+    if (ccn_str_equal(global_command_options.backend, "typed")) {
+        typed_backend(ir);
+    } else if (ccn_str_equal(global_command_options.backend, "dynamic")) {
+        dynamic_backend(ir);
+    } else {
+        PRINT_COLOR(MAGENTA);
+        fprintf(stderr, "Invalid backend provided. Supported backends are "
+                        "\"typed\" or \"dynamic\".\n");
+        PRINT_COLOR(RESET_COLOR);
+        exit(INVALID_BACKEND);
+    }
 
     cleanup_tracking_data();
 }
