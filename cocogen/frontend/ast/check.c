@@ -76,7 +76,7 @@ static void *check_prefix_exists(struct Info *info, char *prefix) {
 static char *gen_unique_prefix_from_existing_prefix(char *prefix,
                                                     struct Info *info) {
     size_t i = 1;
-    int max_size = (int)ceil(log10(SIZE_MAX));
+    int max_size = (int)ceil(log10((double)SIZE_MAX));
     char buffer[max_size + 2];
     while (true) {
         snprintf(buffer, max_size + 2, "%zu", i);
@@ -274,7 +274,7 @@ Id *get_action_id(const Action *action) {
     case ACTION_PHASE:
         return ((Phase *)action->action)->id;
     case ACTION_REFERENCE:
-        return action->action;
+        return action->id;
     }
 }
 
