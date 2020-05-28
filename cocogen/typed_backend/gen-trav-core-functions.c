@@ -124,7 +124,7 @@ void generate_trav_start(Config *config, FILE *fp) {
  * to the right function in the trav_start
  * @see generate_trav_start
  */
-void generate_node_trav_table(Config *config, FILE *fp) {
+void generate_node_trav_vtable(Config *config, FILE *fp) {
     out("static void *(*trav_node_funcs[%ld])() =\n",
         array_size(config->nodes));
     out("{\n");
@@ -151,5 +151,5 @@ void generate_trav_core_definitions(Config *config, FILE *fp) {
 
     generate_stack_functions(fp, false);
     generate_info_funcs_table(config, fp);
-    generate_node_trav_table(config, fp);
+    generate_node_trav_vtable(config, fp);
 }

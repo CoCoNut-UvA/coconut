@@ -9,7 +9,7 @@ typedef void (*FreeFunc)(Trav *);
 typedef Node *(*PassFunc)(Node *);
 typedef Node *(*PhaseFunc)(Node *);
 
-extern const TravFunc *trav_table[_TRAV_SIZE];
+extern const TravFunc *trav_vtable[_TRAV_SIZE];
 extern const InitFunc trav_data_init_vtable[_TRAV_SIZE];
 extern const FreeFunc trav_data_free_vtable[_TRAV_SIZE];
 extern const PassFunc pass_vtable[_PASS_SIZE];
