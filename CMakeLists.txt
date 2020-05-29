@@ -19,5 +19,6 @@ add_subdirectory(palm/)
 add_subdirectory(cocogen/)
 add_subdirectory(copra/)
 add_subdirectory(generated/)
+add_subdirectory(dynamic_example/)
 
 install(TARGETS cocogen DESTINATION bin)

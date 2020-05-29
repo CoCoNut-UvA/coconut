@@ -70,9 +70,16 @@ int main(int argc, char *argv[]) {
     init_tracking_data(2);
     filegen_init(ir, false);
 
-    // TODO: add commandline flags for the right backend.
     // pretty_print(ir);
-    if (ccn_str_equal(global_command_options.backend, "typed")) {
+
+    // TODO: Maybe handle this better
+    if (global_command_options.backend == NULL) {
+        PRINT_COLOR(MAGENTA);
+        fprintf(stderr, "No backend provided. Supported backends are "
+                        "\"typed\" or \"dynamic\".\n");
+        PRINT_COLOR(RESET_COLOR);
+        exit(INVALID_BACKEND);
+    } else if (ccn_str_equal(global_command_options.backend, "typed")) {
         /// TODO: (Damian) fix this
         // typed_backend(ir);
     } else if (ccn_str_equal(global_command_options.backend, "dynamic")) {
