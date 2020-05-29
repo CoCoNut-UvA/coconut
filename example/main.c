@@ -1,7 +1,7 @@
-#include "ast.h"
+#include "ccn/phase_driver.h"
 
 int main() {
-    Node *num = node_init_num(10);
-    printf("YUEA!");
-    printf("Val: %d\n", NUM_VALUE(10));
+    ccn_phase_driver_init();
+    ccn_phase_driver_start();
+    ccn_phase_driver_destroy();
 }
