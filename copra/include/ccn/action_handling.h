@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../generated/include/action_handlers.h"
-#include "../generated/include/ast.h"
-#include "../generated/include/enum.h"
+#include "ccngen/action_handlers.h"
+#include "ccngen/ast.h"
+#include "ccngen/enum.h"
 
 #include "lib/array.h"
 

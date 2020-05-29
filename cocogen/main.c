@@ -10,6 +10,7 @@
 #include "filegen/util.h"
 #include "lib/color.h"
 #include "lib/errors.h"
+#include "lib/str.h"
 #include "pretty/printer.h"
 #include "typed_backend/API.h"
 
@@ -51,10 +52,11 @@ int main(int argc, char *argv[]) {
 
     // TODO(damian): Create recursive ensure_dir_exists
     if (global_command_options.header_dir == NULL) {
-        global_command_options.header_dir = "generated/include/";
+        global_command_options.header_dir = "generated/include/ccngen/";
         ensure_dir_exists("generated/",
                           0777); // FIXME(damian): transform to recursive.
         ensure_dir_exists("generated/include/", 0777);
+        ensure_dir_exists("generated/include/ccngen/", 0777);
     }
     ensure_dir_exists(global_command_options.header_dir, 0777);
 
@@ -68,10 +70,27 @@ int main(int argc, char *argv[]) {
     init_tracking_data(2);
     filegen_init(ir, false);
 
-    // TODO: add commandline flags for the right backend.
-    // typed_backend(ir);
-    dynamic_backend(ir);
     // pretty_print(ir);
+
+    // TODO: Maybe handle this better
+    if (global_command_options.backend == NULL) {
+        PRINT_COLOR(MAGENTA);
+        fprintf(stderr, "No backend provided. Supported backends are "
+                        "\"typed\" or \"dynamic\".\n");
+        PRINT_COLOR(RESET_COLOR);
+        exit(INVALID_BACKEND);
+    } else if (ccn_str_equal(global_command_options.backend, "typed")) {
+        /// TODO: (Damian) fix this
+        // typed_backend(ir);
+    } else if (ccn_str_equal(global_command_options.backend, "dynamic")) {
+        dynamic_backend(ir);
+    } else {
+        PRINT_COLOR(MAGENTA);
+        fprintf(stderr, "Invalid backend provided. Supported backends are "
+                        "\"typed\" or \"dynamic\".\n");
+        PRINT_COLOR(RESET_COLOR);
+        exit(INVALID_BACKEND);
+    }
 
     cleanup_tracking_data();
 }

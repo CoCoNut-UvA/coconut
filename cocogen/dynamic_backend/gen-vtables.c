@@ -61,7 +61,7 @@ void gen_vtables(Config *config, FILE *fp) {
     gen_system_vtable(config, fp, "free");
     gen_system_vtable(config, fp, "copy");
     gen_system_vtable(config, fp, "check");
-    out("const TravFunc *trav_table[_TRAV_SIZE] = { error_vtable, ");
+    out("const TravFunc *trav_vtable[_TRAV_SIZE] = { error_vtable, ");
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
         out("%s_vtable, ", trav->id->lwr);
@@ -95,13 +95,7 @@ void gen_pass_vtable(Config *config, FILE *fp) {
     out("const PassFunc pass_vtable[_PASS_SIZE] = { &pass_error, ");
     for (int i = 0; i < array_size(config->passes); i++) {
         Pass *pass = array_get(config->passes, i);
-        char *passid = NULL;
-        if (pass->func) {
-            passid = pass->func->lwr;
-        } else {
-            passid = pass->id->lwr;
-        }
-        out("&pass_%s, ", passid);
+        out("&pass_%s, ", pass_func_or_id(pass));
     }
     out(" };\n\n");
 }
@@ -118,7 +112,7 @@ void gen_phase_vtable(Config *config, FILE *fp) {
 void gen_vtables_src(Config *config, FILE *fp) {
     out("#include <stdio.h>\n");
     out("\n");
-    out("#include \"../copra/include/vtables_core.h\"\n");
+    out("#include \"ccn/vtables_core.h\"\n");
     out("\n");
     gen_vtables(config, fp);
     gen_trav_data_vtable(config, fp, "Init");

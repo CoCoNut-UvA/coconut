@@ -9,4 +9,5 @@ enum {
     MALLOC_NULL = 5,
     REGEX_COMPILE_ERROR = 6,
     UNKNOWN_BASICTYPE = 7,
+    INVALID_BACKEND = 8,
 } ErrorCode;

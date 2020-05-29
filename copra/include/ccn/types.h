@@ -1,9 +1,11 @@
 #ifndef _CCN_TYPES_H_
 #define _CCN_TYPES_H_
 
-#include "../generated/include/enum.h"
+#include "ccngen/enum.h"
+#include <stdbool.h>
 
 typedef struct NODE Node;
 typedef struct TRAV Trav;
+typedef struct PHASE Phase;
 
 #endif /* _CCN_TYPES_H_ */

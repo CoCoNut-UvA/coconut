@@ -17,5 +17,6 @@ endif()
 
 add_subdirectory(palm/)
 add_subdirectory(cocogen/)
+add_subdirectory(dynamic_example/)
 
 install(TARGETS cocogen DESTINATION bin)

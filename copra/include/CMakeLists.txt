@@ -1,16 +1,1 @@
-target_sources(${PROJECT_NAME}
-    PUBLIC
-        action_handling.h
-        break_inspect_points.h
-        consist_checks.h
-        cycle.h
-        error.h
-        globals.h
-        internal_phase_functions.h
-        phase_driver.h
-        actions_core.h
-        ast_core.h
-        trav_core.h
-        types.h
-        vtables_core.h
-)
+add_subdirectory(ccn)

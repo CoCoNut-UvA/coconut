@@ -1,6 +1,6 @@
-#include "include/break_inspect_points.h"
-#include "../generated/include/ccn_enables.h"
-#include "include/internal_phase_functions.h"
+#include "ccn/break_inspect_points.h"
+#include "ccn/internal_phase_functions.h"
+#include "ccngen/ccn_enables.h"
 #include <stdbool.h>
 
 bool _ccn_set_breakpoint(char *breakpoint) {

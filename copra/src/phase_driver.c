@@ -1,5 +1,5 @@
-#include "include/break_inspect_points.h"
-#include "include/internal_phase_functions.h"
+#include "ccn/break_inspect_points.h"
+#include "ccn/internal_phase_functions.h"
 
 void ccn_phase_driver_init() { return _initialize_phase_driver(); }
 

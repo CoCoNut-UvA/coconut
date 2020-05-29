@@ -1,13 +1,13 @@
 #include <string.h>
 #include <time.h>
 
-#include "../generated/include/action_handlers.h"
-#include "../generated/include/ccn_enables.h"
-// #include "../generated/include/trav-ast.h"
-#include "include/action_handling.h"
-#include "include/actions_core.h"
-#include "include/internal_phase_functions.h"
-//#include "../generated/include/_sub_root_handlers.h"
+#include "ccngen/action_handlers.h"
+#include "ccngen/ccn_enables.h"
+// #include "ccngen/trav-ast.h"
+#include "ccn/action_handling.h"
+#include "ccn/actions_core.h"
+#include "ccn/internal_phase_functions.h"
+//#include "ccngen/_sub_root_handlers.h"
 
 // TODO: Important! Make sure changes of nodes and traversals is handled
 // correctly.

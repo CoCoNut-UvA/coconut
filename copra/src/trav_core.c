@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-#include "include/ast_core.h"
-#include "include/trav_core.h"
-#include "include/vtables_core.h"
+#include "ccn/ast_core.h"
+#include "ccn/trav_core.h"
+#include "ccn/vtables_core.h"
 #include "lib/memory.h"
 #include "lib/print.h"
 
@@ -58,9 +58,9 @@ Node *trav_start(Node *syntaxtree, TraversalType trav_type) {
 /* Main traverse function, to be called by the user */
 Node *trav(Node *arg_node) {
     if (!arg_node) {
-        trav_error(arg_node);
+        return trav_error(arg_node);
     }
-    TravFunc trav_func = trav_table[TRAV_TYPE][NODE_TYPE(arg_node)];
+    TravFunc trav_func = trav_vtable[TRAV_TYPE][NODE_TYPE(arg_node)];
     return trav_func(arg_node);
 }
 
