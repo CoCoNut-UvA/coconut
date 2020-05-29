@@ -17,7 +17,5 @@ endif()
 
 add_subdirectory(palm/)
 add_subdirectory(cocogen/)
-add_subdirectory(copra/)
-add_subdirectory(generated/)
 
 install(TARGETS cocogen DESTINATION bin)

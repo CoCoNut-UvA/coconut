@@ -1,8 +1,7 @@
-#include "generated/create-ast.h"
-#include "generated/ast-IntConst.h"
+#include "ast.h"
 
 int main() {
-    IntConst *c = create_IntConst(10);
+    Node *num = node_init_num(10);
     printf("YUEA!");
-    printf("Val: %d\n", c->value);
+    printf("Val: %d\n", NUM_VALUE(10));
 }
