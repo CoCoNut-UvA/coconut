@@ -10,7 +10,7 @@ void gen_action_array_h(Config *c, FILE *fp) {
 
     out("#pragma once\n\n");
 
-    out("#include \"generated/enum.h\"\n");
+    out("#include \"ccngen/enum.h\"\n");
     out("#include <stddef.h>\n");
     out_statement("void ccn_init_action_array()");
     out_statement("void dispatch_traversals(NodeType type, void *node, TraversalType trav_type)");
@@ -22,14 +22,14 @@ void gen_action_array_h(Config *c, FILE *fp) {
     array *traversals = c->traversals;
     for (int i = 0; i < array_size(traversals); ++i) {
         Traversal *trav = array_get(traversals, i);
-        out_enum_field("ACTION_ID_%s", trav->id->upr);
+        out_enum_field("ACTION_ID_%s", trav->id->lwr);
         size++;
     }
 
     array *passes = c->passes;
     for (int i = 0; i < array_size(passes); ++i) {
         Pass *pass = array_get(passes, i);
-        out_enum_field("ACTION_ID_%s", pass->id->upr);
+        out_enum_field("ACTION_ID_%s", pass->id->lwr);
         size++;
     }
 
@@ -37,7 +37,7 @@ void gen_action_array_h(Config *c, FILE *fp) {
     for (int i = 0; i < array_size(phases); ++i) {
         Phase *phase = array_get(phases, i);
         if (phase->original_ref == NULL) {
-            out_enum_field("ACTION_ID_%s", phase->id->upr);
+            out_enum_field("ACTION_ID_%s", phase->id->lwr);
             size++;
         }
     }
@@ -56,11 +56,11 @@ void gen_action_array_h(Config *c, FILE *fp) {
     out_statement("void ccn_destroy_action_array()");
 
     out("#ifndef CCN_ROOT_TYPE\n");
-    out("#define CCN_ROOT_TYPE NT_%s\n", c->root_node->id->upr);
+    out("#define CCN_ROOT_TYPE NT_%s\n", c->root_node->id->lwr);
     out("#endif\n");
 
     out("#ifndef CCN_ROOT_ACTION\n");
-    out("#define CCN_ROOT_ACTION ACTION_ID_%s\n", c->start_phase->id->upr);
+    out("#define CCN_ROOT_ACTION ACTION_ID_%s\n", c->start_phase->id->lwr);
     out("#endif\n\n");
 }
 
@@ -303,12 +303,12 @@ void gen_action_array_h(Config *c, FILE *fp) {
 // }
 
 void gen_action_array_c(Config *c, FILE *fp) {
-    out("#include \"generated/enum.h\"\n");
-    out("#include \"generated/action_handlers.h\"\n");
-    out("#include \"core/action_handling.h\"\n");
-    out("#include \"generated/gate_functions.h\"\n");
-    out("#include \"generated/trav-ast.h\"\n");
-    out("#include \"core/internal_phase_functions.h\"\n");
+    out("#include \"ccngen/enum.h\"\n");
+    out("#include \"ccngen/action_handlers.h\"\n");
+    out("#include \"ccn/action_handling.h\"\n");
+    //out("#include \"ccngen/gate_functions.h\"\n");
+    out("#include \"ccngen/ast.h\"\n");
+    out("#include \"ccn/internal_phase_functions.h\"\n");
     out("#include \"lib/memory.h\"\n");
     out("#include \"lib/str.h\"\n");
     out("#include <stdbool.h>\n");
@@ -323,7 +323,7 @@ void gen_action_array_c(Config *c, FILE *fp) {
         out("enum ACTION_IDS %s_ids_table[%lu] = {\n", phase->id->lwr, actions);
         for (int j = 0; j < array_size(phase->actions); ++j) {
             Action *action = array_get(phase->actions, j);
-            out("ACTION_ID_%s, ", action->id->upr);
+            out("ACTION_ID_%s, ", action->id->lwr);
             if ((j + 1)% 3 == 0) {
                 out("\n");
             }
@@ -336,25 +336,36 @@ void gen_action_array_c(Config *c, FILE *fp) {
     out("static ccn_action_t action_array[] = {\n");
     for (size_t i = 0; i < array_size(c->traversals); i++) {
         Traversal *t = array_get(c->traversals, i);
-        out("{action_traversal, ACTION_ID_%s, \"%s\", .traversal = {TRAV_%s}},\n", t->id->upr, t->id->orig, t->id->upr);
+        out("{action_traversal, ACTION_ID_%s, \"%s\", .traversal = {TRAV_%s}},\n", t->id->lwr, t->id->orig, t->id->lwr);
     }
 
     for (size_t i = 0; i < array_size(c->phases); i++) {
         Phase *p = array_get(c->phases, i);
         char *root = NULL;
         if (p->root != NULL) {
-            root = p->root->upr;
+            root = p->root->lwr;
         } else {
-            root = c->root_node->id->upr;
+            root = c->root_node->id->lwr;
         }
 
-        out("{action_phase, ACTION_ID_%s, \"%s\", .phase = {NULL, NT_%s, %s_ids_table, false, ACTION_ID_%s}},\n", p->id->upr, p->id->orig, root, p->id->lwr, p->id->upr);
+        out("{action_phase, ACTION_ID_%s, \"%s\", .phase = {NULL, NT_%s, %s_ids_table, false, ACTION_ID_%s}},\n", p->id->lwr, p->id->orig, root, p->id->lwr, p->id->lwr);
     }
 
     for (size_t i = 0; i < array_size(c->passes); i++) {
         Pass *p = array_get(c->passes, i);
-        out("{action_pass, ACTION_ID_%s, \"%s\", .pass = {PASS_%s}}\n", p->id->upr, p->id->orig, p->id->upr);
+        char *pass_enum_val = NULL;
+        if (p->func) {
+            pass_enum_val = p->func->lwr;
+        } else {
+            pass_enum_val = p->id->lwr;
+        }
+        out("{action_pass, ACTION_ID_%s, \"%s\", .pass = {PASS_%s}},\n", p->id->lwr, p->id->orig, pass_enum_val);
     }
 
     out("};\n\n");
+
+    int indent = 0;
+    out_start_func("ccn_action_t *get_ccn_action_from_id(enum ACTION_IDS action_id)");
+    out_statement("return &action_array[action_id]");
+    out_end_func();
 }
