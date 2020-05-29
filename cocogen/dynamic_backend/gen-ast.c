@@ -98,7 +98,6 @@ void gen_node_macros(Config *config, FILE *fp, Node *node) {
 void gen_ast_header(Config *config, FILE *fp) {
     out("#ifndef _CCN_AST_H_\n");
     out("#define _CCN_AST_H_\n\n");
-    out("#include <stdbool.h>\n");
     out("\n");
     out("#include \"ccn/types.h\"\n");
     out("\n");
@@ -157,7 +156,6 @@ void gen_node_constructor(Config *config, FILE *fp, Node *node) {
         out_field("NODE_NUMCHILDREN(node) = %ld", array_size(node->children));
     }
     gen_members(config, fp, node);
-    // TODO: Checks here or in another file?
     out_field("return node");
     out_end_func();
 }

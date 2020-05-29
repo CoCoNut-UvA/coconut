@@ -33,13 +33,15 @@ static void generate_sources(Config *ir) {
     filegen_generate("ast.c", &gen_ast_src);
     filegen_generate("trav.c", &gen_trav_data_src);
     filegen_generate("vtables.c", &gen_vtables_src);
+    filegen_generate("check.c", &gen_check_src);
     filegen_generate("trav_free.c", &gen_free_src);
     filegen_generate("trav_copy.c", &gen_copy_src);
-    filegen_generate("trav_check.c", &gen_check_src);
     filegen_generate("actions.c", &gen_actions_src);
     if (global_command_options.gen_user_files) {
-        /* Generate user traversal and pass files.
-        /* WARNING, THIS WILL OVERWRITE CURRENT FILES */
+        /**
+         * Generate user traversal and pass files.
+         * WARNING, THIS WILL OVERWRITE CURRENT FILES
+         **/
         print_warning_no_loc(
             "Are you sure you want to overwrite user files? [y/n]");
         char input;
