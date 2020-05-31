@@ -19,26 +19,30 @@ void gen_action_array_h(Config *c, FILE *fp) {
 
     out("enum ACTION_IDS {\n");
     indent++;
-    array *traversals = c->traversals;
-    for (int i = 0; i < array_size(traversals); ++i) {
-        Traversal *trav = array_get(traversals, i);
-        out_enum_field("ACTION_ID_%s", trav->id->lwr);
-        size++;
-    }
 
-    array *passes = c->passes;
-    for (int i = 0; i < array_size(passes); ++i) {
-        Pass *pass = array_get(passes, i);
-        out_enum_field("ACTION_ID_%s", pass->id->lwr);
-        size++;
-    }
-
-    array *phases = c->phases;
-    for (int i = 0; i < array_size(phases); ++i) {
-        Phase *phase = array_get(phases, i);
-        if (phase->original_ref == NULL) {
-            out_enum_field("ACTION_ID_%s", phase->id->lwr);
+    /// Order is important and should be passes,  traversals and phases.
+    {
+        array *passes = c->passes;
+        for (int i = 0; i < array_size(passes); ++i) {
+            Pass *pass = array_get(passes, i);
+            out_enum_field("ACTION_ID_%s", pass->id->lwr);
             size++;
+        }
+
+        array *traversals = c->traversals;
+        for (int i = 0; i < array_size(traversals); ++i) {
+            Traversal *trav = array_get(traversals, i);
+            out_enum_field("ACTION_ID_%s", trav->id->lwr);
+            size++;
+        }
+
+        array *phases = c->phases;
+        for (int i = 0; i < array_size(phases); ++i) {
+            Phase *phase = array_get(phases, i);
+            if (phase->original_ref == NULL) {
+                out_enum_field("ACTION_ID_%s", phase->id->lwr);
+                size++;
+            }
         }
     }
 
@@ -332,36 +336,38 @@ void gen_action_array_c(Config *c, FILE *fp) {
         out("};\n");
     }
 
-    /// Order is important and should match the order of the action id, so: traversals, phases and passes.
     out("static ccn_action_t action_array[] = {\n");
-    for (size_t i = 0; i < array_size(c->traversals); i++) {
-        Traversal *t = array_get(c->traversals, i);
-        out("{action_traversal, ACTION_ID_%s, \"%s\", .traversal = {TRAV_%s}},\n", t->id->lwr, t->id->orig, t->id->lwr);
-    }
 
-    for (size_t i = 0; i < array_size(c->phases); i++) {
-        Phase *p = array_get(c->phases, i);
-        char *root = NULL;
-        if (p->root != NULL) {
-            root = p->root->lwr;
-        } else {
-            root = c->root_node->id->lwr;
+    /// Order is important and should match the order of the action id, so: passes, traversals, phases.
+    {
+        for (size_t i = 0; i < array_size(c->passes); i++) {
+            Pass *p = array_get(c->passes, i);
+            char *pass_enum_val = NULL;
+            if (p->func) {
+                pass_enum_val = p->func->lwr;
+            } else {
+                pass_enum_val = p->id->lwr;
+            }
+            out("{action_pass, ACTION_ID_%s, \"%s\", .pass = {PASS_%s}},\n", p->id->lwr, p->id->orig, pass_enum_val);
         }
 
-        out("{action_phase, ACTION_ID_%s, \"%s\", .phase = {NULL, NT_%s, %s_ids_table, false, ACTION_ID_%s}},\n", p->id->lwr, p->id->orig, root, p->id->lwr, p->id->lwr);
-    }
-
-    for (size_t i = 0; i < array_size(c->passes); i++) {
-        Pass *p = array_get(c->passes, i);
-        char *pass_enum_val = NULL;
-        if (p->func) {
-            pass_enum_val = p->func->lwr;
-        } else {
-            pass_enum_val = p->id->lwr;
+        for (size_t i = 0; i < array_size(c->traversals); i++) {
+            Traversal *t = array_get(c->traversals, i);
+            out("{action_traversal, ACTION_ID_%s, \"%s\", .traversal = {TRAV_%s}},\n", t->id->lwr, t->id->orig, t->id->lwr);
         }
-        out("{action_pass, ACTION_ID_%s, \"%s\", .pass = {PASS_%s}},\n", p->id->lwr, p->id->orig, pass_enum_val);
-    }
 
+        for (size_t i = 0; i < array_size(c->phases); i++) {
+            Phase *p = array_get(c->phases, i);
+            char *root = NULL;
+            if (p->root != NULL) {
+                root = p->root->lwr;
+            } else {
+                root = c->root_node->id->lwr;
+            }
+
+            out("{action_phase, ACTION_ID_%s, \"%s\", .phase = {NULL, NT_%s, %s_ids_table, false, ACTION_ID_%s}},\n", p->id->lwr, p->id->orig, root, p->id->lwr, p->id->lwr);
+        }
+    }
     out("};\n\n");
 
     int indent = 0;
