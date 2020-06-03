@@ -36,6 +36,7 @@ static void generate_sources(Config *ir) {
     filegen_generate("trav_free.c", &gen_free_src);
     filegen_generate("trav_copy.c", &gen_copy_src);
     filegen_generate("actions.c", &gen_actions_src);
+    filegen_generate("action_handlers.c", gen_action_array_c);
     if (global_command_options.gen_user_files) {
         /**
          * Generate user traversal and pass files.

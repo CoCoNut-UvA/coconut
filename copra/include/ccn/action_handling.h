@@ -31,9 +31,9 @@ typedef struct ccn_action {
     enum ACTION_IDS action_id;
     char *name;
     union {
-        ccn_traversal_t *traversal;
-        ccn_pass_t *pass;
-        ccn_phase_t *phase;
+        ccn_traversal_t traversal;
+        ccn_pass_t pass;
+        ccn_phase_t phase;
     };
 } ccn_action_t;
 

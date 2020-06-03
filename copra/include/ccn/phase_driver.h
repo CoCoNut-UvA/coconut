@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdbool.h>
 
 void ccn_phase_driver_init();
 void ccn_phase_driver_destroy();

@@ -1,8 +1,7 @@
-#include "generated/create-ast.h"
-#include "generated/ast-IntConst.h"
+#include "ccn/phase_driver.h"
 
 int main() {
-    IntConst *c = create_IntConst(10);
-    printf("YUEA!");
-    printf("Val: %d\n", c->value);
+    ccn_phase_driver_init();
+    ccn_phase_driver_start();
+    ccn_phase_driver_destroy();
 }
