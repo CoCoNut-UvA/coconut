@@ -7,5 +7,3 @@ Node *pass_createast(Node *arg_node) {
     Node *root = node_init_root(num);
     return root;
 }
-
-

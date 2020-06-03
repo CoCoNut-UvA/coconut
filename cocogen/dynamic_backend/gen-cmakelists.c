@@ -23,7 +23,7 @@ void gen_source_cmakelists(Config *config, FILE *fp) {
     out("    PRIVATE\n");
     out("        ast.c\n");
     out("        trav.c\n");
-    out("        actions.c\n");
+    out("        pass.c\n");
     out("        vtables.c\n");
     out("        trav_check.c\n");
     out("        trav_copy.c\n");

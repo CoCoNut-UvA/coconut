@@ -62,54 +62,6 @@ void gen_actions_header(Config *config, FILE *fp) {
     out("#endif /* _CCN_ACTIONS_H_ */\n");
 }
 
-void gen_phase(Config *config, FILE *fp, Phase *phase) {
-    for (int i = 0; i < array_size(phase->actions); i++) {
-        Action *action = array_get(phase->actions, i);
-        switch (action->type) {
-        case ACTION_PASS:;
-            Pass *action_pass = (Pass *)action->action;
-            out_field("root = pass_start(root, PASS_%s)",
-                      pass_func_or_id(action_pass));
-            break;
-        case ACTION_PHASE:;
-            Phase *action_phase = (Phase *)action->action;
-            out_field("root = phase_start(root, PHASE_%s)",
-                      action_phase->id->lwr);
-            break;
-        case ACTION_TRAVERSAL:;
-            Traversal *action_trav = (Traversal *)action->action;
-            out_field("root = trav_start(root, TRAV_%s)", action_trav->id->lwr);
-            break;
-        case ACTION_REFERENCE:
-            // TODO: What is this?
-            break;
-        }
-    }
-}
-
-void gen_actions_src(Config *config, FILE *fp) {
-    out("#include <stddef.h>\n");
-    out("\n");
-    out("#include \"ccn/actions_core.h\"\n");
-    out("\n");
-    out_start_func("Node *start_root_phase()");
-    out_field("Node *root = phase_start(NULL, PHASE_%s)",
-              config->start_phase->id->lwr);
-    out_field("root = trav_start(root, TRAV_free)");
-    out_field("return root");
-    out_end_func();
-    for (int i = 0; i < array_size(config->phases); i++) {
-        Phase *phase = array_get(config->phases, i);
-        char *type;
-        out_start_func("Node *phase_%s(Node *root)", phase->id->lwr);
-        gen_phase(config, fp, phase);
-        out_field("root = trav_start(root, TRAV_check)");
-        out_field("return root");
-        out_end_func();
-    }
-    out("\n");
-}
-
 void gen_pass_user_src(Config *config, FILE *fp, Pass *pass) {
     out("#include \"ccn/actions_core.h\"\n");
     out("\n");

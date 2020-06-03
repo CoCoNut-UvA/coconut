@@ -1,7 +1,8 @@
 // Hash: (null)
-#include "ccn/trav_core.h"
 #include "ccn/ast_core.h"
+#include "ccn/trav_core.h"
 #include "lib/memory.h"
+#include <stdio.h>
 
 Trav *simpleprint_init_trav_data(Trav *trav) {
     // Define data here
@@ -32,13 +33,9 @@ Node *simpleprint_binop(Node *arg_node) {
     return arg_node;
 }
 
-Node *simpleprint_var(Node *arg_node) {
-    return arg_node;
-}
+Node *simpleprint_var(Node *arg_node) { return arg_node; }
 
 Node *simpleprint_num(Node *arg_node) {
     printf("%d\n", NUM_VALUE(arg_node));
     return arg_node;
 }
-
-
