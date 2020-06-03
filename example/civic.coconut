@@ -68,8 +68,7 @@ pass Test;
 traversal Print {
     prefix = PRT,
     travdata = {
-        int test2 = 0,
-        unsafe smap_t testmap { "lib/smap.h" }
+        int numnodes = 0
     }
 };
 

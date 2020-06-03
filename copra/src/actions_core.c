@@ -1,4 +1,5 @@
 #include "ccn/vtables_core.h"
+#include "lib/memory.h"
 #include "lib/print.h"
 
 static Phase *current_phase = NULL;

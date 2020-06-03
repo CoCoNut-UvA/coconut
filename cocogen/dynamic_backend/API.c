@@ -20,7 +20,6 @@ static void generate_headers(Config *ir) {
     filegen_generate("ast.h", &gen_ast_header);
     filegen_generate("trav.h", &gen_trav_data_header);
     filegen_generate("actions.h", &gen_actions_header);
-    filegen_generate("check.h", &gen_check_header);
     filegen_generate("action_handlers.h", &gen_action_array_h);
     filegen_generate("ccn_enables.h", &generate_enables);
     filegen_generate("CMakeLists.txt", &gen_header_cmakelists);
@@ -33,7 +32,7 @@ static void generate_sources(Config *ir) {
     filegen_generate("ast.c", &gen_ast_src);
     filegen_generate("trav.c", &gen_trav_data_src);
     filegen_generate("vtables.c", &gen_vtables_src);
-    filegen_generate("check.c", &gen_check_src);
+    filegen_generate("trav_check.c", &gen_check_src);
     filegen_generate("trav_free.c", &gen_free_src);
     filegen_generate("trav_copy.c", &gen_copy_src);
     filegen_generate("actions.c", &gen_actions_src);
