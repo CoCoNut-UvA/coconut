@@ -5,6 +5,7 @@
 #include "ccn/vtables_core.h"
 #include "lib/memory.h"
 #include "lib/print.h"
+#include <assert.h>
 
 static Trav *current_traversal = NULL;
 
@@ -57,9 +58,7 @@ Node *trav_start(Node *syntaxtree, TraversalType trav_type) {
 
 /* Main traverse function, to be called by the user */
 Node *trav(Node *arg_node) {
-    if (!arg_node) {
-        return trav_error(arg_node);
-    }
+    assert(arg_node != NULL);
     TravFunc trav_func = trav_vtable[TRAV_TYPE][NODE_TYPE(arg_node)];
     return trav_func(arg_node);
 }
@@ -67,10 +66,10 @@ Node *trav(Node *arg_node) {
 /* Optional traverse function, to be called by the user. Adds a null check to
  * signify optional child nodes */
 Node *trav_opt(Node *arg_node) {
-    if (!arg_node) {
-        return arg_node;
+    if (arg_node != NULL) {
+        return trav(arg_node);
     }
-    return trav(arg_node);
+    return arg_node;
 }
 
 /* Don't traverse through children and return */
@@ -78,9 +77,7 @@ Node *trav_return(Node *arg_node) { return arg_node; }
 
 /* Traverse through each child node and return */
 Node *trav_children(Node *arg_node) {
-    if (!arg_node || !NODE_CHILDREN(arg_node)) {
-        return arg_node;
-    }
+    assert(arg_node != NULL);
     for (int i = 0; i < NODE_NUMCHILDREN(arg_node); i++) {
         NODE_CHILDREN(arg_node)[i] = trav_opt(NODE_CHILDREN(arg_node)[i]);
     }
