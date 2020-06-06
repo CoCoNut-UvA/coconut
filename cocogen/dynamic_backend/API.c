@@ -13,8 +13,8 @@ extern void gen_action_array_c(Config *c, FILE *fp);
 extern void generate_enables(Config *c, FILE *fp);
 
 static void generate_headers(Config *ir) {
-    set_current_directory_to_be_tracked(global_command_options.header_dir);
-    filegen_dir(global_command_options.header_dir);
+    set_current_directory_to_be_tracked("generated/include/ccngen/");
+    filegen_dir("generated/include/ccngen/");
 
     filegen_generate("enum.h", &gen_enum_header);
     filegen_generate("ast.h", &gen_ast_header);
@@ -26,8 +26,8 @@ static void generate_headers(Config *ir) {
 }
 
 static void generate_sources(Config *ir) {
-    set_current_directory_to_be_tracked(global_command_options.source_dir);
-    filegen_dir(global_command_options.source_dir);
+    set_current_directory_to_be_tracked("generated/src/");
+    filegen_dir("generated/src/");
 
     filegen_generate("ast.c", &gen_ast_src);
     filegen_generate("trav.c", &gen_trav_data_src);
@@ -36,7 +36,13 @@ static void generate_sources(Config *ir) {
     filegen_generate("trav_free.c", &gen_free_src);
     filegen_generate("trav_copy.c", &gen_copy_src);
     filegen_generate("action_handlers.c", gen_action_array_c);
+    filegen_generate("CMakeLists.txt", &gen_source_cmakelists);
+}
+
+static void generate_user_files(Config *ir) {
     if (global_command_options.gen_user_files) {
+        set_current_directory_to_be_tracked(global_command_options.user_dir);
+        filegen_dir(global_command_options.user_dir);
         /**
          * Generate user traversal and pass files.
          * WARNING, THIS WILL OVERWRITE CURRENT FILES
@@ -49,17 +55,15 @@ static void generate_sources(Config *ir) {
             filegen_all_traversals("trav_%s.c", &gen_trav_user_src);
             filegen_all_passes("pass_%s.c", &gen_pass_user_src);
         }
+        filegen_generate("CMakeLists.txt", &gen_user_cmakelists);
     }
-    filegen_generate("CMakeLists.txt", &gen_source_cmakelists);
 }
 
 void dynamic_backend(Config *ir) {
-    ccn_assert(global_command_options.header_dir != NULL, "No header dir");
-    ccn_assert(global_command_options.source_dir != NULL, "No source dir");
-
     create_indices(ir);
     compute_reachable_nodes(ir);
     compute_traversal_nodes(ir);
     generate_headers(ir);
     generate_sources(ir);
+    generate_user_files(ir);
 }

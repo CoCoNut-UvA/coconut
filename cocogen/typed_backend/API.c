@@ -12,8 +12,8 @@ extern void gen_action_array_c(Config *c, FILE *fp);
 extern void generate_enables(Config *c, FILE *fp);
 
 static void generate_headers(Config *ir) {
-    set_current_directory_to_be_tracked(global_command_options.header_dir);
-    filegen_dir(global_command_options.header_dir);
+    set_current_directory_to_be_tracked("generated/include/ccngen/");
+    filegen_dir("generated/include/ccngen/");
 
     filegen_generate("enum.h", generate_enum_definitions);
     filegen_generate("ast.h", generate_ast_definitions);
@@ -47,8 +47,8 @@ static void generate_headers(Config *ir) {
 }
 
 static void generate_sources(Config *ir) {
-    set_current_directory_to_be_tracked(global_command_options.source_dir);
-    filegen_dir(global_command_options.source_dir);
+    set_current_directory_to_be_tracked("generated/src/");
+    filegen_dir("generated/src/");
 
     filegen_all_nodes("free-%s.c", generate_free_node_definitions);
     filegen_all_nodesets("free-%s.c", generate_free_nodeset_definitions);
@@ -66,9 +66,6 @@ static void generate_sources(Config *ir) {
 }
 
 void typed_backend(Config *ir) {
-    ccn_assert(global_command_options.header_dir != NULL, "No header dir");
-    ccn_assert(global_command_options.source_dir != NULL, "No source dir");
-
     generate_headers(ir);
     generate_sources(ir);
 }

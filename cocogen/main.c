@@ -51,21 +51,20 @@ int main(int argc, char *argv[]) {
     }
 
     // TODO(damian): Create recursive ensure_dir_exists
-    if (global_command_options.header_dir == NULL) {
-        global_command_options.header_dir = "generated/include/ccngen/";
-        ensure_dir_exists("generated/",
-                          0777); // FIXME(damian): transform to recursive.
-        ensure_dir_exists("generated/include/", 0777);
-        ensure_dir_exists("generated/include/ccngen/", 0777);
-    }
-    ensure_dir_exists(global_command_options.header_dir, 0777);
+    ensure_dir_exists("generated/", 0777);
+    ensure_dir_exists("generated/include/", 0777);
+    ensure_dir_exists("generated/include/ccngen/", 0777);
+    ensure_dir_exists("generated/src/", 0777);
+    if (global_command_options.gen_user_files) {
+        if (global_command_options.user_dir == NULL) {
+            ensure_dir_exists("user/", 0777);
+            ensure_dir_exists("user/src/", 0777);
+            global_command_options.user_dir = "user/src/";
 
-    if (global_command_options.source_dir == NULL) {
-        global_command_options.source_dir = "generated/src/";
-        ensure_dir_exists("generated/src/",
-                          0777); // FIXME(damian): transform to recursive.
+        } else {
+            ensure_dir_exists(global_command_options.user_dir, 0777);
+        }
     }
-    ensure_dir_exists(global_command_options.source_dir, 0777);
 
     init_tracking_data(2);
     filegen_init(ir, false);

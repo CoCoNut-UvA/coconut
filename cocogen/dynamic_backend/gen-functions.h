@@ -11,6 +11,7 @@ void gen_ast_header(Config *, FILE *);
 void gen_ast_src(Config *, FILE *);
 void gen_header_cmakelists(Config *, FILE *);
 void gen_source_cmakelists(Config *, FILE *);
+void gen_user_cmakelists(Config *, FILE *);
 void gen_copy_header(Config *, FILE *);
 void gen_copy_src(Config *, FILE *);
 void gen_enum_header(Config *, FILE *);

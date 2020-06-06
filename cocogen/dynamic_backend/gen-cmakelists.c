@@ -28,6 +28,12 @@ void gen_source_cmakelists(Config *config, FILE *fp) {
     out("        trav_check.c\n");
     out("        trav_copy.c\n");
     out("        trav_free.c\n");
+    out(")\n");
+}
+
+void gen_user_cmakelists(Config *config, FILE *fp) {
+    out("target_sources(${PROJECT_NAME}\n");
+    out("    PRIVATE\n");
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
         out("        trav_%s.c\n", trav->id->lwr);

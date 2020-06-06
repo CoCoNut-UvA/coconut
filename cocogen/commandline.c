@@ -16,8 +16,7 @@ void init_global_options() {
     global_command_options.profiling = false;
     global_command_options.serialise = false;
     global_command_options.gen_user_files = false;
-    global_command_options.header_dir = NULL;
-    global_command_options.source_dir = NULL;
+    global_command_options.user_dir = NULL;
     global_command_options.dot_dir = NULL;
     global_command_options.doc_dir = NULL;
     global_command_options.backend = NULL;
@@ -31,12 +30,10 @@ void usage(char *program) {
     printf("Usage: %s [OPTION...] COCONUT_FILE\n", program);
     printf("Options:\n");
     printf("  --help                       This help message.\n");
-    printf("  --header-dir <directory>     Directory to write generated "
-           "header files to.\n");
-    printf("                               Defaults to ./include/generated/\n");
-    printf("  --source-dir <directory>     Directory to write generated "
-           "source files to.\n");
-    printf("                               Defaults to ./src/generated/\n");
+    printf(
+        "  --user-dir <directory>     Directory to write generated user files"
+        "user files to.\n");
+    printf("                               Defaults to ./user/src/\n");
     printf("  --list-gen-files             Outputs a list of files which "
            "would be (re)generated,\n");
     printf("                               but does not actually modify any "
@@ -67,8 +64,7 @@ void process_commandline_args(int argc, char *argv[]) {
     static struct option long_options[] = {
         {"verbose", no_argument, &global_command_options.verbose, 1},
         {"help", no_argument, 0, 'h'},
-        {"header-dir", required_argument, 0, 21},
-        {"source-dir", required_argument, 0, 22},
+        {"user-dir", required_argument, 0, 21},
         {"dot", required_argument, 0, 23},
         {"version", no_argument, 0, 20},
         {"profiling", no_argument, 0, 24},
@@ -97,11 +93,8 @@ void process_commandline_args(int argc, char *argv[]) {
         case 'v':
             global_command_options.verbose = 1;
             break;
-        case 21: // Header file output directory.
-            global_command_options.header_dir = optarg;
-            break;
-        case 22: // Source file output directory.
-            global_command_options.source_dir = optarg;
+        case 21: // User file output directory.
+            global_command_options.user_dir = optarg;
             break;
         case 23: // ast.dot output directory.
             global_command_options.dot_dir = optarg;

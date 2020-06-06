@@ -11,8 +11,7 @@ typedef struct CommandOptions {
     bool serialise;
     bool gen_user_files;
     char *backend;
-    char *header_dir;
-    char *source_dir;
+    char *user_dir;
     char *dot_dir;
     char *doc_dir;
 } CommandOptions;
