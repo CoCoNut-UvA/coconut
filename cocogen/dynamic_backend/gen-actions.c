@@ -32,19 +32,19 @@ void gen_actions_header(Config *config, FILE *fp) {
     out_comment("Traversal Copy");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = array_get(config->nodes, i);
-        out_field("Node *copy_%s(Node *arg_node)", node->id->lwr);
+        out_field("Node *ccn_copy_%s(Node *arg_node)", node->id->lwr);
     }
     out("\n");
     out_comment("Traversal Free");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = array_get(config->nodes, i);
-        out_field("Node *free_%s(Node *arg_node)", node->id->lwr);
+        out_field("Node *ccn_free_%s(Node *arg_node)", node->id->lwr);
     }
     out("\n");
     out_comment("Traversal Check");
     for (int i = 0; i < array_size(config->nodes); ++i) {
         Node *node = array_get(config->nodes, i);
-        out_field("Node *check_%s(Node *arg_node)", node->id->lwr);
+        out_field("Node *ccn_check_%s(Node *arg_node)", node->id->lwr);
     }
     out("\n");
     for (int i = 0; i < array_size(config->phases); i++) {

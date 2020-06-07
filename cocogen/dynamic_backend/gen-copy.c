@@ -31,7 +31,7 @@ void gen_init_arguments(Config *config, FILE *fp, Node *node) {
 }
 
 void gen_copy_func(Config *config, FILE *fp, Node *node) {
-    out_start_func("Node *copy_%s(Node *arg_node)", node->id->lwr);
+    out_start_func("Node *ccn_copy_%s(Node *arg_node)", node->id->lwr);
     out("    Node *new_node = node_init_%s(", node->id->lwr);
     gen_init_arguments(config, fp, node);
     out(");\n");

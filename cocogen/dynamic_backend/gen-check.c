@@ -28,7 +28,7 @@ void gen_nodeset_func(Config *config, FILE *fp, Nodeset *nodeset) {
 
 void gen_check_func(Config *config, FILE *fp, Node *node) {
     out_comment("%s", node->id->orig);
-    out_start_func("Node *check_%s(Node *arg_node)", node->id->lwr);
+    out_start_func("Node *ccn_check_%s(Node *arg_node)", node->id->lwr);
     for (int i = 0; i < array_size(node->children); i++) {
         Child *child = array_get(node->children, i);
         out_begin_if("%s_%s(arg_node)", node->id->upr, child->id->upr);

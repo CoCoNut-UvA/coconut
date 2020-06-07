@@ -58,17 +58,17 @@ void gen_vtables(Config *config, FILE *fp) {
         Traversal *trav = array_get(config->traversals, i);
         gen_trav_vtable(config, fp, trav);
     }
-    gen_system_vtable(config, fp, "free");
-    gen_system_vtable(config, fp, "copy");
-    gen_system_vtable(config, fp, "check");
+    gen_system_vtable(config, fp, "ccn_free");
+    gen_system_vtable(config, fp, "ccn_copy");
+    gen_system_vtable(config, fp, "ccn_check");
     out("const TravFunc *trav_vtable[_TRAV_SIZE] = { error_vtable, ");
     for (int i = 0; i < array_size(config->traversals); i++) {
         Traversal *trav = array_get(config->traversals, i);
         out("%s_vtable, ", trav->id->lwr);
     }
-    out("free_vtable, ");
-    out("copy_vtable, ");
-    out("check_vtable, ");
+    out("ccn_free_vtable, ");
+    out("ccn_copy_vtable, ");
+    out("ccn_check_vtable, ");
     out(" };\n\n");
 }
 

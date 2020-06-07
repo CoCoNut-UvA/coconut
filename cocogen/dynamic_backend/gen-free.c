@@ -11,7 +11,7 @@ static int indent = 0;
 
 void gen_free_func(Config *config, FILE *fp, Node *node) {
     out_comment("%s", node->id->orig);
-    out_start_func("Node *free_%s(Node *arg_node)", node->id->lwr);
+    out_start_func("Node *ccn_free_%s(Node *arg_node)", node->id->lwr);
     if (node->children) {
         out_field("arg_node = trav_children(arg_node)");
     }
