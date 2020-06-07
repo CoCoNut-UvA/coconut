@@ -3,6 +3,7 @@
 
 #include "ccngen/enum.h"
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef struct NODE Node;
 typedef struct TRAV Trav;
