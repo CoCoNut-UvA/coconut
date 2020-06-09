@@ -1,6 +1,6 @@
 #pragma once
 
-enum {
+extern enum {
     SUCCESS = 0,
     CANNOT_CREATE_DIR = 1,
     CANNOT_OPEN_FILE = 2,

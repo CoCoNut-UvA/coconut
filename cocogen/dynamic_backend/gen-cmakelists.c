@@ -10,7 +10,7 @@
 void gen_header_cmakelists(Config *config, FILE *fp) {
     out("target_sources(${PROJECT_NAME}\n");
     out("    PUBLIC\n");
-    out("        action_handlers.c\n");
+    out("        action_handlers.h\n");
     out("        ast.h\n");
     out("        trav.h\n");
     out("        actions.h\n");
@@ -25,7 +25,6 @@ void gen_source_cmakelists(Config *config, FILE *fp) {
     out("        action_handlers.c\n");
     out("        ast.c\n");
     out("        trav.c\n");
-    out("        pass.c\n");
     out("        vtables.c\n");
     out("        trav_check.c\n");
     out("        trav_copy.c\n");
