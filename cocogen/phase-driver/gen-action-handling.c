@@ -407,9 +407,9 @@ void gen_action_array_c(Config *c, FILE *fp) {
             p->id->lwr, p->id->orig, root, p->id->lwr, p->id->lwr);
     }
 
-    out("{action_phase, ACTION_ID_cleanup, \"Cleanup\", .phase = {NULL, "
-        "NT_root, "
-        "cleanup_ids_table, false, ACTION_ID_cleanup,},},\n");
+    out("{action_phase, ACTION_ID_cleanup, \"Cleanup\", .phase = {NULL, NT_%s, "
+        "cleanup_ids_table, false, ACTION_ID_cleanup,},},\n",
+        c->root_node->id->lwr);
     out("};\n\n");
 
     int indent = 0;
