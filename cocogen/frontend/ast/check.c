@@ -683,6 +683,7 @@ static int check_traversal(Traversal *traversal, struct Info *info) {
         } else if (traversal_nodeset) {
 
             // Adds every node in the nodeset to the expanded node list
+	    // This makes sure nodesets in traversals are expended to their actual values.
             for (int j = 0; j < array_size(traversal_nodeset->nodes); j++) {
                 Node *nodeset_node = array_get(traversal_nodeset->nodes, j);
                 if (smap_retrieve(node_name_expanded, nodeset_node->id->orig) ==
@@ -700,6 +701,10 @@ static int check_traversal(Traversal *traversal, struct Info *info) {
             error = 1;
         }
     }
+
+    // We clean the old array here and replace it with the expanded nodes. 
+    array_cleanup(traversal->nodes, NULL);
+    traversal->nodes = nodes_expanded;
 
     smap_t *td_name = smap_init(16);
 
@@ -721,9 +726,6 @@ static int check_traversal(Traversal *traversal, struct Info *info) {
         }
     }
 
-    /// TODO: Something with cleaning the array? probably happens somewhere else
-    // array_cleanup(traversal->nodes, NULL);
-    // traversal->nodes = nodes_expanded;
 
     smap_free(node_name);
     smap_free(node_name_expanded);
