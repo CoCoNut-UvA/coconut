@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file include/cocogen/ast.h
+ * @file /cocogen/frontend/ast/ast.h
  * @brief The definition of all the types in the internal AST.
  */
 
@@ -164,7 +164,10 @@ typedef struct Traversal {
     Id *func;
 
     union {
-        array *nodes;
+        // Links to a node*. Important! Non owning!!
+        // Important, the array can point to the nodes array
+        // so be careful when cleaning. TODO: this is ugly
+        array *nodes; 
         SetExpr *expr;
     };
 

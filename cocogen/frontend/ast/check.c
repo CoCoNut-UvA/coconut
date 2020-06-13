@@ -650,7 +650,7 @@ static int check_traversal(Traversal *traversal, struct Info *info) {
 
     int error = 0;
 
-    if (traversal->nodes == NULL)
+    if (traversal->nodes == info->config->nodes)
         return 0;
 
     smap_t *node_name = smap_init(16);
@@ -686,10 +686,11 @@ static int check_traversal(Traversal *traversal, struct Info *info) {
 	    // This makes sure nodesets in traversals are expended to their actual values.
             for (int j = 0; j < array_size(traversal_nodeset->nodes); j++) {
                 Node *nodeset_node = array_get(traversal_nodeset->nodes, j);
+		// It could be that we get the same node twice, so store the name in a lookup table,
+		// and check if we already included it in the new array.
                 if (smap_retrieve(node_name_expanded, nodeset_node->id->orig) ==
                     NULL) {
-                    array_append(nodes_expanded,
-                                 strdup(nodeset_node->id->orig));
+		    array_append(nodes_expanded, node);
                     smap_insert(node_name_expanded, nodeset_node->id->orig,
                                 nodeset_node);
                 }
