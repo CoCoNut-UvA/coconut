@@ -166,7 +166,8 @@ typedef struct Traversal {
     union {
         // Links to a node*. Important! Non owning!!
         // Important, the array can point to the nodes array
-        // so be careful when cleaning. TODO: this is ugly
+        // so be careful when cleaning.
+        // TODO: this is ugly
         array *nodes; 
         SetExpr *expr;
     };
@@ -180,10 +181,11 @@ typedef struct Action {
     enum ActionType type;
     uint32_t id_counter;
     bool action_owner; // We create shallow actions, that do not own the actual
-                       // action.
+                       // action. This way, we do not have to copy actions and
+                       // we can perform transformations on the original action.
     bool checked;
     void *action;
-    Id *id;
+    Id *id; // Important! Action does not own the id, it is owned by the actual *action, so do not free this.
     smap_t *active_specs;
 } Action;
 
@@ -312,14 +314,21 @@ typedef struct SetOperation {
  *   -# ref_id:
  *        Reference to a defined nodeset.
  *   -# id_set:
- *        A set of node ids, which is defined inline, so by placing between
+ *        A set of node (ids :: char*), which is defined inline, so by placing between
  *        {} brackets.
  *   -# operation:
  *        A set operation on two node sets. This node set will be the result
  *        of that operation.
  *
+ * We use this, because users can denote nodes as a set expressions
+ * and perform operations with the sets.
+ * 
+ * For example, a user can define the following:
+ *   nodeset Expr = {Num, BinOp} | Monop
+ * ,where the | Monop denoted a UNION with the Monop set.
+ * 
  * All these types will be transformed into an array of nodes,
- * which can be found in the nodes array.
+ * which can be found in the nodes array @see Nodeset.
  */
 struct SetExpr {
     enum SetExprType type;

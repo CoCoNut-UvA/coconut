@@ -4,6 +4,7 @@
 
 #include "ast/ast.h"
 #include "ast/check.h"
+#include "ast/free.h"
 #include "commandline.h"
 #include "dynamic_backend/API.h"
 #include "filegen/driver.h"
@@ -92,4 +93,5 @@ int main(int argc, char *argv[]) {
     }
 
     cleanup_tracking_data();
+    free_config(ir);
 }

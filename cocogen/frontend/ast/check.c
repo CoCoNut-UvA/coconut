@@ -234,9 +234,9 @@ static int check_actions_reference(array *actions, struct Info *info);
 static Action *copy_action(Action *action) {
     Action *new = NULL;
     if (action->type == ACTION_REFERENCE) {
-        new = create_action(action->type, strdup(action->action), action->id);
+      new = create_action(action->type, ccn_str_cpy(action->action), action->id);
     } else {
-        new = create_action(action->type, action->action, action->id);
+      new = create_action(action->type, action->action, action->id);
     }
     new->checked = false;
     new->action_owner = false;
@@ -1368,8 +1368,8 @@ static int check_lifetimes(struct Info *info) {
     return error;
 }
 
-/* The user can leave range open in the lifetimes, here we fill them up,
- * this allows to process all lifetimes the same. We also populate the
+/* The user can leave range open in the lifetimes, here we fill them up.
+ * This allows to process all lifetimes the same. We also populate the
  * type in string form, as this is required for code generation. The string
  * form corresponds to the enum value that is generated.
  */
@@ -1459,14 +1459,12 @@ uint32_t assign_id_to_phase_actions(Phase *phase, uint32_t id) {
 
 void assign_id_to_action(struct Info *info) {
     Phase *root = info->root_phase;
-    uint32_t id =
-        2; // 0 is for undefined, 1 is for the root-phase, so start at 2.
+    uint32_t id = 2; // 0 is for undefined, 1 is for the root-phase, so start at 2.
     assign_id_to_phase_actions(root, id);
 }
 
 Lifetime_t *copy_lifetime(Lifetime_t *lifetime, char *key) {
-    Lifetime_t *new =
-        create_lifetime(lifetime->start, lifetime->end, lifetime->type, NULL);
+    Lifetime_t *new = create_lifetime(lifetime->start, lifetime->end, lifetime->type, NULL);
     new->key = ccn_str_cpy(key);
     new->owner = false;
     return new;
