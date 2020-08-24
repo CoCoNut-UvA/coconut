@@ -1,0 +1,27 @@
+start phase Root {
+    actions {
+        Root;
+        pass x = doX;
+    }
+};
+
+traversal Root {
+
+};
+
+node Num {
+    children {
+        Num num;
+    }
+    attributes {
+        string id {};
+    }
+};
+
+nodeset Num {
+    nodes = {
+        Num
+    }
+};
+
+pass X = doX;

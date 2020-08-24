@@ -1,0 +1,12 @@
+target_sources(${PROJECT_NAME}
+    PUBLIC
+        dynamic.h
+    PRIVATE
+        gen-ast.c
+        gen-enum.c
+        gen-vtables.c
+        gen-actions.c
+        gen-free.c
+        gen-copy.c
+        gen-check.c
+)

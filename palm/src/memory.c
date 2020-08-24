@@ -1,37 +1,52 @@
-#include <stdio.h>
+#include "palm/memory.h"
+
 #include <stdlib.h>
 #include <string.h>
 
-#include "lib/errors.h"
-#include "lib/print.h"
-#include "lib/smap.h"
-#include "lib/str.h"
+#include "palm/dbug.h"
+#include "palm/ctinfo.h"
 
-static void *(*allocator)(size_t) = malloc;
-static void (*deallocator)(void *) = free;
 
-void *mem_alloc(size_t size) {
-    void *ptr = allocator(size);
-    if (ptr == NULL) {
-        print_user_error("memory", "malloc allocation returned NULL.");
-        exit(MALLOC_NULL);
+void *MEMmalloc(size_t size)
+{
+    void *ptr;
+
+    DBUG_ASSERT((size >= 0), "called with negative size!");
+
+    if (size > 0) {
+        /*
+        * Since some UNIX system (e.g. ALPHA) do return NULL for size 0 as well
+        * we do complain for ((NULL == tmp) && (size > 0)) only!!
+        */
+        ptr = malloc(size);
+
+        if (ptr == NULL) {
+            CTIabortOutOfMemory(size);
+        }
     }
+    else {
+        ptr = NULL;
+    }
+
     return ptr;
 }
 
-void mem_free(void *ptr) {
-    if (ptr != NULL)
-        deallocator(ptr);
+void *MEMfree(void *address)
+{
+    if(address != NULL) {
+        free(address);
+        address = NULL;
+    }
+
+    return address;
 }
 
-void *mem_copy(const void *src, size_t size) {
-    void *new = mem_alloc(size);
-    memcpy(new, src, size);
-    return new;
-}
+void *MEMcopy(size_t size, void *mem)
+{
+    void *result;
 
-void set_allocator(void *(*_allocator)(size_t)) { allocator = _allocator; }
+    result = MEMmalloc(size);
+    result = memcpy(result, mem, size);
 
-void set_deallocator(void (*_deallocator)(void *)) {
-    deallocator = _deallocator;
+    return result;
 }

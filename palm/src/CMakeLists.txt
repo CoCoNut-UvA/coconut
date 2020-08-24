@@ -1,17 +1,9 @@
 target_sources(${PROJECT_NAME}
     PRIVATE
-        array.c
-        assert.c
-        imap.c
-        internal_copy_functions.c
-        internal_copy_functions.h
-        internal_key_functions.c
-        internal_key_functions.h
-        log.c
+        dbug.c
         memory.c
-        print.c
-        set_implementations.c
-        set.c
-        smap.c
+        ctinfo.c
         str.c
+        hash_table.c
+        set.c
 )

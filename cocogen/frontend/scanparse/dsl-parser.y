@@ -5,58 +5,47 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "ast/ast.h"
-#include "ast/create.h"
-
 #include "dsl-lexer.h"
 
-#include "lib/array.h"
-#include "lib/imap.h"
-#include "lib/print.h"
-#include "lib/str.h"
+#include "globals.h"
+#include "ast/ast.h"
+#include "ast/constructors.h"
+#include "palm/ctinfo.h"
+#include "palm/str.h"
+#include "palm/memory.h"
+#include "palm/set.h"
 
 extern bool yy_lex_keywords;
 
-/* Array to append config entries to during reducing */
-static array *config_phases;
-static array *config_passes;
-static array *config_enums;
-static array *config_traversals;
-static array *config_nodesets;
-static array *config_nodes;
+static struct ctinfo *NewLocation(struct ctinfo *info);
+static struct ast *ast;
 
-static struct Config* parse_result = NULL;
-
-char *yy_filename;
-array *yy_lines;
-imap_t *yy_parser_locations;
 
 void yyerror(const char* s);
 int yydebug = 1;
 
 #define YYLTYPE YYLTYPE
-typedef struct ParserLocation YYLTYPE;
+typedef struct ctinfo YYLTYPE;
 
-struct ParserLocation yy_parser_location;
-
-static void new_location(void *ptr, struct ParserLocation *loc);
+struct ctinfo yy_ctinfo;
 
 // Override YYLLOC_DEFAULT so we can set yy_parser_location
 // to the current location
-#define YYLLOC_DEFAULT(Cur, Rhs, N)                         \
+# define YYLLOC_DEFAULT(Cur, Rhs, N)                      \
+    do                                                        \
     if (N) {                                                \
         (Cur).first_line   = YYRHSLOC(Rhs, 1).first_line;   \
         (Cur).first_column = YYRHSLOC(Rhs, 1).first_column; \
         (Cur).last_line    = YYRHSLOC(Rhs, N).last_line;    \
         (Cur).last_column  = YYRHSLOC(Rhs, N).last_column;  \
-    } else {                                                \
+    }                                                     \
+    else {                                                  \
         (Cur).first_line   = (Cur).last_line   =            \
-          YYRHSLOC(Rhs, 0).last_line;                       \
+            YYRHSLOC(Rhs, 0).last_line;                       \
         (Cur).first_column = (Cur).last_column =            \
-          YYRHSLOC(Rhs, 0).last_column;                     \
-    }                                                       \
-    yy_parser_location = (Cur);
-
+            YYRHSLOC(Rhs, 0).last_column;                     \
+    }                                                     \
+    while (0)
 %}
 
 %union {
@@ -64,28 +53,26 @@ static void new_location(void *ptr, struct ParserLocation *loc);
     uint64_t uintval;
     long double fval;
     char *string;
-    char *str;
-    struct array *array;
-    struct Config *config;
-    struct Phase *phase;
-    struct Pass *pass;
-    struct Traversal *traversal;
-    struct TravData *travdata;
-    struct Enum *attr_enum;
-    struct Nodeset *nodeset;
-    struct SetExpr *setexpr;
-    struct SetOperation *setoperation;
-    struct Action *action;
-    struct Lifetime *lifetime;
-    struct Range_spec *range_spec;
-    struct Node *node;
-    struct Child *child;
-    struct PhaseRange *phaserange;
-    struct MandatoryPhase *mandatoryphase;
-    enum AttrType attrtype;
-    struct Attr *attr;
-    struct AttrValue *attrval;
-    struct Id *id;
+    bool boolean;
+    struct phase *phase;
+    struct pass *pass;
+    struct traversal *traversal;
+    struct id *id;
+    struct action_slist *actions;
+    struct action *action;
+    struct set *set;
+    struct ccn_set_operation *ccn_set_operation;
+    struct ccn_set_expr *ccn_set_expr;
+    struct node *node;
+    struct attribute *attribute;
+    enum attribute_type attribute_type;
+    struct attribute_slist *attributes;
+    struct child_slist *children;
+    struct child *child;
+    struct nodeset *nodeset;
+    struct nodeset_stailq *nodesets;
+    struct ccn_enum *ccn_enum;
+    struct id_slist *ids;
 }
 
 %define parse.error verbose
@@ -150,26 +137,27 @@ static void new_location(void *ptr, struct ParserLocation *loc);
 %token END 0 "End-of-file (EOF)"
 
 %type<string> info
-%type<array> idlist actionsbody actions lifetimelistwithvalues namespacelist
-             travdata travdatalist attrlist attrs stringlist
-             childlist children enumvalues lifetimelist
-%type<attrval> attrval
-%type<attrtype> attrprimitivetype
-%type<attr> attr attrhead travdataitem
-%type<child> child
+%type<phase> phase phaseheader cycleheader
 %type<pass> pass
-%type<node> nodebody node
-%type<nodeset> nodeset
-%type<phase> phase phaseheader
-%type<attr_enum> enum
 %type<traversal> traversal
-%type<config> root
-%type<setexpr> setexpr traversalnodes
-%type<setoperation> setoperation
-%type<action> action
-%type<lifetime> lifetime lifetimewithvalues
-%type<range_spec> rangespec_start rangespec_end
 %type<id> id prefix func
+%type<ids> idlist enumvalues
+%type<boolean> is_start is_constructor is_root
+%type<actions> actions actionsbody
+%type<action> action
+%type<set> setliterals
+%type<ccn_set_operation> setoperation
+%type<ccn_set_expr> setexpr traversalnodes
+%type<node> node
+%type<attribute> attribute
+%type<attribute_type> attribute_primitive_type
+%type<attributes> attributes attributebody
+%type<child> child
+%type<children> children childrenbody
+%type<nodeset> nodeset
+%type<ccn_enum> enum
+
+
 
 %left '&' '-' '|'
 
@@ -177,85 +165,77 @@ static void new_location(void *ptr, struct ParserLocation *loc);
 
 %%
 
-/* Root of the config, creating the final config */
-root: entries { parse_result = create_config(config_phases,
-                                 config_passes,
-                                 config_traversals,
-                                 config_enums,
-                                 config_nodesets,
-                                 config_nodes);
-              }
-              ;
-
-id: T_ID 
-    { 
-        $$ = create_id($1); 
-        new_location($$, &@$);
-    };
+root: entries;
 
 entries: entry ';' entries
        | entry
        | %empty
        ;
 
-/* For every entry in the config, append to the correct array. */
-entry: phase { array_append(config_phases, $1); }
-     | pass { array_append(config_passes, $1); }
-     | traversal { array_append(config_traversals, $1); }
-     | enum { array_append(config_enums, $1); }
-     | nodeset { array_append(config_nodesets, $1); }
-     | node { array_append(config_nodes, $1);  }
+entry: phase { STAILQ_INSERT_TAIL(ast->phases, $1, next); }
+     | pass { STAILQ_INSERT_TAIL(ast->passes, $1, next); }
+     | traversal {STAILQ_INSERT_TAIL(ast->traversals, $1, next); }
+     | node {STAILQ_INSERT_TAIL(ast->nodes, $1, next); }
+     | nodeset {STAILQ_INSERT_TAIL(ast->nodesets, $1, next); }
+     | enum { STAILQ_INSERT_TAIL(ast->enums, $1, next); }
      ;
 
-prefix: T_PREFIX '=' id
-      {
-          $$ = $3;
-      }
+/* Root of the config, creating the final config */
+phase: phaseheader '{' info[information] prefix[identifier] actionsbody[actions] '}'
+    {
+        ASTfillPhaseHeader($1, $identifier, $information, $actions, NULL);
+        $$ = $1;
+        $$->loc_info = NewLocation(&@$);
+    }
+    | cycleheader '{' info[information] prefix[identifier] actionsbody[actions] '}'
+    {
+        ASTfillPhaseHeader($1, $identifier, $information, $actions, NULL);
+        $$ = $1;
+        $$->loc_info = NewLocation(&@$);
+    }
+    ;
 
-phase: phaseheader '{' prefix ',' T_GATE ',' actionsbody '}'
-     {
-         $$ = create_phase($1, NULL, $3, $7, create_id(ccn_str_cat($1->id->lwr, "_gate")));
-         new_location($$, &@$);
-     }
-     | phaseheader '{' prefix ',' T_ROOT '=' id ',' actionsbody '}'
-     {
-         $$ = create_phase($1, $7, $3, $9, NULL);
-         new_location($$, &@$);
-     }
-     | phaseheader '{' prefix ',' actionsbody '}'
-     {
-         $$ = create_phase($1, NULL, $3, $5, NULL);
-         new_location($$, &@$);
-     }
-     | phaseheader '{' prefix ',' T_ROOT '=' id ',' T_GATE ',' actionsbody '}'
-     {
-         $$ = create_phase($1, $7, $3, $11, create_id(ccn_str_cat($1->id->lwr, "_gate")));
-         new_location($$, &@$);
-     }
-     | phaseheader '{' prefix ',' T_ROOT '=' id ',' T_GATE '=' id ',' actionsbody '}'
-     {
-         $$ = create_phase($1, $7, $3, $13, $11);
-         new_location($$, &@$);
-     }
-     | phaseheader '{' prefix ',' T_GATE '=' id ',' actionsbody '}'
-     {
-         $$ = create_phase($1, NULL, $3, $9, $7);
-         new_location($$, &@$);
-     }
-     | phaseheader '{' T_GATE '=' id ',' actionsbody '}'
-     {
-         $$ = create_phase($1, NULL, NULL, $7, $5);
-         new_location($$, &@$);
-     }
-     | phaseheader '{' T_GATE ',' actionsbody '}'
-     {
-         $$ = create_phase($1, NULL, NULL, $5, create_id(ccn_str_cat($1->id->lwr, "_gate")));
-         new_location($$, &@$);
-     }
+phaseheader: is_start T_PHASE id
+    {
+        $$ = ASTnewPhaseHeader($3, $1, false);
+    }
+    ;
 
+cycleheader: is_start T_CYCLE id
+    {
+        $$ = ASTnewPhaseHeader($3, $1, true);
+    }
+    ;
 
+is_start: %empty
+     {
+        $$ = false;
+     }
+     | T_START
+     {
+        $$ = true;
+     }
      ;
 
+pass: T_PASS id[name] '{'  info[information] prefix[identifier] func[target_func]'}'
+    {
+        $$ = ASTnewPass($name, $identifier, $information, $target_func);
+    }
+    | T_PASS id[name]
+    {
+        $$ = ASTnewPass($name, NULL, NULL, NULL);
+    }
+    | T_PASS id[name] '=' id[target_func]
+    {
+        $$ = ASTnewPass($name, NULL, NULL, $target_func);
+    }
+    ;
+
+traversal: T_TRAVERSAL id[name] '{' info[information] prefix[identifier] traversalnodes[nodes] '}'
+    {
+        $$ = ASTnewTraversal($name, $identifier, $information, $nodes);
+    }
+    ;
 
 actionsbody: T_ACTIONS '{' actions '}'
      {
@@ -263,701 +243,320 @@ actionsbody: T_ACTIONS '{' actions '}'
      }
      ;
 
-actions: actions  action ';'
+actions: action ';' actions
        {
-           array_append($1, $2);
-           $$ = $1;
+           SLIST_INSERT_HEAD($3, $1, next);
+           $$ = $3;
        }
        | action ';'
        {
-           array *tmp = create_array();
-           array_append(tmp, $1);
-           $$ = tmp;
+           struct action_slist *actions = MEMmalloc(sizeof(struct action_slist));
+           SLIST_INIT(actions);
+           SLIST_INSERT_HEAD(actions, $1, next);
+           $$ = actions;
        }
        ;
 
 
 action: traversal
       {
-          $$ = create_action(ACTION_TRAVERSAL, $1, $1->id);
-          new_location($$, &@$);
+          STAILQ_INSERT_TAIL(ast->traversals, $1, next);
+          $$ = ASTnewAction(ACTION_TRAVERSAL, $1);
       }
       | pass
       {
-          $$ = create_action(ACTION_PASS, $1, $1->id);
-          new_location($$, &@$);
+          STAILQ_INSERT_TAIL(ast->passes, $1, next);
+          $$ = ASTnewAction(ACTION_PASS, $1);
       }
       | phase
       {
-          $$ = create_action(ACTION_PHASE, $1, $1->id);
-          new_location($$, &@$);
+          STAILQ_INSERT_TAIL(ast->phases, $1, next);
+          $$ = ASTnewAction(ACTION_PHASE, $1);
       }
-      | id
+      | T_ID
       {
-          $$ = create_action(ACTION_REFERENCE, $1, $1);
-          new_location($$, &@$);
+          $$ = ASTnewAction(ACTION_REFERENCE, $1);
+          $$->loc_info = NewLocation(&@$);
       }
       ;
 
-phaseheader: T_PHASE id
-           {
-               $$ = create_phase_header($2, false, false);
-               new_location($$, &@$);
-           }
-           | T_CYCLE id
-           {
-               $$ = create_phase_header($2, false, true);
-               new_location($$, &@$);
-           }
-           | T_START T_PHASE id
-           {
-               $$ = create_phase_header($3, true, false);
-               new_location($$, &@$);
-           }
-           | T_START T_CYCLE id
-           {
-               $$ = create_phase_header($3, true, true);
-               new_location($$, &@$);
-           }
-           ;
-
-pass: T_PASS id '{' prefix ',' func '}'
-    {
-        $$ = create_pass($2, $6, $4);
-        new_location($$, &@$);
-    }
-    | T_PASS id '{' info ',' prefix ',' func '}'
-    {
-        $$ = create_pass($2, $8, $6);
-        $$->info = $4;
-        new_location($$, &@$);
-    }
-    | T_PASS id '{' info ',' prefix '}'
-    {
-        $$ = create_pass($2, NULL, $6);
-        $$->info = $4;
-        new_location($$, &@$);
-    }
-    | T_PASS id
-    {
-        $$ = create_pass($2, NULL, NULL);
-        new_location($$, &@$);
-    }
-    | T_PASS id '=' id
-    {
-        $$ = create_pass($2, $4, NULL);
-        new_location($$, &@$);
-    }
-    ;
-
-
-traversal: T_TRAVERSAL id
-         {
-             $$ = create_traversal($2, NULL, NULL, NULL, NULL);
-             new_location($$, &@$);
-         }
-         | T_TRAVERSAL id '{' prefix ',' func '}'
-         {
-             $$ = create_traversal($2, $6, $4, NULL, NULL);
-             new_location($$, &@$);
-         }
-         | T_TRAVERSAL id '{' prefix ',' func ',' traversalnodes '}'
-         {
-             $$ = create_traversal($2, $6, $4, $8, NULL);
-             new_location($$, &@$);
-         }
-         | T_TRAVERSAL id '{' prefix ',' traversalnodes '}'
-         {
-             $$ = create_traversal($2, NULL, $4, $6, NULL);
-             new_location($$, &@$);
-         }
-         | T_TRAVERSAL id '{' info ',' prefix '}'
-         {
-             $$ = create_traversal($2, NULL, $6, NULL, NULL);
-             $$->info = $4;
-             new_location($$, &@$);
-         }
-         | T_TRAVERSAL id '{' info ',' prefix ',' func '}'
-         {
-             $$ = create_traversal($2, $8, $6, NULL, NULL);
-             $$->info = $4;
-             new_location($$, &@$);
-         }
-         | T_TRAVERSAL id '{' info ',' prefix ',' func ',' traversalnodes '}'
-         {
-             $$ = create_traversal($2, $8, $6, $10, NULL);
-             $$->info = $4;
-             new_location($$, &@$);
-         }
-         | T_TRAVERSAL id '{' info ',' prefix ',' traversalnodes '}'
-         {
-             $$ = create_traversal($2, NULL, $6, $8, NULL);
-             $$->info = $4;
-             new_location($$, &@$);
-         }
-         | T_TRAVERSAL id '{' travdata '}'
-         {
-             $$ = create_traversal($2, NULL, NULL, NULL, $4);
-             new_location($$, &@$);
-         }
-         | T_TRAVERSAL id '{' prefix ',' travdata '}'
-         {
-             $$ = create_traversal($2, NULL, $4, NULL, $6);
-             new_location($$, &@$);
-         }
-         | T_TRAVERSAL id '{' prefix ',' func ',' travdata '}'
-         {
-             $$ = create_traversal($2, $6, $4, NULL, $8);
-             new_location($$, &@$);
-         }
-         | T_TRAVERSAL id '{' prefix ',' func ',' traversalnodes ',' travdata '}'
-         {
-             $$ = create_traversal($2, $6, $4, $8, $10);
-             new_location($$, &@$);
-         }
-         | T_TRAVERSAL id '{' prefix ',' traversalnodes ',' travdata '}'
-         {
-             $$ = create_traversal($2, NULL, $4, $6, $8);
-             new_location($$, &@$);
-         }
-         | T_TRAVERSAL id '{' info ',' prefix ',' travdata '}'
-         {
-             $$ = create_traversal($2, NULL, $6, NULL, $8);
-             $$->info = $4;
-             new_location($$, &@$);
-         }
-         | T_TRAVERSAL id '{' info ',' prefix ',' func ',' travdata '}'
-         {
-             $$ = create_traversal($2, $8, $6, NULL, $10);
-             $$->info = $4;
-             new_location($$, &@$);
-         }
-         | T_TRAVERSAL id '{' info ',' prefix ',' func ',' traversalnodes ',' travdata '}'
-         {
-             $$ = create_traversal($2, $8, $6, $10, $12);
-             $$->info = $4;
-             new_location($$, &@$);
-         }
-         | T_TRAVERSAL id '{' info ',' prefix ',' traversalnodes ',' travdata '}'
-         {
-             $$ = create_traversal($2, NULL, $6, $8, $10);
-             $$->info = $4;
-             new_location($$, &@$);
-         }
-         | T_TRAVERSAL id '=' setexpr
-         {
-            $$ = create_traversal($2, NULL, NULL, $4, NULL);
-            new_location($$, &@$);
-         }
-         ;
-
-func: T_FUNC '=' id
-    {
-        $$ = $3;
-    }
-    ;
-
 traversalnodes: T_NODES '=' setexpr
-              {
-                  $$ = $3;
-              }
-              ;
-
-enum: T_ENUM id '{' T_PREFIX '=' id ',' enumvalues '}'
-    {
-        $$ = create_enum($2, $6, $8);
-        new_location($$, &@$);
-    }
-    | T_ENUM id '{' enumvalues ',' T_PREFIX '=' id '}'
-    {
-        $$ = create_enum($2, $8, $4);
-        new_location($$, &@$);
-    }
-    | T_ENUM id '{' info ',' T_PREFIX '=' id ',' enumvalues '}'
-    {
-        $$ = create_enum($2, $8, $10);
-        $$->info = $4;
-        new_location($$, &@$);
-    }
-    | T_ENUM id '{' info ',' enumvalues ',' T_PREFIX '=' id '}'
-    {
-        $$ = create_enum($2, $10, $6);
-        $$->info = $4;
-        new_location($$, &@$);
-    }
-    ;
-
-
-enumvalues: T_VALUES '=' '{'
-        {
-            yy_lex_keywords = false;
-        }
-        idlist  '}'
-        {
-            $$ = $5;
-            yy_lex_keywords = true;
-        }
-        ;
-
-nodeset: T_NODESET id '{' T_NODES '=' setexpr '}'
-        {
-            $$ = create_nodeset($2, $6);
-            new_location($$, &@$);
-        }
-       | T_NODESET id '{' info ',' T_NODES '=' setexpr '}'
-       {
-           $$ = create_nodeset($2, $8);
-           $$->info = $4;
-           new_location($$, &@$);
-       }
-       | T_NODESET id '=' setexpr
-       {
-           $$ = create_nodeset($2, $4);
-           new_location($$, &@$);
-       }
-       ;
+            {
+                $$ = $3;
+            }
+            | %empty
+            {
+                $$ = NULL;
+            }
 
 setexpr: setoperation
        {
-           $$ = create_set_expr(SET_OPERATION, $1);
-           new_location($$, &@$);
+           $$ = ASTnewSetExpr(CCN_SET_OPERATION, $1);
        }
        | '(' setoperation ')'
        {
-           $$ = create_set_expr(SET_OPERATION, $2);
-           new_location($$, &@$);
+           $$ = ASTnewSetExpr(CCN_SET_OPERATION, $2);
        }
-       | '{' idlist '}'
+       | '{' setliterals '}'
        {
-           $$ = create_set_expr(SET_LITERAL, $2);
-           new_location($$, &@$);
+           $$ = ASTnewSetExpr(CCN_SET_LITERAL, $2);
        }
        | id
        {
-           $$ = create_set_expr(SET_REFERENCE, $1);
-           new_location($$, &@$);
+           $$ = ASTnewSetExpr(CCN_SET_REFERENCE, $1);
        }
        ;
 
 setoperation: setexpr '|' setexpr
             {
-                $$ = create_set_operation(SET_UNION, $1, $3);
+                $$ = ASTnewSetOperation(CCN_SET_UNION, $1, $3);
             }
             | setexpr '&' setexpr
             {
-                $$ = create_set_operation(SET_INTERSECT, $1, $3);
+                $$ = ASTnewSetOperation(CCN_SET_INTERSECT, $1, $3);
             }
             | setexpr '-' setexpr
             {
-                $$ = create_set_operation(SET_DIFFERENCE, $1, $3);
+                $$ = ASTnewSetOperation(CCN_SET_DIFFERENCE, $1, $3);
             }
             ;
 
-node: T_NODE id '{' nodebody '}'
+setliterals: setliterals ',' id
+           {
+               SETinsert($1, $3);
+               $$ = $1;
+           }
+           | id
+           {
+               $$ = ASTnewSet_Id(10);
+               SETinsert($$, $1);
+           }
+
+
+node: is_root[root] T_NODE id[name] '{' info[information] childrenbody[children] attributebody[attributes] '}'
     {
-        $$ = create_node($2, $4);
-        new_location($$, &@$);
+        $$ = ASTnewNode($name, $information, $attributes, $children, $root);
     }
-    | T_ROOT T_NODE id '{' nodebody '}'
+    ;
+
+is_root:
+    T_ROOT
     {
-        $$ = create_node($3, $5);
-        $$->root = true;
-        new_location($$, &@$);
+        $$ = true;
     }
-    | T_NODE id '{' nodebody T_LIFETIME '{' lifetimelist '}' '}'
+    | %empty
     {
-        $$ = create_node($2, $4);
-        $$->lifetimes = $7;
-        new_location($$, &@$);
+        $$ = false;
     }
     ;
 
-
-/* All possible combinations of children attrs and flags, with allowing empty. */
-nodebody: children ',' attrs
-        {
-            $$ = create_nodebody($1, $3);
-            new_location($$, &@$);
-        }
-        | children
-        {
-            $$ = create_nodebody($1, NULL);
-            new_location($$, &@$);
-        }
-        | attrs
-        {
-            $$ = create_nodebody(NULL, $1);
-            new_location($$, &@$);
-        }
-        | info ',' children ',' attrs
-        {
-            $$ = create_nodebody($3, $5);
-            $$->info = $1;
-            new_location($$, &@$);
-        }
-        | info ',' children
-        {
-            $$ = create_nodebody($3, NULL);
-            $$->info = $1;
-            new_location($$, &@$);
-        }
-        | info ',' attrs
-        {
-            $$ = create_nodebody(NULL, $3);
-            $$->info = $1;
-            new_location($$, &@$);
-        }
-        ;
-
-
-lifetimelistwithvalues: lifetimelistwithvalues ',' lifetimewithvalues
-        {
-            array_append($$, $3);
-        }
-        | lifetimewithvalues
-        {
-            $$ = array_init(2);
-            array_append($$, $1);
-        }
-        ;
-
-lifetimewithvalues: T_DISALLOWED rangespec_start T_ARROW rangespec_end '=' '{' stringlist '}'
-        {
-            $$ = create_lifetime($2, $4, LIFETIME_DISALLOWED, $7);
-            new_location($$, &@$);
-        }
-        | lifetime
-        {
-            $$ = $1;
-
-        }
-        | T_DISALLOWED '=' '{' stringlist '}'
-        {
-            $$ = create_lifetime(NULL, NULL, LIFETIME_DISALLOWED, $4);
-            new_location($$, &@$);
-        }
-        ;
-
-lifetimelist: lifetimelist ',' lifetime
-            {
-                array_append($$, $3);
-            }
-            | lifetime
-            {
-                $$ = array_init(2);
-                array_append($$, $1);
-                new_location($1, &@1);
-            }
-
-lifetime: T_DISALLOWED rangespec_start T_ARROW rangespec_end
-        {
-            $$ = create_lifetime($2, $4, LIFETIME_DISALLOWED, NULL);
-            new_location($$, &@$);
-        }
-        | T_DISALLOWED
-        {
-            $$ = create_lifetime(NULL, NULL, LIFETIME_DISALLOWED, NULL);
-            new_location($$, &@$);
-        }
-        | T_MANDATORY rangespec_start T_ARROW rangespec_end
-        {
-            $$ = create_lifetime($2, $4, LIFETIME_MANDATORY, NULL);
-            new_location($$, &@$);
-        }
-        | T_MANDATORY
-        {
-            $$ = create_lifetime(NULL, NULL, LIFETIME_MANDATORY, NULL);
-            new_location($$, &@$);
-        }
-        ;
-
-namespacelist: namespacelist '.' T_ID
-            {
-                array_append($1, $3);
-                new_location($3, &@3);
-            }
-            | T_ID
-            {
-                $$ = create_array();
-                array_append($$, $1);
-                new_location($1, &@1);
-            }
-
-rangespec_start: '('namespacelist
-          {
-              $$ = create_range_spec(false, $2);
-              new_location($$, &@$);
-          }
-          | '('
-          {
-              $$ = NULL;
-          }
-          | '['namespacelist
-          {
-              $$ = create_range_spec(true, $2);
-              new_location($$, &@$);
-          }
-          ;
-
-rangespec_end: namespacelist ')'
-          {
-              $$ = create_range_spec(false, $1);
-              new_location($$, &@$);
-          }
-          | ')'
-          {
-              $$ = NULL;
-          }
-          | namespacelist ']'
-          {
-              $$ = create_range_spec(true, $1);
-              new_location($$, &@$);
-          }
-          ;
-
-children: T_CHILDREN '{' childlist '}'
-        {
-            $$ = $3;
-            new_location($$, &@$);
-        }
-        ;
-
-childlist: childlist ',' child
-         {
-             array_append($1, $3);
-             $$ = $1;
-             // $$ is an array and should not be in the locations list
-         }
-         | child
-         {
-             array *tmp = create_array();
-             array_append(tmp, $1);
-             $$ = tmp;
-             // $$ is an array and should not be in the locations list
-         }
-         ;
-/* [construct] [mandatory] ID ID */
-child: id id
-     {
-         $$ = create_child(0, NULL, $2, $1);
-         new_location($$, &@$);
-     }
-     | id id '{' T_CONSTRUCTOR ',' lifetimelist '}'
-     {
-         $$ = create_child(1, $6, $2, $1);
-         new_location($$, &@$);
-     }
-     | id id '{' lifetimelist ',' T_CONSTRUCTOR '}'
-     {
-         $$ = create_child(1, $4, $2, $1);
-         new_location($$, &@$);
-     }
-     | id id '{' T_CONSTRUCTOR '}'
-     {
-         $$ = create_child(1, NULL, $2, $1);
-         new_location($$, &@$);
-     }
-     | id id '{' lifetimelist '}'
-     {
-         $$ = create_child(0, $4, $2, $1);
-         new_location($$, &@$);
-     }
-     ;
-attrs: T_ATTRIBUTES '{' attrlist '}'
-     { $$ = $3; }
-     ;
-attrlist: attrlist ',' attr
-        {
-            array_append($1, $3);
-            $$ = $1;
-            // $$ is an array and should not be in the locations list
-        }
-        | attr
-        {
-            array *tmp = create_array();
-            array_append(tmp, $1);
-            $$ = tmp;
-            // $$ is an array and should not be in the locations list
-        }
-        ;
-attr: attrhead '{' T_CONSTRUCTOR ',' lifetimelistwithvalues '}'
-    {
-        $$ = create_attr($1, NULL, 1, $5, NULL);
-        new_location($$, &@$);
-    }
-    | attrhead '{' T_CONSTRUCTOR '}'
-    {
-        $$ = create_attr($1, NULL, 1, NULL, NULL);
-        new_location($$, &@$);
-    }
-    | attrhead '=' attrval
-    {
-        $$ = create_attr($1, $3, 0, NULL, NULL);
-        new_location($$, &@$);
-    }
-    ;
-/* Optional [construct] keyword, for adding to constructor. */
-attrhead: attrprimitivetype id
-        {
-            $$ = create_attrhead_primitive($1, $2);
-            new_location($$, &@$);
-        }
-        | id id
-        {
-            $$ = create_attrhead_idtype($1, $2);
-            new_location($$, &@$);
-        }
-        ;
-
-attrprimitivetype: T_INT
-                 { $$ = AT_int; }
-                 | T_INT8
-                 { $$ = AT_int8; }
-                 | T_INT16
-                 { $$ = AT_int16; }
-                 | T_INT32
-                 { $$ = AT_int32; }
-                 | T_INT64
-                 { $$ = AT_int64; }
-                 | T_UINT
-                 { $$ = AT_uint; }
-                 | T_UINT8
-                 { $$ = AT_uint8; }
-                 | T_UINT16
-                 { $$ = AT_uint16; }
-                 | T_UINT32
-                 { $$ = AT_uint32; }
-                 | T_UINT64
-                 { $$ = AT_uint64; }
-                 | T_FLOAT
-                 { $$ = AT_float; }
-                 | T_DOUBLE
-                 { $$ = AT_double; }
-                 | T_BOOL
-                 { $$ = AT_bool; }
-                 | T_STRING
-                 { $$ = AT_string; }
-                 ;
-attrval: T_STRINGVAL
-       { $$ = create_attrval_string(create_id($1)); }
-       | T_INTVAL
-       { $$ = create_attrval_int($1); }
-       | T_UINTVAL
-       { $$ = create_attrval_uint($1); }
-       | T_FLOATVAL
-       { $$ = create_attrval_float($1); }
-       | id
-       { $$ = create_attrval_id($1); }
-       |  T_TRUE
-       { $$ = create_attrval_bool(true); }
-       | T_FALSE
-       { $$ = create_attrval_bool(false); }
-       | T_NULL
-       { $$ = NULL; }
-       ;
-
-/* Comma seperated list of identifiers. */
-idlist: idlist ',' id
-      {
-          array_append($1, $3);
-          $$ = $1;
-          // $$ is an array and should not be added to location list.
-      }
-      | id
-      {
-          array *tmp = create_array();
-          array_append(tmp, $1);
-          $$ = tmp;
-          // $$ is an array and should not be added to location list.
-      }
-      ;
-
-/* Comma seperated list of strings. Used for lifetimes */
-stringlist: stringlist ',' T_ID
-      {
-          array_append($1, $3);
-          new_location($3, &@3);
-          $$ = $1;
-          // $$ is an array and should not be added to location list.
-      }
-      | T_ID
-      {
-          array *tmp = create_array();
-          array_append(tmp, $1);
-          new_location($1, &@1);
-          $$ = tmp;
-          // $$ is an array and should not be added to location list.
-      }
-      ;
-
-info: T_INFO '=' T_STRINGVAL
+attributebody: T_ATTRIBUTES '{' attributes '}'
     {
         $$ = $3;
-        new_location($$, &@$);
-        new_location($3, &@3);
+    }
+    | %empty
+    {
+        struct attribute_slist *attributes = MEMmalloc(sizeof(struct attribute_slist));
+        SLIST_INIT(attributes);
+        $$ = attributes;
+    }
+    ;
+
+attributes: attribute ';' attributes
+    {
+        SLIST_INSERT_HEAD($3, $1, next);
+    }
+    | attribute ';'
+    {
+        struct attribute_slist *attributes = MEMmalloc(sizeof(struct attribute_slist));
+        SLIST_INIT(attributes);
+        SLIST_INSERT_HEAD(attributes, $1, next);
+        $$ = attributes;
+    }
+    ;
+
+attribute: attribute_primitive_type[type] id[name] '{' is_constructor[constructor] '}'
+    {
+        $$ = ASTnewAttribute($name, $type, $constructor);
+    }
+    | id[type] id[name] '{' is_constructor[constructor] '}'
+    {
+        $$ = ASTnewAttribute($name, AT_link_or_enum, $constructor);
+        $$->type_reference = $type;
     }
 
-travdata: T_TRAVDATA '=' '{' travdatalist '}'
-    { $$ = $4; }
-     ;
+attribute_primitive_type:
+    T_INT
+    { $$ = AT_int; }
+    | T_INT8
+    { $$ = AT_int8; }
+    | T_INT16
+    { $$ = AT_int16; }
+    | T_INT32
+    { $$ = AT_int32; }
+    | T_INT64
+    { $$ = AT_int64; }
+    | T_UINT
+    { $$ = AT_uint; }
+    | T_UINT8
+    { $$ = AT_uint8; }
+    | T_UINT16
+    { $$ = AT_uint16; }
+    | T_UINT32
+    { $$ = AT_uint32; }
+    | T_UINT64
+    { $$ = AT_uint64; }
+    | T_FLOAT
+    { $$ = AT_float; }
+    | T_DOUBLE
+    { $$ = AT_double; }
+    | T_BOOL
+    { $$ = AT_bool; }
+    | T_STRING
+    { $$ = AT_string; }
+    ;
 
-travdatalist: travdatalist ',' travdataitem
+is_constructor:
+    T_CONSTRUCTOR
+    {
+        $$ = true;
+    }
+    | %empty
+    {
+        $$ = false;
+    }
+    ;
+
+childrenbody: T_CHILDREN '{' children  '}'
+    {
+        $$ = $3;
+    }
+    | %empty
+    {
+        // Create an empty list.
+        struct child_slist *children = MEMmalloc(sizeof(struct child_slist));
+        SLIST_INIT(children);
+        $$ = children;
+    }
+    ;
+
+children: child ';' children
+    {
+        SLIST_INSERT_HEAD($3, $1, next);
+        $$ = $3;
+    }
+    | child ';'
+    {
+        struct child_slist *children = MEMmalloc(sizeof(struct child_slist));
+        SLIST_INIT(children);
+        SLIST_INSERT_HEAD(children, $1, next);
+        $$ = children;
+    }
+    ;
+
+child: id[type] id[name]
+    {
+        $$ = ASTnewChild($name, $type, false, false);
+    }
+    | id[type] id[name] '{' is_constructor[constructor] '}'
+    {
+        $$ = ASTnewChild($name, $type, false, $constructor);
+    }
+    ;
+
+nodeset: T_NODESET id[name] '{' info[information] T_NODES '=' setexpr[expr] '}'
         {
-            array_append($1, $3);
-            $$ = $1;
-            // $$ is an array and should not be in the locations list
+            $$ = ASTnewNodeSet($name, $information, $expr);
+            $$->loc_info = NewLocation(&@$);
         }
-        | travdataitem
+        | T_NODESET id[name] '=' setexpr[expr]
         {
-            array *tmp = create_array();
-            array_append(tmp, $1);
-            $$ = tmp;
-            // $$ is an array and should not be in the locations list
+            $$ = ASTnewNodeSet($name, NULL, $expr);
+            $$->loc_info = NewLocation(&@$);
         }
         ;
 
-travdataitem: T_UNSAFE attrhead '{' T_STRINGVAL '}'
+enum: T_ENUM id[name] '{' info[information] prefix[identifier] enumvalues[values] '}'
     {
-        $$ = create_attr($2, NULL, 0, NULL, $4);
-        new_location($$, &@$);
-        new_location($4, &@3);
+        $$ = ASTnewEnum($name, $identifier, $information, $values);
     }
-    | attrhead '=' attrval
+
+enumvalues: T_VALUES '=' '{' idlist '}'
     {
-        $$ = create_attr($1, $3, 0, NULL, NULL);
-        new_location($$, &@$);
-    }
-    | attrhead
-    {
-        $$ = create_attr($1, NULL, 0, NULL, NULL);
-        new_location($$, &@$);
+        $$ = $4;
     }
     ;
+
+idlist: id ',' idlist
+    {
+        SLIST_INSERT_HEAD($3, $1, next);
+        $$ = $3;
+    }
+    | id
+    {
+        struct id_slist *ids = MEMmalloc(sizeof(struct id_slist));
+        SLIST_INIT(ids);
+        SLIST_INSERT_HEAD(ids, $1, next);
+        $$ = ids;
+    }
+    ;
+
+
+func: %empty
+    {
+        $$ = NULL;
+    }
+    | T_FUNC '=' id
+    {
+        $$ = $3;
+    }
+    ;
+
+info: %empty
+    {
+        $$ = NULL;
+    }
+    | T_INFO '=' T_STRINGVAL
+    {
+        $$ = $3;
+    }
+    ;
+
+prefix: %empty
+    {
+        $$ = NULL;
+    }
+    | T_PREFIX '=' id
+    {
+        $$ = $3;
+    }
+    ;
+
+id: T_ID
+    {
+        $$ = ASTnewId($1);
+        $$->loc_info = NewLocation(&@$);
+    }
+  ;
 %%
 
-static void new_location(void *ptr, struct ParserLocation *loc) {
-    struct ParserLocation *loc_copy = malloc(sizeof(struct ParserLocation));
-    memcpy(loc_copy, loc, sizeof(struct ParserLocation));
+static struct ctinfo *NewLocation(struct ctinfo *info)
+{
+    struct ctinfo *locinfo = MEMmalloc(sizeof(struct ctinfo));
+    memcpy(locinfo, info, sizeof(struct ctinfo));
+    locinfo->filename = globals.filename;
+    bool found = false;
+    locinfo->line = HTlookup(globals.line_map, &(info->first_line), &found);
 
-    imap_insert(yy_parser_locations, ptr, loc_copy);
+    return locinfo;
 }
 
-struct Config* parseDSL(FILE *fp) {
+
+struct ast *SPparseDSL(FILE *fp)
+{
+    ast = ASTnew();
     yyin = fp;
-    config_phases = create_array();
-    config_passes = create_array();
-    config_enums = create_array();
-    config_traversals = create_array();
-    config_nodesets = create_array();
-    config_nodes = create_array();
-
-    yy_lines = array_init(32);
-    yy_parser_locations = imap_init(128);
-
-    print_init_compilation_messages(NULL, yy_filename,
-        yy_lines, yy_parser_locations);
     yyparse();
     yylex_destroy();
-
-    return parse_result;
+    return ast;
 }

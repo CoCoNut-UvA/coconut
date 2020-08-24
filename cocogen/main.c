@@ -1,97 +1,92 @@
+
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-
 #include "ast/ast.h"
-#include "ast/check.h"
-#include "ast/free.h"
-#include "commandline.h"
-#include "dynamic_backend/API.h"
-#include "filegen/driver.h"
-#include "filegen/util.h"
-#include "lib/color.h"
-#include "lib/errors.h"
-#include "lib/str.h"
-#include "pretty/printer.h"
-#include "typed_backend/API.h"
 
-// Defined in the parser.
-extern struct Config *parseDSL(FILE *fp);
+#include "globals.h"
+#include "semantic/semantic.h"
+#include "backends/dynamic/dynamic.h"
+#include "palm/memory.h"
+#include "reachability/reachability.h"
+#include "phase_driver/phase_driver.h"
+
 extern char *yy_filename;
+extern struct ast *SPparseDSL(FILE *fp);
 
-void exit_compile_error(void) {
-    PRINT_COLOR(MAGENTA);
-    fprintf(stderr, "Errors where found, code generation terminated.\n");
-    PRINT_COLOR(RESET_COLOR);
-    exit(INVALID_CONFIG);
+struct globals globals;
+
+// TODO:
+// - check if attribute or child name conflict.
+
+void SetupSettings()
+{
+    globals.settings = MEMmalloc(sizeof(struct format_settings));
+    globals.settings->basic_node_type = "node_st";
+    globals.settings->node_constructor_prefix = "ASTnew";
+    globals.settings->nodetype_enum_prefix = "NT_";
+    globals.settings->access_macro_uppercase = true;
+    globals.settings->nodeset_enum_prefix = "NS_";
+    globals.gen_hdr_dir = "ccngen/ccngen/";
+    globals.gen_src_dir = "ccngen/";
 }
 
-// TODO: move this.
-void generate_enables(Config *c, FILE *fp) {
-    if (global_command_options.break_inspect_points) {
-        out("#define CCN_ENABLE_POINTS 1\n");
-    } else {
-        out("#undef CCN_ENABLE_POINTS\n");
-    }
+int main(int argc, char *argv[])
+{
+    globals.filename = "/home/damian/University/coconut-private/cocogen/tests/frontend/pass/phase.ccn";
+    //globals.filename = "/home/damian/University/coconut-private/cocogen/tests/frontend/fail/naming_collisions3.ccn";
+    globals.line_map = HTnew_Int(25);
 
-    if (global_command_options.consistcheck) {
-        out("#define CCN_ENABLE_CHECKS 1\n");
-    } else {
-        out("#undef CCN_ENABLE_CHECKS\n");
-    }
+    SetupSettings();
 
-    out("\n");
-}
+    FILE *f = fopen(globals.filename, "r");
+    struct ast *ast = SPparseDSL(f);
+    struct phase *phase = NULL;
+    struct pass *pass = NULL;
+    struct traversal *trav = NULL;
+    struct action *action = NULL;
 
-int main(int argc, char *argv[]) {
-    process_commandline_args(argc, argv);
-    FILE *f = fopen(yy_filename, "r");
-    Config *ir = parseDSL(f);
-    if (check_config(ir)) {
-        exit_compile_error();
-    }
-
-    // TODO(damian): Create recursive ensure_dir_exists
-    ensure_dir_exists("generated/", 0777);
-    ensure_dir_exists("generated/include/", 0777);
-    ensure_dir_exists("generated/include/ccngen/", 0777);
-    ensure_dir_exists("generated/src/", 0777);
-    if (global_command_options.gen_user_files) {
-        if (global_command_options.user_dir == NULL) {
-            ensure_dir_exists("user/", 0777);
-            ensure_dir_exists("user/src/", 0777);
-            global_command_options.user_dir = "user/src/";
-
-        } else {
-            ensure_dir_exists(global_command_options.user_dir, 0777);
+    STAILQ_FOREACH(phase, ast->phases, next) {
+        SLIST_FOREACH(action, phase->actions, next) {
+            if (action->action_type == ACTION_REFERENCE) {
+                printf("ref: %s\n", action->reference_to_action);
+            } else {
+                printf("NOT A REF\n");
+            }
         }
+        printf("phase: %s\n", phase->name->orig);
+    }
+    STAILQ_FOREACH(trav, ast->traversals, next) {
+        printf("trav: %s\n", trav->name->orig);
+    }
+    STAILQ_FOREACH(pass, ast->passes, next) {
+        printf("pass: %s:%s\n", pass->name->orig, pass->info);
     }
 
-    init_tracking_data(2);
-    filegen_init(ir, false);
+    // Semantic phase
+    ast = STdoTrav(ast);
+    ast = CEdoTrav(ast);
+    ast = ESEdoTrav(ast);
 
-    // pretty_print(ir);
 
-    // TODO: Maybe handle this better
-    if (global_command_options.backend == NULL) {
-        PRINT_COLOR(MAGENTA);
-        fprintf(stderr, "No backend provided. Supported backends are "
-                        "\"typed\" or \"dynamic\".\n");
-        PRINT_COLOR(RESET_COLOR);
-        exit(INVALID_BACKEND);
-    } else if (ccn_str_equal(global_command_options.backend, "typed")) {
-        /// TODO: (Damian) fix this
-        // typed_backend(ir);
-    } else if (ccn_str_equal(global_command_options.backend, "dynamic")) {
-        dynamic_backend(ir);
-    } else {
-        PRINT_COLOR(MAGENTA);
-        fprintf(stderr, "Invalid backend provided. Supported backends are "
-                        "\"typed\" or \"dynamic\".\n");
-        PRINT_COLOR(RESET_COLOR);
-        exit(INVALID_BACKEND);
+    ast = RBdoTrav(ast);
+
+    struct node *node = NULL;
+    STAILQ_FOREACH(node, ast->nodes, next) {
+        printf("%s\n", node->name->orig);
     }
 
-    cleanup_tracking_data();
-    free_config(ir);
+
+    // Gen phase
+    ast = GASTdoGen(ast);
+    ast = GENMdoGen(ast);
+    ast = GVdoGen(ast);
+    ast = GAdoGen(ast);
+    ast = GFdoGen(ast);
+    ast = GCdoGen(ast);
+    ast = GCHKdoGen(ast);
+
+
+    ast = PDdoGen(ast);
+
+    HTmap(globals.line_map, MEMfree);
+    HTdelete(globals.line_map);
 }

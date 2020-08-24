@@ -1,0 +1,11 @@
+start phase phaseone {
+    actions {
+        pass p;
+    }
+};
+
+start phase phasetwo {
+    actions {
+        pass t;
+    }
+};

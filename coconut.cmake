@@ -10,8 +10,11 @@ endif()
 
 add_subdirectory(${COCONUT_ROOT_DIR}/palm ${CMAKE_CURRENT_BINARY_DIR}/palm)
 
+# We need to check if the DSL file is actually present.
+
 function(cocogen_do_generate DSL_FILE BACKEND)
     set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${DSL_FILE}")
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${PROJECT_BINARY_DIR}/generated/src/action_handlers.c")
     if (NOT EXISTS "${COCOGEN_DIR}/cocogen")
         message(FATAL_ERROR "Could not find the cocogen executable in path: ${COCOGEN_DIR}
 Maybe you forgot building the coconut project?")
@@ -19,11 +22,14 @@ Maybe you forgot building the coconut project?")
 
     message(STATUS "Generating with cocogen
     ") # Forces newline
+    message("${COCOGEN_DIR}")
+    message("${PROJECT_BINARY_DIR}")
     execute_process(COMMAND "${COCOGEN_DIR}/cocogen" "--backend" "${BACKEND}" "--gen-user-files" "${DSL_FILE}"
         RESULT_VARIABLE COCOGEN_RET
-        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+        WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
         INPUT_FILE "${DSL_FILE}"
     )
+    message("${COCOGEN_RET}")
     if(${COCOGEN_RET})
         message(FATAL_ERROR "cocogen generation failed, stopping CMake.")
     endif()

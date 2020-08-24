@@ -4,11 +4,11 @@
 #include <regex.h>
 
 #include "ast/ast.h"
-#include "lib/print.h"
-#include "lib/errors.h"
-#include "lib/array.h"
-
 #include "dsl-parser.h"
+#include "globals.h"
+
+#include "palm/ctinfo.h"
+#include "palm/str.h"
 
 #define YY_DECL int yylex()
 #define LEX_KEYWORD(k) if (yy_lex_keywords) \
@@ -18,15 +18,11 @@
                                 return T_ID; \
                             } \
 
-extern void exit_compile_error();
-
 bool yy_lex_keywords = true;
-static char yy_linebuf[500];
+static char yy_linebuf[1024];
 static regex_t regex;
 
 int yycolumn = 1;
-
-extern array *yy_lines;
 
 static inline void token_action();
 
@@ -53,9 +49,9 @@ static inline void check_c_keyword(const char *);
 
     .* {
         // Save the whole line
-        strncpy(yy_linebuf, yytext, sizeof(yy_linebuf));
-
-        array_append(yy_lines, strdup(yy_linebuf));
+        // TODO: this might not be memory crucial.
+        char *line = STRcpy(yytext);
+        HTinsert(globals.line_map, &yylineno, line);
 
         // yylineno is set automatically to 0,
         // however the column needs to be reset.
@@ -68,11 +64,6 @@ static inline void check_c_keyword(const char *);
         yy_pop_state();
     }
     \n {
-        // Save the empty line
-        strncpy(yy_linebuf, "", sizeof(yy_linebuf));
-
-        array_append(yy_lines, strdup(yy_linebuf));
-
         // yylineno is set automatically to 0,
         // however the column needs to be reset.
         yycolumn = 0;
@@ -154,7 +145,7 @@ static inline void check_c_keyword(const char *);
 
 [A-Za-z][A-Za-z0-9_]*  {
     // Identifier start with an letter and can have numbers and underscores.
-    yylval.string = strdup(yytext);
+    yylval.string = STRcpy(yytext);
     check_c_keyword(yylval.string);
     return T_ID; }
 -?[0-9]+\.[0-9]+ {
@@ -169,7 +160,7 @@ static inline void check_c_keyword(const char *);
 
 \"(\\.|[^\\"])*\"   {
     // Remove surrounding quotes
-    yylval.string = strndup(yytext + 1, yyleng - 2); return T_STRINGVAL;}
+    yylval.string = STRncpy(yytext + 1, yyleng - 2); return T_STRINGVAL;}
 
 [ \t\r]   ; // ignore all whitespace
 
@@ -178,9 +169,9 @@ static inline void check_c_keyword(const char *);
     yy_push_state(SAVELINE);
 }
 . {
-    print_error_at(yylineno, yycolumn - 1, yy_linebuf,
-        "Unexpected token found, quit parsing", yytext);
-    exit_compile_error();
+    struct ctinfo info = {yylineno, yycolumn - 1, 0, 0, globals.filename, yy_linebuf};
+    CTIerrorObj(&info, "Unexpected token found, quit parsing", yytext);
+    CTIabortOnError();
 }
 %%
 
@@ -196,8 +187,8 @@ static inline void lexer_init(void) {
         "\\|unsigned\\|void\\|volatile\\|while\\)$";
     int reti = regcomp(&regex, regex_str, 0);
     if (reti) {
-        print_internal_error("Could not compile C keyword regex.");
-        exit(REGEX_COMPILE_ERROR);
+        CTIerror("Could not compile C keyword regex.");
+        CTIabortOnError();
     }
 }
 
@@ -209,11 +200,11 @@ static inline void check_c_keyword(const char *str) {
     // Match for C-keywords.
     int reti = regexec(&regex, str, 0, NULL, 0);
     if (!reti) {
-        print_error_range(
-                yylineno, yycolumn - strlen(str), yycolumn - 1,
-                yy_linebuf, "Found C-keyword as identifier, "
+        bool found = false;
+        struct ctinfo info = {yylineno, yycolumn - strlen(str), 0, yycolumn - 1, globals.filename, HTlookup(globals.line_map, &yylineno, &found)};
+        CTIerrorObj(&info, "Found C-keyword as identifier, "
                 "which would generate invalid C code.");
-        exit_compile_error();
+        CTIabortOnError();
     }
 }
 
@@ -231,7 +222,8 @@ int yywrap() {
 }
 
 void yyerror(const char* s) {
-    print_error_range(yylineno, yycolumn - yyleng, yycolumn - 1,
-        yy_linebuf, (char*) s);
-    exit_compile_error();
+    bool found = false;
+    struct ctinfo info = {yylineno, yycolumn - yyleng, 0, yycolumn - 1, globals.filename, HTlookup(globals.line_map, &yylineno, &found)};
+    CTIerrorObj(&info, s);
+    CTIabortOnError();
 }

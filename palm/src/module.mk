@@ -1,1 +1,0 @@
-SRC += $(wildcard source/*.c)

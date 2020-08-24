@@ -7,4 +7,3 @@ flex_target(DslTokens ${CMAKE_CURRENT_LIST_DIR}/dsl-lexer.l ${CMAKE_CURRENT_BINA
     DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/dsl-lexer.h
 )
 ADD_FLEX_BISON_DEPENDENCY(DslTokens DslParser)
-
