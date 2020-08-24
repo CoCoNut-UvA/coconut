@@ -1,0 +1,15 @@
+target_sources(${PROJECT_NAME}
+    PRIVATE
+        action_handling.c
+        break_inspect_points.c
+        consist_checks.c
+        cycle.c
+        error.c
+        globals.c
+        internal_phase_functions.c
+        memory.c
+        phase_driver.c
+        ast_core.c
+        trav_core.c
+        actions_core.c
+)

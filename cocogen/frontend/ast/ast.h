@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file include/cocogen/ast.h
+ * @file /cocogen/frontend/ast/ast.h
  * @brief The definition of all the types in the internal AST.
  */
 
@@ -19,6 +19,13 @@ typedef struct NodeCommonInfo {
     char *hash;
     bool hash_matches;
 } NodeCommonInfo;
+
+typedef struct Id {
+    char *orig;
+    char *lwr;
+    char *upr;
+    struct NodeCommonInfo *common_info;
+} Id;
 
 enum NodeType { NT_node, NT_nodeset };
 
@@ -123,11 +130,11 @@ typedef struct Config {
 } Config;
 
 struct Phase {
-    char *id;
+    Id *id;
     char *info;
-    char *prefix;
-    char *root;
-    char *gate_func;
+    Id *prefix;
+    Id *root;
+    Id *gate_func;
 
     bool cycle;
     bool start;
@@ -142,22 +149,26 @@ struct Phase {
 };
 
 typedef struct Pass {
-    char *id;
+    Id *id;
     char *info;
-    char *prefix;
-    char *func;
+    Id *prefix;
+    Id *func;
     struct NodeCommonInfo *common_info;
     ccn_set_t *roots;
 } Pass;
 
 typedef struct Traversal {
-    char *id;
+    Id *id;
     char *info;
-    char *prefix;
-    char *func;
+    Id *prefix;
+    Id *func;
 
     union {
-        array *nodes;
+        // Links to a node*. Important! Non owning!!
+        // Important, the array can point to the nodes array
+        // so be careful when cleaning.
+        // TODO: this is ugly
+        array *nodes; 
         SetExpr *expr;
     };
 
@@ -170,16 +181,17 @@ typedef struct Action {
     enum ActionType type;
     uint32_t id_counter;
     bool action_owner; // We create shallow actions, that do not own the actual
-                       // action.
+                       // action. This way, we do not have to copy actions and
+                       // we can perform transformations on the original action.
     bool checked;
     void *action;
-    char *id;
+    Id *id; // Important! Action does not own the id, it is owned by the actual *action, so do not free this.
     smap_t *active_specs;
 } Action;
 
 typedef struct Enum {
-    char *id;
-    char *prefix;
+    Id *id;
+    Id *prefix;
     char *info;
 
     array *values;
@@ -188,7 +200,7 @@ typedef struct Enum {
 } Enum;
 
 typedef struct Nodeset {
-    char *id;
+    Id *id;
     char *info;
 
     // The set expr of this nodeset, will be transformed
@@ -202,7 +214,7 @@ typedef struct Nodeset {
 } Nodeset;
 
 typedef struct Node {
-    char *id;
+    Id *id;
     char *info;
 
     // array of (struct Child *)
@@ -222,8 +234,8 @@ typedef struct Child {
     int construct;
     int mandatory;
     array *mandatory_phases;
-    char *id;
-    char *type;
+    Id *id;
+    Id *type;
 
     // One of these becomes a link to the actual child node(set), other NULL
     // after checking the ast.
@@ -257,8 +269,9 @@ typedef struct MandatoryPhase {
 typedef struct Attr {
     int construct;
     enum AttrType type;
-    char *type_id;
-    char *id;
+    Id *type_id;
+    Id *id;
+    char *include; // Optional include file for traversal data
     struct AttrValue *default_value;
     array *lifetimes;
 
@@ -272,32 +285,12 @@ typedef struct AttrValue {
         int64_t int_value;
         float float_value;
         double double_value;
-        char *string_value;
+        Id *string_value;
         bool bool_value;
     } value;
 
     struct NodeCommonInfo *common_info;
 } AttrValue;
-
-typedef struct TravDataConstructor {
-    char *constructor;
-    array *arglist;
-    char *include;
-} TravDataConstructor;
-
-typedef struct TravData {
-    enum AttrType type;
-    char *type_id;
-    char *id;
-    union {
-        // Either an include file in case of a user defined type, or a primitive
-        // value
-        char *include;
-        AttrValue *primitive_value;
-    } value;
-
-    struct NodeCommonInfo *common_info;
-} TravData;
 
 /**
  * @struct SetOperation
@@ -321,20 +314,27 @@ typedef struct SetOperation {
  *   -# ref_id:
  *        Reference to a defined nodeset.
  *   -# id_set:
- *        A set of node ids, which is defined inline, so by placing between
+ *        A set of node (ids :: char*), which is defined inline, so by placing between
  *        {} brackets.
  *   -# operation:
  *        A set operation on two node sets. This node set will be the result
  *        of that operation.
  *
+ * We use this, because users can denote nodes as a set expressions
+ * and perform operations with the sets.
+ * 
+ * For example, a user can define the following:
+ *   nodeset Expr = {Num, BinOp} | Monop
+ * ,where the | Monop denoted a UNION with the Monop set.
+ * 
  * All these types will be transformed into an array of nodes,
- * which can be found in the nodes array.
+ * which can be found in the nodes array @see Nodeset.
  */
 struct SetExpr {
     enum SetExprType type;
 
     union {
-        char *ref_id;
+        Id *ref_id;
         ccn_set_t *id_set;
         SetOperation *operation;
     };

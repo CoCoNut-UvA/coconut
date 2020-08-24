@@ -56,5 +56,10 @@ build/
 
 # Bin dir
 bin/
-.vscode/settings.json
-.vscode/launch.json
+
+# Doxygen generated docs file
+docs/
+
+/generated/src
+/generated/include/ccngen/
+.vscode

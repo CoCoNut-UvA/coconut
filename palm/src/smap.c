@@ -8,7 +8,6 @@
 #include "lib/memory.h"
 #include "lib/smap.h"
 
-
 // TODO: improve cleanup of hash map.
 
 smap_t *smap_init(size_t size) {
@@ -46,7 +45,6 @@ void smap_free_values(smap_t *map, void (*func)(void *)) {
             func(elem->value);
         }
     }
-
 }
 
 unsigned int smap_hash_fun(const char *key) {

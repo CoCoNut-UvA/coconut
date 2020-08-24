@@ -1,0 +1,17 @@
+target_sources(${PROJECT_NAME}
+    PUBLIC
+        API.h
+    PRIVATE
+        gen-functions.h
+        gen-ast.c
+        gen-enum.c
+        gen-trav.c
+        gen-trav-data.c
+        gen-free.c
+        gen-copy.c
+        gen-actions.c
+        gen-cmakelists.c
+        gen-vtables.c
+        gen-check.c
+        API.c
+)

@@ -1,6 +1,6 @@
 #pragma once
 
-enum {
+extern enum {
     SUCCESS = 0,
     CANNOT_CREATE_DIR = 1,
     CANNOT_OPEN_FILE = 2,
@@ -9,4 +9,5 @@ enum {
     MALLOC_NULL = 5,
     REGEX_COMPILE_ERROR = 6,
     UNKNOWN_BASICTYPE = 7,
+    INVALID_BACKEND = 8,
 } ErrorCode;

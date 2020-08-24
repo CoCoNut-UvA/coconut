@@ -10,6 +10,7 @@
 #include "ast/ast.h"
 #include "ast/create.h"
 #include "ast/free.h"
+#include "ast/util.h"
 
 #include "lib/array.h"
 #include "lib/memory.h"
@@ -75,7 +76,7 @@ static void *check_prefix_exists(struct Info *info, char *prefix) {
 static char *gen_unique_prefix_from_existing_prefix(char *prefix,
                                                     struct Info *info) {
     size_t i = 1;
-    int max_size = (int)ceil(log10(SIZE_MAX));
+    int max_size = (int)ceil(log10((double)SIZE_MAX));
     char buffer[max_size + 2];
     while (true) {
         snprintf(buffer, max_size + 2, "%zu", i);
@@ -153,25 +154,26 @@ static int check_enums(array *enums, struct Info *info) {
         void *orig_def;
 
         // TODO check if name of enum overlaps with autogen enum.
-        if ((orig_def = check_name_exists(info, cur_enum->id)) != NULL) {
+        if ((orig_def = check_name_exists(info, cur_enum->id->orig)) != NULL) {
             print_error(cur_enum->id, "Redefinition of name '%s'",
-                        cur_enum->id);
+                        cur_enum->id->orig);
             print_note(orig_def, "Previously declared here");
             error = 1;
         } else {
-            smap_insert(info->enum_name, cur_enum->id, cur_enum);
+            smap_insert(info->enum_name, cur_enum->id->orig, cur_enum);
         }
 
         char *orig_prefix;
         // TODO check if prefix is not forbidden: NS_.
-        if ((orig_prefix =
-                 smap_retrieve(info->enum_prefix, cur_enum->prefix)) != NULL) {
+        if ((orig_prefix = smap_retrieve(info->enum_prefix,
+                                         cur_enum->prefix->orig)) != NULL) {
             print_error(cur_enum->prefix, "Redefinition of prefix '%s'",
-                        cur_enum->prefix);
+                        cur_enum->prefix->orig);
             print_note(orig_prefix, "Previously declared here");
             error = 1;
         } else {
-            smap_insert(info->enum_prefix, cur_enum->prefix, cur_enum->prefix);
+            smap_insert(info->enum_prefix, cur_enum->prefix->orig,
+                        cur_enum->prefix->orig);
         }
     }
     return error;
@@ -185,13 +187,13 @@ static int check_nodes(array *nodes, struct Info *info) {
         Node *cur_node = (Node *)array_get(nodes, i);
         void *orig_def;
 
-        if ((orig_def = check_name_exists(info, cur_node->id))) {
+        if ((orig_def = check_name_exists(info, cur_node->id->orig))) {
             print_error(cur_node->id, "Redefinition of name '%s'",
-                        cur_node->id);
+                        cur_node->id->orig);
             print_note(orig_def, "Previously declared here");
             error = 1;
         } else {
-            smap_insert(info->node_name, cur_node->id, cur_node);
+            smap_insert(info->node_name, cur_node->id->orig, cur_node);
         }
 
         if (cur_node->root) {
@@ -216,13 +218,14 @@ static int check_nodesets(array *nodesets, struct Info *info) {
         Nodeset *cur_nodeset = (Nodeset *)array_get(nodesets, i);
         void *orig_def;
 
-        if ((orig_def = check_name_exists(info, cur_nodeset->id)) != NULL) {
+        if ((orig_def = check_name_exists(info, cur_nodeset->id->orig)) !=
+            NULL) {
             print_error(cur_nodeset->id, "Redefinition of name '%s'",
-                        cur_nodeset->id);
+                        cur_nodeset->id->orig);
             print_note(orig_def, "Previously declared here");
             error = 1;
         } else {
-            smap_insert(info->nodeset_name, cur_nodeset->id, cur_nodeset);
+            smap_insert(info->nodeset_name, cur_nodeset->id->orig, cur_nodeset);
         }
     }
     return error;
@@ -231,9 +234,9 @@ static int check_actions_reference(array *actions, struct Info *info);
 static Action *copy_action(Action *action) {
     Action *new = NULL;
     if (action->type == ACTION_REFERENCE) {
-        new = create_action(action->type, strdup(action->action), action->id);
+      new = create_action(action->type, ccn_str_cpy(action->action), action->id);
     } else {
-        new = create_action(action->type, action->action, action->id);
+      new = create_action(action->type, action->action, action->id);
     }
     new->checked = false;
     new->action_owner = false;
@@ -242,18 +245,18 @@ static Action *copy_action(Action *action) {
 
 static Phase *copy_phase_shallow(Phase *phase) {
     Phase *new =
-        create_phase_header(ccn_str_cpy(phase->id), phase->start, phase->cycle);
+        create_phase_header(id_cpy(phase->id), phase->start, phase->cycle);
     array *actions = create_array();
     for (int i = 0; i < array_size(phase->actions); ++i) {
         array_append(actions, copy_action(array_get(phase->actions, i)));
     }
-    char *root = NULL;
+    Id *root = NULL;
     if (phase->root != NULL) {
-        root = ccn_str_cpy(phase->root);
+        root = id_cpy(phase->root);
     }
     new->common_info->hash = phase->common_info->hash;
     new->common_info->hash_matches = phase->common_info->hash_matches;
-    new = create_phase(new, root, ccn_str_cpy(phase->prefix), actions,
+    new = create_phase(new, root, id_cpy(phase->prefix), actions,
                        phase->gate_func);
     ccn_set_free(new->roots);
     new->roots = ccn_set_copy(phase->roots);
@@ -262,34 +265,44 @@ static Phase *copy_phase_shallow(Phase *phase) {
     return new;
 }
 
+Id *get_action_id(const Action *action) {
+    switch (action->type) {
+    case ACTION_PASS:
+        return ((Pass *)action->action)->id;
+    case ACTION_TRAVERSAL:
+        return ((Traversal *)action->action)->id;
+    case ACTION_PHASE:
+        return ((Phase *)action->action)->id;
+    case ACTION_REFERENCE:
+        return action->id;
+    }
+}
+
 static int check_action_reference(Action *action, struct Info *info) {
-    char *ref = (char *)action->action;
-    void *item = smap_retrieve(info->phase_name, ref);
+    Id *ref = (Id *)get_action_id(action);
+    void *item = smap_retrieve(info->phase_name, ref->orig);
     if (item != NULL) {
         Phase *p = copy_phase_shallow(item);
         action->type = ACTION_PHASE;
         action->action = p;
         action->checked = true;
-        mem_free(ref);
         check_actions_reference(p->actions, info);
         return 0;
     }
 
-    item = smap_retrieve(info->traversal_name, ref);
+    item = smap_retrieve(info->traversal_name, ref->orig);
     if (item != NULL) {
         action->type = ACTION_TRAVERSAL;
         action->action = item;
         action->checked = true;
-        mem_free(ref);
         return 0;
     }
 
-    item = smap_retrieve(info->pass_name, ref);
+    item = smap_retrieve(info->pass_name, ref->orig);
     if (item != NULL) {
         action->type = ACTION_PASS;
         action->action = item;
         action->checked = true;
-        mem_free(ref);
         return 0;
     }
 
@@ -317,17 +330,18 @@ static int check_phases(array *phases, struct Info *info) {
     for (int i = 0; i < array_size(phases); ++i) {
         Phase *cur_phase = (Phase *)array_get(phases, i);
         void *orig_def;
-        if ((orig_def = check_name_exists(info, cur_phase->id)) != NULL) {
+        if ((orig_def = check_name_exists(info, cur_phase->id->orig)) != NULL) {
             print_error(cur_phase->id, "Redefinition of name '%s'",
-                        cur_phase->id);
+                        cur_phase->id->orig);
             print_note(orig_def, "Previously declared here");
             error = 1;
         } else {
-            smap_insert(info->phase_name, cur_phase->id, cur_phase);
+            smap_insert(info->phase_name, cur_phase->id->orig, cur_phase);
         }
 
         if (cur_phase->root != NULL) {
-            Node *node_def = smap_retrieve(info->node_name, cur_phase->root);
+            Node *node_def =
+                smap_retrieve(info->node_name, cur_phase->root->orig);
             if (node_def == NULL) {
                 print_error(cur_phase->root, "Not a valid node.");
                 error = 1;
@@ -335,7 +349,7 @@ static int check_phases(array *phases, struct Info *info) {
             bool has_child_next = false;
             for (int j = 0; j < array_size(node_def->children); ++j) {
                 Child *child = array_get(node_def->children, j);
-                if (strcmp(child->id, "next") == 0) {
+                if (strcmp(child->id->lwr, "next") == 0) {
                     has_child_next = true;
                     break;
                 }
@@ -348,24 +362,24 @@ static int check_phases(array *phases, struct Info *info) {
         }
 
         if (cur_phase->prefix != NULL) {
-            if ((orig_def = check_prefix_exists(info, cur_phase->prefix)) !=
-                NULL) {
+            if ((orig_def = check_prefix_exists(
+                     info, cur_phase->prefix->orig)) != NULL) {
                 print_error(cur_phase->prefix, "Redefinition of prefix '%s'",
-                            cur_phase->prefix);
+                            cur_phase->prefix->orig);
                 print_note(orig_def, "Previously declared here");
                 error = 1;
             } else {
-                smap_insert(info->action_prefix, cur_phase->prefix,
+                smap_insert(info->action_prefix, cur_phase->prefix->orig,
                             cur_phase->prefix);
             }
         } else {
-            char *pref = gen_prefix_from_string(cur_phase->id, info);
+            char *pref = gen_prefix_from_string(cur_phase->id->orig, info);
             if (pref == NULL) {
                 print_user_error("CCN", "Could not create prefix");
                 exit(1);
             }
-            cur_phase->prefix = pref;
-            smap_insert(info->action_prefix, cur_phase->prefix,
+            cur_phase->prefix = create_id(pref);
+            smap_insert(info->action_prefix, cur_phase->prefix->orig,
                         cur_phase->prefix);
         }
     }
@@ -390,32 +404,32 @@ static int check_passes(array *passes, struct Info *info) {
         Pass *cur_pass = (Pass *)array_get(passes, i);
         void *orig_def;
 
-        if ((orig_def = check_name_exists(info, cur_pass->id)) != NULL) {
+        if ((orig_def = check_name_exists(info, cur_pass->id->orig)) != NULL) {
             print_error(cur_pass->id, "Redefinition of name '%s'",
-                        cur_pass->id);
+                        cur_pass->id->orig);
             print_note(orig_def, "Previously declared here");
         } else {
-            smap_insert(info->pass_name, cur_pass->id, cur_pass);
+            smap_insert(info->pass_name, cur_pass->id->orig, cur_pass);
         }
         if (cur_pass->prefix != NULL) {
-            if ((orig_def = check_prefix_exists(info, cur_pass->prefix)) !=
-                NULL) {
+            if ((orig_def = check_prefix_exists(
+                     info, cur_pass->prefix->orig)) != NULL) {
                 print_error(cur_pass->prefix, "Redefinition of prefix '%s'",
-                            cur_pass->prefix);
+                            cur_pass->prefix->orig);
                 print_note(orig_def, "Previously declared here");
                 error = 1;
             } else {
-                smap_insert(info->action_prefix, cur_pass->prefix,
+                smap_insert(info->action_prefix, cur_pass->prefix->orig,
                             cur_pass->prefix);
             }
         } else {
-            char *pref = gen_prefix_from_string(cur_pass->id, info);
+            char *pref = gen_prefix_from_string(cur_pass->id->orig, info);
             if (pref == NULL) {
                 print_user_error("CCN", "Could not create prefix");
                 exit(1);
             }
-            cur_pass->prefix = pref;
-            smap_insert(info->action_prefix, cur_pass->prefix,
+            cur_pass->prefix = create_id(pref);
+            smap_insert(info->action_prefix, cur_pass->prefix->orig,
                         cur_pass->prefix);
         }
     }
@@ -430,35 +444,37 @@ static int check_traversals(array *traversals, struct Info *info) {
         Traversal *cur_traversal = (Traversal *)array_get(traversals, i);
         void *orig_def;
 
-        if ((orig_def = check_name_exists(info, cur_traversal->id)) != NULL) {
+        if ((orig_def = check_name_exists(info, cur_traversal->id->orig)) !=
+            NULL) {
             print_error(cur_traversal->id, "Redefinition of name '%s'",
-                        cur_traversal->id);
+                        cur_traversal->id->orig);
             print_note(orig_def, "Previously declared here");
             error = 1;
         } else {
-            smap_insert(info->traversal_name, cur_traversal->id, cur_traversal);
+            smap_insert(info->traversal_name, cur_traversal->id->orig,
+                        cur_traversal);
         }
 
         if (cur_traversal->prefix != NULL) {
-            if ((orig_def = check_prefix_exists(info, cur_traversal->prefix)) !=
-                NULL) {
+            if ((orig_def = check_prefix_exists(
+                     info, cur_traversal->prefix->orig)) != NULL) {
                 print_error(cur_traversal->prefix,
                             "Redefinition of prefix '%s'",
-                            cur_traversal->prefix);
+                            cur_traversal->prefix->orig);
                 print_note(orig_def, "Previously declared here");
                 error = 1;
             } else {
-                smap_insert(info->action_prefix, cur_traversal->prefix,
+                smap_insert(info->action_prefix, cur_traversal->prefix->orig,
                             cur_traversal->prefix);
             }
         } else {
-            char *pref = gen_prefix_from_string(cur_traversal->id, info);
+            char *pref = gen_prefix_from_string(cur_traversal->id->orig, info);
             if (pref == NULL) {
                 print_user_error("CCN", "Could not create prefix");
                 exit(1);
             }
-            cur_traversal->prefix = pref;
-            smap_insert(info->action_prefix, cur_traversal->prefix,
+            cur_traversal->prefix = create_id(pref);
+            smap_insert(info->action_prefix, cur_traversal->prefix->orig,
                         cur_traversal->prefix);
         }
     }
@@ -476,25 +492,26 @@ static int check_node(Node *node, struct Info *info) {
             Child *orig_child;
 
             // Check if there is no duplicate naming.
-            if ((orig_child = smap_retrieve(child_name, child->id)) != NULL) {
+            if ((orig_child = smap_retrieve(child_name, child->id->orig)) !=
+                NULL) {
                 print_error(child->id,
                             "Duplicate name '%s' in children of node '%s'",
-                            child->id, node->id);
+                            child->id->orig, node->id->orig);
                 print_note(orig_child->id, "Previously declared here");
                 error = 1;
             } else {
-                smap_insert(child_name, child->id, child);
+                smap_insert(child_name, child->id->orig, child);
             }
 
             Node *child_node =
-                (Node *)smap_retrieve(info->node_name, child->type);
+                (Node *)smap_retrieve(info->node_name, child->type->orig);
             Nodeset *child_nodeset =
-                (Nodeset *)smap_retrieve(info->nodeset_name, child->type);
+                (Nodeset *)smap_retrieve(info->nodeset_name, child->type->orig);
 
             if (!child_node && !child_nodeset) {
                 print_error(child->type,
                             "Unknown type '%s' of child '%s' of node '%s'",
-                            child->type, child->id, node->id);
+                            child->type->orig, child->id->orig, node->id->orig);
                 error = 1;
             } else {
                 child->node = child_node;
@@ -505,7 +522,7 @@ static int check_node(Node *node, struct Info *info) {
                 print_error(
                     child->id,
                     "Child '%s' of node '%s' cannot use root node as type",
-                    child->id, node->id);
+                    child->id->orig, node->id->orig);
                 error = 1;
             }
         }
@@ -518,21 +535,22 @@ static int check_node(Node *node, struct Info *info) {
             Attr *attr = (Attr *)array_get(node->attrs, i);
             Attr *orig_attr;
 
-            if ((orig_attr = smap_retrieve(attr_name, attr->id)) != NULL) {
+            if ((orig_attr = smap_retrieve(attr_name, attr->id->orig)) !=
+                NULL) {
                 print_error(attr->id,
                             "Duplicate name '%s' in atributes of node '%s'",
-                            attr->id, node->id);
+                            attr->id->orig, node->id->orig);
                 print_note(orig_attr->id, "Previously declared here");
                 error = 1;
             } else {
-                smap_insert(attr_name, attr->id, attr);
+                smap_insert(attr_name, attr->id->orig, attr);
             }
 
             if (attr->type == AT_link_or_enum) {
                 Node *attr_node =
-                    (Node *)smap_retrieve(info->node_name, attr->type_id);
+                    (Node *)smap_retrieve(info->node_name, attr->type_id->orig);
                 Enum *attr_enum =
-                    (Enum *)smap_retrieve(info->enum_name, attr->type_id);
+                    (Enum *)smap_retrieve(info->enum_name, attr->type_id->orig);
 
                 if (attr_node) {
                     attr->type = AT_link;
@@ -542,7 +560,7 @@ static int check_node(Node *node, struct Info *info) {
                     print_error(
                         attr->type_id,
                         "Unknown type '%s' of attribute '%s' of node '%s'",
-                        attr->type_id, attr->id, node->id);
+                        attr->type_id->orig, attr->id->orig, node->id->orig);
                     error = 1;
                 }
             }
@@ -562,30 +580,31 @@ static int check_nodeset(Nodeset *nodeset, struct Info *info) {
 
     for (int i = 0; i < array_size(nodeset->nodes); ++i) {
         Node *node = (Node *)array_get(nodeset->nodes, i);
-        Node *orig_node = smap_retrieve(node_name, node->id);
+        Node *orig_node = smap_retrieve(node_name, node->id->orig);
 
         // Check if there is no duplicate naming.
         if (orig_node != NULL) {
             print_error(node, "Duplicate name '%s' in nodes of nodeset '%s'",
-                        node, nodeset->id);
+                        node, nodeset->id->orig);
             print_note(orig_node, "Previously declared here");
             error = 1;
         } else {
-            smap_insert(node_name, node->id, node);
+            smap_insert(node_name, node->id->orig, node);
         }
 
-        Node *nodeset_node = (Node *)smap_retrieve(info->node_name, node->id);
+        Node *nodeset_node =
+            (Node *)smap_retrieve(info->node_name, node->id->orig);
 
         Nodeset *nodeset_nodeset =
-            (Nodeset *)smap_retrieve(info->nodeset_name, node->id);
+            (Nodeset *)smap_retrieve(info->nodeset_name, node->id->orig);
 
         if (nodeset_nodeset) {
             print_error(node, "Nodeset '%s' contains other nodeset '%s'",
-                        nodeset->id, nodeset_nodeset->id);
+                        nodeset->id->orig, nodeset_nodeset->id->orig);
             error = 1;
         } else if (!nodeset_node) {
             print_error(node, "Unknown type of node '%s' in nodeset '%s'",
-                        node->id, nodeset->id);
+                        node->id->orig, nodeset->id->orig);
             error = 1;
         } else {
             /// TODO: Something with cleaning the array? probably happens
@@ -606,18 +625,18 @@ static int check_enum(Enum *arg_enum, struct Info *info) {
     smap_t *value_name = smap_init(16);
 
     for (int i = 0; i < array_size(arg_enum->values); ++i) {
-        char *cur_value = (char *)array_get(arg_enum->values, i);
-        char *orig_value;
+        Id *cur_value = (Id *)array_get(arg_enum->values, i);
+        Id *orig_value = smap_retrieve(value_name, cur_value->orig);
 
         // Check if there is no duplicate naming.
-        if ((orig_value = smap_retrieve(value_name, cur_value)) != NULL) {
+        if (orig_value != NULL) {
             print_error(cur_value, "Duplicate name '%s' in values of enum '%s'",
-                        cur_value, arg_enum->id);
+                        cur_value, arg_enum->id->orig);
             print_note(orig_value, "Previously declared here");
 
             error = 1;
         } else {
-            smap_insert(value_name, cur_value, cur_value);
+            smap_insert(value_name, cur_value->orig, cur_value);
         }
     }
 
@@ -631,7 +650,7 @@ static int check_traversal(Traversal *traversal, struct Info *info) {
 
     int error = 0;
 
-    if (traversal->nodes == NULL)
+    if (traversal->nodes == info->config->nodes)
         return 0;
 
     smap_t *node_name = smap_init(16);
@@ -641,68 +660,73 @@ static int check_traversal(Traversal *traversal, struct Info *info) {
 
     for (int i = 0; i < array_size(traversal->nodes); ++i) {
         Node *node = (Node *)array_get(traversal->nodes, i);
-        Node *orig_node = smap_retrieve(node_name, node->id);
+        Node *orig_node = smap_retrieve(node_name, node->id->orig);
 
         // Check if there is no duplicate naming.
         if (orig_node != NULL) {
             print_error(node, "Duplicate name '%s' in nodes of traversal '%s'",
-                        node->id, traversal->id);
+                        node->id->orig, traversal->id->orig);
             print_note(orig_node, "Previously declared here");
             error = 1;
         } else {
-            smap_insert(node_name, node->id, node);
+            smap_insert(node_name, node->id->orig, node);
         }
 
-        Node *traversal_node = (Node *)smap_retrieve(info->node_name, node->id);
+        Node *traversal_node =
+            (Node *)smap_retrieve(info->node_name, node->id->orig);
         Nodeset *traversal_nodeset =
-            (Nodeset *)smap_retrieve(info->nodeset_name, node->id);
+            (Nodeset *)smap_retrieve(info->nodeset_name, node->id->orig);
 
         if (traversal_node) {
-            array_append(nodes_expanded, strdup(node->id));
-            smap_insert(node_name_expanded, node->id, node);
+            array_append(nodes_expanded, strdup(node->id->orig));
+            smap_insert(node_name_expanded, node->id->orig, node);
         } else if (traversal_nodeset) {
 
             // Adds every node in the nodeset to the expanded node list
+	    // This makes sure nodesets in traversals are expended to their actual values.
             for (int j = 0; j < array_size(traversal_nodeset->nodes); j++) {
                 Node *nodeset_node = array_get(traversal_nodeset->nodes, j);
-                if (smap_retrieve(node_name_expanded, nodeset_node->id) ==
+		// It could be that we get the same node twice, so store the name in a lookup table,
+		// and check if we already included it in the new array.
+                if (smap_retrieve(node_name_expanded, nodeset_node->id->orig) ==
                     NULL) {
-                    array_append(nodes_expanded, strdup(nodeset_node->id));
-                    smap_insert(node_name_expanded, nodeset_node->id,
+		    array_append(nodes_expanded, node);
+                    smap_insert(node_name_expanded, nodeset_node->id->orig,
                                 nodeset_node);
                 }
             }
         } else {
             print_error(
                 node, "Unknown type of node or nodeset '%s' in traversal '%s'",
-                node->id, traversal->id);
+                node->id->orig, traversal->id->orig);
             error = 1;
         }
     }
+
+    // We clean the old array here and replace it with the expanded nodes. 
+    array_cleanup(traversal->nodes, NULL);
+    traversal->nodes = nodes_expanded;
 
     smap_t *td_name = smap_init(16);
 
     if (traversal->data) {
         for (int i = 0; i < array_size(traversal->data); i++) {
-            TravData *td = (TravData *)array_get(traversal->data, i);
-            TravData *orig_td;
+            Attr *td = (Attr *)array_get(traversal->data, i);
+            Attr *orig_td;
 
-            if ((orig_td = smap_retrieve(td_name, td->id)) != NULL) {
+            if ((orig_td = smap_retrieve(td_name, td->id->orig)) != NULL) {
                 print_error(
                     td->id,
                     "Duplicate name '%s' in atributes of traversal '%s'",
-                    td->id, traversal->id);
+                    td->id->orig, traversal->id->orig);
                 print_note(orig_td->id, "Previously declared here");
                 error = 1;
             } else {
-                smap_insert(td_name, td->id, td);
+                smap_insert(td_name, td->id->orig, td);
             }
         }
     }
 
-    /// TODO: Something with cleaning the array? probably happens somewhere else
-    // array_cleanup(traversal->nodes, NULL);
-    // traversal->nodes = nodes_expanded;
 
     smap_free(node_name);
     smap_free(node_name_expanded);
@@ -716,9 +740,9 @@ static int check_pass(Pass *pass, struct Info *info) {
     if (pass->func != NULL) {
         if (ccn_set_contains(info->functions, pass->func)) {
             error = 1;
-            print_error(pass->func, "Function already used in another pass.");
+            print_error(pass, "Function already used in another pass.");
         } else {
-            ccn_set_insert(info->functions, pass->func);
+            ccn_set_insert(info->functions, pass->func->orig);
         }
     }
     return error;
@@ -738,8 +762,8 @@ static int check_phase(Phase *phase, struct Info *info, smap_t *phase_order) {
     if (phase->start) {
         if (info->root_phase !=
             NULL) { // TODO: rename root_phase to start_phase in info struct.
-            print_error(phase->id, "Double declaration of start phase");
-            print_note(info->root_phase->id, "Previously declared here");
+            print_error(phase, "Double declaration of start phase");
+            print_note(info->root_phase, "Previously declared here");
             error = 1;
         } else {
             info->root_phase = phase;
@@ -747,7 +771,7 @@ static int check_phase(Phase *phase, struct Info *info, smap_t *phase_order) {
         }
     }
 
-    smap_insert(phase_order, phase->id, phase);
+    smap_insert(phase_order, phase->id->orig, phase);
 
     return error;
 }
@@ -758,9 +782,8 @@ void print_cyclic_error(array *vals, SetExpr *to_add) {
     for (int i = 0; i < array_size(vals); ++i) {
         char *val = array_get(vals, i);
         printf("%s->", val);
-        ;
     }
-    printf("%s\n", to_add->ref_id);
+    printf("%s\n", to_add->ref_id->orig);
 }
 
 bool is_cyclic_dependency(array *vals, char *new_to_add) {
@@ -777,16 +800,16 @@ static void evaluate_set_expr(SetExpr *expr, struct Info *info, int *error,
                               array *merged_sets, bool report) {
     ccn_set_t *new_set = NULL;
     if (expr->type == SET_REFERENCE) {
-        if (is_cyclic_dependency(merged_sets, expr->ref_id)) {
+        if (is_cyclic_dependency(merged_sets, expr->ref_id->orig)) {
             (*error)++;
             if (report) {
                 print_cyclic_error(merged_sets, expr);
             }
             return;
         } else {
-            array_append(merged_sets, expr->ref_id);
+            array_append(merged_sets, expr->ref_id->orig);
         }
-        Nodeset *target = smap_retrieve(info->nodeset_name, expr->ref_id);
+        Nodeset *target = smap_retrieve(info->nodeset_name, expr->ref_id->orig);
         if (target == NULL) {
             exit(EXIT_FAILURE);
         }
@@ -799,7 +822,7 @@ static void evaluate_set_expr(SetExpr *expr, struct Info *info, int *error,
 
         new_set = ccn_set_copy(target->expr->id_set);
 
-        mem_free(expr->ref_id);
+        mem_free(expr->ref_id->orig);
         expr->type = SET_LITERAL;
         expr->id_set = new_set;
     } else if (expr->type == SET_OPERATION) {
@@ -936,7 +959,7 @@ static void unwrap_all_actions(array *phases, struct Info *info) {
             case ACTION_PASS:
                 if (phase->root != NULL) {
                     Pass *pass = action->action;
-                    ccn_set_insert(pass->roots, ccn_str_cpy(phase->root));
+                    ccn_set_insert(pass->roots, ccn_str_cpy(phase->root->orig));
                 }
                 array_append(info->config->passes, (Pass *)action->action);
                 break;
@@ -947,7 +970,8 @@ static void unwrap_all_actions(array *phases, struct Info *info) {
             case ACTION_PHASE:
                 array_append(new_phases, (Phase *)action->action);
                 if (phase->root != NULL) {
-                    add_required_root_to_phase(action->action, phase->root);
+                    add_required_root_to_phase(action->action,
+                                               phase->root->orig);
                 }
                 break;
             default:
@@ -1061,11 +1085,11 @@ void last_action_found(Action *action, Range_spec_t *spec, bool active) {
 char *get_action_prefix(const Action *action) {
     switch (action->type) {
     case ACTION_PASS:
-        return ((Pass *)action->action)->prefix;
+        return ((Pass *)action->action)->prefix->orig;
     case ACTION_TRAVERSAL:
-        return ((Traversal *)action->action)->prefix;
+        return ((Traversal *)action->action)->prefix->orig;
     case ACTION_PHASE:
-        return ((Phase *)action->action)->prefix;
+        return ((Phase *)action->action)->prefix->orig;
     default:
         return NULL;
     }
@@ -1081,7 +1105,7 @@ bool find_lifetime_spec(Lifetime_t *lifetime, struct Info *info, Phase *phase,
 
     for (int i = 0; i < array_size(phase->actions); ++i) {
         Action *action = array_get(phase->actions, i);
-        if (ccn_str_equal(action->id, get_current_namespace(spec)) ||
+        if (ccn_str_equal(action->id->orig, get_current_namespace(spec)) ||
             ccn_str_equal(get_action_prefix(action),
                           get_current_namespace(spec))) {
             if (spec->inclusive) {
@@ -1123,8 +1147,8 @@ bool check_lifetime_spec_root(Lifetime_t *lifetime, struct Info *info,
     else
         spec = lifetime->start;
 
-    if (ccn_str_equal(root->id, get_current_namespace(spec)) ||
-        ccn_str_equal(root->prefix, get_current_namespace(spec))) {
+    if (ccn_str_equal(root->id->orig, get_current_namespace(spec)) ||
+        ccn_str_equal(root->prefix->orig, get_current_namespace(spec))) {
         if (spec->inclusive) {
             int error = 0;
             error =
@@ -1154,7 +1178,7 @@ static int check_lifetime_reach(Lifetime_t *lifetime, struct Info *info) {
     // TODO: refactor this into a function, not DRY!
     if (lifetime->start == NULL) {
         array *ids = array_init(1);
-        array_append(ids, strdup(info->root_phase->id));
+        array_append(ids, strdup(info->root_phase->id->orig));
         lifetime->owner = true;
         lifetime->start = create_range_spec(true, ids);
         lifetime->start->consistency_key = strdup(lifetime->key);
@@ -1169,7 +1193,7 @@ static int check_lifetime_reach(Lifetime_t *lifetime, struct Info *info) {
 
     if (lifetime->end == NULL) {
         array *ids = array_init(1);
-        array_append(ids, strdup(info->root_phase->id));
+        array_append(ids, strdup(info->root_phase->id->orig));
         lifetime->owner = true;
         lifetime->end = create_range_spec(true, ids);
         lifetime->end->life_type = lifetime->type;
@@ -1193,8 +1217,10 @@ static int check_lifetime_reach(Lifetime_t *lifetime, struct Info *info) {
     Range_spec_t *curr_spec = lifetime->start;
     Phase *root_phase = info->root_phase;
     if (lifetime->start != NULL && !lifetime->start->inclusive &&
-        (ccn_str_equal(get_current_namespace(curr_spec), root_phase->id) ||
-         ccn_str_equal(get_current_namespace(curr_spec), root_phase->prefix))) {
+        (ccn_str_equal(get_current_namespace(curr_spec),
+                       root_phase->id->orig) ||
+         ccn_str_equal(get_current_namespace(curr_spec),
+                       root_phase->prefix->orig))) {
 
         if (is_last_namespace(curr_spec)) {
             print_error(curr_spec,
@@ -1266,7 +1292,7 @@ static int check_lifetimes_array(array *lifetimes, struct Info *info) {
 static Enum *find_enum(array *enums, char *id) {
     for (int i = 0; i < array_size(enums); ++i) {
         Enum *e = array_get(enums, i);
-        if (ccn_str_equal(e->id, id))
+        if (ccn_str_equal(e->id->orig, id))
             return e;
     }
 
@@ -1279,7 +1305,7 @@ static int check_lifetimes_attribute_values(Attr *attr, struct Info *info) {
 
     for (int i = 0; i < array_size(attr->lifetimes); ++i) {
         Lifetime_t *lifetime = array_get(attr->lifetimes, i);
-        Enum *e = find_enum(info->config->enums, attr->type_id);
+        Enum *e = find_enum(info->config->enums, attr->type_id->orig);
 
         if (e == NULL)
             continue;
@@ -1342,8 +1368,8 @@ static int check_lifetimes(struct Info *info) {
     return error;
 }
 
-/* The user can leave range open in the lifetimes, here we fill them up,
- * this allows to process all lifetimes the same. We also populate the
+/* The user can leave range open in the lifetimes, here we fill them up.
+ * This allows to process all lifetimes the same. We also populate the
  * type in string form, as this is required for code generation. The string
  * form corresponds to the enum value that is generated.
  */
@@ -1378,7 +1404,7 @@ static void create_lifetime_func_attrs(Attr *attr, char *node_id,
                                        struct Info *info) {
     for (int i = 0; i < array_size(attr->lifetimes); ++i) {
         Lifetime_t *lifetime = array_get(attr->lifetimes, i);
-        char *key = ccn_str_cat(node_id, attr->id);
+        char *key = ccn_str_cat(node_id, attr->id->orig);
         lifetime->key = key; // Move ownership.
         fill_lifetime(lifetime, key);
     }
@@ -1387,7 +1413,7 @@ static void create_lifetime_func_attrs(Attr *attr, char *node_id,
 static void create_lifetime_func_child(Child *child, char *node_id) {
     for (int i = 0; i < array_size(child->lifetimes); ++i) {
         Lifetime_t *lifetime = array_get(child->lifetimes, i);
-        char *key = ccn_str_cat(node_id, child->id);
+        char *key = ccn_str_cat(node_id, child->id->orig);
         lifetime->key = key; // Move ownership.
         fill_lifetime(lifetime, key);
     }
@@ -1396,16 +1422,18 @@ static void create_lifetime_func_child(Child *child, char *node_id) {
 static void create_lifetime_func(Node *node, struct Info *info) {
     for (int i = 0; i < array_size(node->lifetimes); ++i) {
         Lifetime_t *lifetime = array_get(node->lifetimes, i);
-        fill_lifetime(lifetime, node->id);
-        lifetime->key = ccn_str_cpy(node->id);
+        fill_lifetime(lifetime, node->id->orig);
+        lifetime->key = ccn_str_cpy(node->id->orig);
     }
 
     for (int i = 0; i < array_size(node->children); ++i) {
-        create_lifetime_func_child(array_get(node->children, i), node->id);
+        create_lifetime_func_child(array_get(node->children, i),
+                                   node->id->orig);
     }
 
     for (int i = 0; i < array_size(node->attrs); ++i) {
-        create_lifetime_func_attrs(array_get(node->attrs, i), node->id, info);
+        create_lifetime_func_attrs(array_get(node->attrs, i), node->id->orig,
+                                   info);
     }
 }
 
@@ -1431,14 +1459,12 @@ uint32_t assign_id_to_phase_actions(Phase *phase, uint32_t id) {
 
 void assign_id_to_action(struct Info *info) {
     Phase *root = info->root_phase;
-    uint32_t id =
-        2; // 0 is for undefined, 1 is for the root-phase, so start at 2.
+    uint32_t id = 2; // 0 is for undefined, 1 is for the root-phase, so start at 2.
     assign_id_to_phase_actions(root, id);
 }
 
 Lifetime_t *copy_lifetime(Lifetime_t *lifetime, char *key) {
-    Lifetime_t *new =
-        create_lifetime(lifetime->start, lifetime->end, lifetime->type, NULL);
+    Lifetime_t *new = create_lifetime(lifetime->start, lifetime->end, lifetime->type, NULL);
     new->key = ccn_str_cpy(key);
     new->owner = false;
     return new;

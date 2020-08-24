@@ -9,14 +9,14 @@ typedef struct CommandOptions {
     bool break_inspect_points;
     bool consistcheck;
     bool serialise;
-    char *header_dir;
-    char *source_dir;
+    bool gen_user_files;
+    char *backend;
+    char *user_dir;
     char *dot_dir;
     char *doc_dir;
 } CommandOptions;
 
 extern CommandOptions global_command_options;
-
 
 void process_commandline_args(int argc, char *argv[]);
 void init_global_options();

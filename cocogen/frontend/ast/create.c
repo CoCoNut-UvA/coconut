@@ -10,10 +10,11 @@
 #include "lib/array.h"
 #include "lib/memory.h"
 #include "lib/print.h"
+#include "lib/str.h"
 
 extern ParserLocation yy_parser_location;
 
-static NodeCommonInfo *create_commoninfo() {
+NodeCommonInfo *create_commoninfo() {
     NodeCommonInfo *info = (NodeCommonInfo *)mem_alloc(sizeof(NodeCommonInfo));
     info->hash = NULL;
     info->hash_matches = false;
@@ -38,7 +39,7 @@ Config *create_config(array *phases, array *passes, array *traversals,
     return c;
 }
 
-Phase *create_phase_header(char *id, bool start, bool cycle) {
+Phase *create_phase_header(Id *id, bool start, bool cycle) {
     Phase *p = mem_alloc(sizeof(Phase));
     p->id = id;
     p->info = NULL;
@@ -54,8 +55,8 @@ Phase *create_phase_header(char *id, bool start, bool cycle) {
     return p;
 }
 
-Phase *create_phase(Phase *phase_header, char *root, char *prefix,
-                    array *actions, char *gate_func) {
+Phase *create_phase(Phase *phase_header, Id *root, Id *prefix, array *actions,
+                    Id *gate_func) {
 
     Phase *p = phase_header;
     p->root = root;
@@ -66,7 +67,7 @@ Phase *create_phase(Phase *phase_header, char *root, char *prefix,
     return p;
 }
 
-Pass *create_pass(char *id, char *func, char *prefix) {
+Pass *create_pass(Id *id, Id *func, Id *prefix) {
     Pass *p = mem_alloc(sizeof(Pass));
 
     p->id = id;
@@ -79,7 +80,7 @@ Pass *create_pass(char *id, char *func, char *prefix) {
     return p;
 }
 
-Traversal *create_traversal(char *id, char *func, char *prefix, SetExpr *expr,
+Traversal *create_traversal(Id *id, Id *func, Id *prefix, SetExpr *expr,
                             array *data) {
 
     Traversal *t = mem_alloc(sizeof(Traversal));
@@ -94,7 +95,7 @@ Traversal *create_traversal(char *id, char *func, char *prefix, SetExpr *expr,
     return t;
 }
 
-Enum *create_enum(char *id, char *prefix, array *values) {
+Enum *create_enum(Id *id, Id *prefix, array *values) {
 
     Enum *e = mem_alloc(sizeof(Enum));
 
@@ -107,7 +108,7 @@ Enum *create_enum(char *id, char *prefix, array *values) {
     return e;
 }
 
-Nodeset *create_nodeset(char *id, SetExpr *expr) {
+Nodeset *create_nodeset(Id *id, SetExpr *expr) {
     Nodeset *n = mem_alloc(sizeof(Nodeset));
     n->id = id;
     n->expr = expr;
@@ -136,12 +137,12 @@ ccn_set_t *idlist_to_set(array *ids) {
     ccn_set_t *set = ccn_set_string_create(20);
 
     for (int i = 0; i < array_size(ids); i++) {
-        void *item = array_get(ids, i);
-        char *id = (char *)item;
-        if (!ccn_set_insert(set, item)) {
-            char *id_def = (char *)ccn_set_get(set, item);
+        Id *id = array_get(ids, i);
+        if (!ccn_set_insert(set, id->orig)) {
+            char *id_def = (char *)ccn_set_get(set, id->orig);
             print_warning(
-                id, "Set element is already defined, so will be ignored.");
+                id->orig,
+                "Set element is already defined, so will be ignored.");
             print_note(id_def, "Set element already defined here.");
         }
     }
@@ -157,7 +158,7 @@ SetExpr *create_set_expr(enum SetExprType type, void *value) {
 
     switch (type) {
     case SET_REFERENCE:
-        expr->ref_id = (char *)value;
+        expr->ref_id = (Id *)value;
         break;
     case SET_LITERAL:
         expr->id_set = idlist_to_set((array *)value);
@@ -174,7 +175,7 @@ SetExpr *create_set_expr(enum SetExprType type, void *value) {
     return expr;
 }
 
-Node *create_node(char *id, Node *nodebody) {
+Node *create_node(Id *id, Node *nodebody) {
 
     nodebody->id = id;
     nodebody->root = false;
@@ -222,7 +223,7 @@ Lifetime_t *create_lifetime(Range_spec_t *start, Range_spec_t *end,
     return lifetime;
 }
 
-Child *create_child(int construct, array *lifetimes, char *id, char *type) {
+Child *create_child(int construct, array *lifetimes, Id *id, Id *type) {
 
     Child *c = mem_alloc(sizeof(Child));
     c->construct = construct;
@@ -263,52 +264,28 @@ MandatoryPhase *create_mandatory_phaserange(char *phase_start, char *phase_end,
     return p;
 }
 
-Action *create_action(enum ActionType type, void *action, char *id) {
+Action *create_action(enum ActionType type, void *action, Id *id) {
     Action *_action = mem_alloc(sizeof(Action));
     _action->type = type;
     _action->action = action;
     _action->checked = false;
-    _action->id = strdup(id);
+    _action->id = id;
     _action->active_specs = smap_init(2);
     _action->action_owner = true;
     _action->id_counter = 0;
     return _action;
 }
 
-TravData *create_travdata_primitive(enum AttrType type, char *id,
-                                    AttrValue *value) {
-
-    TravData *td = mem_alloc(sizeof(TravData));
-    td->type = type;
-    td->type_id = NULL;
-    td->id = id;
-    td->value.primitive_value = value;
-
-    td->common_info = create_commoninfo();
-    return td;
-}
-
-TravData *create_travdata_struct(char *type, char *id, char *include) {
-
-    TravData *td = mem_alloc(sizeof(TravData));
-    td->type = AT_link_or_enum;
-    td->type_id = type;
-    td->id = id;
-    td->value.include = include;
-
-    td->common_info = create_commoninfo();
-    return td;
-}
-
 Attr *create_attr(Attr *a, AttrValue *default_value, int construct,
-                  array *lifetimes) {
+                  array *lifetimes, char *include) {
     a->default_value = default_value;
+    a->include = include;
     a->construct = construct;
     a->lifetimes = lifetimes;
     return a;
 }
 
-Attr *create_attrhead_primitive(enum AttrType type, char *id) {
+Attr *create_attrhead_primitive(enum AttrType type, Id *id) {
 
     Attr *a = mem_alloc(sizeof(Attr));
     a->type = type;
@@ -319,7 +296,7 @@ Attr *create_attrhead_primitive(enum AttrType type, char *id) {
     return a;
 }
 
-Attr *create_attrhead_idtype(char *type, char *id) {
+Attr *create_attrhead_idtype(Id *type, Id *id) {
 
     Attr *a = mem_alloc(sizeof(Attr));
     a->type = AT_link_or_enum;
@@ -330,7 +307,7 @@ Attr *create_attrhead_idtype(char *type, char *id) {
     return a;
 }
 
-AttrValue *create_attrval_string(char *value) {
+AttrValue *create_attrval_string(Id *value) {
     AttrValue *v = mem_alloc(sizeof(AttrValue));
     v->type = AV_string;
 
@@ -385,11 +362,21 @@ AttrValue *create_attrval_bool(bool value) {
     return v;
 }
 
-AttrValue *create_attrval_id(char *id) {
+AttrValue *create_attrval_id(Id *id) {
     AttrValue *v = mem_alloc(sizeof(AttrValue));
     v->type = AV_id;
     v->value.string_value = id;
 
     v->common_info = create_commoninfo();
     return v;
+}
+
+Id *create_id(char *string) {
+    Id *i = mem_alloc(sizeof(Id));
+    i->orig = string;
+    i->lwr = ccn_str_lwr(string);
+    i->upr = ccn_str_upr(string);
+
+    i->common_info = create_commoninfo();
+    return i;
 }

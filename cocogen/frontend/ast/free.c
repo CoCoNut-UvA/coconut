@@ -5,6 +5,8 @@
 #include "lib/array.h"
 #include "lib/memory.h"
 
+static Config *config_ = NULL;
+
 static void free_commoninfo(NodeCommonInfo *info) {
     if (info->hash)
         mem_free(info->hash);
@@ -28,6 +30,13 @@ static void free_lifetime(void *p) {
     mem_free(lifetime->key);
     mem_free(lifetime);
 
+}
+
+void free_id(Id *id) {
+  mem_free(id->orig);
+  mem_free(id->lwr);
+  mem_free(id->upr);
+  mem_free(id);
 }
 
 void free_setOperation(SetOperation *operation);
@@ -66,14 +75,13 @@ static void free_action(void *a) {
         }
     }
     smap_free(action->active_specs);
-    mem_free(action->id);
     mem_free(action);
 }
 
 static void free_phase(void *p) {
     Phase *phase = p;
 
-    mem_free(phase->id);
+    free_id(phase->id);
     free_commoninfo(phase->common_info);
     if (phase->root != NULL) {
         mem_free(phase->root);
@@ -89,18 +97,18 @@ static void free_pass(void *p) {
     Pass *pass = p;
 
     mem_free(pass->prefix);
-    mem_free(pass->id);
+    free_id(pass->id);
     free_commoninfo(pass->common_info);
     mem_free(pass);
 }
 
 static void free_traversal(void *p) {
     Traversal *traversal = p;
-    if (traversal->nodes != NULL)
-        array_cleanup(traversal->nodes, mem_free);
+    if (traversal->nodes != config_->nodes)
+        array_cleanup(traversal->nodes, NULL);
 
     mem_free(traversal->prefix);
-    mem_free(traversal->id);
+    free_id(traversal->id);
     free_commoninfo(traversal->common_info);
     mem_free(traversal);
 }
@@ -121,14 +129,13 @@ static void free_nodeset(void *p) {
     if (nodeset->nodes != NULL)
         array_cleanup(nodeset->nodes, NULL);
 
-    mem_free(nodeset->id);
+    free_id(nodeset->id);
     free_commoninfo(nodeset->common_info);
     mem_free(nodeset);
 }
 
 static void free_child(void *p) {
     Child *c = p;
-
 
     mem_free(c->id);
     if (c->type != NULL)
@@ -179,6 +186,7 @@ static void free_node(void *p) {
 }
 
 void free_config(Config *config) {
+    config_ = config;
     array_cleanup(config->phases, free_phase);
     array_cleanup(config->passes, free_pass);
     array_cleanup(config->traversals, free_traversal);
@@ -187,5 +195,6 @@ void free_config(Config *config) {
     array_cleanup(config->nodes, free_node);
 
     free_commoninfo(config->common_info);
+    config_ = NULL;
     mem_free(config);
 }

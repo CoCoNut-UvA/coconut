@@ -1,5 +1,10 @@
-#include "filegen/util.h"
+#include <ctype.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "ast/ast.h"
+#include "filegen/util.h"
+#include "lib/print.h"
 #include "lib/smap.h"
 
 void generate_node_header_includes(Config *config, FILE *fp, Node *node) {
@@ -15,9 +20,10 @@ void generate_node_header_includes(Config *config, FILE *fp, Node *node) {
 
     for (int i = 0; i < array_size(node->children); ++i) {
         Child *child = (Child *)array_get(node->children, i);
-        if (smap_retrieve(map, child->type) == NULL) {
-            out("typedef struct %s %s;\n", child->type, child->type);
-            smap_insert(map, child->type, child);
+        if (smap_retrieve(map, child->type->orig) == NULL) {
+            out("typedef struct %s %s;\n", child->type->orig,
+                child->type->orig);
+            smap_insert(map, child->type->orig, child);
         }
     }
 
@@ -44,22 +50,22 @@ void generate_node_header_includes(Config *config, FILE *fp, Node *node) {
             break;
         }
 
-        if (smap_retrieve(map, attr->id) == NULL) {
+        if (smap_retrieve(map, attr->id->orig) == NULL) {
             switch (attr->type) {
             case AT_link:
-                out("struct %s;\n", attr->type_id);
+                out("struct %s;\n", attr->type_id->orig);
                 break;
             default:
                 break;
             }
-            smap_insert(map, attr->id, attr);
+            smap_insert(map, attr->id->orig, attr);
         }
     }
 
     smap_free(map);
 
     if (using_enum)
-        out("#include \"generated/enum.h\"\n");
+        out("#include \"enum.h\"\n");
     if (using_int)
         out("#include <stdint.h>\n");
     if (using_bool)
@@ -69,5 +75,47 @@ void generate_node_header_includes(Config *config, FILE *fp, Node *node) {
 void print_indent_level(int indent_level, FILE *fp) {
     for (int i = 0; i < indent_level; i++) {
         fprintf(fp, "    ");
+    }
+}
+
+char *attr_default_value(Config *config, FILE *fp, enum AttrType type) {
+    switch (type) {
+    case AT_int:
+    case AT_int8:
+    case AT_int16:
+    case AT_int32:
+    case AT_int64:
+    case AT_enum:
+    case AT_uint:
+    case AT_uint8:
+    case AT_uint16:
+    case AT_uint32:
+    case AT_uint64:
+        return "0";
+        break;
+    case AT_float:
+    case AT_double:
+        return "0.0";
+        break;
+    case AT_bool:
+        return "false";
+        break;
+    case AT_string:
+    case AT_link:
+        return "NULL";
+        break;
+    case AT_link_or_enum:
+        print_user_error("attr_default_value",
+                         "attrtype is somehow not converted to link or enum");
+        return "NULL";
+        break;
+    }
+}
+
+char *pass_func_or_id(Pass *pass) {
+    if (pass->func) {
+        return pass->func->lwr;
+    } else {
+        return pass->id->lwr;
     }
 }

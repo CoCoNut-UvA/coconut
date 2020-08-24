@@ -1,7 +1,7 @@
 #include <assert.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stddef.h>
 
 #include "lib/array.h"
 #include "lib/memory.h"
@@ -12,9 +12,7 @@ struct array {
     size_t capacity;
 };
 
-array *create_array(void) {
-    return array_init(32);
-}
+array *create_array(void) { return array_init(32); }
 
 struct array *array_init(long initial_capacity) {
     assert(initial_capacity > 0);
@@ -83,9 +81,7 @@ size_t array_size(const struct array *a) {
     return a->size;
 }
 
-void array_clear(struct array *a) {
-    a->size = 0;
-}
+void array_clear(struct array *a) { a->size = 0; }
 
 void array_sort(struct array *a, int (*compare)(const void *, const void *)) {
     qsort(a->data, a->size, sizeof(void *), compare);
