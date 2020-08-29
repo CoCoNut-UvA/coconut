@@ -192,9 +192,12 @@ struct pass {
 
 };
 
+
+
 struct traversal {
     struct id *name;
     struct id *prefix;
+    struct attribute_slist *data;
     char *info;
 
     union {
@@ -217,6 +220,8 @@ STAILQ_HEAD(traversal_stailq, traversal);
 STAILQ_HEAD(node_stailq, node);
 STAILQ_HEAD(nodeset_stailq, nodeset);
 STAILQ_HEAD(ccn_enum_stailq, ccn_enum);
+STAILQ_HEAD(trav_data_slist, trav_data);
+
 
 struct node {
     struct id *name;

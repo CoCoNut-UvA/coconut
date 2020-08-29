@@ -27,6 +27,10 @@ traversal change {
 
 traversal trav {
     info = "I am traversing everything"
+
+    data = {
+        int value,
+    }
 };
 
 nodeset Constants {

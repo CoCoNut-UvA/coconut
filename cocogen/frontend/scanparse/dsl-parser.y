@@ -73,6 +73,7 @@ struct ctinfo yy_ctinfo;
     struct nodeset_stailq *nodesets;
     struct ccn_enum *ccn_enum;
     struct id_slist *ids;
+    struct trav_data *trav_data;
 }
 
 %define parse.error verbose
@@ -149,9 +150,9 @@ struct ctinfo yy_ctinfo;
 %type<ccn_set_operation> setoperation
 %type<ccn_set_expr> setexpr traversalnodes
 %type<node> node
-%type<attribute> attribute
+%type<attribute> attribute travdataitem
 %type<attribute_type> attribute_primitive_type
-%type<attributes> attributes attributebody
+%type<attributes> attributes attributebody travdatalist travdata
 %type<child> child
 %type<children> children childrenbody
 %type<nodeset> nodeset
@@ -231,9 +232,10 @@ pass: T_PASS id[name] '{'  info[information] prefix[identifier] func[target_func
     }
     ;
 
-traversal: T_TRAVERSAL id[name] '{' info[information] prefix[identifier] traversalnodes[nodes] '}'
+traversal: T_TRAVERSAL id[name] '{' info[information] prefix[identifier] traversalnodes[nodes] travdata[data]'}'
     {
         $$ = ASTnewTraversal($name, $identifier, $information, $nodes);
+        $$->data = $data;
     }
     ;
 
@@ -486,6 +488,36 @@ enumvalues: T_VALUES '=' '{' idlist '}'
         $$ = $4;
     }
     ;
+
+
+travdata: T_TRAVDATA '=' '{' travdatalist '}'
+    { $$ = $4; }
+    | %empty
+    {
+        $$ = NULL;
+    }
+    ;
+
+travdatalist: travdatalist ',' travdataitem
+        {
+            SLIST_INSERT_HEAD($1, $3, next);
+            $$ = $1;
+        }
+        | travdataitem
+        {
+            struct attribute_slist *attr = MEMmalloc(sizeof(struct attribute));
+            SLIST_INIT(attr);
+            SLIST_INSERT_HEAD(attr, $1, next);
+            $$ = attr;
+        }
+        ;
+
+travdataitem: attribute_primitive_type[type] id[name]
+    {
+        $$ = ASTnewAttribute($name, $type, false);
+    }
+    ;
+
 
 idlist: id ',' idlist
     {
