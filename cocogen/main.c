@@ -31,7 +31,7 @@ void SetupSettings()
 
 int main(int argc, char *argv[])
 {
-    globals.filename = "/home/damian/University/coconut-private/cocogen/tests/frontend/pass/phase.ccn";
+    globals.filename = "/home/damian/Documents/coconut/cocogen/tests/frontend/pass/phase.ccn";
     //globals.filename = "/home/damian/University/coconut-private/cocogen/tests/frontend/fail/naming_collisions3.ccn";
     globals.line_map = HTnew_Int(25);
 
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     ast = GFdoGen(ast);
     ast = GCdoGen(ast);
     ast = GCHKdoGen(ast);
-
+    ast = GTDdoGen(ast);
 
     ast = PDdoGen(ast);
 

@@ -9,4 +9,5 @@ target_sources(${PROJECT_NAME}
         gen-free.c
         gen-copy.c
         gen-check.c
+        gen-trav-data.c
 )

@@ -7,3 +7,4 @@ extern struct ast *GAdoGen(struct ast *ast);
 extern struct ast *GFdoGen(struct ast *ast);
 extern struct ast *GCdoGen(struct ast *ast);
 extern struct ast *GCHKdoGen(struct ast *ast);
+extern struct ast *GTDdoGen(struct ast *ast);

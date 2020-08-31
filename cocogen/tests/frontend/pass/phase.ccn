@@ -23,13 +23,19 @@ cycle again {
 
 traversal change {
     info = "I change the tree"
+    prefix = CHG
+
+    travdata = {
+        int value
+    }
 };
 
 traversal trav {
     info = "I am traversing everything"
+    prefix = TV
 
-    data = {
-        int value,
+    travdata = {
+        int value
     }
 };
 

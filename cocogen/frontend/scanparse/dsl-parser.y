@@ -492,10 +492,7 @@ enumvalues: T_VALUES '=' '{' idlist '}'
 
 travdata: T_TRAVDATA '=' '{' travdatalist '}'
     { $$ = $4; }
-    | %empty
-    {
-        $$ = NULL;
-    }
+
     ;
 
 travdatalist: travdatalist ',' travdataitem
@@ -505,6 +502,7 @@ travdatalist: travdatalist ',' travdataitem
         }
         | travdataitem
         {
+            printf("HELLO!\n");
             struct attribute_slist *attr = MEMmalloc(sizeof(struct attribute));
             SLIST_INIT(attr);
             SLIST_INSERT_HEAD(attr, $1, next);
