@@ -367,6 +367,7 @@ attributebody: T_ATTRIBUTES '{' attributes '}'
 attributes: attribute ';' attributes
     {
         SLIST_INSERT_HEAD($3, $1, next);
+        $$ = $3;
     }
     | attribute ';'
     {
