@@ -54,7 +54,9 @@ char *ASTattributeTypeToString(struct attribute *attr)
         return "char *";
     case AT_link_or_enum:
     case AT_enum:
-        return attr->type_reference->orig;
+        link_type = MEMmalloc(STRlen(attr->type_reference->orig + 6));
+        sprintf(link_type, "enum %s", attr->type_reference->orig);
+        return link_type;
     case AT_link:
         link_type = MEMmalloc(STRlen(attr->type_reference->orig) + 10);
         sprintf(link_type, "struct %s *", attr->type_reference->orig);
