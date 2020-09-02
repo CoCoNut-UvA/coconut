@@ -109,6 +109,23 @@ void CheckNode(struct ast *ast, struct node *node)
             child->node = entry->data;
         }
     }
+    struct attribute *attr = NULL;
+    SLIST_FOREACH(attr, node->attributes, next) {
+        if (attr->type == AT_link_or_enum) {
+            bool found = false;
+            struct symbol_table_entry *entry = HTlookup(ast->symbol_table, attr->type_reference->orig, &found);
+            if (!found || entry == NULL) {
+                CTIerrorObj(attr->type_reference->loc_info, "Attribute type is not valid.");
+            }
+            if (entry->type == STE_ENUM) {
+                attr->type = AT_enum;
+            } else if (entry->type == STE_NODE || entry->type == STE_NODESET) {
+                attr->type = AT_link;
+            } else {
+                CTIerrorObj(attr->type_reference->loc_info, "Attribute type is not valid.");
+            }
+        }
+    }
 }
 
 struct ast *CEdoTrav(struct ast *ast)
