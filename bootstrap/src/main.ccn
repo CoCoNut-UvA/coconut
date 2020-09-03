@@ -1,0 +1,124 @@
+
+start phase startPhase {
+    info = "The starting point"
+    prefix = RT
+
+    actions {
+        pass scanAndParse;
+    }
+};
+
+
+root node ast {
+    children {
+        iphase iphases;
+        itraversal itraversals;
+        ipass ipasses;
+        inode inodes;
+    }
+};
+
+enum action_type {
+    prefix = ACT
+    values = {
+        iphase, ipass, itraversal
+    }
+};
+
+nodeset action = { iphase, itraversal, ipass};
+
+node iactions {
+    children {
+        action action;
+        iactions next;
+    }
+    attributes {
+        action_type type {};
+    }
+};
+
+node iphase {
+    children {
+        action iactions;
+        iphase next;
+    }
+    attributes {
+        id name { constructor };
+        int is_start { constructor };
+    }
+};
+
+node itraversal {
+    children {
+        itraversal next;
+    }
+    attributes {
+        id name {};
+    }
+};
+
+node ipass {
+    children {
+        ipass next;
+    }
+    attributes {
+        id name {};
+    }
+};
+
+node inode {
+    children {
+        inode next;
+        child ichildren;
+        attribute iattributes;
+    }
+};
+
+enum child_type {
+    prefix = CT
+    values = {
+        inode, inodeset
+    }
+};
+
+node child {
+    children {
+        child next;
+    }
+
+    attributes {
+        id name {};
+        id type_reference {};
+        child_type type {};
+        int in_constructor {};
+        int is_mandatory {};
+    }
+};
+
+enum attribute_type {
+    prefix = AT
+    values = {
+        link, link_or_enum, iint, istring, ibool
+    }
+};
+
+node attribute {
+    children {
+        attribute next;
+    }
+    attributes {
+        id name { constructor };
+        id type_reference {};
+        attribute_type type {};
+        string include_file {};
+        int in_constructor {};
+    }
+};
+
+node id {
+    attributes {
+        string orig { constructor };
+        string lwr { constructor };
+        string upr { constructor };
+    }
+};
