@@ -111,6 +111,7 @@ void GenInitFunction(struct format_settings *settings, struct node *node, FILE *
                 if (arg > 0) {
                     OUT(", ");
                 }
+                arg++;
                 if (attribute->type == AT_link) {
                     OUT("%s *%s", settings->basic_node_type, attribute->name->lwr);
                 } else {

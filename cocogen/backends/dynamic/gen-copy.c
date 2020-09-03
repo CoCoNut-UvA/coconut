@@ -27,6 +27,7 @@ void GenInitArgs(struct ast *ast, FILE *fp, struct node *node)
             if (has_children || arg_num > 0) {
                 OUT(", ");
             }
+            arg_num++;
             OUT("%s", ASTattributeDefaultValue(attr));
         }
     }

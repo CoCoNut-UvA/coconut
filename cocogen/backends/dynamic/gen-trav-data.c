@@ -73,7 +73,7 @@ void GenTravDataHeader(struct ast *ast, FILE *fp) {
         GenTravDataMacros(ast, fp, trav);
         if (trav->data) {
             OUT_FIELD("struct ccn_trav *TRAVnew_%s()", trav->name->lwr);
-            OUT_FIELD("void TRAVfree_%s(Trav *trav)", trav->name->lwr);
+            OUT_FIELD("void TRAVfree_%s(struct ccn_trav *trav)", trav->name->lwr);
         }
     }
 
@@ -85,7 +85,7 @@ void GenTravDataHeader(struct ast *ast, FILE *fp) {
 
 void GenTravDataConstructor(struct ast *ast, FILE *fp, struct traversal *trav) {
     int indent = 0;
-    OUT_START_FUNC("struct ccn_trav *TRAVnew_%s(ccn_trav *trav)", trav->name->lwr);
+    OUT_START_FUNC("struct ccn_trav *TRAVnew_%s(struct ccn_trav *trav)", trav->name->lwr);
     OUT_FIELD("trav->trav_data.TD_%s = MEMmalloc(sizeof(struct TRAV_DATA_%s))",
               trav->name->lwr, trav->name->upr);
     OUT_FIELD("trav = %sallocTravData(trav)", trav->prefix->upr);
