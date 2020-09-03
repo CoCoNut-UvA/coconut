@@ -1,0 +1,460 @@
+%{
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <stddef.h>
+
+#include "dsl-lexer.h"
+
+#include "globals.h"
+#include "palm/ctinfo.h"
+#include "palm/str.h"
+#include "palm/memory.h"
+#include "palm/set.h"
+
+#include "ccngen/ast.h"
+#include "ccngen/enum.h"
+
+extern bool yy_lex_keywords;
+static node_st *ast;
+
+static struct ctinfo *NewLocation(struct ctinfo *info);
+
+
+void yyerror(const char* s);
+int yydebug = 1;
+
+#define YYLTYPE YYLTYPE
+typedef struct ctinfo YYLTYPE;
+
+struct ctinfo yy_ctinfo;
+
+// Override YYLLOC_DEFAULT so we can set yy_parser_location
+// to the current location
+# define YYLLOC_DEFAULT(Cur, Rhs, N)                      \
+    do                                                        \
+    if (N) {                                                \
+        (Cur).first_line   = YYRHSLOC(Rhs, 1).first_line;   \
+        (Cur).first_column = YYRHSLOC(Rhs, 1).first_column; \
+        (Cur).last_line    = YYRHSLOC(Rhs, N).last_line;    \
+        (Cur).last_column  = YYRHSLOC(Rhs, N).last_column;  \
+    }                                                     \
+    else {                                                  \
+        (Cur).first_line   = (Cur).last_line   =            \
+            YYRHSLOC(Rhs, 0).last_line;                       \
+        (Cur).first_column = (Cur).last_column =            \
+            YYRHSLOC(Rhs, 0).last_column;                     \
+    }                                                     \
+    while (0)
+%}
+
+%union {
+    int64_t intval;
+    uint64_t uintval;
+    long double fval;
+    char* string;
+    bool boolean;
+    node_st* node;
+    enum attribute_type attr_type;
+}
+
+%define parse.error verbose
+%locations
+
+%token<intval> T_INTVAL "integer value"
+%token<uintval> T_UINTVAL "unsigned integer value"
+%token<fval> T_FLOATVAL "float value"
+%token<string> T_CHARVAL "char value"
+%token<string> T_STRINGVAL "string value"
+%token<string> T_ID "identifier"
+
+%token T_INT "int"
+%token T_UINT "uint"
+
+%token T_INT8 "int8"
+%token T_INT16 "int16"
+%token T_INT32 "int32"
+%token T_INT64 "int64"
+%token T_UINT8 "uint8"
+%token T_UINT16 "uint16"
+%token T_UINT32 "uint32"
+%token T_UINT64 "uint64"
+
+%token T_BOOL "bool"
+%token T_TRUE "true"
+%token T_FALSE "false"
+
+%token T_ATTRIBUTES "attributes"
+%token T_CHILDREN "children"
+%token T_CONSTRUCTOR "construct"
+%token T_CYCLE "cycle"
+%token T_ENUM "enum"
+%token T_MANDATORY "mandatory"
+%token T_NODE "node"
+%token T_NODES "nodes"
+%token T_NODESET "nodeset"
+%token T_PASS "pass"
+%token T_PASSES "passes"
+%token T_PHASE "phase"
+%token T_PHASES "phases"
+%token T_ACTIONS "actions"
+%token T_PREFIX "prefix"
+%token T_INFO "info"
+%token T_FUNC "func"
+%token T_ROOT "root"
+%token T_START "start"
+%token T_SUBPHASES "subphases"
+%token T_TO "to"
+%token T_TRAVERSAL "traversal"
+%token T_TRAVDATA "travdata"
+%token T_FLOAT "float"
+%token T_DOUBLE "double"
+%token T_STRING "string"
+%token T_VALUES "values"
+%token T_NULL "NULL"
+%token T_LIFETIME "lifetime"
+%token T_DISALLOWED "disallowed"
+%token T_GATE "gate"
+%token T_ARROW "->"
+%token T_UNSAFE "unsafe"
+%token END 0 "End-of-file (EOF)"
+
+%type<string> info
+%type<boolean> is_start is_constructor
+%type<node> phase entry pass node traversal cycleheader phaseheader id
+%type<attr_type> attribute_primitive_type
+
+%left '&' '-' '|'
+
+%start root
+
+%%
+
+root: entries;
+
+entries: entry ';' entries
+       | entry
+       | %empty
+       ;
+
+entry: phase
+    {
+        IPHASE_NEXT($1) = AST_IPHASES(ast);
+        AST_IPHASES(ast) = $1;
+        $$ = ast;
+    }
+     | pass
+     {
+        IPASS_NEXT($1) = AST_IPASSES(ast);
+        $$ = ast;
+     }
+     | traversal
+     {
+        ITRAVERSAL_NEXT($1) = AST_ITRAVERSALS(ast);
+        $$ = ast;
+     }
+     | node
+     {
+        INODE_NEXT($1) = AST_INODES(ast);
+        $$ = ast;
+     }
+     | nodeset {}
+     | enum {}
+     ;
+
+/* Root of the config, creating the final config */
+phase: phaseheader '{' info[information] prefix[identifier] actionsbody[actions] '}'
+    {
+        $$ = $1;
+    }
+    | cycleheader '{' info[information] prefix[identifier] actionsbody[actions] '}'
+    {
+        $$ = $1;
+    }
+    ;
+
+phaseheader: is_start T_PHASE id
+    {
+        $$ = ASTnewiphase($3, $1);
+    }
+    ;
+
+cycleheader: is_start T_CYCLE id
+    {
+        $$ = ASTnewiphase($3, $1);
+    }
+    ;
+
+is_start: %empty
+     {
+        $$ = false;
+     }
+     | T_START
+     {
+        $$ = true;
+     }
+     ;
+
+pass: T_PASS id[name] '{'  info[information] prefix[identifier] func[target_func]'}'
+    {
+    }
+    | T_PASS id[name]
+    {
+    }
+    | T_PASS id[name] '=' id[target_func]
+    {
+    }
+    ;
+
+traversal: T_TRAVERSAL id[name] '{' info[information] prefix[identifier] traversalnodes[nodes] travdata[data]'}'
+    {
+    }
+    ;
+
+actionsbody: T_ACTIONS '{' actions '}'
+     {
+     }
+     ;
+
+actions: action ';' actions
+       {
+       }
+       | action ';'
+       {
+       }
+       ;
+
+
+action: traversal
+      {
+      }
+      | pass
+      {
+      }
+      | phase
+      {
+      }
+      | T_ID
+      {
+      }
+      ;
+
+traversalnodes: T_NODES '=' setexpr
+            {
+            }
+            | %empty
+            {
+            }
+
+setexpr: setoperation
+       {
+       }
+       | '(' setoperation ')'
+       {
+       }
+       | '{' setliterals '}'
+       {
+       }
+       | id
+       {
+       }
+       ;
+
+setoperation: setexpr '|' setexpr
+            {
+            }
+            | setexpr '&' setexpr
+            {
+            }
+            | setexpr '-' setexpr
+            {
+            }
+            ;
+
+setliterals: setliterals ',' id
+           {
+           }
+           | id
+           {
+           }
+
+
+node: is_root[root] T_NODE id[name] '{' info[information] childrenbody[children] attributebody[attributes] '}'
+    {
+        $$ = ASTnewinode($name);
+    }
+    ;
+
+is_root:
+    T_ROOT
+    {
+    }
+    | %empty
+    {
+    }
+    ;
+
+attributebody: T_ATTRIBUTES '{' attributes '}'
+    {
+    }
+    | %empty
+    {
+    }
+    ;
+
+attributes: attribute ';' attributes
+    {
+    }
+    | attribute ';'
+    {
+        }
+    ;
+
+attribute: attribute_primitive_type[type] id[name] '{' is_constructor[constructor] '}'
+    {
+    }
+    | id[type] id[name] '{' is_constructor[constructor] '}'
+    {
+    }
+
+attribute_primitive_type:
+    | T_BOOL
+    { $$ = AT_ibool; }
+    | T_STRING
+    { $$ = AT_istring; }
+    ;
+
+is_constructor:
+    T_CONSTRUCTOR
+    {
+        $$ = true;
+    }
+    | %empty
+    {
+        $$ = false;
+    }
+    ;
+
+childrenbody: T_CHILDREN '{' children  '}'
+    {
+    }
+    | %empty
+    {
+    }
+    ;
+
+children: child ';' children
+    {
+    }
+    | child ';'
+    {
+    }
+    ;
+
+child: id[type] id[name]
+    {
+    }
+    | id[type] id[name] '{' is_constructor[constructor] '}'
+    {
+    }
+    ;
+
+nodeset: T_NODESET id[name] '{' info[information] T_NODES '=' setexpr[expr] '}'
+        {
+        }
+        | T_NODESET id[name] '=' setexpr[expr]
+        {
+        }
+        ;
+
+enum: T_ENUM id[name] '{' info[information] prefix[identifier] enumvalues[values] '}'
+    {
+    }
+
+enumvalues: T_VALUES '=' '{' idlist '}'
+    {
+    }
+    ;
+
+
+travdata: T_TRAVDATA '=' '{' travdatalist '}'
+    {}
+
+    ;
+
+travdatalist: travdatalist ',' travdataitem
+        {
+        }
+        | travdataitem
+        {
+        }
+        ;
+
+travdataitem: attribute_primitive_type[type] id[name]
+    {
+    }
+    ;
+
+
+idlist: id ',' idlist
+    {
+    }
+    | id
+    {
+    }
+    ;
+
+
+func: %empty
+    {
+    }
+    | T_FUNC '=' id
+    {
+    }
+    ;
+
+info: %empty
+    {
+    }
+    | T_INFO '=' T_STRINGVAL
+    {
+    }
+    ;
+
+prefix: %empty
+    {
+    }
+    | T_PREFIX '=' id
+    {
+    }
+    ;
+
+id: T_ID
+    {
+        $$ = ASTnewid($1, STRlower($1), STRupper($1));
+    }
+  ;
+%%
+
+static struct ctinfo *NewLocation(struct ctinfo *info)
+{
+    struct ctinfo *locinfo = MEMmalloc(sizeof(struct ctinfo));
+    memcpy(locinfo, info, sizeof(struct ctinfo));
+    locinfo->filename = globals.filename;
+    bool found = false;
+    locinfo->line = HTlookup(globals.line_map, &(info->first_line), &found);
+
+    return locinfo;
+}
+
+
+node_st *SPparseDSL(FILE *fp)
+{
+    ast = ASTnewast();
+    yyin = fp;
+    yyparse();
+    yylex_destroy();
+    return ast;
+}
