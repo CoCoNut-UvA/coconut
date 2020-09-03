@@ -6,10 +6,7 @@
 #include "palm/memory.h"
 
 
-typedef struct ccn_trav {
-    struct ccn_trav *prev;
-    enum ccn_traversal_type trav_type;
-} ccn_trav_st;
+
 
 static ccn_trav_st *current_traversal;
 

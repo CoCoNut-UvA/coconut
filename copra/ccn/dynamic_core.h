@@ -2,7 +2,13 @@
 
 #include "ccngen/enum.h"
 #include "ccn/ccn_types.h"
+#include "ccngen/trav_data.h"
 
+typedef struct ccn_trav {
+    struct ccn_trav *prev;
+    enum ccn_traversal_type trav_type;
+    union TRAV_DATA trav_data;
+} ccn_trav_st;
 
 struct ccn_node *TRAVerror(struct ccn_node *arg_node);
 struct ccn_node *PASSerror(struct ccn_node *arg_node);
