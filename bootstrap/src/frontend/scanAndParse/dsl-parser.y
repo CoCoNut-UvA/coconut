@@ -124,7 +124,8 @@ struct ctinfo yy_ctinfo;
 %type<string> info
 %type<boolean> is_start is_constructor is_root
 %type<node> phase entry pass node traversal cycleheader phaseheader id action actionsbody traversalnodes prefix
-    actions childrenbody attributebody attributes attribute
+    actions childrenbody attributebody attributes attribute children child setoperation setliterals func
+    setexpr
 %type<attr_type> attribute_primitive_type
 
 %left '&' '-' '|'
@@ -194,6 +195,7 @@ phaseheader: is_start T_PHASE id
 cycleheader: is_start T_CYCLE id
     {
         $$ = ASTnewiphase($3, $1);
+        IPHASE_IS_CYCLE($$) = true;
     }
     ;
 
@@ -210,6 +212,7 @@ is_start: %empty
 pass: T_PASS id[name] '{'  info[information] prefix[identifier] func[target_func]'}'
     {
         $$ = ASTnewipass($name, $information, $identifier);
+        IPASS_TARGET_FUNC($$) = $target_func;
     }
     | T_PASS id[name]
     {
@@ -228,6 +231,10 @@ traversal: T_TRAVERSAL id[name] '{' info[information] prefix[identifier] travers
         ITRAVERSAL_IINFO($$) = $information;
         ITRAVERSAL_IPREFIX($$) = $identifier;
         ITRAVERSAL_INODES($$) = $nodes;
+    }
+    | T_TRAVERSAL id[name]
+    {
+        $$ = ASTnewitraversal($name);
     }
     ;
 
@@ -276,34 +283,44 @@ traversalnodes: T_NODES '=' setexpr
 
 setexpr: setoperation
        {
+            $$ = $1;
        }
        | '(' setoperation ')'
        {
+            $$ = $2;
        }
        | '{' setliterals '}'
        {
+            $$ = $2;
        }
        | id
        {
+            $$ = $1;
        }
        ;
 
 setoperation: setexpr '|' setexpr
             {
+                $$ = ASTnewsetoperation($1, $3, SO_iunion);
             }
             | setexpr '&' setexpr
             {
+                $$ = ASTnewsetoperation($1, $3, SO_intersect);
             }
             | setexpr '-' setexpr
             {
+                $$ = ASTnewsetoperation($1, $3, SO_difference);
             }
             ;
 
 setliterals: setliterals ',' id
            {
+                ID_NEXT($3) = $1;
+                $$ = $3;
            }
            | id
            {
+                $$ = $1;
            }
 
 
@@ -375,25 +392,32 @@ is_constructor:
 
 childrenbody: T_CHILDREN '{' children  '}'
     {
+        $$ = $3;
     }
     | %empty
     {
+        $$ = NULL;
     }
     ;
 
 children: child ';' children
     {
+        CHILD_NEXT($1) = $3;
+        $$ = $1;
     }
     | child ';'
     {
+        $$ = $1;
     }
     ;
 
 child: id[type] id[name]
     {
+        $$ = ASTnewchild($name);
     }
     | id[type] id[name] '{' is_constructor[constructor] '}'
     {
+        $$ = ASTnewchild($name);
     }
     ;
 

@@ -113,7 +113,7 @@ node child {
     }
 
     attributes {
-        id name {};
+        id name { constructor };
         id type_reference {};
         child_type type {};
         int in_constructor {};
@@ -128,6 +128,31 @@ enum attribute_type {
     }
 };
 
+enum setoperation_type {
+    prefix = SO
+    values = {
+        iunion, intersect, difference
+    }
+};
+
+node setoperation {
+    children {
+        setexpr left {constructor};
+        setexpr right {constructor};
+    }
+    attributes {
+        setoperation_type type { constructor };
+    }
+};
+
+node setliteral {
+    attributes {
+        id literal {constructor};
+    }
+};
+
+nodeset setexpr = {setoperation, setliteral, id};
+
 node attribute {
     children {
         attribute next;
@@ -141,6 +166,9 @@ node attribute {
 };
 
 node id {
+    children {
+        id next {};
+    }
     attributes {
         string orig { constructor };
         string lwr { constructor };
