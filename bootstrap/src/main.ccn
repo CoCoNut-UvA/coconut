@@ -5,6 +5,15 @@ start phase startPhase {
 
     actions {
         pass scanAndParse;
+        print;
+    }
+};
+
+traversal print {
+    info = "Print the ast"
+    prefix = PRT
+    travdata = {
+        int indent
     }
 };
 
@@ -18,42 +27,40 @@ root node ast {
     }
 };
 
-enum action_type {
-    prefix = ACT
-    values = {
-        iphase, ipass, itraversal
-    }
-};
-
 nodeset action = { iphase, itraversal, ipass};
 
 node iactions {
     children {
-        action action;
+        action action {constructor};
         iactions next;
-    }
-    attributes {
-        action_type type {};
     }
 };
 
 node iphase {
     children {
-        action iactions;
+        iactions iactions;
         iphase next;
     }
     attributes {
         id name { constructor };
         int is_start { constructor };
+        int is_cycle {};
+        string iinfo {};
+        id iprefix {};
+        id gate_func {};
     }
 };
 
 node itraversal {
     children {
         itraversal next;
+        inode inodes;
     }
     attributes {
-        id name {};
+        id name { constructor };
+        string iinfo {};
+        id iprefix {};
+
     }
 };
 
@@ -62,7 +69,10 @@ node ipass {
         ipass next;
     }
     attributes {
-        id name {};
+        id name { constructor };
+        string iifno { constructor };
+        id iprefix { constructor };
+        id target_func {};
     }
 };
 
@@ -71,6 +81,22 @@ node inode {
         inode next;
         child ichildren;
         attribute iattributes;
+    }
+
+    attributes {
+        id name { constructor };
+        string iifno { constructor };
+        int is_root {};
+    }
+};
+
+node inodeset {
+    children {
+        inode inodes;
+    }
+    attributes {
+        id name {};
+        string iinfo {};
     }
 };
 
@@ -107,7 +133,6 @@ node attribute {
         attribute next;
     }
     attributes {
-        id name { constructor };
         id type_reference {};
         attribute_type type {};
         string include_file {};

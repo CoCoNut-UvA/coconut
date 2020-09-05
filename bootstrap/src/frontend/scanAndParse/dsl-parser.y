@@ -122,8 +122,9 @@ struct ctinfo yy_ctinfo;
 %token END 0 "End-of-file (EOF)"
 
 %type<string> info
-%type<boolean> is_start is_constructor
-%type<node> phase entry pass node traversal cycleheader phaseheader id
+%type<boolean> is_start is_constructor is_root
+%type<node> phase entry pass node traversal cycleheader phaseheader id action actionsbody traversalnodes prefix
+    actions childrenbody attributebody attributes attribute
 %type<attr_type> attribute_primitive_type
 
 %left '&' '-' '|'
@@ -148,16 +149,19 @@ entry: phase
      | pass
      {
         IPASS_NEXT($1) = AST_IPASSES(ast);
+        AST_IPASSES(ast) = $1;
         $$ = ast;
      }
      | traversal
      {
         ITRAVERSAL_NEXT($1) = AST_ITRAVERSALS(ast);
+        AST_ITRAVERSALS(ast) = $1;
         $$ = ast;
      }
      | node
      {
         INODE_NEXT($1) = AST_INODES(ast);
+        AST_INODES(ast) = $1;
         $$ = ast;
      }
      | nodeset {}
@@ -168,10 +172,16 @@ entry: phase
 phase: phaseheader '{' info[information] prefix[identifier] actionsbody[actions] '}'
     {
         $$ = $1;
+        IPHASE_IPREFIX($$) = $identifier;
+        IPHASE_IINFO($$) = $information;
+        IPHASE_IACTIONS($$) = $actions;
     }
     | cycleheader '{' info[information] prefix[identifier] actionsbody[actions] '}'
     {
         $$ = $1;
+        IPHASE_IPREFIX($$) = $identifier;
+        IPHASE_IINFO($$) = $information;
+        IPHASE_IACTIONS($$) = $actions;
     }
     ;
 
@@ -199,45 +209,61 @@ is_start: %empty
 
 pass: T_PASS id[name] '{'  info[information] prefix[identifier] func[target_func]'}'
     {
+        $$ = ASTnewipass($name, $information, $identifier);
     }
     | T_PASS id[name]
     {
+        $$ = ASTnewipass($name, NULL, NULL);
     }
     | T_PASS id[name] '=' id[target_func]
     {
+        $$ = ASTnewipass($name, NULL, NULL);
+        IPASS_TARGET_FUNC($$) = $target_func;
     }
     ;
 
 traversal: T_TRAVERSAL id[name] '{' info[information] prefix[identifier] traversalnodes[nodes] travdata[data]'}'
     {
+        $$ = ASTnewitraversal($name);
+        ITRAVERSAL_IINFO($$) = $information;
+        ITRAVERSAL_IPREFIX($$) = $identifier;
+        ITRAVERSAL_INODES($$) = $nodes;
     }
     ;
 
 actionsbody: T_ACTIONS '{' actions '}'
      {
+        $$ = $3;
      }
      ;
 
 actions: action ';' actions
        {
+            IACTIONS_NEXT($1) = $3;
+            $$ = $1;
        }
        | action ';'
        {
+            $$ = $1;
        }
        ;
 
 
 action: traversal
       {
+        $$ = ASTnewiactions($1);
       }
       | pass
       {
+        $$ = ASTnewiactions($1);
       }
       | phase
       {
+        $$ = ASTnewiactions($1);
       }
-      | T_ID
+      | id
       {
+        $$ = ASTnewiactions($1);
       }
       ;
 
@@ -283,7 +309,10 @@ setliterals: setliterals ',' id
 
 node: is_root[root] T_NODE id[name] '{' info[information] childrenbody[children] attributebody[attributes] '}'
     {
-        $$ = ASTnewinode($name);
+        $$ = ASTnewinode($name, $information);
+        INODE_IS_ROOT($$) = $root;
+        INODE_ICHILDREN($$) = $children;
+        INODE_IATTRIBUTES($$) = $attributes;
     }
     ;
 
@@ -298,25 +327,32 @@ is_root:
 
 attributebody: T_ATTRIBUTES '{' attributes '}'
     {
+        $$ = $3;
     }
     | %empty
     {
+        $$ = NULL;
     }
     ;
 
 attributes: attribute ';' attributes
     {
+        ATTRIBUTE_NEXT($1) = $3;
+        $$ = $1;
     }
     | attribute ';'
     {
-        }
+        $$ = $1;
+    }
     ;
 
 attribute: attribute_primitive_type[type] id[name] '{' is_constructor[constructor] '}'
     {
+        $$ = ASTnewattribute();
     }
     | id[type] id[name] '{' is_constructor[constructor] '}'
     {
+        $$ = ASTnewattribute();
     }
 
 attribute_primitive_type:
