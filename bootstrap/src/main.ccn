@@ -165,6 +165,17 @@ node attribute {
     }
 };
 
+node ienum {
+    children {
+        id vals {constructor};
+    }
+    attributes {
+        id name {constructor};
+        id iprefix {constructor};
+        string iinfo { constructor };
+    }
+};
+
 node id {
     children {
         id next {};

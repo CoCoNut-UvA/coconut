@@ -86,6 +86,11 @@ node_st *PRTsetoperation(node_st *node)
     return node;
 }
 
+node_st *PRTienum(node_st *node)
+{
+    TRAVchildren(node);
+    return node;
+}
 
 node_st *PRTsetliteral(node_st *node)
 {

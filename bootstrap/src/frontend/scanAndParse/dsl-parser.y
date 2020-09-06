@@ -125,7 +125,7 @@ struct ctinfo yy_ctinfo;
 %type<boolean> is_start is_constructor is_root
 %type<node> phase entry pass node traversal cycleheader phaseheader id action actionsbody traversalnodes prefix
     actions childrenbody attributebody attributes attribute children child setoperation setliterals func
-    setexpr
+    setexpr enum idlist enumvalues
 %type<attr_type> attribute_primitive_type
 
 %left '&' '-' '|'
@@ -431,10 +431,12 @@ nodeset: T_NODESET id[name] '{' info[information] T_NODES '=' setexpr[expr] '}'
 
 enum: T_ENUM id[name] '{' info[information] prefix[identifier] enumvalues[values] '}'
     {
+        $$ = ASTnewienum($values, $name, $identifier, $information);
     }
 
 enumvalues: T_VALUES '=' '{' idlist '}'
     {
+        $$ = $4;
     }
     ;
 
@@ -460,34 +462,43 @@ travdataitem: attribute_primitive_type[type] id[name]
 
 idlist: id ',' idlist
     {
+        ID_NEXT($1) = $3;
+        $$ = $1;
     }
     | id
     {
+        $$ = $1;
     }
     ;
 
 
 func: %empty
     {
+        $$ = NULL;
     }
     | T_FUNC '=' id
     {
+        $$ = $3;
     }
     ;
 
 info: %empty
     {
+        $$ = NULL;
     }
     | T_INFO '=' T_STRINGVAL
     {
+        $$ = $3;
     }
     ;
 
 prefix: %empty
     {
+        $$ = NULL;
     }
     | T_PREFIX '=' id
     {
+        $$ = $3;
     }
     ;
 
