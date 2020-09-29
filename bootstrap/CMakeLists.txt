@@ -17,8 +17,11 @@ flex_target(DslTokens src/frontend/scanAndParse/dsl-lexer.l ${CMAKE_CURRENT_BINA
         )
 ADD_FLEX_BISON_DEPENDENCY(DslTokens DslParser)
 
-add_executable(myCompiler src/main.c src/commandline.c src/frontend/scanAndParse/scan_parse.c ${COCONUT_FILES}
+add_executable(myCompiler src/main.c src/commandline.c src/frontend/scanAndParse/scan_parse.c
+        ${COCONUT_FILES} src/print/print.c src/frontend/buildsymboltable.c src/frontend/check_existance.c
+        src/frontend/unwrap_setexpr.c src/dynamic_backend/gen_nodes.c
         ${FLEX_DslTokens_OUTPUTS} ${BISON_DslParser_OUTPUTS})
+
 
 target_include_directories(myCompiler PRIVATE "${CMAKE_CURRENT_LIST_DIR}/ccngen" "${CMAKE_CURRENT_LIST_DIR}/src")
 

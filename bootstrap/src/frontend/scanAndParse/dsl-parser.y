@@ -125,7 +125,7 @@ struct ctinfo yy_ctinfo;
 %type<boolean> is_start is_constructor is_root
 %type<node> phase entry pass node traversal cycleheader phaseheader id action actionsbody traversalnodes prefix
     actions childrenbody attributebody attributes attribute children child setoperation setliterals func
-    setexpr enum idlist enumvalues
+    setexpr enum idlist enumvalues nodeset
 %type<attr_type> attribute_primitive_type
 
 %left '&' '-' '|'
@@ -165,7 +165,11 @@ entry: phase
         AST_INODES(ast) = $1;
         $$ = ast;
      }
-     | nodeset {}
+     | nodeset
+     {
+        INODESET_NEXT($1) = AST_INODESETS(ast);
+        AST_INODESETS(ast) = $1;
+     }
      | enum {}
      ;
 
@@ -258,19 +262,29 @@ actions: action ';' actions
 
 action: traversal
       {
-        $$ = ASTnewiactions($1);
+        $$ = ASTnewiactions();
+        IACTIONS_REFERENCE($$) = ITRAVERSAL_NAME($1);
+        ITRAVERSAL_NEXT($1) = AST_ITRAVERSALS(ast);
+        AST_ITRAVERSALS(ast) = $1;
       }
       | pass
       {
-        $$ = ASTnewiactions($1);
+        $$ = ASTnewiactions();
+        IACTIONS_REFERENCE($$) = IPASS_NAME($1);
+        IPASS_NEXT($1) = AST_IPASSES(ast);
+        AST_IPASSES(ast) = $1;
       }
       | phase
       {
-        $$ = ASTnewiactions($1);
+        $$ = ASTnewiactions();
+        IACTIONS_REFERENCE($$) = IPHASE_NAME($1);
+        IPHASE_NEXT($1) = AST_IPHASES(ast);
+        AST_IPHASES(ast) = $1;
       }
       | id
       {
-        $$ = ASTnewiactions($1);
+        $$ = ASTnewiactions();
+        IACTIONS_REFERENCE($$) = $1;
       }
       ;
 
@@ -295,7 +309,8 @@ setexpr: setoperation
        }
        | id
        {
-            $$ = $1;
+            $$ = ASTnewsetreference();
+            SETREFERENCE_REFERENCE($$) = $1;
        }
        ;
 
@@ -315,12 +330,14 @@ setoperation: setexpr '|' setexpr
 
 setliterals: setliterals ',' id
            {
-                ID_NEXT($3) = $1;
-                $$ = $3;
+                $$ = ASTnewsetliteral();
+                SETLITERAL_REFERENCE($$) = $3;
+                SETLITERAL_NEXT($$) = $1;
            }
            | id
            {
-                $$ = $1;
+                $$ = ASTnewsetliteral();
+                SETLITERAL_REFERENCE($$) = $1;
            }
 
 
@@ -336,9 +353,11 @@ node: is_root[root] T_NODE id[name] '{' info[information] childrenbody[children]
 is_root:
     T_ROOT
     {
+        $$ = true;
     }
     | %empty
     {
+        $$ = false;
     }
     ;
 
@@ -366,18 +385,41 @@ attributes: attribute ';' attributes
 attribute: attribute_primitive_type[type] id[name] '{' is_constructor[constructor] '}'
     {
         $$ = ASTnewattribute();
+        ATTRIBUTE_NAME($$) = $name;
+        ATTRIBUTE_TYPE($$) = $type;
+        ATTRIBUTE_IN_CONSTRUCTOR($$) = $constructor;
+    }
+    | attribute_primitive_type[type] id[name]
+    {
+              $$ = ASTnewattribute();
+              ATTRIBUTE_NAME($$) = $name;
+              ATTRIBUTE_TYPE($$) = $type;
     }
     | id[type] id[name] '{' is_constructor[constructor] '}'
     {
         $$ = ASTnewattribute();
+       ATTRIBUTE_NAME($$) = $name;
+       ATTRIBUTE_TYPE_REFERENCE($$) = $type;
+       ATTRIBUTE_TYPE($$) = AT_link_or_enum;
+       ATTRIBUTE_IN_CONSTRUCTOR($$) = $constructor;
     }
+    | id[type] id[name]
+    {
+           $$ = ASTnewattribute();
+           ATTRIBUTE_NAME($$) = $name;
+           ATTRIBUTE_TYPE_REFERENCE($$) = $type;
+           ATTRIBUTE_TYPE($$) = AT_link_or_enum;
+    }
+    ;
 
-attribute_primitive_type:
-    | T_BOOL
+attribute_primitive_type: T_BOOL
     { $$ = AT_ibool; }
     | T_STRING
     { $$ = AT_istring; }
+    | T_INT
+    { $$ = AT_iint; }
     ;
+
 
 is_constructor:
     T_CONSTRUCTOR
@@ -414,18 +456,28 @@ children: child ';' children
 child: id[type] id[name]
     {
         $$ = ASTnewchild($name);
+        CHILD_TYPE_REFERENCE($$) = $type;
     }
     | id[type] id[name] '{' is_constructor[constructor] '}'
     {
         $$ = ASTnewchild($name);
+        CHILD_TYPE_REFERENCE($$) = $type;
+        CHILD_IN_CONSTRUCTOR($$) = $constructor;
     }
     ;
 
 nodeset: T_NODESET id[name] '{' info[information] T_NODES '=' setexpr[expr] '}'
         {
+            $$ = ASTnewinodeset();
+            INODESET_EXPR($$) = $expr;
+            INODESET_NAME($$) = $name;
+            INODESET_IINFO($$) = $information;
         }
         | T_NODESET id[name] '=' setexpr[expr]
         {
+            $$ = ASTnewinodeset();
+            INODESET_EXPR($$) = $expr;
+            INODESET_NAME($$) = $name;
         }
         ;
 

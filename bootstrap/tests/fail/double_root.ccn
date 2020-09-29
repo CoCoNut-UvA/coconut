@@ -1,0 +1,14 @@
+
+start phase hello {
+    actions {
+        pass p;
+    }
+};
+
+root node ast {
+
+};
+
+root node ast2 {
+
+};

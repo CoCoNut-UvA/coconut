@@ -1,0 +1,31 @@
+
+start phase hello {
+    actions {
+        pass p;
+        phase1;
+    }
+};
+
+root node ast {
+    children {
+        ast next;
+    }
+};
+
+node tmp {
+    children {
+        ast nextt;
+    }
+};
+
+nodeset x = {ast} | {ast};
+nodeset y = x | {ast};
+nodeset z = y | { tmp };
+nodeset b = z & {tmp} & tmp; // Tmp is a node not a nodeset.
+
+
+phase phase1 {
+    actions {
+        pass doSomething;
+    } 
+};

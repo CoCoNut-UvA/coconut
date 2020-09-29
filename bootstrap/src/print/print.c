@@ -68,9 +68,28 @@ node_st *PRTattribute(node_st *node)
     return node;
 }
 
+node_st *PRTsetreference(node_st *node)
+{
+    printf("Set refence: %s\n", ID_ORIG(SETREFERENCE_REFERENCE(node)));
+    TRAVchildren(node);
+    return node;
+}
+
+node_st *PRTsetliteral(node_st *node)
+{
+    if (SETLITERAL_REFERENCE(node)) {
+        printf("%s\n", ID_ORIG(SETLITERAL_REFERENCE(node)));
+    }
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *PRTinodeset(node_st *node)
 {
-    TRAVchildren(node);
+    printf("NODESET {\n");
+    TRAVdo(INODESET_EXPR(node));
+    printf("} END\n");
+    TRAVopt(INODESET_NEXT(node));
     return node;
 }
 
@@ -92,8 +111,9 @@ node_st *PRTienum(node_st *node)
     return node;
 }
 
-node_st *PRTsetliteral(node_st *node)
+node_st *PRTste(node_st *node)
 {
+    printf("STE: %s, %d\n", ID_ORIG(STE_KEY(node)), NODE_TYPE(STE_VALUE(node)));
     TRAVchildren(node);
     return node;
 }

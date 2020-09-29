@@ -1,0 +1,23 @@
+
+start phase hello {
+    actions {
+        pass p;
+        phase1;
+    }
+};
+
+nodeset x = {test};
+nodeset y = undefined;
+nodeset z = {test} | undefined;
+
+root node ast {
+    children {
+        ast next;
+    }
+};
+
+phase phase1 {
+    actions {
+        pass doSomething;
+    } 
+};

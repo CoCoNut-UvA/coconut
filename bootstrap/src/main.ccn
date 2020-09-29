@@ -5,7 +5,59 @@ start phase startPhase {
 
     actions {
         pass scanAndParse;
+        semantic;
+        dynamic_backend;
         print;
+    }
+};
+
+phase semantic {
+    info = "Main part"
+    prefix = SEA
+
+    actions {
+        buildSymbolTable;
+        checkExistance;
+        unwrapSetExpr;
+    }
+};
+
+phase dynamic_backend {
+    info = "Generating part for the dynamic backend"
+    prefix = DDB
+
+    actions {
+        genNodes;
+    }
+};
+
+traversal genNodes {
+    prefix = DGN
+
+    travdata = {
+        int fill
+    }
+};
+
+traversal checkExistance {
+    prefix = CEX
+
+    travdata = {
+        int fill
+    }
+};
+
+traversal buildSymbolTable {
+    prefix = BST
+    travdata = {
+        int fill
+    }
+};
+
+traversal unwrapSetExpr {
+    prefix = USE
+    travdata = {
+        int fill
     }
 };
 
@@ -24,15 +76,20 @@ root node ast {
         itraversal itraversals;
         ipass ipasses;
         inode inodes;
+        inodeset inodesets;
+        ste stable;
     }
 };
 
 nodeset action = { iphase, itraversal, ipass};
+nodeset link = action | {inode};
 
 node iactions {
     children {
-        action action {constructor};
         iactions next;
+    }
+    attributes {
+        id reference {};
     }
 };
 
@@ -92,7 +149,9 @@ node inode {
 
 node inodeset {
     children {
-        inode inodes;
+        setexpr expr;
+        id unpacked;
+        inodeset next;
     }
     attributes {
         id name {};
@@ -121,6 +180,16 @@ node child {
     }
 };
 
+node ste {
+    children {
+        ste next;
+    }
+    attributes {
+        id key {};
+        link value {};
+    }
+};
+
 enum attribute_type {
     prefix = AT
     values = {
@@ -135,6 +204,22 @@ enum setoperation_type {
     }
 };
 
+node setreference {
+    attributes {
+        id reference {};
+    }
+};
+
+node setliteral {
+    children {
+        setliteral next;
+    }
+
+    attributes {
+        id reference {};
+    }
+};
+
 node setoperation {
     children {
         setexpr left {constructor};
@@ -145,19 +230,14 @@ node setoperation {
     }
 };
 
-node setliteral {
-    attributes {
-        id literal {constructor};
-    }
-};
-
-nodeset setexpr = {setoperation, setliteral, id};
+nodeset setexpr = {setoperation, setreference, setliteral};
 
 node attribute {
     children {
         attribute next;
     }
     attributes {
+        id name {};
         id type_reference {};
         attribute_type type {};
         string include_file {};
