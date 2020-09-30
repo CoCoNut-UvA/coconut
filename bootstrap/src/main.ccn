@@ -27,12 +27,18 @@ phase dynamic_backend {
     prefix = DDB
 
     actions {
-        genNodes;
+        phase dynamic_nodes {
+            info = "Traversal to generate all node related data"
+
+            actions {
+                dynamic_genNodeStructs;
+            }
+        };
     }
 };
 
-traversal genNodes {
-    prefix = DGN
+traversal dynamic_genNodeStructs {
+    prefix = DGNS
 
     travdata = {
         int fill
