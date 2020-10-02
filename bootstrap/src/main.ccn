@@ -32,10 +32,21 @@ phase dynamic_backend {
 
             actions {
                 dynamic_genNodeStructs;
+                dynamic_genNodeMacros;
+                dynamic_genNodeInitFunctions;
             }
         };
     }
 };
+
+traversal dynamic_genNodeInitFunctions {
+    prefix = DGIF
+
+    travdata = {
+        int fill
+    }
+};
+
 
 traversal dynamic_genNodeStructs {
     prefix = DGNS
@@ -44,6 +55,15 @@ traversal dynamic_genNodeStructs {
         int fill
     }
 };
+
+traversal dynamic_genNodeMacros {
+    prefix = DGNM
+
+    travdata = {
+        int fill
+    }
+};
+
 
 traversal checkExistance {
     prefix = CEX

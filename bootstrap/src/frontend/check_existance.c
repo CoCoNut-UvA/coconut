@@ -141,6 +141,7 @@ node_st *CEXattribute(node_st *node)
 //    } else {
 //        CTIerror("Double declaration of child name: %s\n", ID_ORIG(ATTRIBUTE_NAME(node)));
 //    }
+// TODO: handle attributes and change link_or_enum to actual type.
     TRAVchildren(node);
     return node;
 }
