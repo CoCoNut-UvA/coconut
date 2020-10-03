@@ -34,8 +34,28 @@ phase dynamic_backend {
                 dynamic_genNodeStructs;
                 dynamic_genNodeMacros;
                 dynamic_genNodeInitFunctions;
+                dynamic_genNodeUnion;
+                pass dynamic_genBaseNode;
+                pass dynamic_genBaseNodeInit;
+                dynamic_genNodeConstructor;
             }
         };
+    }
+};
+
+traversal dynamic_genNodeConstructor {
+    prefix = DGNC
+
+    travdata = {
+        int fill
+    }
+};
+
+traversal dynamic_genNodeUnion {
+    prefix = DGBU
+
+    travdata = {
+        int fill
     }
 };
 

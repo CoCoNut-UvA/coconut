@@ -20,7 +20,7 @@ ADD_FLEX_BISON_DEPENDENCY(DslTokens DslParser)
 add_executable(myCompiler src/main.c src/commandline.c src/frontend/scanAndParse/scan_parse.c
         ${COCONUT_FILES} src/print/print.c src/frontend/buildsymboltable.c src/frontend/check_existance.c
         src/frontend/unwrap_setexpr.c src/dynamic_backend/gen_node_structs.c
-        ${FLEX_DslTokens_OUTPUTS} ${BISON_DslParser_OUTPUTS} src/gen_helpers/format.c src/dynamic_backend/gen_node_macros.c src/dynamic_backend/gen_node_init_funcs.c)
+        ${FLEX_DslTokens_OUTPUTS} ${BISON_DslParser_OUTPUTS} src/gen_helpers/format.c src/dynamic_backend/gen_node_macros.c src/dynamic_backend/gen_node_init_funcs.c src/dynamic_backend/gen_node_base_and_union.c src/dynamic_backend/gen_node_constructor.c)
 
 
 target_include_directories(myCompiler PRIVATE "${CMAKE_CURRENT_LIST_DIR}/ccngen" "${CMAKE_CURRENT_LIST_DIR}/src")

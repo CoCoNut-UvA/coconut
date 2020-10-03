@@ -82,8 +82,9 @@ node_st *CEXinode(node_st *node)
     TRAVopt(INODE_ICHILDREN(node));
     if (node_ste != NULL) {
         TRAVstart(node_ste, TRAV_free);
+        node_ste = NULL;
     }
-    TRAVopt(INODESET_NEXT(node));
+    TRAVopt(INODE_NEXT(node));
     return node;
 }
 
@@ -136,12 +137,27 @@ node_st *CEXsetliteral(node_st *node)
 
 node_st *CEXattribute(node_st *node)
 {
-//    if (lookupST(node_ste, ATTRIBUTE_NAME(node)) == NULL) {
-//        node_ste = BSTaddToST(node_ste, ATTRIBUTE_NAME(node), node);
-//    } else {
-//        CTIerror("Double declaration of child name: %s\n", ID_ORIG(ATTRIBUTE_NAME(node)));
-//    }
-// TODO: handle attributes and change link_or_enum to actual type.
+    if (lookupST(node_ste, ATTRIBUTE_NAME(node)) == NULL) {
+        node_ste = BSTaddToST(node_ste, ATTRIBUTE_NAME(node), node);
+    } else {
+        CTIerror("Double declaration of attribute name: %s\n", ID_ORIG(ATTRIBUTE_NAME(node)));
+    }
+
+    if (ATTRIBUTE_TYPE(node) == AT_link_or_enum) {
+        node_st *ste_entry = lookupST(ste, ATTRIBUTE_TYPE_REFERENCE(node));
+        if (ste_entry == NULL) {
+            CTIerror("COuld not find type reference for attribute.");
+        } else {
+            if (NODE_TYPE(ste_entry) == NT_INODE || NODE_TYPE(ste_entry) == NT_INODESET) {
+                ATTRIBUTE_TYPE(node) = AT_link;
+            } else if (NODE_TYPE(ste_entry) == NT_IENUM) {
+                ATTRIBUTE_TYPE(node) = AT_link_or_enum;
+            } else {
+                CTIerror("Invalid type in attribute type.");
+            }
+        }
+    }
+
     TRAVchildren(node);
     return node;
 }

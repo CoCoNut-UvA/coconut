@@ -18,6 +18,7 @@ node tmp {
     }
     attributes {
         int val;
+        ast ref;
     }
 };
 

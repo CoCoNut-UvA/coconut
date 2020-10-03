@@ -6,7 +6,6 @@
 #include <stdio.h>
 
 #include "gen_helpers/format.h"
-#include "ccngen/ast.h"
 
 
 #define OUT(...) FMTprintIndentLevel(fp, indent); fprintf(fp, __VA_ARGS__)

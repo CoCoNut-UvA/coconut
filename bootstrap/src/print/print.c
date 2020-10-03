@@ -64,6 +64,7 @@ node_st *PRTchild(node_st *node)
 
 node_st *PRTattribute(node_st *node)
 {
+    printf("Attr: %s\n", ID_ORIG(ATTRIBUTE_NAME(node)));
     TRAVchildren(node);
     return node;
 }
