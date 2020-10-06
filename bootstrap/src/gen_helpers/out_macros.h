@@ -162,4 +162,4 @@
 #define OUT_ENUM_END(...)                                                      \
     indent--;                                                                  \
     FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, "};\n\n ");
+    fprintf(fp, "};\n\n");

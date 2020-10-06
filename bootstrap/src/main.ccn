@@ -38,8 +38,43 @@ phase dynamic_backend {
                 pass dynamic_genBaseNode;
                 pass dynamic_genBaseNodeInit;
                 dynamic_genNodeConstructor;
+                dynamic_genEnum;
+                dynamic_genEnumValues;
+                dynamic_genTravVtable;
             }
         };
+    }
+};
+
+traversal dynamic_genNodesForTravTable {
+    prefix = DGNFTT
+
+    travdata = {
+        int fill
+    }
+};
+
+traversal dynamic_genTravVtable {
+    prefix = DGTV
+
+    travdata = {
+        int fill
+    }
+};
+
+traversal dynamic_genEnumValues {
+    prefix = DGEV
+
+    travdata = {
+        int fill
+    }
+};
+
+traversal dynamic_genEnum {
+    prefix = DGE
+
+    travdata = {
+        int fill
     }
 };
 
@@ -123,6 +158,7 @@ root node ast {
         ipass ipasses;
         inode inodes;
         inodeset inodesets;
+        ienum enums;
         ste stable;
     }
 };
@@ -157,7 +193,7 @@ node iphase {
 node itraversal {
     children {
         itraversal next;
-        inode inodes;
+        setexpr inodes;
     }
     attributes {
         id name { constructor };
@@ -294,6 +330,7 @@ node attribute {
 node ienum {
     children {
         id vals {constructor};
+        ienum next;
     }
     attributes {
         id name {constructor};

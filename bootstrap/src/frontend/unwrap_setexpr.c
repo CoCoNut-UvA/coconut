@@ -119,6 +119,7 @@ struct ccn_node *cpysetliteral(node_st *node)
 
 bool in_set(node_st *node, node_st *val)
 {
+    assert(NODE_TYPE(node) == NT_SETLITERAL);
     while(node) {
         if (STReq(ID_ORIG(SETLITERAL_REFERENCE(node)), ID_ORIG(val))) {
             return true;

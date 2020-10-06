@@ -27,9 +27,27 @@ nodeset y = x | {ast};
 nodeset z = y | { tmp };
 nodeset b = z & {tmp} & y;
 
+traversal help {
+    prefix = h
+
+    nodes = x
+    
+    travdata = {
+        int fill
+    }
+};
+
 
 phase phase1 {
     actions {
         pass doSomething;
     } 
 };
+
+enum binopvalues {
+    prefix = BO
+
+    values = {
+        add, sub
+    }
+}

@@ -169,8 +169,14 @@ entry: phase
      {
         INODESET_NEXT($1) = AST_INODESETS(ast);
         AST_INODESETS(ast) = $1;
+        $$ = ast;
      }
-     | enum {}
+     | enum
+     {
+        IENUM_NEXT($1) = AST_ENUMS(ast);
+        AST_ENUMS(ast) = $1;
+        $$ = ast;
+     }
      ;
 
 /* Root of the config, creating the final config */
@@ -290,9 +296,11 @@ action: traversal
 
 traversalnodes: T_NODES '=' setexpr
             {
+                $$ = $3;
             }
             | %empty
             {
+                $$ = NULL;
             }
 
 setexpr: setoperation
