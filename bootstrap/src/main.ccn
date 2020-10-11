@@ -7,6 +7,7 @@ start phase startPhase {
         pass scanAndParse;
         semantic;
         dynamic_backend;
+        gen_action_array;
         print;
     }
 };
@@ -41,8 +42,96 @@ phase dynamic_backend {
                 dynamic_genEnum;
                 dynamic_genEnumValues;
                 dynamic_genTravVtable;
+                dynamic_genPassTable;
+                dynamic_genSystemTraversals;
+                dynamic_genTravTable;
+                dynamic_genActionsHeader;
+                dynamic_genCopyTraversal;
+                dynamic_genFreeTraversal;
+                dynamic_genCheckTraversal;
             }
         };
+    }
+};
+
+traversal gen_action_array {
+    prefix = GAA
+
+    travdata = {
+        int fill
+    }
+};
+
+traversal dynamic_genCheckTraversal {
+    prefix = DGCHT
+
+    travdata = {
+        int fill
+    }
+};
+
+
+traversal dynamic_genFreeTraversal {
+    prefix = DGFT
+
+    travdata = {
+        int fill
+    }
+};
+
+traversal dynamic_genConstructorCall {
+    prefix = DGCC
+
+    travdata = {
+        int fill
+    }
+};
+
+traversal dynamic_genCopyTraversal {
+    prefix = DGCT
+
+    travdata = {
+        int fill
+    }
+};
+
+traversal dynamic_genTravActions {
+    prefix = DGTA
+
+    travdata = {
+        int fill
+    }
+};
+
+traversal dynamic_genActionsHeader {
+    prefix = DGAH
+
+    travdata = {
+        int fill
+    }
+};
+
+traversal dynamic_genSystemTraversals {
+    prefix = DGST
+
+    travdata = {
+        int fill
+    }
+};
+
+traversal dynamic_genTravTable {
+    prefix = DGTT
+
+    travdata = {
+        int fill
+    }
+};
+
+traversal dynamic_genPassTable {
+    prefix = DGPT
+
+    travdata = {
+        int fill
     }
 };
 
