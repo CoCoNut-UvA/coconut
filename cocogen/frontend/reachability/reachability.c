@@ -40,6 +40,7 @@ bool RBisTraversalNode(struct traversal *trav, struct node *node)
 {
     int trav_i = RBgetTravIndex(trav);
     int node_i = RBgetNodeIndex(node);
+    printf("%d, %d\n", node_i, trav_i);
     return traversal_node_handles[trav_i][node_i];
 }
 

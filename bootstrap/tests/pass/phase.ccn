@@ -27,6 +27,14 @@ nodeset y = x | {ast};
 nodeset z = y | { tmp };
 nodeset b = z & {tmp} & y;
 
+traversal all {
+    prefix = a
+    
+    travdata = {
+        int fill
+    }
+};
+
 traversal help {
     prefix = h
 

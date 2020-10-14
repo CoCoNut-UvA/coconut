@@ -35,11 +35,8 @@ node_st *GITast(node_st *node)
     fp = stdout;
     ast = node;
     OUT("enum %s cleanup_ids_table[2] = { %s_free, %s_NULL };\n", enum_action_name, enum_action_pref, enum_action_pref);
-
-    OUT("static struct ccn_action ccn_action_array[] = {\n");
-
-
     TRAVchildren(node);
+    OUT("};\n");
     return node;
 }
 
@@ -52,9 +49,8 @@ node_st *GITiactions(node_st *node)
 node_st *GITiphase(node_st *node)
 {
     OUT("enum %s %s_ids_table[] = {\n", enum_action_name, ID_LWR(IPHASE_NAME(node)));
-    OUT("%s_NULL, ", enum_action_pref);
     TRAVopt(IPHASE_IACTIONS(node));
-    OUT("%s_SIZE", enum_action_pref);
+    OUT("%s_NULL, ", enum_action_pref);
     OUT_ENUM_END();
     return node;
 }

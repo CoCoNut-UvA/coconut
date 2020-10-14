@@ -7,7 +7,7 @@ start phase startPhase {
         pass scanAndParse;
         semantic;
         dynamic_backend;
-        gen_action_array;
+        phase_driver;
         print;
     }
 };
@@ -20,6 +20,16 @@ phase semantic {
         buildSymbolTable;
         checkExistance;
         unwrapSetExpr;
+    }
+};
+
+phase phase_driver {
+    info = "Generate the missing parts of the phase driver"
+
+    actions {
+        gen_action_array_header;
+        gen_ids_tables;
+        gen_action_array;
     }
 };
 
@@ -51,6 +61,22 @@ phase dynamic_backend {
                 dynamic_genCheckTraversal;
             }
         };
+    }
+};
+
+traversal gen_ids_tables {
+    prefix = GIT
+
+    travdata = {
+        int fill
+    }
+};
+
+traversal gen_action_array_header {
+    prefix = GAAH
+
+    travdata = {
+        int fill
     }
 };
 
@@ -249,6 +275,9 @@ root node ast {
         inodeset inodesets;
         ienum enums;
         ste stable;
+    }
+    attributes {
+        inode root_node {};
     }
 };
 

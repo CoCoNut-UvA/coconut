@@ -24,10 +24,12 @@ static bool seen_root_node = false;
 static bool seen_start_phase = false;
 static node_st *ste = NULL;
 static node_st *node_ste = NULL;
+static node_st *root = NULL;
 
 
 node_st *CEXast(node_st *node)
 {
+    root = node;
     ste = AST_STABLE(node);
     TRAVchildren(node);
     CTIabortOnError();
@@ -73,6 +75,7 @@ node_st *CEXinode(node_st *node)
 {
     if (INODE_IS_ROOT(node)) {
         if (!seen_root_node) {
+            AST_ROOT_NODE(root) = node;
             seen_root_node = true;
         } else {
             CTIerror("Double definition of root node");

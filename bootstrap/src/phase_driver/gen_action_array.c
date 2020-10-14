@@ -38,15 +38,22 @@ node_st *GAAast(node_st *node)
 
     OUT("static struct ccn_action ccn_action_array[] = {\n");
 
+    TRAVchildren(node);
+
     OUT("{CCN_ACTION_TRAVERSAL, %s_free, \"Free\", .traversal = "
         "{TRAV_free,},},\n", enum_action_pref);
 
     OUT("{CCN_ACTION_PHASE, %s_cleanup, \"Cleanup\", .phase = {NULL, NT_%s, "
         "cleanup_ids_table, false, %s_cleanup,},},\n",
-        enum_action_pref, "root", enum_action_pref);
+        enum_action_pref, ID_UPR(INODE_NAME(AST_ROOT_NODE(ast))), enum_action_pref);
+
     OUT("};\n\n");
 
-    TRAVchildren(node);
+    OUT_START_FUNC(
+            "struct ccn_action *CCNgetActionFromID(enum %s action_id)", enum_action_name);
+    OUT_STATEMENT("return &ccn_action_array[action_id]");
+    OUT_END_FUNC();
+
     return node;
 }
 
@@ -60,7 +67,7 @@ node_st *GAAiphase(node_st *node)
     char *name_upr = ID_UPR(IPHASE_NAME(node));
     OUT("{CCN_ACTION_PHASE, %s_%s, \"%s\", .phase = {NULL, NT_%s, "
         "%s_ids_table, false, %s_%s,},},\n", enum_action_pref, name_upr, ID_ORIG(IPHASE_NAME(node)),
-        "root", ID_LWR(IPHASE_NAME(node)), enum_action_pref, name_upr);
+        ID_UPR(INODE_NAME(AST_ROOT_NODE(ast))), ID_LWR(IPHASE_NAME(node)), enum_action_pref, name_upr);
 
     TRAVopt(IPHASE_NEXT(node));
     return node;

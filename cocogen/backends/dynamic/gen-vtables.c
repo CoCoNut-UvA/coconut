@@ -39,9 +39,9 @@ void GenNodeForTrav(FILE *fp, int indent, struct traversal *trav, struct node *n
     if (RBisTraversalNode(trav, node)) {
         OUT("&%s%s, ", prefix, node->name->lwr);
     } else if (RBshouldPassNode(trav, node)) {
-        OUT("&trav_children");
+        OUT("&trav_children, ");
     } else {
-        OUT("&trav_return");
+        OUT("&trav_return, ");
     }
 }
 
