@@ -15,6 +15,7 @@ struct command_line {
     char *user_dir;
     char *dot_dir;
     char *doc_dir;
+    char *gen_dir;
 };
 
 extern struct command_line global_command_line;

@@ -52,10 +52,3 @@ phase phase1 {
     } 
 };
 
-enum binopvalues {
-    prefix = BO
-
-    values = {
-        add, sub
-    }
-}

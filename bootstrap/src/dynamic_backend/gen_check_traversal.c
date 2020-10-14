@@ -1,11 +1,10 @@
 #include <stddef.h>
 #include <stdio.h>
-#include "assert.h"
 
 #include "gen_helpers/out_macros.h"
-#include "palm/ctinfo.h"
-#include "palm/str.h"
+#include "filesystem/gen_files.h"
 #include "ccn/dynamic_core.h"
+#include "globals.h"
 
 void *DGCHTallocTravData()
 {
@@ -28,9 +27,10 @@ static node_st *ast;
 
 node_st *DGCHTast(node_st *node)
 {
-    fp = stdout;
+    fp = FSgetSourceFile("ccn_check.c");
     ast = node;
     TRAVopt(AST_INODES(node));
+    fclose(fp);
     return node;
 }
 

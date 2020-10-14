@@ -6,6 +6,8 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "globals.h"
+#include "filesystem/gen_files.h"
 
 void *DGAHallocTravData()
 {
@@ -29,9 +31,12 @@ static node_st *ast;
 
 node_st *DGAHast(node_st *node)
 {
-    fp = stdout;
+    fclose(globals.fp);
+    globals.fp = FSgetIncludeFile("actions.h");
+    fp = globals.fp;
     ast = node;
     TRAVchildren(node);
+    fclose(fp);
     return node;
 }
 
@@ -63,7 +68,7 @@ node_st *DGAHipass(node_st *node)
     if (IPASS_IPREFIX(node)) {
         prefix = ID_UPR(IPASS_IPREFIX(node));
     }
-    OUT_FIELD("struct ccn_node *%s%s(struct ccn_node *)", prefix, ID_LWR(IPASS_NAME(node)));
+    OUT_FIELD("struct ccn_node *%s%s(struct ccn_node *)", prefix, ID_ORIG(IPASS_NAME(node)));
     TRAVopt(IPASS_NEXT(node));
     return node;
 }

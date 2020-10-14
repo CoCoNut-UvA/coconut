@@ -198,13 +198,13 @@ phase: phaseheader '{' info[information] prefix[identifier] actionsbody[actions]
 
 phaseheader: is_start T_PHASE id
     {
-        $$ = ASTnewiphase($3, $1);
+        $$ = ASTiphase($3, $1);
     }
     ;
 
 cycleheader: is_start T_CYCLE id
     {
-        $$ = ASTnewiphase($3, $1);
+        $$ = ASTiphase($3, $1);
         IPHASE_IS_CYCLE($$) = true;
     }
     ;
@@ -221,30 +221,30 @@ is_start: %empty
 
 pass: T_PASS id[name] '{'  info[information] prefix[identifier] func[target_func]'}'
     {
-        $$ = ASTnewipass($name, $information, $identifier);
+        $$ = ASTipass($name, $information, $identifier);
         IPASS_TARGET_FUNC($$) = $target_func;
     }
     | T_PASS id[name]
     {
-        $$ = ASTnewipass($name, NULL, NULL);
+        $$ = ASTipass($name, NULL, NULL);
     }
     | T_PASS id[name] '=' id[target_func]
     {
-        $$ = ASTnewipass($name, NULL, NULL);
+        $$ = ASTipass($name, NULL, NULL);
         IPASS_TARGET_FUNC($$) = $target_func;
     }
     ;
 
 traversal: T_TRAVERSAL id[name] '{' info[information] prefix[identifier] traversalnodes[nodes] travdata[data]'}'
     {
-        $$ = ASTnewitraversal($name);
+        $$ = ASTitraversal($name);
         ITRAVERSAL_IINFO($$) = $information;
         ITRAVERSAL_IPREFIX($$) = $identifier;
         ITRAVERSAL_INODES($$) = $nodes;
     }
     | T_TRAVERSAL id[name]
     {
-        $$ = ASTnewitraversal($name);
+        $$ = ASTitraversal($name);
     }
     ;
 
@@ -268,28 +268,28 @@ actions: action ';' actions
 
 action: traversal
       {
-        $$ = ASTnewiactions();
+        $$ = ASTiactions();
         IACTIONS_REFERENCE($$) = ITRAVERSAL_NAME($1);
         ITRAVERSAL_NEXT($1) = AST_ITRAVERSALS(ast);
         AST_ITRAVERSALS(ast) = $1;
       }
       | pass
       {
-        $$ = ASTnewiactions();
+        $$ = ASTiactions();
         IACTIONS_REFERENCE($$) = IPASS_NAME($1);
         IPASS_NEXT($1) = AST_IPASSES(ast);
         AST_IPASSES(ast) = $1;
       }
       | phase
       {
-        $$ = ASTnewiactions();
+        $$ = ASTiactions();
         IACTIONS_REFERENCE($$) = IPHASE_NAME($1);
         IPHASE_NEXT($1) = AST_IPHASES(ast);
         AST_IPHASES(ast) = $1;
       }
       | id
       {
-        $$ = ASTnewiactions();
+        $$ = ASTiactions();
         IACTIONS_REFERENCE($$) = $1;
       }
       ;
@@ -317,41 +317,41 @@ setexpr: setoperation
        }
        | id
        {
-            $$ = ASTnewsetreference();
+            $$ = ASTsetreference();
             SETREFERENCE_REFERENCE($$) = $1;
        }
        ;
 
 setoperation: setexpr '|' setexpr
             {
-                $$ = ASTnewsetoperation($1, $3, SO_iunion);
+                $$ = ASTsetoperation($1, $3, SO_iunion);
             }
             | setexpr '&' setexpr
             {
-                $$ = ASTnewsetoperation($1, $3, SO_intersect);
+                $$ = ASTsetoperation($1, $3, SO_intersect);
             }
             | setexpr '-' setexpr
             {
-                $$ = ASTnewsetoperation($1, $3, SO_difference);
+                $$ = ASTsetoperation($1, $3, SO_difference);
             }
             ;
 
 setliterals: setliterals ',' id
            {
-                $$ = ASTnewsetliteral();
+                $$ = ASTsetliteral();
                 SETLITERAL_REFERENCE($$) = $3;
                 SETLITERAL_NEXT($$) = $1;
            }
            | id
            {
-                $$ = ASTnewsetliteral();
+                $$ = ASTsetliteral();
                 SETLITERAL_REFERENCE($$) = $1;
            }
 
 
 node: is_root[root] T_NODE id[name] '{' info[information] childrenbody[children] attributebody[attributes] '}'
     {
-        $$ = ASTnewinode($name, $information);
+        $$ = ASTinode($name, $information);
         INODE_IS_ROOT($$) = $root;
         INODE_ICHILDREN($$) = $children;
         INODE_IATTRIBUTES($$) = $attributes;
@@ -392,20 +392,20 @@ attributes: attribute ';' attributes
 
 attribute: attribute_primitive_type[type] id[name] '{' is_constructor[constructor] '}'
     {
-        $$ = ASTnewattribute();
+        $$ = ASTattribute();
         ATTRIBUTE_NAME($$) = $name;
         ATTRIBUTE_TYPE($$) = $type;
         ATTRIBUTE_IN_CONSTRUCTOR($$) = $constructor;
     }
     | attribute_primitive_type[type] id[name]
     {
-              $$ = ASTnewattribute();
-              ATTRIBUTE_NAME($$) = $name;
-              ATTRIBUTE_TYPE($$) = $type;
+          $$ = ASTattribute();
+          ATTRIBUTE_NAME($$) = $name;
+          ATTRIBUTE_TYPE($$) = $type;
     }
     | id[type] id[name] '{' is_constructor[constructor] '}'
     {
-        $$ = ASTnewattribute();
+        $$ = ASTattribute();
        ATTRIBUTE_NAME($$) = $name;
        ATTRIBUTE_TYPE_REFERENCE($$) = $type;
        ATTRIBUTE_TYPE($$) = AT_link_or_enum;
@@ -413,7 +413,7 @@ attribute: attribute_primitive_type[type] id[name] '{' is_constructor[constructo
     }
     | id[type] id[name]
     {
-           $$ = ASTnewattribute();
+           $$ = ASTattribute();
            ATTRIBUTE_NAME($$) = $name;
            ATTRIBUTE_TYPE_REFERENCE($$) = $type;
            ATTRIBUTE_TYPE($$) = AT_link_or_enum;
@@ -463,12 +463,12 @@ children: child ';' children
 
 child: id[type] id[name]
     {
-        $$ = ASTnewchild($name);
+        $$ = ASTchild($name);
         CHILD_TYPE_REFERENCE($$) = $type;
     }
     | id[type] id[name] '{' is_constructor[constructor] '}'
     {
-        $$ = ASTnewchild($name);
+        $$ = ASTchild($name);
         CHILD_TYPE_REFERENCE($$) = $type;
         CHILD_IN_CONSTRUCTOR($$) = $constructor;
     }
@@ -476,14 +476,14 @@ child: id[type] id[name]
 
 nodeset: T_NODESET id[name] '{' info[information] T_NODES '=' setexpr[expr] '}'
         {
-            $$ = ASTnewinodeset();
+            $$ = ASTinodeset();
             INODESET_EXPR($$) = $expr;
             INODESET_NAME($$) = $name;
             INODESET_IINFO($$) = $information;
         }
         | T_NODESET id[name] '=' setexpr[expr]
         {
-            $$ = ASTnewinodeset();
+            $$ = ASTinodeset();
             INODESET_EXPR($$) = $expr;
             INODESET_NAME($$) = $name;
         }
@@ -491,7 +491,7 @@ nodeset: T_NODESET id[name] '{' info[information] T_NODES '=' setexpr[expr] '}'
 
 enum: T_ENUM id[name] '{' info[information] prefix[identifier] enumvalues[values] '}'
     {
-        $$ = ASTnewienum($values, $name, $identifier, $information);
+        $$ = ASTienum($values, $name, $identifier, $information);
     }
 
 enumvalues: T_VALUES '=' '{' idlist '}'
@@ -564,7 +564,7 @@ prefix: %empty
 
 id: T_ID
     {
-        $$ = ASTnewid($1, STRlower($1), STRupper($1));
+        $$ = ASTid($1, STRlower($1), STRupper($1));
     }
   ;
 %%
@@ -583,9 +583,15 @@ static struct ctinfo *NewLocation(struct ctinfo *info)
 
 node_st *SPparseDSL(FILE *fp)
 {
-    ast = ASTnewast();
+    ast = ASTast();
     yyin = fp;
+    printf("Ast: %p, %d\n", ast, NODE_TYPE(ast));
+    node_st *n = ASTid("H", "h", "H");
+    printf("N: %d, %s\n", NODE_TYPE(n), ID_LWR(n));
     yyparse();
     yylex_destroy();
+
+    printf("ASt phases: %s\n", ID_ORIG(IPHASE_NAME(AST_IPHASES(ast))));
+    fclose(fp);
     return ast;
 }

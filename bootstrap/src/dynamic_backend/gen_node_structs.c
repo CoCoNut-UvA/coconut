@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "assert.h"
 
+#include "globals.h"
 #include "gen_helpers/out_macros.h"
 #include "palm/ctinfo.h"
 #include "palm/str.h"
@@ -24,7 +25,7 @@ static int child_num = 0;
 
 node_st *DGNSast(node_st *node)
 {
-    fp = stdout;
+    fp = globals.fp;
     TRAVchildren(node);
     return node;
 }
@@ -77,7 +78,7 @@ node_st *DGNSinode(node_st *node)
     }
     OUT_STRUCT_END();
 
-    TRAVchildren(node);
+    TRAVopt(INODE_NEXT(node));
     return node;
 }
 
@@ -126,7 +127,13 @@ node_st *DGNSsetreference(node_st *node)
 
 node_st *DGNSattribute(node_st *node)
 {
-
+    if (ATTRIBUTE_TYPE(node) == AT_link) {
+        OUT_FIELD("%s *%s", basic_node_type, ID_LWR(ATTRIBUTE_NAME(node)));
+    } else if (ATTRIBUTE_TYPE(node) == AT_link_or_enum) {
+        OUT_FIELD("enum %s %s", FMTattributeTypeToString(node), ID_LWR(ATTRIBUTE_NAME(node)));
+    } else {
+        OUT_FIELD("%s %s", FMTattributeTypeToString(node), ID_LWR(ATTRIBUTE_NAME(node)));
+    }
     TRAVchildren(node);
     return node;
 }

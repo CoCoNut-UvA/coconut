@@ -52,6 +52,7 @@ node_st *CEXiphase(node_st *node)
         if (seen_start_phase) {
             CTIerror("Double definition of a starting phase.");
         } else {
+            AST_START_PHASE(root) = node;
             seen_start_phase = true;
         }
     }

@@ -5,10 +5,10 @@ start phase startPhase {
 
     actions {
         pass scanAndParse;
+        print;
         semantic;
         dynamic_backend;
         phase_driver;
-        print;
     }
 };
 
@@ -38,29 +38,36 @@ phase dynamic_backend {
     prefix = DDB
 
     actions {
-        phase dynamic_nodes {
-            info = "Traversal to generate all node related data"
+        dynamic_gen_ast;
+        pass dynamic_start_enum_header;
+        dynamic_genEnum;
+        dynamic_genEnumValues;
+        pass dynamic_start_table_gen;
+        dynamic_genTravVtable;
+        dynamic_genPassTable;
+        dynamic_genSystemTraversals;
+        dynamic_genTravTable;
+        dynamic_genActionsHeader;
+        dynamic_genCopyTraversal;
+        dynamic_genFreeTraversal;
+        dynamic_genCheckTraversal;
+    }
+};
 
-            actions {
-                dynamic_genNodeStructs;
-                dynamic_genNodeMacros;
-                dynamic_genNodeInitFunctions;
-                dynamic_genNodeUnion;
-                pass dynamic_genBaseNode;
-                pass dynamic_genBaseNodeInit;
-                dynamic_genNodeConstructor;
-                dynamic_genEnum;
-                dynamic_genEnumValues;
-                dynamic_genTravVtable;
-                dynamic_genPassTable;
-                dynamic_genSystemTraversals;
-                dynamic_genTravTable;
-                dynamic_genActionsHeader;
-                dynamic_genCopyTraversal;
-                dynamic_genFreeTraversal;
-                dynamic_genCheckTraversal;
-            }
-        };
+phase dynamic_gen_ast {
+    info = "Generate the required files for managing user nodes and AST manipulation"
+    prefix = DGA
+
+    actions {
+        pass dynamic_start_ast_header;
+        dynamic_genNodeStructs;
+        dynamic_genNodeMacros;
+        dynamic_genNodeInitFunctions;
+        dynamic_genNodeUnion;
+        pass dynamic_genBaseNode;
+        pass dynamic_switch_to_ast_source;
+        pass dynamic_genBaseNodeInit;
+        dynamic_genNodeConstructor;
     }
 };
 
@@ -278,6 +285,7 @@ root node ast {
     }
     attributes {
         inode root_node {};
+        iphase start_phase {};
     }
 };
 
@@ -393,7 +401,7 @@ node ste {
 enum attribute_type {
     prefix = AT
     values = {
-        link, link_or_enum, iint, istring, ibool
+        link, link_or_enum, iint, istring, ibool, iint8, iint16, ifloat, idouble, iuint
     }
 };
 

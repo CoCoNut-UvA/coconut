@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "filesystem/utils.h"
 
 extern char *yy_filename;
 
@@ -21,6 +22,7 @@ void InitGlobalOptions() {
     global_command_line.dot_dir = NULL;
     global_command_line.doc_dir = NULL;
     global_command_line.backend = NULL;
+    global_command_line.gen_dir = NULL;
 }
 
 static
@@ -77,6 +79,7 @@ void CLprocessArgs(int argc, char *argv[]) {
         {"inspectpoints", no_argument, 0, 28},
         {"gen-user-files", no_argument, 0, 29},
         {"backend", required_argument, 0, 30},
+        {"gen-dir", required_argument, 0, 31},
         {0, 0, 0, 0}};
 
     int option_index;
@@ -123,6 +126,9 @@ void CLprocessArgs(int argc, char *argv[]) {
         case 30:
             global_command_line.backend = optarg;
             break;
+        case 31:
+            global_command_line.gen_dir = optarg;
+            break;
         case 'h':
             Usage(argv[0]);
             exit(EXIT_SUCCESS);
@@ -131,6 +137,11 @@ void CLprocessArgs(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
     }
+
+    if (global_command_line.gen_dir == NULL) {
+        global_command_line.gen_dir = "ccngen/";
+    }
+    global_command_line.gen_dir = FSdirifyString(global_command_line.gen_dir);
 
     if (optind == argc - 1) {
         global_command_line.input_file = argv[optind];

@@ -6,6 +6,7 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "globals.h"
 
 void *DGCCallocTravData()
 {
@@ -56,9 +57,9 @@ node_st *DGCCipass(node_st *node)
 
 node_st *DGCCinode(node_st *node)
 {
-    fp = stdout;
+    fp = globals.fp;
     arg_num = 0;
-    OUT("struct ccn_node *new_node = ASTnew%s(", ID_ORIG(INODE_NAME(node)));
+    OUT("struct ccn_node *new_node = AST%s(", ID_ORIG(INODE_NAME(node)));
     TRAVopt(INODE_ICHILDREN(node));
     TRAVopt(INODE_IATTRIBUTES(node));
     OUT_NO_INDENT(");\n");

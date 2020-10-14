@@ -3,10 +3,12 @@
 #include <stdio.h>
 #include "assert.h"
 
+#include "globals.h"
 #include "gen_helpers/out_macros.h"
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "filesystem/gen_files.h"
 
 void *GAAallocTravData()
 {
@@ -33,7 +35,7 @@ static char *enum_action_name = "ccn_action_id";
 
 node_st *GAAast(node_st *node)
 {
-    fp = stdout;
+    fp = globals.fp;
     ast = node;
 
     OUT("static struct ccn_action ccn_action_array[] = {\n");
@@ -53,6 +55,8 @@ node_st *GAAast(node_st *node)
             "struct ccn_action *CCNgetActionFromID(enum %s action_id)", enum_action_name);
     OUT_STATEMENT("return &ccn_action_array[action_id]");
     OUT_END_FUNC();
+
+    fclose(fp);
 
     return node;
 }

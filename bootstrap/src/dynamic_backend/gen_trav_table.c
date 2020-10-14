@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <stdio.h>
+#include <globals.h>
 #include "assert.h"
 
 #include "gen_helpers/out_macros.h"
@@ -28,7 +29,7 @@ static node_st *ast;
 
 node_st *DGTTast(node_st *node)
 {
-    fp = stdout;
+    fp = globals.fp;
     ast = node;
     OUT("const ccn_trav_ft *ccn_trav_vtable[_TRAV_SIZE] = { ccn_error_vtable, ");
     TRAVopt(AST_ITRAVERSALS(node));

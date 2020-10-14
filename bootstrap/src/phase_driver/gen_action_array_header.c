@@ -7,6 +7,7 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "filesystem/gen_files.h"
 
 void *GAAHallocTravData()
 {
@@ -34,7 +35,7 @@ static char *enum_action_name = "ccn_action_id";
 
 node_st *GAAHast(node_st *node)
 {
-    fp = stdout;
+    fp = FSgetIncludeFile("action_handling.h");
     ast = node;
 
     OUT_ENUM("%s", enum_action_name);
@@ -57,10 +58,10 @@ node_st *GAAHast(node_st *node)
     OUT("#endif\n");
 
     OUT("#ifndef CCN_ROOT_ACTION\n");
-    OUT("#define CCN_ROOT_ACTION %s_%s\n", enum_action_pref, "root");
+    OUT("#define CCN_ROOT_ACTION %s_%s\n", enum_action_pref, ID_UPR(IPHASE_NAME(AST_START_PHASE(node))));
     OUT("#endif\n\n");
 
-
+    fclose(fp);
     return node;
 }
 

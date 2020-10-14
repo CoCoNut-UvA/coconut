@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "assert.h"
 
+#include "globals.h"
 #include "gen_helpers/out_macros.h"
 #include "palm/ctinfo.h"
 #include "palm/str.h"
@@ -28,7 +29,7 @@ static char *node_name_upr = NULL;
 node_st *DGNCast(node_st *node)
 {
     dgif_print_semicolon = false;
-    fp = stdout;
+    fp = globals.fp;
     TRAVchildren(node);
     return node;
 }
@@ -75,6 +76,7 @@ node_st *DGNCinode(node_st *node)
         OUT_FIELD("node->data.N_%s = MEMmalloc(sizeof(struct NODE_DATA_%s))", ID_LWR(INODE_NAME(node)), ID_UPR(INODE_NAME(node)));
         OUT_FIELD("NODE_TYPE(node) = %s%s", "NT_", ID_UPR(INODE_NAME(node)));
 
+
         TRAVopt(INODE_ICHILDREN(node));
         TRAVopt(INODE_IATTRIBUTES(node));
         OUT_FIELD("NODE_NUMCHILDREN(node) = %ld", num_children);
@@ -83,6 +85,7 @@ node_st *DGNCinode(node_st *node)
             OUT_FIELD("NODE_CHILDREN(node) = node->data.N_%s->%s_children.%s_children_at", name_lwr, name_lwr, name_lwr);
         }
     }
+    OUT("return node;");
     OUT_END_FUNC();
     INODE_NEXT(node) = next;
     TRAVopt(INODE_NEXT(node));

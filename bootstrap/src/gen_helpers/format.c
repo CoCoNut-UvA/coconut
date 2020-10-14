@@ -11,21 +11,19 @@ void FMTprintIndentLevel(FILE *fp, int indent)
     }
 }
 
-char *FMTattributeDefaultVal(node_st *node)
+char *FMTattributeDefaultVal(node_st *attr)
 {
-    assert(NODE_TYPE(node) == NT_ATTRIBUTE);
-    switch (ATTRIBUTE_TYPE(node)) {
+    assert(NODE_TYPE(attr) == NT_ATTRIBUTE);
+    switch (ATTRIBUTE_TYPE(attr)) {
     case AT_iint:
         return "0";
     case AT_link:
+    case AT_istring:
         return "NULL";
-        break;
     case AT_link_or_enum:
-        assert(false);
-        return "NULL";
+        return "0";
     }
     assert(false);
-    return "IMPOSSIBLE VALUE";
 }
 
 char *FMTattributeTypeToString(node_st *attr)
@@ -35,9 +33,11 @@ char *FMTattributeTypeToString(node_st *attr)
     case AT_iint:
         return "int";
     case AT_link_or_enum:
-        assert(false);
+        return ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(attr));
     case AT_link:
         return "node_st";
+    case AT_istring:
+        return "char *";
     }
     assert(false);
     return "IMPOSSIBLE VALUE";

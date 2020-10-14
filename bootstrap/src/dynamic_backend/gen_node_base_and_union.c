@@ -6,6 +6,7 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "globals.h"
 
 void *DGBUallocTravData()
 {
@@ -27,7 +28,7 @@ static int arg_num = 0;
 node_st *dynamic_genBaseNodeInit(node_st *root)
 {
     indent = 0;
-    fp = stdout;
+    fp = globals.fp;
     OUT_START_FUNC("%s *NewNode()", basic_node_type);
     OUT_FIELD("%s *node = MEMmalloc(sizeof(%s))", basic_node_type, basic_node_type);
     OUT_FIELD("NODE_TYPE(node) = NT_NULL");
@@ -43,7 +44,7 @@ node_st *dynamic_genBaseNodeInit(node_st *root)
 node_st *dynamic_genBaseNode(node_st *root)
 {
     indent = 0;
-    fp = stdout;
+    fp = globals.fp;
     OUT("#define NODE_TYPE(n) ((n)->nodetype)\n");
     OUT("#define NODE_CHILDREN(n) ((n)->children)\n");
     OUT("#define NODE_NUMCHILDREN(n) ((n)->num_children)\n");
@@ -59,7 +60,7 @@ node_st *dynamic_genBaseNode(node_st *root)
 
 node_st *DGBUast(node_st *node)
 {
-    fp = stdout;
+    fp = globals.fp;
     indent = 0;
     OUT_UNION("NODE_DATA");
     TRAVchildren(node);

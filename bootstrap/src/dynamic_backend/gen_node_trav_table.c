@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <stdio.h>
+#include <globals.h>
 #include "assert.h"
 
 #include "gen_helpers/out_macros.h"
@@ -31,7 +32,7 @@ extern bool in_set(node_st *node, node_st *vale);
 
 node_st *DGNFTTast(node_st *node)
 {
-    fp = stdout;
+    fp = globals.fp;
     return node;
 }
 
@@ -60,7 +61,7 @@ node_st *DGNFTTipass(node_st *node)
 
 node_st *DGNFTTinode(node_st *node)
 {
-    fp = stdout;
+    fp = globals.fp;
     if (!curr_trav_nodes || in_set(curr_trav_nodes, INODE_NAME(node))) {
         OUT("&%s%s", ID_UPR(curr_trav_prefix), ID_LWR(INODE_NAME(node)));
     } else {

@@ -6,6 +6,7 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "globals.h"
 
 void *DGEVallocTravData()
 {
@@ -37,7 +38,7 @@ static void do_enum(char *name, node_st *node, char *prefix)
 
 node_st *DGEVast(node_st *node)
 {
-    fp = stdout;
+    fp = globals.fp;
     TRAVopt(AST_ENUMS(node));
     return node;
 }
@@ -119,7 +120,7 @@ node_st *DGEVsetreference(node_st *node)
 static char *enum_prefx;
 node_st *DGEVienum(node_st *node)
 {
-    OUT_ENUM("%s", ID_UPR(IENUM_NAME(node)));
+    OUT_ENUM("%s", ID_LWR(IENUM_NAME(node)));
     enum_prefx = ID_UPR(IENUM_IPREFIX(node));
     TRAVopt(IENUM_VALS(node));
     OUT_ENUM_END();
@@ -129,7 +130,8 @@ node_st *DGEVienum(node_st *node)
 
 node_st *DGEVid(node_st *node)
 {
-    OUT_ENUM_FIELD("%s_%s", enum_prefx, ID_UPR(node));
+    fp = globals.fp;
+    OUT_ENUM_FIELD("%s_%s", enum_prefx, ID_LWR(node));
     TRAVchildren(node);
     return node;
 }

@@ -6,6 +6,8 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "globals.h"
+#include "filesystem/gen_files.h"
 
 void *GITallocTravData()
 {
@@ -32,17 +34,25 @@ static char *enum_action_name = "ccn_action_id";
 
 node_st *GITast(node_st *node)
 {
-    fp = stdout;
+    fp = FSgetSourceFile("action_handling.c");
+    globals.fp = fp;
+    OUT("#include <stddef.h>\n");
+    OUT("#include \"ccn/action_types.h\"\n");
+    OUT("#include \"ccngen/action_handling.h\"\n");
+    OUT("#include \"ccngen/enum.h\"\n");
+    OUT("#include \"ccngen/ast.h\"\n");
+    OUT("#include \"ccn/phase_driver.h\"\n");
+
     ast = node;
     OUT("enum %s cleanup_ids_table[2] = { %s_free, %s_NULL };\n", enum_action_name, enum_action_pref, enum_action_pref);
     TRAVchildren(node);
-    OUT("};\n");
     return node;
 }
 
 node_st *GITiactions(node_st *node)
 {
     OUT("%s_%s, ", enum_action_pref, ID_UPR(IACTIONS_REFERENCE(node)));
+    TRAVopt(IACTIONS_NEXT(node));
     return node;
 }
 
@@ -52,6 +62,7 @@ node_st *GITiphase(node_st *node)
     TRAVopt(IPHASE_IACTIONS(node));
     OUT("%s_NULL, ", enum_action_pref);
     OUT_ENUM_END();
+    TRAVopt(IPHASE_NEXT(node));
     return node;
 }
 

@@ -16,6 +16,7 @@ void PRTfreeTravData(void *data)
 node_st *PRTast(node_st *ast)
 {
     printf("AST:\n");
+    printf("Child: %d\n", NODE_TYPE(AST_IPHASES(ast)));
     TRAVchildren(ast);
     return ast;
 }

@@ -6,6 +6,7 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "filesystem/gen_files.h"
 
 void *DGFTallocTravData()
 {
@@ -28,9 +29,11 @@ static node_st *ast;
 
 node_st *DGFTast(node_st *node)
 {
-    fp = stdout;
+    fp = FSgetSourceFile("ccn_free.c");
+    OUT("#include \"ccngen/ast.h\"\n");
     ast = node;
     TRAVopt(AST_INODES(node));
+    fclose(fp);
     return node;
 }
 

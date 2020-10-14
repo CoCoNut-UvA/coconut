@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <stdio.h>
+#include <globals.h>
 #include "assert.h"
 
 #include "gen_helpers/out_macros.h"
@@ -28,8 +29,9 @@ static node_st *ast;
 
 node_st *DGTVast(node_st *node)
 {
-    fp = stdout;
+    fp = globals.fp;
     ast = node;
+    OUT("#include \"ccn/dynamic_core.h\"\n");
     TRAVopt(AST_ITRAVERSALS(node));
     return node;
 }
@@ -115,7 +117,6 @@ node_st *DGTVsetreference(node_st *node)
     return node;
 }
 
-static char *enum_prefx;
 node_st *DGTVienum(node_st *node)
 {
     return node;

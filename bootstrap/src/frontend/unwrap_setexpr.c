@@ -86,7 +86,7 @@ node_st *USEste(node_st *node)
 }
 
 struct ccn_node *cpyid(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTnewid(NULL, NULL, NULL    );
+    struct ccn_node *new_node = ASTid(NULL, NULL, NULL    );
     ID_ORIG(new_node) = STRcpy(ID_ORIG(arg_node));
     ID_LWR(new_node) = STRcpy(ID_LWR(arg_node));
     ID_UPR(new_node) = STRcpy(ID_UPR(arg_node));
@@ -102,7 +102,7 @@ struct ccn_node *cpysetliteral(node_st *node)
     node_st *first = NULL;
     node_st *last = NULL;
     while (node) {
-        new = ASTnewsetliteral();
+        new = ASTsetliteral();
         SETLITERAL_REFERENCE(new) = cpyid(SETLITERAL_REFERENCE(node));
         if (first == NULL) {
             first = new;
@@ -184,7 +184,7 @@ static node_st *setintersect(node_st *node)
         }
     }
     if (first == NULL) {
-        first = ASTnewsetliteral();
+        first = ASTsetliteral();
     }
     return first;
 }

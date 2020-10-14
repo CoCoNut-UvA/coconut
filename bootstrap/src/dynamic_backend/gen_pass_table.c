@@ -1,6 +1,7 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#include <globals.h>
 #include "assert.h"
 
 #include "gen_helpers/out_macros.h"
@@ -29,7 +30,7 @@ static node_st *ast;
 
 node_st *DGPTast(node_st *node)
 {
-    fp = stdout;
+    fp = globals.fp;
     ast = node;
     OUT("const ccn_pass_ft ccn_pass_vtable[_PASS_SIZE] = { &PASSerror, ");
     TRAVopt(AST_IPASSES(node));
@@ -55,7 +56,7 @@ node_st *DGPTitraversal(node_st *node)
 node_st *DGPTipass(node_st *node)
 {
     char *prefix = "";
-    char *func = ID_LWR(IPASS_NAME(node));
+    char *func = ID_ORIG(IPASS_NAME(node));
     if (IPASS_IPREFIX(node)) {
         prefix = ID_UPR(IPASS_IPREFIX(node));
     }

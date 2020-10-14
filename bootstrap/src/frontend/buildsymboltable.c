@@ -22,7 +22,7 @@ static node_st *first_ste = NULL;
 
 node_st *BSTaddToST(node_st *ste, node_st *key, node_st *val)
 {
-    node_st *new = ASTnewste();
+    node_st *new = ASTste();
     STE_KEY(new) = key;
     STE_VALUE(new) = val;
     if (ste != NULL) {
@@ -33,8 +33,10 @@ node_st *BSTaddToST(node_st *ste, node_st *key, node_st *val)
 
 void addToST(node_st *key, node_st *val)
 {
+    printf("Key: %p\n", key);
+    printf("Node: %d\n", NODE_TYPE(val));
     printf("Adding: %s\n", ID_ORIG(key));
-    node_st *new_ste = ASTnewste();
+    node_st *new_ste = ASTste();
     STE_KEY(new_ste) = key;
     STE_VALUE(new_ste) = val;
     if (!first_ste) {
