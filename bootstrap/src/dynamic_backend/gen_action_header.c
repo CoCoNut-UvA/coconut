@@ -40,16 +40,6 @@ node_st *DGAHast(node_st *node)
     return node;
 }
 
-node_st *DGAHiactions(node_st *node)
-{
-    return node;
-}
-
-node_st *DGAHiphase(node_st *node)
-{
-    return node;
-}
-
 node_st *DGAHitraversal(node_st *node)
 {
     current_trav_prefix = ID_UPR(ITRAVERSAL_IPREFIX(node));
@@ -83,31 +73,6 @@ node_st *DGAHinode(node_st *node)
     return node;
 }
 
-node_st *DGAHinodeset(node_st *node)
-{
-    return node;
-}
-
-node_st *DGAHchild(node_st *node)
-{
-    return node;;
-}
-
-node_st *DGAHattribute(node_st *node)
-{
-    return node;
-}
-
-node_st *DGAHste(node_st *node)
-{
-    return node;
-}
-
-node_st *DGAHsetoperation(node_st *node)
-{
-    return node;
-}
-
 node_st *DGAHsetliteral(node_st *node)
 {
     TRAVopt(SETLITERAL_REFERENCE(node));
@@ -115,15 +80,6 @@ node_st *DGAHsetliteral(node_st *node)
     return node;
 }
 
-node_st *DGAHsetreference(node_st *node)
-{
-    return node;
-}
-
-node_st *DGAHienum(node_st *node)
-{
-    return node;
-}
 
 node_st *DGAHid(node_st *node)
 {

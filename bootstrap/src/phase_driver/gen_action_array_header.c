@@ -42,7 +42,7 @@ node_st *GAAHast(node_st *node)
 
     TRAVchildren(node);
 
-    //OUT_ENUM_FIELD("%s_%s", enum_action_pref, "check");
+    OUT_ENUM_FIELD("%s_%s", enum_action_pref, "check");
     OUT_ENUM_FIELD("%s_%s", enum_action_pref, "free");
     OUT_ENUM_FIELD("%s_%s", enum_action_pref, "cleanup");
     size += 3;
@@ -62,11 +62,6 @@ node_st *GAAHast(node_st *node)
     OUT("#endif\n\n");
 
     fclose(fp);
-    return node;
-}
-
-node_st *GAAHiactions(node_st *node)
-{
     return node;
 }
 
@@ -93,66 +88,3 @@ node_st *GAAHipass(node_st *node)
     TRAVopt(IPASS_NEXT(node));
     return node;
 }
-
-node_st *GAAHinode(node_st *node)
-{
-
-    return node;
-}
-
-node_st *GAAHinodeset(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *GAAHchild(node_st *node)
-{
-
-    return node;
-}
-
-node_st *GAAHattribute(node_st *node)
-{
-
-    return node;
-}
-
-node_st *GAAHste(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *GAAHsetoperation(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *GAAHsetliteral(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *GAAHsetreference(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *GAAHienum(node_st *node)
-{
-    return node;
-}
-
-node_st *GAAHid(node_st *node)
-{
-    return node;
-}
-

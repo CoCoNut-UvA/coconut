@@ -19,6 +19,8 @@
 
 extern bool yy_lex_keywords;
 static node_st *ast;
+static int trav_index = 0;
+static int node_index = 0;
 
 static struct ctinfo *NewLocation(struct ctinfo *info);
 
@@ -155,12 +157,14 @@ entry: phase
      }
      | traversal
      {
+        ITRAVERSAL_INDEX($1) = trav_index++;
         ITRAVERSAL_NEXT($1) = AST_ITRAVERSALS(ast);
         AST_ITRAVERSALS(ast) = $1;
         $$ = ast;
      }
      | node
      {
+        INODE_INDEX($1) = node_index++;
         INODE_NEXT($1) = AST_INODES(ast);
         AST_INODES(ast) = $1;
         $$ = ast;
@@ -585,13 +589,10 @@ node_st *SPparseDSL(FILE *fp)
 {
     ast = ASTast();
     yyin = fp;
-    printf("Ast: %p, %d\n", ast, NODE_TYPE(ast));
-    node_st *n = ASTid("H", "h", "H");
-    printf("N: %d, %s\n", NODE_TYPE(n), ID_LWR(n));
     yyparse();
     yylex_destroy();
-
-    printf("ASt phases: %s\n", ID_ORIG(IPHASE_NAME(AST_IPHASES(ast))));
+    AST_NUM_TRAVERSALS(ast) = trav_index;
+    AST_NUM_NODES(ast) = node_index;
     fclose(fp);
     return ast;
 }

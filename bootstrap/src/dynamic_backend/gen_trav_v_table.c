@@ -48,11 +48,13 @@ node_st *DGTViphase(node_st *node)
 
 extern node_st *curr_trav_nodes;
 extern node_st *curr_trav_prefix;
+extern int curr_trav_index;
 node_st *DGTVitraversal(node_st *node)
 {
     curr_trav_prefix = ITRAVERSAL_IPREFIX(node);
     curr_trav_nodes = ITRAVERSAL_INODES(node);
     OUT("const ccn_trav_ft %s_vtable[_NT_SIZE] = { &TRAVerror, ", ID_LWR(ITRAVERSAL_NAME(node)));
+    curr_trav_index = ITRAVERSAL_INDEX(node);
     TRAVstart(AST_INODES(ast), TRAV_DYNAMIC_GENNODESFORTRAVTABLE);
     OUT("};\n");
     TRAVchildren(node);

@@ -5,10 +5,10 @@ start phase startPhase {
 
     actions {
         pass scanAndParse;
-        print;
         semantic;
         dynamic_backend;
         phase_driver;
+        print;
     }
 };
 
@@ -20,8 +20,10 @@ phase semantic {
         buildSymbolTable;
         checkExistance;
         unwrapSetExpr;
+        reachability;
     }
 };
+
 
 phase phase_driver {
     info = "Generate the missing parts of the phase driver"
@@ -74,6 +76,10 @@ phase dynamic_gen_ast {
 traversal gen_ids_tables {
     prefix = GIT
 
+    nodes = {
+        ast, iphase, iactions
+    }
+
     travdata = {
         int fill
     }
@@ -82,6 +88,8 @@ traversal gen_ids_tables {
 traversal gen_action_array_header {
     prefix = GAAH
 
+    nodes = action | {ast}
+
     travdata = {
         int fill
     }
@@ -89,6 +97,8 @@ traversal gen_action_array_header {
 
 traversal gen_action_array {
     prefix = GAA
+
+    nodes = action | {ast}
 
     travdata = {
         int fill
@@ -138,6 +148,8 @@ traversal dynamic_genTravActions {
 
 traversal dynamic_genActionsHeader {
     prefix = DGAH
+
+    nodes = {itraversal, ipass, ast, inode, setliteral, id}
 
     travdata = {
         int fill
@@ -264,6 +276,18 @@ traversal unwrapSetExpr {
     }
 };
 
+traversal reachability {
+    prefix = RCB
+
+    nodes = {
+        ast, setliteral, itraversal, inode, child, inodeset
+    }
+
+    travdata = {
+        int fill
+    }
+};
+
 traversal print {
     info = "Print the ast"
     prefix = PRT
@@ -284,6 +308,8 @@ root node ast {
         ste stable;
     }
     attributes {
+        int num_traversals {};
+        int num_nodes {};
         inode root_node {};
         iphase start_phase {};
     }
@@ -322,6 +348,7 @@ node itraversal {
         setexpr inodes;
     }
     attributes {
+        int index {};
         id name { constructor };
         string iinfo {};
         id iprefix {};
@@ -352,6 +379,7 @@ node inode {
         id name { constructor };
         string iifno { constructor };
         int is_root {};
+        int index {};
     }
 };
 

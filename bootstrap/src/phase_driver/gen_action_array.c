@@ -61,11 +61,6 @@ node_st *GAAast(node_st *node)
     return node;
 }
 
-node_st *GAAiactions(node_st *node)
-{
-    return node;
-}
-
 node_st *GAAiphase(node_st *node)
 {
     char *name_upr = ID_UPR(IPHASE_NAME(node));
@@ -94,67 +89,5 @@ node_st *GAAipass(node_st *node)
         enum_action_pref, name_upr, ID_ORIG(IPASS_NAME(node)), name_upr);
 
     TRAVopt(IPASS_NEXT(node));
-    return node;
-}
-
-node_st *GAAinode(node_st *node)
-{
-
-    return node;
-}
-
-node_st *GAAinodeset(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *GAAchild(node_st *node)
-{
-
-    return node;
-}
-
-node_st *GAAattribute(node_st *node)
-{
-
-    return node;
-}
-
-node_st *GAAste(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *GAAsetoperation(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *GAAsetliteral(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *GAAsetreference(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *GAAienum(node_st *node)
-{
-    return node;
-}
-
-node_st *GAAid(node_st *node)
-{
     return node;
 }

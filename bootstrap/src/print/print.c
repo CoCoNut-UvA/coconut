@@ -13,11 +13,20 @@ void PRTfreeTravData(void *data)
 
 }
 
+extern int **reachability_matrix;
+
 node_st *PRTast(node_st *ast)
 {
     printf("AST:\n");
     printf("Child: %d\n", NODE_TYPE(AST_IPHASES(ast)));
     TRAVchildren(ast);
+
+    for (int i = 0; i < AST_NUM_TRAVERSALS(ast); i++) {
+        for (int j = 0; j < AST_NUM_NODES(ast); j++) {
+            printf("%d, ", reachability_matrix[i][j]);
+        }
+        printf("\n");
+    }
     return ast;
 }
 
@@ -30,7 +39,7 @@ node_st *PRTiphase(node_st *node)
 
 node_st *PRTitraversal(node_st *node)
 {
-    printf("Trav: %s\n", ID_ORIG(ITRAVERSAL_NAME(node)));
+    printf("Trav: %s(%d)\n", ID_ORIG(ITRAVERSAL_NAME(node)), ITRAVERSAL_INDEX(node));
     TRAVchildren(node);
     return node;
 }
@@ -52,7 +61,7 @@ node_st *PRTiactions(node_st *node)
 
 node_st *PRTinode(node_st *node)
 {
-    printf("NODE: %s\n", ID_ORIG(INODE_NAME(node)));
+    printf("NODE: %s(%d)\n", ID_ORIG(INODE_NAME(node)), INODE_INDEX(node));
     TRAVchildren(node);
     return node;
 }

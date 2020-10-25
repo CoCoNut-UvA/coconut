@@ -8,17 +8,21 @@ start phase hello {
 
 root node ast {
     children {
+        tmp n;
         ast next;
+        newest haha;
     }
 };
 
 node tmp {
-    children {
-        ast nextt;
-    }
     attributes {
         int val;
-        ast ref;
+    }
+};
+
+node newest {
+    attributes {
+        int val;
     }
 };
 
@@ -26,9 +30,12 @@ nodeset x = {ast} | {ast};
 nodeset y = x | {ast};
 nodeset z = y | { tmp };
 nodeset b = z & {tmp} & y;
+nodeset g = {tmp};
 
 traversal all {
     prefix = a
+
+    nodes = {newest}
     
     travdata = {
         int fill
