@@ -125,6 +125,8 @@ traversal dynamic_genFreeTraversal {
 traversal dynamic_genConstructorCall {
     prefix = DGCC
 
+    nodes = {ast, inode, child, attribute}
+
     travdata = {
         int fill
     }
@@ -140,6 +142,8 @@ traversal dynamic_genCopyTraversal {
 
 traversal dynamic_genTravActions {
     prefix = DGTA
+
+    nodes = {ast, inode}
 
     travdata = {
         int fill
@@ -159,6 +163,8 @@ traversal dynamic_genActionsHeader {
 traversal dynamic_genSystemTraversals {
     prefix = DGST
 
+    nodes = {ast, inode}
+
     travdata = {
         int fill
     }
@@ -166,6 +172,8 @@ traversal dynamic_genSystemTraversals {
 
 traversal dynamic_genTravTable {
     prefix = DGTT
+
+    nodes = {ast, itraversal}
 
     travdata = {
         int fill
@@ -175,6 +183,8 @@ traversal dynamic_genTravTable {
 traversal dynamic_genPassTable {
     prefix = DGPT
 
+    nodes = {ast, ipass}
+
     travdata = {
         int fill
     }
@@ -182,6 +192,8 @@ traversal dynamic_genPassTable {
 
 traversal dynamic_genNodesForTravTable {
     prefix = DGNFTT
+
+    nodes = {ast, inode}
 
     travdata = {
         int fill
@@ -191,6 +203,8 @@ traversal dynamic_genNodesForTravTable {
 traversal dynamic_genTravVtable {
     prefix = DGTV
 
+    nodes = {itraversal, ast}
+
     travdata = {
         int fill
     }
@@ -198,6 +212,8 @@ traversal dynamic_genTravVtable {
 
 traversal dynamic_genEnumValues {
     prefix = DGEV
+
+    nodes = {ienum, ast, id}
 
     travdata = {
         int fill
@@ -207,6 +223,8 @@ traversal dynamic_genEnumValues {
 traversal dynamic_genEnum {
     prefix = DGE
 
+    nodes = {ast, inode, itraversal, inodeset, ipass}
+
     travdata = {
         int fill
     }
@@ -214,6 +232,7 @@ traversal dynamic_genEnum {
 
 traversal dynamic_genNodeConstructor {
     prefix = DGNC
+    nodes = {ast, inode, child, attribute}
 
     travdata = {
         int fill
@@ -223,6 +242,8 @@ traversal dynamic_genNodeConstructor {
 traversal dynamic_genNodeUnion {
     prefix = DGBU
 
+    nodes = {ast, inode}
+
     travdata = {
         int fill
     }
@@ -230,6 +251,8 @@ traversal dynamic_genNodeUnion {
 
 traversal dynamic_genNodeInitFunctions {
     prefix = DGIF
+
+    nodes = {ast, inode, child, attribute}
 
     travdata = {
         int fill
@@ -240,6 +263,8 @@ traversal dynamic_genNodeInitFunctions {
 traversal dynamic_genNodeStructs {
     prefix = DGNS
 
+    nodes = {ast, inode, child, attribute}
+
     travdata = {
         int fill
     }
@@ -247,6 +272,8 @@ traversal dynamic_genNodeStructs {
 
 traversal dynamic_genNodeMacros {
     prefix = DGNM
+
+    nodes = {ast, inode, child, attribute}
 
     travdata = {
         int fill

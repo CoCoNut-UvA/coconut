@@ -30,34 +30,6 @@ node_st *DGNSast(node_st *node)
     return node;
 }
 
-node_st *DGNSiactions(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNSiphase(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNSitraversal(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNSipass(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
 node_st *DGNSinode(node_st *node)
 {
     char *name_upr = ID_UPR(INODE_NAME(node));
@@ -82,45 +54,10 @@ node_st *DGNSinode(node_st *node)
     return node;
 }
 
-node_st *DGNSinodeset(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
 node_st *DGNSchild(node_st *node)
 {
     child_num++;
     OUT_FIELD("%s *%s", basic_node_type, ID_LWR(CHILD_NAME(node)));
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNSste(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNSsetoperation(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNSsetliteral(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNSsetreference(node_st *node)
-{
-
     TRAVchildren(node);
     return node;
 }
@@ -134,20 +71,6 @@ node_st *DGNSattribute(node_st *node)
     } else {
         OUT_FIELD("%s %s", FMTattributeTypeToString(node), ID_LWR(ATTRIBUTE_NAME(node)));
     }
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNSienum(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNSid(node_st *node)
-{
-
     TRAVchildren(node);
     return node;
 }

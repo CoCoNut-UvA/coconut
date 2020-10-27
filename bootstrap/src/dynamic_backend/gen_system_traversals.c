@@ -54,27 +54,6 @@ node_st *DGSTast(node_st *node)
     return node;
 }
 
-node_st *DGSTiactions(node_st *node)
-{
-    return node;
-}
-
-node_st *DGSTiphase(node_st *node)
-{
-    return node;
-}
-
-node_st *DGSTitraversal(node_st *node)
-{
-    return node;
-}
-
-node_st *DGSTipass(node_st *node)
-{
-
-    return node;
-}
-
 node_st *DGSTinode(node_st *node)
 {
     // Important, OUT should be before the traversal.
@@ -88,58 +67,3 @@ node_st *DGSTinode(node_st *node)
     return node;
 }
 
-node_st *DGSTinodeset(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGSTchild(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGSTattribute(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGSTste(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGSTsetoperation(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGSTsetliteral(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGSTsetreference(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGSTienum(node_st *node)
-{
-    return node;
-}
-
-node_st *DGSTid(node_st *node)
-{
-    return node;
-}

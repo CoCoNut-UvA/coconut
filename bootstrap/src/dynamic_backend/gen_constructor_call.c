@@ -34,27 +34,6 @@ node_st *DGCCast(node_st *node)
     return node;
 }
 
-node_st *DGCCiactions(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCCiphase(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCCitraversal(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCCipass(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
 node_st *DGCCinode(node_st *node)
 {
     fp = globals.fp;
@@ -64,12 +43,6 @@ node_st *DGCCinode(node_st *node)
     TRAVopt(INODE_IATTRIBUTES(node));
     OUT_NO_INDENT(");\n");
 
-    return node;
-}
-
-node_st *DGCCinodeset(node_st *node)
-{
-    TRAVchildren(node);
     return node;
 }
 
@@ -96,43 +69,5 @@ node_st *DGCCattribute(node_st *node)
         OUT("%s", FMTattributeDefaultVal(node));
     }
     TRAVopt(ATTRIBUTE_NEXT(node));
-    return node;
-}
-
-node_st *DGCCste(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGCCsetoperation(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGCCsetliteral(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGCCsetreference(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGCCienum(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCCid(node_st *node)
-{
     return node;
 }

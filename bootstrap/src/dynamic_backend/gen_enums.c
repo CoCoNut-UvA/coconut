@@ -51,15 +51,6 @@ node_st *DGEast(node_st *node)
     return node;
 }
 
-node_st *DGEiactions(node_st *node)
-{
-    return node;
-}
-
-node_st *DGEiphase(node_st *node)
-{
-    return node;
-}
 
 node_st *DGEitraversal(node_st *node)
 {
@@ -95,50 +86,3 @@ node_st *DGEchild(node_st *node)
     return node;
 }
 
-node_st *DGEattribute(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGEste(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGEsetoperation(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGEsetliteral(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGEsetreference(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGEienum(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGEid(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}

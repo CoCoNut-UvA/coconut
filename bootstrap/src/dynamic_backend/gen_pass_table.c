@@ -38,20 +38,6 @@ node_st *DGPTast(node_st *node)
     return node;
 }
 
-node_st *DGPTiactions(node_st *node)
-{
-    return node;
-}
-
-node_st *DGPTiphase(node_st *node)
-{
-    return node;
-}
-
-node_st *DGPTitraversal(node_st *node)
-{
-    return node;
-}
 
 node_st *DGPTipass(node_st *node)
 {
@@ -65,68 +51,5 @@ node_st *DGPTipass(node_st *node)
     }
     OUT("&%s%s, ", prefix, func);
     TRAVopt(IPASS_NEXT(node));
-    return node;
-}
-
-node_st *DGPTinode(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGPTinodeset(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGPTchild(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGPTattribute(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGPTste(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGPTsetoperation(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGPTsetliteral(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGPTsetreference(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-static char *enum_prefx;
-node_st *DGPTienum(node_st *node)
-{
-    return node;
-}
-
-node_st *DGPTid(node_st *node)
-{
     return node;
 }

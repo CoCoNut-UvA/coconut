@@ -40,88 +40,10 @@ node_st *DGTTast(node_st *node)
     return node;
 }
 
-node_st *DGTTiactions(node_st *node)
-{
-    return node;
-}
-
-node_st *DGTTiphase(node_st *node)
-{
-    return node;
-}
 
 node_st *DGTTitraversal(node_st *node)
 {
     OUT("%s_vtable, ", ID_LWR(ITRAVERSAL_NAME(node)));
     TRAVopt(ITRAVERSAL_NEXT(node));
-    return node;
-}
-
-node_st *DGTTipass(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTTinode(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTTinodeset(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTTchild(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTTattribute(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTTste(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTTsetoperation(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTTsetliteral(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTTsetreference(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-static char *enum_prefx;
-node_st *DGTTienum(node_st *node)
-{
-    return node;
-}
-
-node_st *DGTTid(node_st *node)
-{
     return node;
 }

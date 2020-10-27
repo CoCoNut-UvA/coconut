@@ -30,26 +30,6 @@ node_st *DGTAast(node_st *node)
     return node;
 }
 
-node_st *DGTAiactions(node_st *node)
-{
-    return node;
-}
-
-node_st *DGTAiphase(node_st *node)
-{
-    return node;
-}
-
-node_st *DGTAitraversal(node_st *node)
-{
-    return node;
-}
-
-node_st *DGTAipass(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
 
 node_st *DGTAinode(node_st *node)
 {
@@ -58,60 +38,3 @@ node_st *DGTAinode(node_st *node)
     TRAVopt(INODE_NEXT(node));
     return node;
 }
-
-node_st *DGTAinodeset(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTAchild(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTAattribute(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTAste(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTAsetoperation(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTAsetliteral(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTAsetreference(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTAienum(node_st *node)
-{
-    return node;
-}
-
-node_st *DGTAid(node_st *node)
-{
-    return node;
-}
-

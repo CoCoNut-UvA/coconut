@@ -39,29 +39,6 @@ node_st *DGNFTTast(node_st *node)
     return node;
 }
 
-node_st *DGNFTTiactions(node_st *node)
-{
-    return node;
-}
-
-node_st *DGNFTTiphase(node_st *node)
-{
-    return node;
-}
-
-node_st *DGNFTTitraversal(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNFTTipass(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
 node_st *DGNFTTinode(node_st *node)
 {
     fp = globals.fp;
@@ -81,59 +58,3 @@ node_st *DGNFTTinode(node_st *node)
     return node;
 }
 
-node_st *DGNFTTinodeset(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNFTTchild(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNFTTattribute(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNFTTste(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNFTTsetoperation(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNFTTsetliteral(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNFTTsetreference(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-static char *enum_prefx;
-node_st *DGNFTTienum(node_st *node)
-{
-    return node;
-}
-
-node_st *DGNFTTid(node_st *node)
-{
-    return node;
-}

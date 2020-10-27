@@ -36,16 +36,6 @@ node_st *DGTVast(node_st *node)
     return node;
 }
 
-node_st *DGTViactions(node_st *node)
-{
-    return node;
-}
-
-node_st *DGTViphase(node_st *node)
-{
-    return node;
-}
-
 extern node_st *curr_trav_nodes;
 extern node_st *curr_trav_prefix;
 extern int curr_trav_index;
@@ -61,70 +51,3 @@ node_st *DGTVitraversal(node_st *node)
     return node;
 }
 
-node_st *DGTVipass(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTVinode(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTVinodeset(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTVchild(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTVattribute(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTVste(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTVsetoperation(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTVsetliteral(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTVsetreference(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGTVienum(node_st *node)
-{
-    return node;
-}
-
-node_st *DGTVid(node_st *node)
-{
-    return node;
-}

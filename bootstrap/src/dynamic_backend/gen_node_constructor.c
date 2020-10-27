@@ -34,34 +34,6 @@ node_st *DGNCast(node_st *node)
     return node;
 }
 
-node_st *DGNCiactions(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNCiphase(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNCitraversal(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNCipass(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
 node_st *DGNCinode(node_st *node)
 {
     num_children = 0;
@@ -92,13 +64,6 @@ node_st *DGNCinode(node_st *node)
     return node;
 }
 
-node_st *DGNCinodeset(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
 node_st *DGNCchild(node_st *node)
 {
     num_children++;
@@ -122,43 +87,3 @@ node_st *DGNCattribute(node_st *node)
     return node;
 }
 
-node_st *DGNCste(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNCsetoperation(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNCsetliteral(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNCsetreference(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNCienum(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGNCid(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}

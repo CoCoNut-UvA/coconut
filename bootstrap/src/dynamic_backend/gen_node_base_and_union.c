@@ -68,94 +68,10 @@ node_st *DGBUast(node_st *node)
     return node;
 }
 
-node_st *DGBUiactions(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGBUiphase(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGBUitraversal(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGBUipass(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
 
 node_st *DGBUinode(node_st *node)
 {
     TRAVopt(INODE_NEXT(node));
     OUT_FIELD("struct NODE_DATA_%s *N_%s", ID_UPR((INODE_NAME(node))), ID_LWR(INODE_NAME(node)));
-    return node;
-}
-
-node_st *DGBUinodeset(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGBUchild(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGBUattribute(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGBUste(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGBUsetoperation(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGBUsetliteral(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGBUsetreference(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGBUienum(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGBUid(node_st *node)
-{
-
-    TRAVchildren(node);
     return node;
 }
