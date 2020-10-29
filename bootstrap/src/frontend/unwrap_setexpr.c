@@ -38,19 +38,18 @@ node_st *USEiactions(node_st *node)
     return node;
 }
 
-node_st *USEiphas(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
 node_st *USEitraversal(node_st *node)
 {
 
     TRAVchildren(node);
     return node;
 }
+
+node_st *USEitravdata(node_st *node)
+{
+    return node;
+}
+
 
 node_st *USEipass(node_st *node)
 {

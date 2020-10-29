@@ -66,6 +66,11 @@ node_st *CEXitraversal(node_st *node)
     return node;
 }
 
+node_st  *CEXitravdata(node_st *node)
+{
+    return node;
+}
+
 node_st *CEXipass(node_st *node)
 {
     TRAVchildren(node);

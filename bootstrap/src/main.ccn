@@ -79,184 +79,108 @@ traversal gen_ids_tables {
     nodes = {
         ast, iphase, iactions
     }
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal gen_action_array_header {
     prefix = GAAH
 
     nodes = action | {ast}
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal gen_action_array {
     prefix = GAA
 
     nodes = action | {ast}
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal dynamic_genCheckTraversal {
     prefix = DGCHT
-
-    travdata = {
-        int fill
-    }
 };
 
 
 traversal dynamic_genFreeTraversal {
     prefix = DGFT
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal dynamic_genConstructorCall {
     prefix = DGCC
 
     nodes = {ast, inode, child, attribute}
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal dynamic_genCopyTraversal {
     prefix = DGCT
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal dynamic_genTravActions {
     prefix = DGTA
 
     nodes = {ast, inode}
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal dynamic_genActionsHeader {
     prefix = DGAH
 
     nodes = {itraversal, ipass, ast, inode, setliteral, id}
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal dynamic_genSystemTraversals {
     prefix = DGST
 
     nodes = {ast, inode}
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal dynamic_genTravTable {
     prefix = DGTT
 
     nodes = {ast, itraversal}
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal dynamic_genPassTable {
     prefix = DGPT
 
     nodes = {ast, ipass}
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal dynamic_genNodesForTravTable {
     prefix = DGNFTT
 
     nodes = {ast, inode}
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal dynamic_genTravVtable {
     prefix = DGTV
 
     nodes = {itraversal, ast}
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal dynamic_genEnumValues {
     prefix = DGEV
 
     nodes = {ienum, ast, id}
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal dynamic_genEnum {
     prefix = DGE
 
     nodes = {ast, inode, itraversal, inodeset, ipass}
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal dynamic_genNodeConstructor {
     prefix = DGNC
     nodes = {ast, inode, child, attribute}
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal dynamic_genNodeUnion {
     prefix = DGBU
 
     nodes = {ast, inode}
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal dynamic_genNodeInitFunctions {
     prefix = DGIF
 
     nodes = {ast, inode, child, attribute}
-
-    travdata = {
-        int fill
-    }
 };
 
 
@@ -264,43 +188,25 @@ traversal dynamic_genNodeStructs {
     prefix = DGNS
 
     nodes = {ast, inode, child, attribute}
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal dynamic_genNodeMacros {
     prefix = DGNM
 
     nodes = {ast, inode, child, attribute}
-
-    travdata = {
-        int fill
-    }
 };
 
 
 traversal checkExistance {
     prefix = CEX
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal buildSymbolTable {
     prefix = BST
-    travdata = {
-        int fill
-    }
 };
 
 traversal unwrapSetExpr {
     prefix = USE
-    travdata = {
-        int fill
-    }
 };
 
 traversal reachability {
@@ -309,18 +215,11 @@ traversal reachability {
     nodes = {
         ast, setliteral, itraversal, inode, child, inodeset
     }
-
-    travdata = {
-        int fill
-    }
 };
 
 traversal print {
     info = "Print the ast"
     prefix = PRT
-    travdata = {
-        int indent
-    }
 };
 
 
@@ -495,6 +394,20 @@ node setoperation {
 
 nodeset setexpr = {setoperation, setreference, setliteral};
 
+node itravdata {
+    children {
+        itravdata next;
+    }
+
+    attributes {
+        id name {};
+        id type_reference {};
+        attribute_type type {};
+        string include_file {};
+        int in_constructor {};
+    }
+};
+
 node attribute {
     children {
         attribute next;
@@ -503,7 +416,6 @@ node attribute {
         id name {};
         id type_reference {};
         attribute_type type {};
-        string include_file {};
         int in_constructor {};
     }
 };

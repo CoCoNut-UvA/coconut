@@ -105,6 +105,12 @@ node_st *BSTitraversal(node_st *node)
     return node;
 }
 
+node_st  *BSTitravdata(node_st *node)
+{
+    return node;
+}
+
+
 node_st *BSTipass(node_st *node)
 {
     if (lookupST(first_ste, IPASS_NAME(node))) {

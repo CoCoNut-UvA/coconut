@@ -44,6 +44,11 @@ node_st *PRTitraversal(node_st *node)
     return node;
 }
 
+node_st *PRTitravdata(node_st *node)
+{
+    return node;
+}
+
 node_st *PRTipass(node_st *node)
 {
     printf("Pass: %s\n", ID_ORIG(IPASS_NAME(node)));

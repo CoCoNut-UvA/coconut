@@ -127,7 +127,7 @@ struct ctinfo yy_ctinfo;
 %type<boolean> is_start is_constructor is_root
 %type<node> phase entry pass node traversal cycleheader phaseheader id action actionsbody traversalnodes prefix
     actions childrenbody attributebody attributes attribute children child setoperation setliterals func
-    setexpr enum idlist enumvalues nodeset
+    setexpr enum idlist enumvalues nodeset travdata
 %type<attr_type> attribute_primitive_type
 
 %left '&' '-' '|'
@@ -507,7 +507,10 @@ enumvalues: T_VALUES '=' '{' idlist '}'
 
 travdata: T_TRAVDATA '=' '{' travdatalist '}'
     {}
-
+    | %empty
+    {
+        $$ = NULL;
+    }
     ;
 
 travdatalist: travdatalist ',' travdataitem

@@ -54,6 +54,11 @@ node_st *DGCTitraversal(node_st *node)
     return node;
 }
 
+node_st *DGCTitravdata(node_st *node)
+{
+    return node;
+}
+
 node_st *DGCTipass(node_st *node)
 {
     TRAVchildren(node);

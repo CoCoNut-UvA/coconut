@@ -49,6 +49,12 @@ node_st *DGCHTitraversal(node_st *node)
     return node;
 }
 
+
+node_st *DGCHTitravdata(node_st *node)
+{
+    return node;
+}
+
 node_st *DGCHTipass(node_st *node)
 {
     TRAVchildren(node);
