@@ -46,6 +46,7 @@ phase dynamic_backend {
         dynamic_genEnumValues;
         pass dynamic_start_table_gen;
         dynamic_genTravVtable;
+        dynamic_genTravDataStructs;
         dynamic_genPassTable;
         dynamic_genSystemTraversals;
         dynamic_genTravTable;
@@ -73,6 +74,7 @@ phase dynamic_gen_ast {
     }
 };
 
+
 traversal gen_ids_tables {
     prefix = GIT
 
@@ -91,6 +93,11 @@ traversal gen_action_array {
     prefix = GAA
 
     nodes = action | {ast}
+};
+
+traversal dynamic_genTravDataStructs {
+    prefix = DGTDS
+    nodes = {itraversal, itravdata}
 };
 
 traversal dynamic_genCheckTraversal {
@@ -270,9 +277,9 @@ node iphase {
 
 node itraversal {
     children {
-        itraversal next;
         setexpr inodes;
         itravdata data;
+        itraversal next;
     }
     attributes {
         int index {};

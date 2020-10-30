@@ -22,6 +22,7 @@ void RCBfreeTravData(void *data)
 }
 
 int **reachability_matrix = NULL;
+int *child_visited = NULL;
 
 static bool child_is_reachable = false;
 static bool is_traversal_nodes = false;
@@ -33,9 +34,12 @@ node_st *ast;
 node_st *RCBast(node_st *node)
 {
     reachability_matrix = MEMmalloc(sizeof(int *) * AST_NUM_TRAVERSALS(node));
+    child_visited = MEMmalloc(sizeof(int) * AST_NUM_NODES(node));
     ast = node;
     ste = AST_STABLE(node);
     TRAVopt(AST_ITRAVERSALS(node));
+
+    MEMfree(child_visited);
     return node;
 }
 
@@ -65,12 +69,13 @@ node_st *RCBitraversal(node_st *node)
 node_st *RCBinode(node_st *node)
 {
     if (!reachability_matrix[trav_index][INODE_INDEX(node)]) {
+        child_is_reachable = false;
+        memset(child_visited, 0, sizeof(int) * AST_NUM_NODES(ast));
         TRAVopt(INODE_ICHILDREN(node));
         if (child_is_reachable) {
             reachability_matrix[trav_index][INODE_INDEX(node)] = RCB_NODE_HANDLED_BY_TRAV;
         }
     }
-    child_is_reachable = false;
     TRAVopt(INODE_NEXT(node));
     return node;
 }
@@ -88,13 +93,14 @@ node_st *RCBchild(node_st *node)
     if (NODE_TYPE(inode) == NT_INODESET) {
         TRAVdo(inode);
     } else {
-        // TODO: this is duplicated, factor it out.
-        const int reach = reachability_matrix[trav_index][INODE_INDEX(inode)];
-        if (reach && reach != RCB_NODE_NOT_HANDLED) {
-            child_is_reachable = true;
-        } else if (!reach) {
-            reachability_matrix[trav_index][INODE_INDEX(inode)] = RCB_NODE_NOT_HANDLED;
-            TRAVopt(INODE_ICHILDREN(inode));
+        if (!child_visited[INODE_INDEX(inode)]) {
+            child_visited[INODE_INDEX(inode)] = 1;
+            const int reach = reachability_matrix[trav_index][INODE_INDEX(inode)];
+            if (reach && reach != RCB_NODE_NOT_HANDLED) {
+                child_is_reachable = true;
+            } else {
+                TRAVopt(INODE_ICHILDREN(inode));
+            }
         }
     }
 
@@ -111,12 +117,14 @@ node_st *RCBsetliteral(node_st *node)
     if (is_traversal_nodes) {
         reachability_matrix[trav_index][INODE_INDEX(inode)] = RCB_NODE_HANDLED_BY_USER;
     } else {
-        const int reach = reachability_matrix[trav_index][INODE_INDEX(inode)];
-        if (reach && reach != RCB_NODE_NOT_HANDLED) {
-            child_is_reachable = true;
-        } else if (!reach) {
-            reachability_matrix[trav_index][INODE_INDEX(inode)] = RCB_NODE_NOT_HANDLED;
-            TRAVopt(INODE_ICHILDREN(inode));
+        if (!child_visited[INODE_INDEX(node)]) {
+            child_visited[INODE_INDEX(node)] = 1;
+            const int reach = reachability_matrix[trav_index][INODE_INDEX(inode)];
+            if (reach && reach != RCB_NODE_NOT_HANDLED) {
+                child_is_reachable = true;
+            } else {
+                TRAVopt(INODE_ICHILDREN(inode));
+            }
         }
     }
 
