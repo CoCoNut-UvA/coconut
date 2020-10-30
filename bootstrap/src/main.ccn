@@ -272,6 +272,7 @@ node itraversal {
     children {
         itraversal next;
         setexpr inodes;
+        itravdata data;
     }
     attributes {
         int index {};
@@ -400,11 +401,10 @@ node itravdata {
     }
 
     attributes {
-        id name {};
+        id name { constructor };
         id type_reference {};
         attribute_type type {};
         string include_file {};
-        int in_constructor {};
     }
 };
 

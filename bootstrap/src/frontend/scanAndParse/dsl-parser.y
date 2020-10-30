@@ -127,7 +127,7 @@ struct ctinfo yy_ctinfo;
 %type<boolean> is_start is_constructor is_root
 %type<node> phase entry pass node traversal cycleheader phaseheader id action actionsbody traversalnodes prefix
     actions childrenbody attributebody attributes attribute children child setoperation setliterals func
-    setexpr enum idlist enumvalues nodeset travdata
+    setexpr enum idlist enumvalues nodeset travdata travdatalist travdataitem
 %type<attr_type> attribute_primitive_type
 
 %left '&' '-' '|'
@@ -245,6 +245,7 @@ traversal: T_TRAVERSAL id[name] '{' info[information] prefix[identifier] travers
         ITRAVERSAL_IINFO($$) = $information;
         ITRAVERSAL_IPREFIX($$) = $identifier;
         ITRAVERSAL_INODES($$) = $nodes;
+        ITRAVERSAL_DATA($$) = $data;
     }
     | T_TRAVERSAL id[name]
     {
@@ -506,7 +507,9 @@ enumvalues: T_VALUES '=' '{' idlist '}'
 
 
 travdata: T_TRAVDATA '=' '{' travdatalist '}'
-    {}
+    {
+        $$ = $4;
+    }
     | %empty
     {
         $$ = NULL;
@@ -515,14 +518,25 @@ travdata: T_TRAVDATA '=' '{' travdatalist '}'
 
 travdatalist: travdatalist ',' travdataitem
         {
+            ITRAVDATA_NEXT($3) = $1;
+            $$ = $3;
         }
         | travdataitem
         {
+            $$ = $1;
         }
         ;
 
 travdataitem: attribute_primitive_type[type] id[name]
     {
+        $$ = ASTitravdata($name);
+        ITRAVDATA_TYPE($$) = $type;
+    }
+    | id[type] id[name]
+    {
+        $$ = ASTitravdata($name);
+        ITRAVDATA_TYPE_REFERENCE($$) = $type;
+        ITRAVDATA_TYPE($$) = AT_link_or_enum;
     }
     ;
 

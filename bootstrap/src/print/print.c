@@ -46,6 +46,7 @@ node_st *PRTitraversal(node_st *node)
 
 node_st *PRTitravdata(node_st *node)
 {
+    printf("Travdata: %s\n", ID_ORIG(ITRAVDATA_NAME(node)));
     return node;
 }
 

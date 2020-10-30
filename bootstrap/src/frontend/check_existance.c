@@ -68,6 +68,23 @@ node_st *CEXitraversal(node_st *node)
 
 node_st  *CEXitravdata(node_st *node)
 {
+    // TODO: Check if double decl in travdata.
+    if (ITRAVDATA_TYPE(node) == AT_link_or_enum) {
+        node_st *ste_entry = lookupST(ste, ITRAVDATA_TYPE_REFERENCE(node));
+        if (ste_entry == NULL) {
+            CTIerror("Could not find type reference for travdata entry.");
+        } else {
+            if (NODE_TYPE(ste_entry) == NT_INODE || NODE_TYPE(ste_entry) == NT_INODESET) {
+                ITRAVDATA_TYPE(node) = AT_link;
+            } else if (NODE_TYPE(ste_entry) == NT_IENUM) {
+                ITRAVDATA_TYPE(node) = AT_link_or_enum;
+            } else {
+                CTIerror("Invalid type in travdata entry.");
+            }
+        }
+    }
+
+    TRAVopt(ITRAVDATA_NEXT(node));
     return node;
 }
 
