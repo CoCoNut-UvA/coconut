@@ -4,5 +4,5 @@
 #include "ccngen/ast.h"
 
 void FMTprintIndentLevel(FILE *fp, int indent);
-char *FMTattributeDefaultVal(node_st *node);
-char *FMTattributeTypeToString(node_st *attr);
+char *FMTattributeDefaultVal(enum attribute_type);
+char *FMTattributeTypeToString(enum attribute_type);

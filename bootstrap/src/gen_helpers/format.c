@@ -11,10 +11,9 @@ void FMTprintIndentLevel(FILE *fp, int indent)
     }
 }
 
-char *FMTattributeDefaultVal(node_st *attr)
+char *FMTattributeDefaultVal(enum attribute_type type)
 {
-    assert(NODE_TYPE(attr) == NT_ATTRIBUTE);
-    switch (ATTRIBUTE_TYPE(attr)) {
+    switch (type) {
     case AT_iint:
         return "0";
     case AT_link:
@@ -26,14 +25,13 @@ char *FMTattributeDefaultVal(node_st *attr)
     assert(false);
 }
 
-char *FMTattributeTypeToString(node_st *attr)
+char *FMTattributeTypeToString(enum attribute_type type)
 {
-    assert(NODE_TYPE(attr) == NT_ATTRIBUTE);
-    switch (ATTRIBUTE_TYPE(attr)) {
+    switch (type) {
     case AT_iint:
         return "int";
     case AT_link_or_enum:
-        return ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(attr));
+        assert(false);
     case AT_link:
         return "node_st";
     case AT_istring:
@@ -42,3 +40,4 @@ char *FMTattributeTypeToString(node_st *attr)
     assert(false);
     return "IMPOSSIBLE VALUE";
 }
+
