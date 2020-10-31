@@ -81,7 +81,7 @@ node_st *DGNCattribute(node_st *node)
     if (ATTRIBUTE_IN_CONSTRUCTOR(node)) {
         OUT_FIELD("%s_%s(node) = %s", node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), ID_LWR(ATTRIBUTE_NAME(node)));
     } else {
-        OUT_FIELD("%s_%s(node) = %s", node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), FMTattributeDefaultVal(node));
+        OUT_FIELD("%s_%s(node) = %s", node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), FMTattributeDefaultVal(ATTRIBUTE_TYPE(node)));
     }
     TRAVchildren(node);
     return node;

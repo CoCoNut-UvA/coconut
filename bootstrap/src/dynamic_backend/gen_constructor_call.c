@@ -66,7 +66,7 @@ node_st *DGCCattribute(node_st *node)
             OUT(", ");
         }
         arg_num++;
-        OUT("%s", FMTattributeDefaultVal(node));
+        OUT("%s", FMTattributeDefaultVal(ATTRIBUTE_TYPE(node)));
     }
     TRAVopt(ATTRIBUTE_NEXT(node));
     return node;
