@@ -44,16 +44,32 @@ phase dynamic_backend {
         pass dynamic_start_enum_header;
         dynamic_genEnum;
         dynamic_genEnumValues;
+        dynamic_gen_trav_data;
         pass dynamic_start_table_gen;
         dynamic_genTravVtable;
-        dynamic_genTravDataStructs;
         dynamic_genPassTable;
         dynamic_genSystemTraversals;
         dynamic_genTravTable;
+        dynamic_genTravDataTables;
         dynamic_genActionsHeader;
         dynamic_genCopyTraversal;
         dynamic_genFreeTraversal;
         dynamic_genCheckTraversal;
+    }
+};
+
+phase dynamic_gen_trav_data {
+    info = "Generate the trav data requirements."
+    prefix = DGTD
+
+    actions {
+        pass dynamic_start_trav_data;
+        dynamic_genTravDataStructs;
+        dynamic_genTravDataUnion;
+        dynamic_genTravDataGetters;
+        dynamic_genTravDataCtorsHeader;
+        pass dynamic_switch_trav_data;
+        dynamic_genTravDataCtors;
     }
 };
 
@@ -71,6 +87,16 @@ phase dynamic_gen_ast {
         pass dynamic_switch_to_ast_source;
         pass dynamic_genBaseNodeInit;
         dynamic_genNodeConstructor;
+    }
+};
+
+traversal dynamic_genTravDataTables {
+    prefix = DGTDT
+    nodes = {ast, itraversal}
+
+    travdata = {
+        int in_init_round,
+        int indent
     }
 };
 
@@ -93,6 +119,26 @@ traversal gen_action_array {
     prefix = GAA
 
     nodes = action | {ast}
+};
+
+traversal dynamic_genTravDataUnion {
+    prefix = DGTDU
+    nodes = {ast, itraversal}
+};
+
+traversal dynamic_genTravDataGetters {
+    prefix = DGTDG
+    nodes = {itraversal}
+};
+
+traversal dynamic_genTravDataCtorsHeader {
+    prefix = DGTDCH
+    nodes = {itraversal}
+};
+
+traversal dynamic_genTravDataCtors {
+    prefix = DGTDC
+    nodes = {itraversal, itravdata}
 };
 
 traversal dynamic_genTravDataStructs {

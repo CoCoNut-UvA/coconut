@@ -4,23 +4,13 @@
 #include "globals.h"
 
 static int indent = 0;
-node_st *DGTDUast(node_st *node)
-{
-    FILE *fp = globals.fp;
-    OUT_UNION("TRAV_DATA");
-    TRAVopt(AST_ITRAVERSALS(node));
-    OUT_STRUCT_END();
-
-    return node;
-}
-
-
-node_st *DGTDUitraversal(node_st *node)
+node_st *DGTDCHitraversal(node_st *node)
 {
     FILE *fp = globals.fp;
     node_st *id = ITRAVERSAL_NAME(node);
     if (ITRAVERSAL_DATA(node)) {
-        OUT_FIELD("struct trav_data_%s *%s", ID_LWR(id), ID_LWR(id));
+        OUT("void TRAVdataInit%s(struct ccn_trav *trav);\n", ID_ORIG(id));
+        OUT("void TRAVdataFree%s(struct ccn_trav *trav);\n", ID_ORIG(id));
     }
     TRAVopt(ITRAVERSAL_NEXT(node));
     return node;

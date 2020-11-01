@@ -18,3 +18,5 @@ struct ccn_node *PASSstart(struct ccn_node *syntaxtree, enum ccn_pass_type trav_
 struct ccn_node *TRAVdo(struct ccn_node *arg_node);
 struct ccn_node *TRAVchildren(struct ccn_node *arg_node);
 struct ccn_node *TRAVnop(struct ccn_node *arg_node);
+void TRAVdataNOP(ccn_trav_st *);
+ccn_trav_st *TRAVgetCurrent(void);

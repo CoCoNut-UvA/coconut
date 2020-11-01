@@ -50,3 +50,33 @@ node_st *dynamic_start_table_gen(node_st *root)
 
     return root;
 }
+
+node_st *dynamic_start_trav_data(node_st *root)
+{
+    if (globals.fp) {
+        fclose(globals.fp);
+    }
+    globals.fp = FSgetIncludeFile("trav_data.h");
+    FILE *fp = globals.fp;
+    int indent = 0;
+    OUT("#include \"ccn/ccn_types.h\"\n");
+
+    return root;
+}
+
+node_st *dynamic_switch_trav_data(node_st *root)
+{
+    if (globals.fp) {
+        fclose(globals.fp);
+    }
+    globals.fp = FSgetSourceFile("trav_data.c");
+    FILE *fp = globals.fp;
+    int indent = 0;
+    OUT("#include <stdlib.h>\n");
+    OUT("#include \"ccngen/trav_data.h\"\n");
+    OUT("#include \"ccn/dynamic_core.h\"\n");
+    OUT("#include \"palm/memory.h\"\n");
+
+
+    return root;
+}
