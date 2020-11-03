@@ -20,6 +20,8 @@
                             } \
 
 bool yy_lex_keywords = true;
+bool in_enum = false;
+bool in_enum_values = false;
 static char yy_linebuf[1024];
 static regex_t regex;
 
@@ -84,8 +86,15 @@ static inline void check_c_keyword(const char *);
 ")" {return ')';}
 "[" {return '[';}
 "]" {return ']';}
-"{" {return '{';}
-"}" {return '}';}
+"{" {
+        if (in_enum_values) {
+            yy_lex_keywords = false;
+            in_enum_values = false;
+            in_enum = false;
+        }
+        return '{';
+    }
+"}" {yy_lex_keywords = true; return '}';}
 "," {return ',';}
 "=" {return '=';}
 ";" {return ';';}
@@ -99,7 +108,7 @@ static inline void check_c_keyword(const char *);
 "children"      { LEX_KEYWORD(T_CHILDREN);}
 "constructor"   { LEX_KEYWORD(T_CONSTRUCTOR);}
 "cycle"         { LEX_KEYWORD(T_CYCLE);}
-"enum"          { LEX_KEYWORD(T_ENUM);}
+"enum"          { in_enum = true; LEX_KEYWORD(T_ENUM);}
 "mandatory"     { LEX_KEYWORD(T_MANDATORY);}
 "node"          { LEX_KEYWORD(T_NODE);}
 "nodeset"       { LEX_KEYWORD(T_NODESET);}
@@ -114,7 +123,7 @@ static inline void check_c_keyword(const char *);
 "to"            { LEX_KEYWORD(T_TO);}
 "traversal"     { LEX_KEYWORD(T_TRAVERSAL);}
 "travdata"      { LEX_KEYWORD(T_TRAVDATA);}
-"values"        { LEX_KEYWORD(T_VALUES) ; }
+"values"        { if (in_enum) {in_enum_values = true;}LEX_KEYWORD(T_VALUES) ; }
 "info"          { LEX_KEYWORD(T_INFO) ; }
 "func"          { LEX_KEYWORD(T_FUNC) ; }
 "root"          { LEX_KEYWORD(T_ROOT) ; }
