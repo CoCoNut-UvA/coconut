@@ -25,11 +25,11 @@ node_st *ASTienum(node_st *vals, node_st *name, node_st *iprefix, char * iinfo) 
     node->data.N_ienum = MEMmalloc(sizeof(struct NODE_DATA_IENUM));
     NODE_TYPE(node) = NT_IENUM;
     IENUM_VALS(node) = vals;
-    IENUM_NEXT(node) = NULL;
     IENUM_NAME(node) = name;
     IENUM_IPREFIX(node) = iprefix;
+    IENUM_NEXT(node) = NULL;
     IENUM_IINFO(node) = iinfo;
-    NODE_NUMCHILDREN(node) = 2;
+    NODE_NUMCHILDREN(node) = 4;
     NODE_CHILDREN(node) = node->data.N_ienum->ienum_children.ienum_children_at;
     return node;}
 
@@ -37,12 +37,12 @@ node_st *ASTattribute() {
     node_st *node = NewNode();
     node->data.N_attribute = MEMmalloc(sizeof(struct NODE_DATA_ATTRIBUTE));
     NODE_TYPE(node) = NT_ATTRIBUTE;
-    ATTRIBUTE_NEXT(node) = NULL;
     ATTRIBUTE_NAME(node) = NULL;
     ATTRIBUTE_TYPE_REFERENCE(node) = NULL;
+    ATTRIBUTE_NEXT(node) = NULL;
     ATTRIBUTE_TYPE(node) = 0;
     ATTRIBUTE_IN_CONSTRUCTOR(node) = 0;
-    NODE_NUMCHILDREN(node) = 1;
+    NODE_NUMCHILDREN(node) = 3;
     NODE_CHILDREN(node) = node->data.N_attribute->attribute_children.attribute_children_at;
     return node;}
 
@@ -50,12 +50,12 @@ node_st *ASTitravdata(node_st *name) {
     node_st *node = NewNode();
     node->data.N_itravdata = MEMmalloc(sizeof(struct NODE_DATA_ITRAVDATA));
     NODE_TYPE(node) = NT_ITRAVDATA;
-    ITRAVDATA_NEXT(node) = NULL;
     ITRAVDATA_NAME(node) = name;
     ITRAVDATA_TYPE_REFERENCE(node) = NULL;
+    ITRAVDATA_NEXT(node) = NULL;
     ITRAVDATA_TYPE(node) = 0;
     ITRAVDATA_INCLUDE_FILE(node) = NULL;
-    NODE_NUMCHILDREN(node) = 1;
+    NODE_NUMCHILDREN(node) = 3;
     NODE_CHILDREN(node) = node->data.N_itravdata->itravdata_children.itravdata_children_at;
     return node;}
 
@@ -74,9 +74,9 @@ node_st *ASTsetliteral() {
     node_st *node = NewNode();
     node->data.N_setliteral = MEMmalloc(sizeof(struct NODE_DATA_SETLITERAL));
     NODE_TYPE(node) = NT_SETLITERAL;
-    SETLITERAL_NEXT(node) = NULL;
     SETLITERAL_REFERENCE(node) = NULL;
-    NODE_NUMCHILDREN(node) = 1;
+    SETLITERAL_NEXT(node) = NULL;
+    NODE_NUMCHILDREN(node) = 2;
     NODE_CHILDREN(node) = node->data.N_setliteral->setliteral_children.setliteral_children_at;
     return node;}
 
@@ -85,7 +85,8 @@ node_st *ASTsetreference() {
     node->data.N_setreference = MEMmalloc(sizeof(struct NODE_DATA_SETREFERENCE));
     NODE_TYPE(node) = NT_SETREFERENCE;
     SETREFERENCE_REFERENCE(node) = NULL;
-    NODE_NUMCHILDREN(node) = 0;
+    NODE_NUMCHILDREN(node) = 1;
+    NODE_CHILDREN(node) = node->data.N_setreference->setreference_children.setreference_children_at;
     return node;}
 
 node_st *ASTste() {
@@ -103,13 +104,13 @@ node_st *ASTchild(node_st *name) {
     node_st *node = NewNode();
     node->data.N_child = MEMmalloc(sizeof(struct NODE_DATA_CHILD));
     NODE_TYPE(node) = NT_CHILD;
-    CHILD_NEXT(node) = NULL;
     CHILD_NAME(node) = name;
     CHILD_TYPE_REFERENCE(node) = NULL;
+    CHILD_NEXT(node) = NULL;
     CHILD_TYPE(node) = 0;
     CHILD_IN_CONSTRUCTOR(node) = 0;
     CHILD_IS_MANDATORY(node) = 0;
-    NODE_NUMCHILDREN(node) = 1;
+    NODE_NUMCHILDREN(node) = 3;
     NODE_CHILDREN(node) = node->data.N_child->child_children.child_children_at;
     return node;}
 
@@ -117,12 +118,12 @@ node_st *ASTinodeset() {
     node_st *node = NewNode();
     node->data.N_inodeset = MEMmalloc(sizeof(struct NODE_DATA_INODESET));
     NODE_TYPE(node) = NT_INODESET;
+    INODESET_NAME(node) = NULL;
     INODESET_EXPR(node) = NULL;
     INODESET_UNPACKED(node) = NULL;
     INODESET_NEXT(node) = NULL;
-    INODESET_NAME(node) = NULL;
     INODESET_IINFO(node) = NULL;
-    NODE_NUMCHILDREN(node) = 3;
+    NODE_NUMCHILDREN(node) = 4;
     NODE_CHILDREN(node) = node->data.N_inodeset->inodeset_children.inodeset_children_at;
     return node;}
 
@@ -130,14 +131,14 @@ node_st *ASTinode(node_st *name, char * iifno) {
     node_st *node = NewNode();
     node->data.N_inode = MEMmalloc(sizeof(struct NODE_DATA_INODE));
     NODE_TYPE(node) = NT_INODE;
+    INODE_NAME(node) = name;
     INODE_NEXT(node) = NULL;
     INODE_ICHILDREN(node) = NULL;
     INODE_IATTRIBUTES(node) = NULL;
-    INODE_NAME(node) = name;
     INODE_IIFNO(node) = iifno;
     INODE_IS_ROOT(node) = 0;
     INODE_INDEX(node) = 0;
-    NODE_NUMCHILDREN(node) = 3;
+    NODE_NUMCHILDREN(node) = 4;
     NODE_CHILDREN(node) = node->data.N_inode->inode_children.inode_children_at;
     return node;}
 

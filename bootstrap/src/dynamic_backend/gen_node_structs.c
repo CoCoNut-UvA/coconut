@@ -1,22 +1,9 @@
-#include <stddef.h>
 #include <stdio.h>
-#include "assert.h"
 
 #include "globals.h"
 #include "gen_helpers/out_macros.h"
-#include "palm/ctinfo.h"
-#include "palm/str.h"
 #include "ccn/dynamic_core.h"
 
-void *DGNSallocTravData()
-{
-    return 0;
-}
-
-void DGNSfreeTravData(void *data)
-{
-
-}
 
 static FILE *fp;
 static int indent = 0;

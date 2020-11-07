@@ -29,6 +29,7 @@ struct ccn_node *CHKsetliteral(struct ccn_node *arg_node) {
 }
 
 struct ccn_node *CHKsetreference(struct ccn_node *arg_node) {
+    TRAVchildren(arg_node);
     return arg_node;
 }
 

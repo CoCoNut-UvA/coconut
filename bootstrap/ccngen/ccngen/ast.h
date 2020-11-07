@@ -21,28 +21,28 @@ struct NODE_DATA_IENUM {
     union NODE_CHILDREN_IENUM {
         struct NODE_CHILDREN_IENUM_STRUCT {
             node_st *vals;
+            node_st *name;
+            node_st *iprefix;
             node_st *next;
         } ienum_children_st;
 
-        node_st *ienum_children_at[2];
+        node_st *ienum_children_at[4];
     } ienum_children;
 
-    node_st *name;
-    node_st *iprefix;
     char * iinfo;
 };
 
 struct NODE_DATA_ATTRIBUTE {
     union NODE_CHILDREN_ATTRIBUTE {
         struct NODE_CHILDREN_ATTRIBUTE_STRUCT {
+            node_st *name;
+            node_st *type_reference;
             node_st *next;
         } attribute_children_st;
 
-        node_st *attribute_children_at[1];
+        node_st *attribute_children_at[3];
     } attribute_children;
 
-    node_st *name;
-    node_st *type_reference;
     enum attribute_type type;
     int in_constructor;
 };
@@ -50,14 +50,14 @@ struct NODE_DATA_ATTRIBUTE {
 struct NODE_DATA_ITRAVDATA {
     union NODE_CHILDREN_ITRAVDATA {
         struct NODE_CHILDREN_ITRAVDATA_STRUCT {
+            node_st *name;
+            node_st *type_reference;
             node_st *next;
         } itravdata_children_st;
 
-        node_st *itravdata_children_at[1];
+        node_st *itravdata_children_at[3];
     } itravdata_children;
 
-    node_st *name;
-    node_st *type_reference;
     enum attribute_type type;
     char * include_file;
 };
@@ -78,17 +78,24 @@ struct NODE_DATA_SETOPERATION {
 struct NODE_DATA_SETLITERAL {
     union NODE_CHILDREN_SETLITERAL {
         struct NODE_CHILDREN_SETLITERAL_STRUCT {
+            node_st *reference;
             node_st *next;
         } setliteral_children_st;
 
-        node_st *setliteral_children_at[1];
+        node_st *setliteral_children_at[2];
     } setliteral_children;
 
-    node_st *reference;
 };
 
 struct NODE_DATA_SETREFERENCE {
-    node_st *reference;
+    union NODE_CHILDREN_SETREFERENCE {
+        struct NODE_CHILDREN_SETREFERENCE_STRUCT {
+            node_st *reference;
+        } setreference_children_st;
+
+        node_st *setreference_children_at[1];
+    } setreference_children;
+
 };
 
 struct NODE_DATA_STE {
@@ -107,14 +114,14 @@ struct NODE_DATA_STE {
 struct NODE_DATA_CHILD {
     union NODE_CHILDREN_CHILD {
         struct NODE_CHILDREN_CHILD_STRUCT {
+            node_st *name;
+            node_st *type_reference;
             node_st *next;
         } child_children_st;
 
-        node_st *child_children_at[1];
+        node_st *child_children_at[3];
     } child_children;
 
-    node_st *name;
-    node_st *type_reference;
     enum child_type type;
     int in_constructor;
     int is_mandatory;
@@ -123,30 +130,30 @@ struct NODE_DATA_CHILD {
 struct NODE_DATA_INODESET {
     union NODE_CHILDREN_INODESET {
         struct NODE_CHILDREN_INODESET_STRUCT {
+            node_st *name;
             node_st *expr;
             node_st *unpacked;
             node_st *next;
         } inodeset_children_st;
 
-        node_st *inodeset_children_at[3];
+        node_st *inodeset_children_at[4];
     } inodeset_children;
 
-    node_st *name;
     char * iinfo;
 };
 
 struct NODE_DATA_INODE {
     union NODE_CHILDREN_INODE {
         struct NODE_CHILDREN_INODE_STRUCT {
+            node_st *name;
             node_st *next;
             node_st *ichildren;
             node_st *iattributes;
         } inode_children_st;
 
-        node_st *inode_children_at[3];
+        node_st *inode_children_at[4];
     } inode_children;
 
-    node_st *name;
     char * iifno;
     int is_root;
     int index;
@@ -240,44 +247,44 @@ struct NODE_DATA_AST {
 #define ID_LWR(n) ((n)->data.N_id->lwr)
 #define ID_UPR(n) ((n)->data.N_id->upr)
 #define IENUM_VALS(n) ((n)->data.N_ienum->ienum_children.ienum_children_st.vals)
+#define IENUM_NAME(n) ((n)->data.N_ienum->ienum_children.ienum_children_st.name)
+#define IENUM_IPREFIX(n) ((n)->data.N_ienum->ienum_children.ienum_children_st.iprefix)
 #define IENUM_NEXT(n) ((n)->data.N_ienum->ienum_children.ienum_children_st.next)
-#define IENUM_NAME(n) ((n)->data.N_ienum->name)
-#define IENUM_IPREFIX(n) ((n)->data.N_ienum->iprefix)
 #define IENUM_IINFO(n) ((n)->data.N_ienum->iinfo)
+#define ATTRIBUTE_NAME(n) ((n)->data.N_attribute->attribute_children.attribute_children_st.name)
+#define ATTRIBUTE_TYPE_REFERENCE(n) ((n)->data.N_attribute->attribute_children.attribute_children_st.type_reference)
 #define ATTRIBUTE_NEXT(n) ((n)->data.N_attribute->attribute_children.attribute_children_st.next)
-#define ATTRIBUTE_NAME(n) ((n)->data.N_attribute->name)
-#define ATTRIBUTE_TYPE_REFERENCE(n) ((n)->data.N_attribute->type_reference)
 #define ATTRIBUTE_TYPE(n) ((n)->data.N_attribute->type)
 #define ATTRIBUTE_IN_CONSTRUCTOR(n) ((n)->data.N_attribute->in_constructor)
+#define ITRAVDATA_NAME(n) ((n)->data.N_itravdata->itravdata_children.itravdata_children_st.name)
+#define ITRAVDATA_TYPE_REFERENCE(n) ((n)->data.N_itravdata->itravdata_children.itravdata_children_st.type_reference)
 #define ITRAVDATA_NEXT(n) ((n)->data.N_itravdata->itravdata_children.itravdata_children_st.next)
-#define ITRAVDATA_NAME(n) ((n)->data.N_itravdata->name)
-#define ITRAVDATA_TYPE_REFERENCE(n) ((n)->data.N_itravdata->type_reference)
 #define ITRAVDATA_TYPE(n) ((n)->data.N_itravdata->type)
 #define ITRAVDATA_INCLUDE_FILE(n) ((n)->data.N_itravdata->include_file)
 #define SETOPERATION_LEFT(n) ((n)->data.N_setoperation->setoperation_children.setoperation_children_st.left)
 #define SETOPERATION_RIGHT(n) ((n)->data.N_setoperation->setoperation_children.setoperation_children_st.right)
 #define SETOPERATION_TYPE(n) ((n)->data.N_setoperation->type)
+#define SETLITERAL_REFERENCE(n) ((n)->data.N_setliteral->setliteral_children.setliteral_children_st.reference)
 #define SETLITERAL_NEXT(n) ((n)->data.N_setliteral->setliteral_children.setliteral_children_st.next)
-#define SETLITERAL_REFERENCE(n) ((n)->data.N_setliteral->reference)
-#define SETREFERENCE_REFERENCE(n) ((n)->data.N_setreference->reference)
+#define SETREFERENCE_REFERENCE(n) ((n)->data.N_setreference->setreference_children.setreference_children_st.reference)
 #define STE_NEXT(n) ((n)->data.N_ste->ste_children.ste_children_st.next)
 #define STE_KEY(n) ((n)->data.N_ste->key)
 #define STE_VALUE(n) ((n)->data.N_ste->value)
+#define CHILD_NAME(n) ((n)->data.N_child->child_children.child_children_st.name)
+#define CHILD_TYPE_REFERENCE(n) ((n)->data.N_child->child_children.child_children_st.type_reference)
 #define CHILD_NEXT(n) ((n)->data.N_child->child_children.child_children_st.next)
-#define CHILD_NAME(n) ((n)->data.N_child->name)
-#define CHILD_TYPE_REFERENCE(n) ((n)->data.N_child->type_reference)
 #define CHILD_TYPE(n) ((n)->data.N_child->type)
 #define CHILD_IN_CONSTRUCTOR(n) ((n)->data.N_child->in_constructor)
 #define CHILD_IS_MANDATORY(n) ((n)->data.N_child->is_mandatory)
+#define INODESET_NAME(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.name)
 #define INODESET_EXPR(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.expr)
 #define INODESET_UNPACKED(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.unpacked)
 #define INODESET_NEXT(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.next)
-#define INODESET_NAME(n) ((n)->data.N_inodeset->name)
 #define INODESET_IINFO(n) ((n)->data.N_inodeset->iinfo)
+#define INODE_NAME(n) ((n)->data.N_inode->inode_children.inode_children_st.name)
 #define INODE_NEXT(n) ((n)->data.N_inode->inode_children.inode_children_st.next)
 #define INODE_ICHILDREN(n) ((n)->data.N_inode->inode_children.inode_children_st.ichildren)
 #define INODE_IATTRIBUTES(n) ((n)->data.N_inode->inode_children.inode_children_st.iattributes)
-#define INODE_NAME(n) ((n)->data.N_inode->name)
 #define INODE_IIFNO(n) ((n)->data.N_inode->iifno)
 #define INODE_IS_ROOT(n) ((n)->data.N_inode->is_root)
 #define INODE_INDEX(n) ((n)->data.N_inode->index)

@@ -350,13 +350,13 @@ node ipass {
 
 node inode {
     children {
+        id name { constructor };
         inode next;
         child ichildren;
         attribute iattributes;
     }
 
     attributes {
-        id name { constructor };
         string iifno { constructor };
         int is_root {};
         int index {};
@@ -365,12 +365,12 @@ node inode {
 
 node inodeset {
     children {
+        id name;
         setexpr expr;
         id unpacked;
         inodeset next;
     }
     attributes {
-        id name {};
         string iinfo {};
     }
 };
@@ -384,12 +384,12 @@ enum child_type {
 
 node child {
     children {
+        id name { constructor };
+        id type_reference;
         child next;
     }
 
     attributes {
-        id name { constructor };
-        id type_reference {};
         child_type type {};
         int in_constructor {};
         int is_mandatory {};
@@ -421,18 +421,15 @@ enum setoperation_type {
 };
 
 node setreference {
-    attributes {
-        id reference {};
+    children {
+        id reference;
     }
 };
 
 node setliteral {
     children {
+        id reference;
         setliteral next;
-    }
-
-    attributes {
-        id reference {};
     }
 };
 
@@ -450,12 +447,12 @@ nodeset setexpr = {setoperation, setreference, setliteral};
 
 node itravdata {
     children {
+        id name { constructor };
+        id type_reference;
         itravdata next;
     }
 
     attributes {
-        id name { constructor };
-        id type_reference {};
         attribute_type type {};
         string include_file {};
     }
@@ -463,11 +460,11 @@ node itravdata {
 
 node attribute {
     children {
+        id name;
+        id type_reference;
         attribute next;
     }
     attributes {
-        id name {};
-        id type_reference {};
         attribute_type type {};
         int in_constructor {};
     }
@@ -476,11 +473,11 @@ node attribute {
 node ienum {
     children {
         id vals {constructor};
+        id name {constructor};
+        id iprefix {constructor};
         ienum next;
     }
     attributes {
-        id name {constructor};
-        id iprefix {constructor};
         string iinfo { constructor };
     }
 };

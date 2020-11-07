@@ -1,0 +1,21 @@
+
+root node ast {
+    attributes {
+        int val {};
+    }
+};
+
+start phase begin {
+    actions {
+        pass x;
+    }
+};
+
+traversal go {
+    prefix = go
+
+    travdata = {
+        int val,
+        ast ast
+    }
+};

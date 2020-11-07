@@ -9,6 +9,7 @@ struct ccn_node *DELid(struct ccn_node *arg_node) {
 
 struct ccn_node *DELienum(struct ccn_node *arg_node) {
     TRAVchildren(arg_node);
+    MEMfree(arg_node->data.N_ienum->iinfo);
     MEMfree(arg_node->data.N_ienum);
     arg_node = MEMfree(arg_node);
     return arg_node;
@@ -43,6 +44,7 @@ struct ccn_node *DELsetliteral(struct ccn_node *arg_node) {
 }
 
 struct ccn_node *DELsetreference(struct ccn_node *arg_node) {
+    TRAVchildren(arg_node);
     MEMfree(arg_node->data.N_setreference);
     arg_node = MEMfree(arg_node);
     return arg_node;
@@ -64,6 +66,7 @@ struct ccn_node *DELchild(struct ccn_node *arg_node) {
 
 struct ccn_node *DELinodeset(struct ccn_node *arg_node) {
     TRAVchildren(arg_node);
+    MEMfree(arg_node->data.N_inodeset->iinfo);
     MEMfree(arg_node->data.N_inodeset);
     arg_node = MEMfree(arg_node);
     return arg_node;
@@ -71,6 +74,7 @@ struct ccn_node *DELinodeset(struct ccn_node *arg_node) {
 
 struct ccn_node *DELinode(struct ccn_node *arg_node) {
     TRAVchildren(arg_node);
+    MEMfree(arg_node->data.N_inode->iifno);
     MEMfree(arg_node->data.N_inode);
     arg_node = MEMfree(arg_node);
     return arg_node;
