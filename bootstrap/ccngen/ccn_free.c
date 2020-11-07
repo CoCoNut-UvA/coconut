@@ -1,6 +1,7 @@
 #include "ccngen/ast.h"
 struct ccn_node *DELid(struct ccn_node *arg_node) {
     TRAVchildren(arg_node);
+    MEMfree(arg_node->data.N_id->orig);
     MEMfree(arg_node->data.N_id);
     arg_node = MEMfree(arg_node);
     return arg_node;

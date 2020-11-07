@@ -92,9 +92,9 @@ enum setoperation_type {
 enum attribute_type {
     AT_link,
     AT_link_or_enum,
+    AT_int,
     AT_string,
     AT_bool,
-    AT_int,
     AT_int8,
     AT_int16,
     AT_int32,

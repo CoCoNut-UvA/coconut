@@ -409,7 +409,7 @@ node ste {
 enum attribute_type {
     prefix = AT
     values = {
-        link, link_or_enum, iint, istring, ibool, iint8, iint16, ifloat, idouble, iuint
+        link, link_or_enum, int, string, bool, int8, int16, int32, float, double, uint, uint8, uint16, uint32
     }
 };
 

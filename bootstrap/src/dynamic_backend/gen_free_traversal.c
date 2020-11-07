@@ -26,6 +26,7 @@ static char *curr_node_name_upr = NULL;
 static int arg_num = 0;
 static char *node_type_enum_prefix = "NT_";
 static node_st *ast;
+static node_st *curr_node;
 
 node_st *DGFTast(node_st *node)
 {
@@ -65,6 +66,7 @@ node_st *DGFTipass(node_st *node)
 
 node_st *DGFTinode(node_st *node)
 {
+    curr_node = node;
     OUT_START_FUNC("struct ccn_node *DEL%s(struct ccn_node *arg_node)", ID_LWR(INODE_NAME(node)));
     if (INODE_ICHILDREN(node)) {
         OUT_FIELD("TRAVchildren(arg_node)");
@@ -92,7 +94,9 @@ node_st *DGFTchild(node_st *node)
 
 node_st *DGFTattribute(node_st *node)
 {
-
+    if (ATTRIBUTE_TYPE(node) == AT_string) {
+        OUT_FIELD("MEMfree(arg_node->data.N_%s->%s)", ID_LWR(INODE_NAME(curr_node)), ID_LWR(ATTRIBUTE_NAME(node)));
+    }
     return node;
 }
 
