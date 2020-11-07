@@ -92,14 +92,18 @@ enum setoperation_type {
 enum attribute_type {
     AT_link,
     AT_link_or_enum,
-    AT_iint,
-    AT_istring,
-    AT_ibool,
-    AT_iint8,
-    AT_iint16,
-    AT_ifloat,
-    AT_idouble,
-    AT_iuint,
+    AT_string,
+    AT_bool,
+    AT_int,
+    AT_int8,
+    AT_int16,
+    AT_int32,
+    AT_float,
+    AT_double,
+    AT_uint,
+    AT_uint8,
+    AT_uint16,
+    AT_uint32,
 };
 
 enum child_type {

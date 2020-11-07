@@ -46,10 +46,6 @@ traversal help {
     prefix = h
 
     nodes = x
-    
-    travdata = {
-        int fill
-    }
 };
 
 
@@ -58,4 +54,3 @@ phase phase1 {
         pass doSomething;
     } 
 };
-

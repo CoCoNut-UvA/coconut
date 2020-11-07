@@ -145,8 +145,11 @@ node_st *CEXsetoperation(node_st *node)
 
 node_st *CEXsetreference(node_st *node)
 {
-    if (lookupST(ste, SETREFERENCE_REFERENCE(node)) == NULL) {
+    node_st *ref_node = lookupST(ste, SETREFERENCE_REFERENCE(node));
+    if (!ref_node) {
         CTIerror("Set reference is undefined: %s\n", ID_ORIG(SETREFERENCE_REFERENCE(node)));
+    } else if (NODE_TYPE(ref_node) != NT_INODESET) {
+        CTIerror("Set reference is not a reference to a nodeset: %s\n", ID_ORIG(SETREFERENCE_REFERENCE(node)));
     }
     TRAVchildren(node);
     return node;

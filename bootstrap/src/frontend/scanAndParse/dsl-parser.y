@@ -426,11 +426,11 @@ attribute: attribute_primitive_type[type] id[name] '{' is_constructor[constructo
     ;
 
 attribute_primitive_type: T_BOOL
-    { $$ = AT_ibool; }
+    { $$ = AT_bool; }
     | T_STRING
-    { $$ = AT_istring; }
+    { $$ = AT_string; }
     | T_INT
-    { $$ = AT_iint; }
+    { $$ = AT_int; }
     ;
 
 
@@ -595,8 +595,7 @@ static struct ctinfo *NewLocation(struct ctinfo *info)
     struct ctinfo *locinfo = MEMmalloc(sizeof(struct ctinfo));
     memcpy(locinfo, info, sizeof(struct ctinfo));
     locinfo->filename = globals.filename;
-    bool found = false;
-    locinfo->line = HTlookup(globals.line_map, &(info->first_line), &found);
+    locinfo->line = HTlookup(globals.line_map, &(info->first_line));
 
     return locinfo;
 }

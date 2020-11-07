@@ -210,8 +210,7 @@ static inline void check_c_keyword(const char *str) {
     // Match for C-keywords.
     int reti = regexec(&regex, str, 0, NULL, 0);
     if (!reti) {
-        bool found = false;
-        struct ctinfo info = {yylineno, yycolumn - strlen(str), 0, yycolumn - 1, globals.filename, HTlookup(globals.line_map, &yylineno, &found)};
+        struct ctinfo info = {yylineno, yycolumn - strlen(str), 0, yycolumn - 1, globals.filename, HTlookup(globals.line_map, &yylineno)};
         CTIerrorObj(&info, "Found C-keyword as identifier, "
                 "which would generate invalid C code.");
         CTIabortOnError();
@@ -232,12 +231,7 @@ int yywrap() {
 }
 
 void yyerror(const char* s) {
-    bool found = false;
-    struct ctinfo info = {yylineno, yycolumn - yyleng, 0, yycolumn - 1, global_command_line.input_file, HTlookup(globals.line_map, &yylineno, &found)};
-    if (!found) {
-        CTIerror(s);
-    } else {
-        CTIerrorObj(&info, s);
-    }
+    struct ctinfo info = {yylineno, yycolumn - yyleng, 0, yycolumn - 1, global_command_line.input_file, HTlookup(globals.line_map, &yylineno)};
+    CTIerrorObj(&info, s);
     CTIabortOnError();
 }

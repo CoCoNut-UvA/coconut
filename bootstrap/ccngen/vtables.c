@@ -2,7 +2,7 @@
 #include "ccn/ccn_types.h"
 #include "ccn/dynamic_core.h"
 const ccn_trav_ft print_vtable[_NT_SIZE] = { &TRAVerror, &PRTid, &PRTienum, &PRTattribute, &PRTitravdata, &PRTsetoperation, &PRTsetliteral, &PRTsetreference, &PRTste, &PRTchild, &PRTinodeset, &PRTinode, &PRTipass, &PRTitraversal, &PRTiphase, &PRTiactions, &PRTast, };
-const ccn_trav_ft reachability_vtable[_NT_SIZE] = { &TRAVerror, &TRAVnop, &TRAVnop, &TRAVnop, &TRAVnop, &TRAVchildren, &RCBsetliteral, &TRAVnop, &TRAVnop, &RCBchild, &RCBinodeset, &RCBinode, &TRAVnop, &RCBitraversal, &TRAVnop, &TRAVnop, &RCBast, };
+const ccn_trav_ft reachability_vtable[_NT_SIZE] = { &TRAVerror, &TRAVnop, &TRAVnop, &TRAVnop, &TRAVnop, &TRAVnop, &RCBsetliteral, &TRAVnop, &TRAVnop, &RCBchild, &RCBinodeset, &RCBinode, &TRAVnop, &RCBitraversal, &TRAVnop, &TRAVnop, &RCBast, };
 const ccn_trav_ft unwrapsetexpr_vtable[_NT_SIZE] = { &TRAVerror, &USEid, &USEienum, &USEattribute, &USEitravdata, &USEsetoperation, &USEsetliteral, &USEsetreference, &USEste, &USEchild, &USEinodeset, &USEinode, &USEipass, &USEitraversal, &USEiphase, &USEiactions, &USEast, };
 const ccn_trav_ft buildsymboltable_vtable[_NT_SIZE] = { &TRAVerror, &BSTid, &BSTienum, &BSTattribute, &BSTitravdata, &BSTsetoperation, &BSTsetliteral, &BSTsetreference, &BSTste, &BSTchild, &BSTinodeset, &BSTinode, &BSTipass, &BSTitraversal, &BSTiphase, &BSTiactions, &BSTast, };
 const ccn_trav_ft checkexistance_vtable[_NT_SIZE] = { &TRAVerror, &CEXid, &CEXienum, &CEXattribute, &CEXitravdata, &CEXsetoperation, &CEXsetliteral, &CEXsetreference, &CEXste, &CEXchild, &CEXinodeset, &CEXinode, &CEXipass, &CEXitraversal, &CEXiphase, &CEXiactions, &CEXast, };

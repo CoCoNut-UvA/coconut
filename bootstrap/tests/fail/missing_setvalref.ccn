@@ -6,9 +6,9 @@ start phase hello {
     }
 };
 
-nodeset x = {test};
-nodeset y = undefined;
-nodeset z = {test} | undefined;
+nodeset x = {missing1};
+nodeset y = undefined1;
+nodeset z = {missing2} | undefined2;
 
 root node ast {
     children {
