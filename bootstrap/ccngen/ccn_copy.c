@@ -1,6 +1,7 @@
 #include "ccngen/ast.h"
 #include <stddef.h>
 #include "palm/str.h"
+#include "ccn/dynamic_core.h"
 struct ccn_node *CPYid(struct ccn_node *arg_node) {
     struct ccn_node *new_node = ASTid(    NULL    ,     NULL    ,     NULL);
     ID_NEXT(new_node) = TRAVopt(ID_NEXT(arg_node));

@@ -122,6 +122,17 @@ node_st *CEXinodeset(node_st *node)
 
 node_st *CEXchild(node_st *node)
 {
+    node_st *ref = lookupST(ste, CHILD_TYPE_REFERENCE(node));
+    if (!ref) {
+        CTIerror("Child type %s is not defined.", ID_ORIG(CHILD_TYPE_REFERENCE(node)));
+    }
+    if (NODE_TYPE(ref) == NT_INODESET) {
+        CHILD_TYPE(node) = CT_inodeset;
+    } else if(NODE_TYPE(ref) == NT_INODE) {
+        CHILD_TYPE(node) = CT_inode;
+    } else {
+        CTIerror("Child is not a node or nodeset: %s\n", ID_ORIG(CHILD_NAME(node)));
+    }
     if (lookupST(node_ste, CHILD_NAME(node)) == NULL) {
         node_ste = BSTaddToST(node_ste, CHILD_NAME(node), node);
     } else {

@@ -35,6 +35,7 @@ node_st *DGCTast(node_st *node)
     OUT("#include \"ccngen/ast.h\"\n");
     OUT("#include <stddef.h>\n");
     OUT("#include \"palm/str.h\"\n");
+    OUT("#include \"ccn/dynamic_core.h\"\n");
     TRAVopt(AST_INODES(node));
     fclose(fp);
     return node;

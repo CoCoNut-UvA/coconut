@@ -24,11 +24,17 @@ static char *curr_node_name_upr = NULL;
 static int arg_num = 0;
 static char *node_type_enum_prefix = "NT_";
 static node_st *ast;
+static node_st *curr_node;
 
 node_st *DGCHTast(node_st *node)
 {
     fp = FSgetSourceFile("ccn_check.c");
+    OUT("#include <stdbool.h>\n");
+    OUT("#include \"ccn/dynamic_core.h\"\n");
+    OUT("#include \"ccngen/ast.h\"\n");
+    OUT("#include \"palm/ctinfo.h\"\n");
     ast = node;
+    TRAVopt(AST_INODESETS(node));
     TRAVopt(AST_INODES(node));
     fclose(fp);
     return node;
@@ -63,6 +69,7 @@ node_st *DGCHTipass(node_st *node)
 
 node_st *DGCHTinode(node_st *node)
 {
+    curr_node = node;
     OUT_START_FUNC("struct ccn_node *CHK%s(struct ccn_node *arg_node)", ID_LWR(INODE_NAME(node)));
     TRAVopt(INODE_ICHILDREN(node));
     if (INODE_ICHILDREN(node)) {
@@ -76,17 +83,31 @@ node_st *DGCHTinode(node_st *node)
 
 node_st *DGCHTinodeset(node_st *node)
 {
-    TRAVchildren(node);
+    OUT_START_FUNC("static bool TypeIs%s(node_st *arg_node)", ID_LWR(INODESET_NAME(node)));
+    OUT_FIELD("enum ccn_nodetype node_type = NODE_TYPE(arg_node)");
+    OUT("return (false");
+    TRAVdo(INODESET_EXPR(node));
+    OUT(");\n");
+    OUT_END_FUNC();
     return node;
 }
 
 node_st *DGCHTchild(node_st *node)
 {
-//    OUT_BEGIN_IF("%s_%s(arg_node)", node->name->upr, child->name->upr);
-//
-//    // TODO: improve error message.
-//    OUT_FIELD("CTIerror(\"Inconsistency found in AST!\")");
-//    OUT_END_IF();
+    OUT_BEGIN_IF("%s_%s(arg_node)", ID_UPR(INODE_NAME(curr_node)), ID_UPR(CHILD_NAME(node)));
+    {
+        if (CHILD_TYPE(node) == CT_inode) {
+            OUT_BEGIN_IF("NODE_TYPE(%s_%s(arg_node)) != NT_%s", ID_UPR(INODE_NAME(curr_node)),
+                         ID_UPR(CHILD_NAME(node)), ID_UPR(CHILD_TYPE_REFERENCE(node)));
+        } else {
+            OUT_BEGIN_IF("!TypeIs%s(%s_%s(arg_node))", ID_LWR(CHILD_TYPE_REFERENCE(node)),
+                         ID_UPR(INODE_NAME(curr_node)), ID_UPR(CHILD_NAME(node)));
+        }
+        OUT_FIELD("CTIerror(\"Inconsistent node found in AST. Child %s of node %s has disallowed type %%d \", NODE_TYPE(%s_%s(arg_node)))",
+            ID_ORIG(CHILD_NAME(node)), ID_ORIG(INODE_NAME(curr_node)), ID_UPR(INODE_NAME(curr_node)), ID_UPR(CHILD_NAME(node)));
+        OUT_END_IF();
+    }
+    OUT_END_IF();
 
     return node;
 }
@@ -113,8 +134,8 @@ node_st *DGCHTsetoperation(node_st *node)
 
 node_st *DGCHTsetliteral(node_st *node)
 {
-
-    TRAVchildren(node);
+    OUT_NO_INDENT(" || node_type == NT_%s", ID_UPR(SETLITERAL_REFERENCE(node)));
+    TRAVopt(SETLITERAL_NEXT(node));
     return node;
 }
 

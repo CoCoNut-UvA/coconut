@@ -34,7 +34,7 @@ struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype 
         node = StartPhase(&(action->phase), action->name, node);
         break;
     }
-
+        
     phase_driver.action_id++;
     return node;
 }
