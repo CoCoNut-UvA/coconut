@@ -1,24 +1,9 @@
 #include <stddef.h>
 #include <stdio.h>
 #include "assert.h"
-
-#include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
-
-
-void *USEallocTravData()
-{
-    return 0;
-}
-
-void USEfreeTravData(void *data)
-{
-
-}
-
-
 
 node_st *lookupST(node_st *ste, node_st *node);
 
@@ -29,91 +14,6 @@ node_st *USEast(node_st *node)
     ste = AST_STABLE(node);
     TRAVchildren(node);
     return node;
-}
-
-node_st *USEiactions(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *USEitraversal(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *USEitravdata(node_st *node)
-{
-    return node;
-}
-
-
-node_st *USEipass(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *USEinode(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *USEinodeset(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *USEchild(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *USEste(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
-struct ccn_node *cpyid(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTid(NULL, NULL, NULL    );
-    ID_ORIG(new_node) = STRcpy(ID_ORIG(arg_node));
-    ID_LWR(new_node) = STRcpy(ID_LWR(arg_node));
-    ID_UPR(new_node) = STRcpy(ID_UPR(arg_node));
-    if (ID_NEXT(new_node)) {
-        ID_NEXT(new_node) = cpyid(ID_NEXT(arg_node));
-    }
-    return new_node;
-}
-
-struct ccn_node *cpysetliteral(node_st *node)
-{
-    node_st *new;
-    node_st *first = NULL;
-    node_st *last = NULL;
-    while (node) {
-        new = ASTsetliteral();
-        SETLITERAL_REFERENCE(new) = cpyid(SETLITERAL_REFERENCE(node));
-        if (first == NULL) {
-            first = new;
-            last = new;
-        } else {
-            SETLITERAL_NEXT(last) = new;
-            last = new;
-        }
-        node = SETLITERAL_NEXT(node);
-    }
-
-    return first;
 }
 
 bool in_set(node_st *node, node_st *val)
@@ -214,7 +114,7 @@ node_st *USEsetreference(node_st *node)
         assert(false);
     }
     node_st *curr = INODESET_EXPR(nodeset);
-    node_st *new = cpysetliteral(curr);
+    node_st *new = TRAVstart(curr, TRAV_cpy);
     printf("TYPE: %d\n", NODE_TYPE(new));
     return new;
 }
@@ -224,33 +124,4 @@ node_st *USEsetliteral(node_st *node)
     TRAVchildren(node);
     return node;
 }
-
-node_st *USEattribute(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *USEienum(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *USEid(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-
-node_st *USEiphase(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
 

@@ -27,13 +27,14 @@ static char *curr_node_name_upr = NULL;
 static int arg_num = 0;
 static char *node_type_enum_prefix = "NT_";
 static node_st *ast;
+static node_st *curr_node;
 
 node_st *DGCTast(node_st *node)
 {
     fp = FSgetSourceFile("ccn_copy.c");
     OUT("#include \"ccngen/ast.h\"\n");
     OUT("#include <stddef.h>\n");
-    ast = node;
+    OUT("#include \"palm/str.h\"\n");
     TRAVopt(AST_INODES(node));
     fclose(fp);
     return node;
@@ -67,9 +68,12 @@ node_st *DGCTipass(node_st *node)
 
 node_st *DGCTinode(node_st *node)
 {
+    curr_node = node;
     arg_num = 0;
     OUT_START_FUNC("struct ccn_node *CPY%s(struct ccn_node *arg_node)", ID_LWR(INODE_NAME(node)));
     TRAVstart(node, TRAV_DYNAMIC_GENCONSTRUCTORCALL);
+    TRAVopt(INODE_ICHILDREN(node));
+    TRAVopt(INODE_IATTRIBUTES(node));
     OUT_FIELD("return new_node");
     OUT_END_FUNC();
     TRAVopt(INODE_NEXT(node));
@@ -78,19 +82,28 @@ node_st *DGCTinode(node_st *node)
 
 node_st *DGCTinodeset(node_st *node)
 {
-    TRAVchildren(node);
     return node;
 }
 
 node_st *DGCTchild(node_st *node)
 {
-
+    char *node_name = ID_UPR(INODE_NAME(curr_node));
+    char *child_name = ID_UPR(CHILD_NAME(node));
+    OUT_FIELD("%s_%s(new_node) = TRAVopt(%s_%s(arg_node))", node_name, child_name, node_name, child_name);
+    TRAVopt(CHILD_NEXT(node));
     return node;
 }
 
 node_st *DGCTattribute(node_st *node)
 {
-
+    char *node_name = ID_UPR(INODE_NAME(curr_node));
+    char *attr_name = ID_UPR(ATTRIBUTE_NAME(node));
+    if (ATTRIBUTE_TYPE(node) == AT_string) {
+        OUT_FIELD("%s_%s(new_node) = STRcpy(%s_%s(arg_node))", node_name, attr_name, node_name, attr_name);
+    } else {
+        OUT_FIELD("%s_%s(new_node) = %s_%s(arg_node)", node_name, attr_name, node_name, attr_name);
+    }
+    TRAVopt(ATTRIBUTE_NEXT(node));
     return node;
 }
 

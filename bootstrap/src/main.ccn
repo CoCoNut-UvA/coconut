@@ -260,6 +260,7 @@ traversal buildSymbolTable {
 
 traversal unwrapSetExpr {
     prefix = USE
+    nodes = setexpr | {ast}
 };
 
 traversal reachability {
