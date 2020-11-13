@@ -134,7 +134,10 @@ node_st *DGCHTsetoperation(node_st *node)
 
 node_st *DGCHTsetliteral(node_st *node)
 {
-    OUT_NO_INDENT(" || node_type == NT_%s", ID_UPR(SETLITERAL_REFERENCE(node)));
+    // In case of an empty setliteral, we have 1 entry with no reference.
+    if (node && SETLITERAL_REFERENCE(node)) {
+        OUT_NO_INDENT(" || node_type == NT_%s", ID_UPR(SETLITERAL_REFERENCE(node)));
+    }
     TRAVopt(SETLITERAL_NEXT(node));
     return node;
 }

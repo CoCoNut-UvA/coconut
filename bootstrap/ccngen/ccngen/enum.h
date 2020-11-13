@@ -63,6 +63,7 @@ enum ccn_traversal_type {
     TRAV_GEN_ACTION_ARRAY_HEADER,
     TRAV_GEN_IDS_TABLES,
     TRAV_DYNAMIC_GENTRAVDATATABLES,
+    TRAV_GEN_DOT,
     TRAV_free,
     TRAV_check,
     TRAV_cpy,

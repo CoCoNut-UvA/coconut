@@ -8,6 +8,7 @@ start phase startPhase {
         semantic;
         dynamic_backend;
         phase_driver;
+        gen_dot;
         print;
     }
 };
@@ -88,6 +89,12 @@ phase dynamic_gen_ast {
         pass dynamic_genBaseNodeInit;
         dynamic_genNodeConstructor;
     }
+};
+
+traversal gen_dot {
+    prefix = GD
+
+    nodes = {inode, child, ast, inodeset, setliteral}
 };
 
 traversal dynamic_genTravDataTables {

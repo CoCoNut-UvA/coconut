@@ -24,3 +24,11 @@ def test_simple(exec, testdir):
     testdir.mkdir("ccngen/ccngen")
     res = testdir.run(exec, build_filepath("simple.ccn"))
     assert res.ret == 0
+
+
+def test_nodeset(exec, testdir):
+    testdir.mkdir("ccngen/")
+    testdir.mkdir("ccngen/ccngen")
+    res = testdir.run(exec, build_filepath("nodesets.ccn"))
+    assert res.ret == 0
+
