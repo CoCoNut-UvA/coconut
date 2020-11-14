@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "globals.h"
 #include "palm/str.h"
+#include "ccn/dynamic_core.h"
 
 struct globals globals;
 
@@ -16,6 +17,7 @@ int main(int argc, char *argv[])
     globals.gen_src_dir = global_command_line.gen_dir;
     struct ccn_node *node = NULL;
     node = CCNstart(node);
+    TRAVstart(node, TRAV_free);
 
     return 0;
 }

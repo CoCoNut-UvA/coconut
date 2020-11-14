@@ -37,6 +37,7 @@ node_st *DGAHast(node_st *node)
     ast = node;
     TRAVchildren(node);
     fclose(fp);
+    globals.fp = 0;
     return node;
 }
 

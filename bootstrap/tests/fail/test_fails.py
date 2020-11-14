@@ -50,3 +50,13 @@ def test_double_child(exec, testdir):
     res = testdir.run(exec, build_filepath("double_child.ccn"))
     res.stderr.fnmatch_lines(["error: Double declaration of child name: next"])
     assert res.ret != 0
+
+
+def test_empty_nodeset(exec, testdir):
+    testdir.mkdir("ccngen/")
+    testdir.mkdir("ccngen/ccngen")
+    res = testdir.run(exec, build_filepath("empty_nodeset.ccn"))
+    res.stderr.fnmatch_lines(["error: syntax error, unexpected '}', expecting identifier"])
+    assert res.ret != 0
+
+

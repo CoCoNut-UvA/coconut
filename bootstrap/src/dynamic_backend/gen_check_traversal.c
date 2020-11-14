@@ -29,6 +29,7 @@ static node_st *curr_node;
 node_st *DGCHTast(node_st *node)
 {
     fp = FSgetSourceFile("ccn_check.c");
+    globals.fp = fp;
     OUT("#include <stdbool.h>\n");
     OUT("#include \"ccn/dynamic_core.h\"\n");
     OUT("#include \"ccngen/ast.h\"\n");
@@ -37,6 +38,7 @@ node_st *DGCHTast(node_st *node)
     TRAVopt(AST_INODESETS(node));
     TRAVopt(AST_INODES(node));
     fclose(fp);
+    globals.fp = 0;
     return node;
 }
 

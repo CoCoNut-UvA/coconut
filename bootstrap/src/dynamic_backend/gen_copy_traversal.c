@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "assert.h"
 
+#include "globals.h"
 #include "gen_helpers/out_macros.h"
 #include "palm/ctinfo.h"
 #include "palm/str.h"
@@ -32,12 +33,14 @@ static node_st *curr_node;
 node_st *DGCTast(node_st *node)
 {
     fp = FSgetSourceFile("ccn_copy.c");
+    globals.fp = fp;
     OUT("#include \"ccngen/ast.h\"\n");
     OUT("#include <stddef.h>\n");
     OUT("#include \"palm/str.h\"\n");
     OUT("#include \"ccn/dynamic_core.h\"\n");
     TRAVopt(AST_INODES(node));
     fclose(fp);
+    globals.fp = 0;
     return node;
 }
 
