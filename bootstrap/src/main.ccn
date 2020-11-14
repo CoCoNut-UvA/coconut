@@ -295,10 +295,10 @@ root node ast {
         ste stable;
     }
     attributes {
-        int num_traversals {};
-        int num_nodes {};
-        inode root_node {};
-        iphase start_phase {};
+        int num_traversals;
+        int num_nodes;
+        inode root_node;
+        iphase start_phase;
     }
 };
 
@@ -310,7 +310,7 @@ node iactions {
         iactions next;
     }
     attributes {
-        id reference {};
+        id reference;
     }
 };
 
@@ -322,10 +322,10 @@ node iphase {
     attributes {
         id name { constructor };
         int is_start { constructor };
-        int is_cycle {};
-        string iinfo {};
-        id iprefix {};
-        id gate_func {};
+        int is_cycle;
+        string iinfo;
+        id iprefix;
+        id gate_func;
     }
 };
 
@@ -336,10 +336,10 @@ node itraversal {
         itraversal next;
     }
     attributes {
-        int index {};
+        int index;
         id name { constructor };
-        string iinfo {};
-        id iprefix {};
+        string iinfo;
+        id iprefix;
 
     }
 };
@@ -352,7 +352,7 @@ node ipass {
         id name { constructor };
         string iifno { constructor };
         id iprefix { constructor };
-        id target_func {};
+        id target_func;
     }
 };
 
@@ -366,8 +366,8 @@ node inode {
 
     attributes {
         string iifno { constructor };
-        int is_root {};
-        int index {};
+        int is_root;
+        int index;
     }
 };
 
@@ -379,7 +379,7 @@ node inodeset {
         inodeset next;
     }
     attributes {
-        string iinfo {};
+        string iinfo;
     }
 };
 
@@ -398,9 +398,9 @@ node child {
     }
 
     attributes {
-        child_type type {};
-        int in_constructor {};
-        int is_mandatory {};
+        child_type type;
+        int in_constructor;
+        int is_mandatory;
     }
 };
 
@@ -409,8 +409,8 @@ node ste {
         ste next;
     }
     attributes {
-        id key {};
-        link value {};
+        id key;
+        link value;
     }
 };
 
@@ -461,8 +461,8 @@ node itravdata {
     }
 
     attributes {
-        attribute_type type {};
-        string include_file {};
+        attribute_type type;
+        string include_file; 
     }
 };
 
@@ -473,8 +473,8 @@ node attribute {
         attribute next;
     }
     attributes {
-        attribute_type type {};
-        int in_constructor {};
+        attribute_type type; 
+        int in_constructor;
     }
 };
 
@@ -492,7 +492,7 @@ node ienum {
 
 node id {
     children {
-        id next {};
+        id next;
     }
     attributes {
         string orig { constructor };
