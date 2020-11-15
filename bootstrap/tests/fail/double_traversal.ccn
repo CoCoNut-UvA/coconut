@@ -1,0 +1,28 @@
+
+start phase hello {
+    actions {
+        traversal x;
+        phase1;
+    }
+};
+
+phase helloo {
+    actions {
+        x;
+    }
+};
+
+traversal x;
+
+
+root node ast {
+    attributes {
+        ast next;
+    }
+};
+
+phase phase1 {
+    actions {
+        pass doSomething;
+    } 
+};

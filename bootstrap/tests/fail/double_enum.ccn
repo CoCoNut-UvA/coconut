@@ -1,0 +1,35 @@
+
+start phase hello {
+    actions {
+        pass p;
+        phase1;
+    }
+};
+
+phase helloo {
+    actions {
+        pass y;
+    }
+};
+
+enum val {
+    prefix = V
+    values = {val1, val2}
+};
+
+enum val {
+    prefix = V
+    values = {val1, val2}
+};
+
+root node ast {
+    attributes {
+        ast next;
+    }
+};
+
+phase phase1 {
+    actions {
+        pass doSomething;
+    } 
+};
