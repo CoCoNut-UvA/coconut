@@ -65,8 +65,8 @@ node_st *GAAiphase(node_st *node)
 {
     char *name_upr = ID_UPR(IPHASE_NAME(node));
     OUT("{CCN_ACTION_PHASE, %s_%s, \"%s\", .phase = {NULL, NT_%s, "
-        "%s_ids_table, false, %s_%s,},},\n", enum_action_pref, name_upr, ID_ORIG(IPHASE_NAME(node)),
-        ID_UPR(INODE_NAME(AST_ROOT_NODE(ast))), ID_LWR(IPHASE_NAME(node)), enum_action_pref, name_upr);
+        "%s_ids_table, %s, %s_%s,},},\n", enum_action_pref, name_upr, ID_ORIG(IPHASE_NAME(node)),
+        ID_UPR(INODE_NAME(AST_ROOT_NODE(ast))), ID_LWR(IPHASE_NAME(node)), IPHASE_IS_CYCLE(node) ? "true": "false" ,enum_action_pref, name_upr);
 
     TRAVopt(IPHASE_NEXT(node));
     return node;
