@@ -92,6 +92,7 @@ phase dynamic_gen_ast {
 };
 
 traversal gen_dot {
+    info = "Generate a dot diagram of the AST."
     prefix = GD
 
     nodes = {inode, child, ast, inodeset, setliteral}
