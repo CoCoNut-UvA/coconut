@@ -498,5 +498,8 @@ node id {
         string orig { constructor };
         string lwr { constructor };
         string upr { constructor };
+        int row;
+        int col_begin;
+        int col_end;
     }
 };

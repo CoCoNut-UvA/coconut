@@ -586,6 +586,9 @@ prefix: %empty
 id: T_ID
     {
         $$ = ASTid($1, STRlower($1), STRupper($1));
+        ID_ROW($$) = @1.first_line;
+        ID_COL_BEGIN($$) = @1.first_column;
+        ID_COL_END($$) = @1.last_column;
     }
   ;
 %%

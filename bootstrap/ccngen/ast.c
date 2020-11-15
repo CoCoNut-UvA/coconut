@@ -16,6 +16,9 @@ node_st *ASTid(char * orig, char * lwr, char * upr) {
     ID_ORIG(node) = orig;
     ID_LWR(node) = lwr;
     ID_UPR(node) = upr;
+    ID_ROW(node) = 0;
+    ID_COL_BEGIN(node) = 0;
+    ID_COL_END(node) = 0;
     NODE_NUMCHILDREN(node) = 1;
     NODE_CHILDREN(node) = node->data.N_id->id_children.id_children_at;
     return node;}

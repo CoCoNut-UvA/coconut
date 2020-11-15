@@ -10,6 +10,8 @@
 #include "palm/str.h"
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
+#include "globals.h"
+#include "palm/hash_table.h"
 
 
 static node_st *last_ste = NULL;
@@ -75,10 +77,24 @@ node_st *BSTiactions(node_st *node)
     return node;
 }
 
+void id_to_info(node_st *ID, struct ctinfo *info)
+{
+   struct ctinfo tmp = {.first_line = ID_ROW(ID), .filename = globals.filename,
+           .line = HTlookup(globals.line_map, &ID_ROW(ID)),
+           .first_column = ID_COL_BEGIN(ID), .last_column = ID_COL_END(ID)};
+   *info = tmp;
+}
+
+
+
 node_st *BSTiphase(node_st *node)
 {
-    if (lookupST(first_ste, IPHASE_NAME(node))) {
-        CTIerror("Duplicate name: %s\n", ID_ORIG(IPHASE_NAME(node)));
+    node_st *ID = IPHASE_NAME(node);
+    node_st *ste_value = lookupST(first_ste, IPHASE_NAME(node));
+    if (ste_value) {
+        struct ctinfo info;
+        id_to_info(ID, &info);
+        CTIerrorObj(&info, "Duplicate name: %s\n", ID_ORIG(IPHASE_NAME(node)));
     } else {
         addToST(IPHASE_NAME(node), node);
     }
@@ -89,7 +105,9 @@ node_st *BSTiphase(node_st *node)
 node_st *BSTitraversal(node_st *node)
 {
     if (lookupST(first_ste, ITRAVERSAL_NAME(node))) {
-        CTIerror("Duplicate name: %s\n", ID_ORIG(ITRAVERSAL_NAME(node)));
+        struct ctinfo info;
+        id_to_info(ITRAVERSAL_NAME(node), &info);
+        CTIerrorObj(&info, "Duplicate name: %s\n", ID_ORIG(ITRAVERSAL_NAME(node)));
     } else {
         addToST(ITRAVERSAL_NAME(node), node);
     }
@@ -106,7 +124,9 @@ node_st  *BSTitravdata(node_st *node)
 node_st *BSTipass(node_st *node)
 {
     if (lookupST(first_ste, IPASS_NAME(node))) {
-        CTIerror("Duplicate name: %s\n", ID_ORIG(IPASS_NAME(node)));
+        struct ctinfo info;
+        id_to_info(IPASS_NAME(node), &info);
+        CTIerrorObj(&info, "Duplicate name: %s\n", ID_ORIG(IPASS_NAME(node)));
     } else {
         addToST(IPASS_NAME(node), node);
     }
@@ -117,7 +137,9 @@ node_st *BSTipass(node_st *node)
 node_st *BSTinode(node_st *node)
 {
     if (lookupST(first_ste, INODE_NAME(node))) {
-        CTIerror("Duplicate name: %s\n", ID_ORIG(INODE_NAME(node)));
+        struct ctinfo info;
+        id_to_info(INODE_NAME(node), &info);
+        CTIerrorObj(&info, "Duplicate name: %s\n", ID_ORIG(INODE_NAME(node)));
     } else {
         addToST(INODE_NAME(node), node);
     }
@@ -128,7 +150,9 @@ node_st *BSTinode(node_st *node)
 node_st *BSTinodeset(node_st *node)
 {
     if (lookupST(first_ste, INODESET_NAME(node))) {
-        CTIerror("Duplicate name: %s\n", ID_ORIG(INODESET_NAME(node)));
+        struct ctinfo info;
+        id_to_info(INODESET_NAME(node), &info);
+        CTIerrorObj(&info, "Duplicate name: %s\n", ID_ORIG(INODESET_NAME(node)));
     } else {
         addToST(INODESET_NAME(node), node);
     }
@@ -176,7 +200,9 @@ node_st *BSTattribute(node_st *node)
 node_st *BSTienum(node_st *node)
 {
     if (lookupST(first_ste, IENUM_NAME(node))) {
-        CTIerror("Duplicate name: %s\n", ID_ORIG(IENUM_NAME(node)));
+        struct ctinfo info;
+        id_to_info(IENUM_NAME(node), &info);
+        CTIerrorObj(&info, "Duplicate name: %s\n", ID_ORIG(IENUM_NAME(node)));
     } else {
         addToST(IENUM_NAME(node), node);
     }

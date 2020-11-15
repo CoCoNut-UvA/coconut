@@ -15,6 +15,9 @@ struct NODE_DATA_ID {
     char * orig;
     char * lwr;
     char * upr;
+    int row;
+    int col_begin;
+    int col_end;
 };
 
 struct NODE_DATA_IENUM {
@@ -246,6 +249,9 @@ struct NODE_DATA_AST {
 #define ID_ORIG(n) ((n)->data.N_id->orig)
 #define ID_LWR(n) ((n)->data.N_id->lwr)
 #define ID_UPR(n) ((n)->data.N_id->upr)
+#define ID_ROW(n) ((n)->data.N_id->row)
+#define ID_COL_BEGIN(n) ((n)->data.N_id->col_begin)
+#define ID_COL_END(n) ((n)->data.N_id->col_end)
 #define IENUM_VALS(n) ((n)->data.N_ienum->ienum_children.ienum_children_st.vals)
 #define IENUM_NAME(n) ((n)->data.N_ienum->ienum_children.ienum_children_st.name)
 #define IENUM_IPREFIX(n) ((n)->data.N_ienum->ienum_children.ienum_children_st.iprefix)

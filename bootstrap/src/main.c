@@ -12,6 +12,7 @@ struct globals globals;
 int main(int argc, char *argv[])
 {
     CLprocessArgs(argc, argv);
+    globals.filename = global_command_line.input_file;
     globals.line_map = HTnew_Int(25);
     globals.gen_hdr_dir = STRcat(global_command_line.gen_dir, "ccngen/");
     globals.gen_src_dir = global_command_line.gen_dir;

@@ -10,6 +10,7 @@
 
 #include "palm/ctinfo.h"
 #include "palm/str.h"
+#include "palm/memory.h"
 
 #define YY_DECL int yylex()
 #define LEX_KEYWORD(k) if (yy_lex_keywords) \
@@ -54,7 +55,9 @@ static inline void check_c_keyword(const char *);
         // Save the whole line
         // TODO: this might not be memory crucial.
         char *line = STRcpy(yytext);
-        HTinsert(globals.line_map, &yylineno, line);
+        uint64_t *line_num = MEMmalloc(sizeof(uint64_t));
+        *line_num = yylineno;
+        HTinsert(globals.line_map, line_num, line);
 
         // yylineno is set automatically to 0,
         // however the column needs to be reset.

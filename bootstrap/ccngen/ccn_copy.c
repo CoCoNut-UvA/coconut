@@ -8,6 +8,9 @@ struct ccn_node *CPYid(struct ccn_node *arg_node) {
     ID_ORIG(new_node) = STRcpy(ID_ORIG(arg_node));
     ID_LWR(new_node) = STRcpy(ID_LWR(arg_node));
     ID_UPR(new_node) = STRcpy(ID_UPR(arg_node));
+    ID_ROW(new_node) = ID_ROW(arg_node);
+    ID_COL_BEGIN(new_node) = ID_COL_BEGIN(arg_node);
+    ID_COL_END(new_node) = ID_COL_END(arg_node);
     return new_node;
 }
 
