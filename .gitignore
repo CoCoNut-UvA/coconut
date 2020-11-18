@@ -58,7 +58,6 @@ build/
 bin/
 
 # Doxygen generated docs file
-docs/
 
 /generated/src
 /generated/include/ccngen/

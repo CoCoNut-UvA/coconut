@@ -8,15 +8,6 @@
 #include "ccn/dynamic_core.h"
 #include "globals.h"
 
-void *DGCCallocTravData()
-{
-    return 0;
-}
-
-void DGCCfreeTravData(void *data)
-{
-
-}
 
 static FILE *fp;
 static int indent = 1;

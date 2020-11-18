@@ -9,16 +9,6 @@
 #include "ccn/dynamic_core.h"
 #include "frontend/reachability.h"
 
-void *DGNFTTallocTravData()
-{
-    return 0;
-}
-
-void DGNFTTfreeTravData(void *data)
-{
-
-}
-
 static FILE *fp;
 static int indent = 0;
 static char *basic_node_type = "node_st";

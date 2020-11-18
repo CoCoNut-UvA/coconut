@@ -8,16 +8,6 @@
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
 
-void *DGIFallocTravData()
-{
-    return 0;
-}
-
-void DGIFfreeTravData(void *data)
-{
-
-}
-
 bool dgif_print_semicolon = false;
 
 static FILE *fp;

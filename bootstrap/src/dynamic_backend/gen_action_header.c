@@ -9,16 +9,6 @@
 #include "globals.h"
 #include "filesystem/gen_files.h"
 
-void *DGAHallocTravData()
-{
-    return 0;
-}
-
-void DGAHfreeTravData(void *data)
-{
-
-}
-
 FILE *fp;
 char *current_trav_prefix = NULL;
 static int indent = 0;

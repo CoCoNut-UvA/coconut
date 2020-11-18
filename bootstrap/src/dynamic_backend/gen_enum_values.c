@@ -8,16 +8,6 @@
 #include "ccn/dynamic_core.h"
 #include "globals.h"
 
-void *DGEVallocTravData()
-{
-    return 0;
-}
-
-void DGEVfreeTravData(void *data)
-{
-
-}
-
 static FILE *fp;
 static int indent = 0;
 static char *basic_node_type = "node_st";

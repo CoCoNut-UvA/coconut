@@ -9,15 +9,6 @@
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
 
-void *DGSTallocTravData()
-{
-    return 0;
-}
-
-void DGSTfreeTravData(void *data)
-{
-
-}
 
 static FILE *fp;
 static int indent = 0;

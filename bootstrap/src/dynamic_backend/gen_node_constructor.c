@@ -8,15 +8,6 @@
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
 
-void *DGNCallocTravData()
-{
-    return 0;
-}
-
-void DGNCfreeTravData(void *data)
-{
-
-}
 
 extern bool dgif_print_semicolon;
 

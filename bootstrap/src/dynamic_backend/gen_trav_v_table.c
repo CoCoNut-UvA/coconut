@@ -8,16 +8,6 @@
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
 
-void *DGTVallocTravData()
-{
-    return 0;
-}
-
-void DGTVfreeTravData(void *data)
-{
-
-}
-
 static FILE *fp;
 static int indent = 0;
 static char *basic_node_type = "node_st";

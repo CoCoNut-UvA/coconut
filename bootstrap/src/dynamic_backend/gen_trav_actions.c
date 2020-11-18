@@ -8,16 +8,6 @@
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
 
-void *DGTAallocTravData()
-{
-    return 0;
-}
-
-void DGTAfreeTravData(void *data)
-{
-
-}
-
 extern char *current_trav_prefix;
 static FILE *fp;
 static int indent = 0;
