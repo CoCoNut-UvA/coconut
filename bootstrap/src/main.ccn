@@ -103,6 +103,7 @@ traversal dynamic_genTravDataTables {
     nodes = {ast, itraversal}
 
     travdata = {
+        unsafe fileptr file,
         int in_init_round,
         int indent
     }
@@ -418,7 +419,7 @@ node ste {
 enum attribute_type {
     prefix = AT
     values = {
-        link, link_or_enum, int, string, bool, int8, int16, int32, float, double, uint, uint8, uint16, uint32
+        user, link, link_or_enum, int, string, bool, int8, int16, int32, float, double, uint, uint8, uint16, uint32
     }
 };
 

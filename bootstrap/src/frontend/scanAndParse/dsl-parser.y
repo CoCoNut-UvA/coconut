@@ -538,6 +538,12 @@ travdataitem: attribute_primitive_type[type] id[name]
         ITRAVDATA_TYPE_REFERENCE($$) = $type;
         ITRAVDATA_TYPE($$) = AT_link_or_enum;
     }
+    | T_UNSAFE id[type] id[name]
+    {
+            $$ = ASTitravdata($name);
+            ITRAVDATA_TYPE_REFERENCE($$) = $type;
+            ITRAVDATA_TYPE($$) = AT_user;
+    }
     ;
 
 

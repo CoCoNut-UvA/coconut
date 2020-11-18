@@ -7,9 +7,12 @@ void TRAVdataInitdynamic_genTravDataTables(ccn_trav_st *trav) {
     struct trav_data_dynamic_gentravdatatables *data = trav->trav_data.dynamic_gentravdatatables;
     data->indent = 0;
     data->in_init_round = 0;
+    data->file = 0;
+    DGTDTinit();
 }
 
 void TRAVdataFreedynamic_genTravDataTables(ccn_trav_st *trav) {
+    DGTDTfini();
     MEMfree(trav->trav_data.dynamic_gentravdatatables);
 }
 

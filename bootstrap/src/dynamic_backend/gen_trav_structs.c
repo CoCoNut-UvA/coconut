@@ -24,6 +24,8 @@ node_st *DGTDSitravdata(node_st *node)
     int indent = 0;
     if (ITRAVDATA_TYPE(node) == AT_link) {
         OUT_FIELD("node_st *%s", ID_ORIG(ITRAVDATA_NAME(node)));
+    } else if (ITRAVDATA_TYPE(node) == AT_user) {
+        OUT_FIELD("%s %s", ID_ORIG(ITRAVDATA_TYPE_REFERENCE(node)), ID_ORIG(ITRAVDATA_NAME(node)));
     } else {
         OUT_FIELD("%s %s", FMTattributeTypeToString(ITRAVDATA_TYPE(node)), ID_ORIG(ITRAVDATA_NAME(node)));
     }

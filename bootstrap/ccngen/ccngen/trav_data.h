@@ -1,8 +1,11 @@
 #pragma once
 #include "ccn/ccn_types.h"
+#include "unsafe_types.h"
+
 struct trav_data_dynamic_gentravdatatables {
-int indent;
-int in_init_round;
+    int indent;
+    int in_init_round;
+    fileptr file;
 };
 
 union TRAV_DATA {

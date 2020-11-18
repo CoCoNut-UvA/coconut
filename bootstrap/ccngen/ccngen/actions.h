@@ -348,6 +348,7 @@ struct ccn_node *GDintersect(struct ccn_node *node);
 struct ccn_node *GDdifference(struct ccn_node *node);
 struct ccn_node *GDsetoperation_type(struct ccn_node *node);
 struct ccn_node *GDso(struct ccn_node *node);
+struct ccn_node *GDuser(struct ccn_node *node);
 struct ccn_node *GDlink(struct ccn_node *node);
 struct ccn_node *GDlink_or_enum(struct ccn_node *node);
 struct ccn_node *GDint(struct ccn_node *node);

@@ -152,7 +152,6 @@ static inline void check_c_keyword(const char *);
 "true"          { LEX_KEYWORD(T_TRUE);}
 "gate"          { LEX_KEYWORD(T_GATE);}
 "unsafe"        { LEX_KEYWORD(T_UNSAFE);}
-
 "NULL"          { return T_NULL;}
 
 

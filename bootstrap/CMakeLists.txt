@@ -29,7 +29,7 @@ add_executable(myCompiler src/main.c src/commandline.c src/frontend/scanAndParse
         src/dynamic_backend/gen_check_traversal.c src/phase_driver/gen_action_array.c src/phase_driver/gen_ids_table.c src/phase_driver/gen_action_array_header.c src/filesystem/gen_files.c
         src/filesystem/gen_files.h src/filesystem/utils.c src/filesystem/utils.h src/dynamic_backend/file_switchers.c src/frontend/reachability.c
         src/frontend/reachability.h src/dynamic_backend/gen_trav_structs.c src/dynamic_backend/gen_trav_data_getters.c src/dynamic_backend/gen_trav_data_ctors.c src/dynamic_backend/gen_trav_data_union.c
-        src/dynamic_backend/gen_trav_data_ctors_header.c src/dynamic_backend/gen_trav_data_tables.c src/dot/gen_dot.c)
+        src/dynamic_backend/gen_trav_data_ctors_header.c src/dynamic_backend/gen_trav_data_tables.c src/dot/gen_dot.c src/unsafe_types.h)
 
 #add_subdirectory(../cunit/CUnit cunit)
 add_subdirectory(./tests)

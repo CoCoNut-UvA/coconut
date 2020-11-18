@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ccngen/enum.h"
+#include <stdbool.h>
 
 struct ccn_node;
 struct ccn_trav;

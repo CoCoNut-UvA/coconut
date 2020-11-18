@@ -4,11 +4,20 @@
 #include "globals.h"
 #include "ccngen/trav_data.h"
 
+void DGTDTinit()
+{
+}
+
+void DGTDTfini()
+{
+
+}
 
 node_st *DGTDTast(node_st *node)
 {
     struct trav_data_dynamic_gentravdatatables *data = DYNAMIC_GENTRAVDATATABLES_DATA;
     int indent = data->indent;
+
     FILE *fp = globals.fp;
     OUT("const ccn_trav_data_ft trav_data_init_vtable[_TRAV_SIZE] = {TRAVdataNOP,");
     data->in_init_round = true;

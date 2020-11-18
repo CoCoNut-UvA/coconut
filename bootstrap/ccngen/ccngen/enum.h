@@ -91,6 +91,7 @@ enum setoperation_type {
 };
 
 enum attribute_type {
+    AT_user,
     AT_link,
     AT_link_or_enum,
     AT_int,

@@ -62,8 +62,6 @@ char *FMTattributeTypeToString(enum attribute_type type)
         return "double";
     case AT_bool:
         return "bool";
-    case AT_link_or_enum:
-        assert(false);
     case AT_link:
         return "node_st";
     case AT_string:
