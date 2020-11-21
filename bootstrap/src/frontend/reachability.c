@@ -33,8 +33,8 @@ node_st *ast;
 
 node_st *RCBast(node_st *node)
 {
-    reachability_matrix = MEMmalloc(sizeof(int *) * AST_NUM_TRAVERSALS(node));
-    child_visited = MEMmalloc(sizeof(int) * AST_NUM_NODES(node));
+    reachability_matrix = MEMmalloc(sizeof(int *) * AST_NUM_TRAVERSALS(node) + 1);
+    child_visited = MEMmalloc(sizeof(int) * AST_NUM_NODES(node) + 1);
     ast = node;
     ste = AST_STABLE(node);
     TRAVopt(AST_ITRAVERSALS(node));
@@ -48,6 +48,7 @@ node_st *RCBitraversal(node_st *node)
     trav_index = ITRAVERSAL_INDEX(node);
     reachability_matrix[trav_index] = MEMmalloc(sizeof(int) * AST_NUM_NODES(ast));
     memset(reachability_matrix[trav_index], 0, sizeof(int) *AST_NUM_NODES(ast));
+    printf("Starting: %s\n", ID_ORIG(ITRAVERSAL_NAME(node)));
 
     if (!ITRAVERSAL_INODES(node)) {
         const int num_nodes = AST_NUM_NODES(ast);
@@ -115,10 +116,11 @@ node_st *RCBsetliteral(node_st *node)
     node_st *inode = lookupST(ste, SETLITERAL_REFERENCE(node));
     assert(NODE_TYPE(inode) == NT_INODE);
     if (is_traversal_nodes) {
+        printf("Handled: %s, %d\n", ID_ORIG(SETLITERAL_REFERENCE(node)), trav_index);
         reachability_matrix[trav_index][INODE_INDEX(inode)] = RCB_NODE_HANDLED_BY_USER;
     } else {
-        if (!child_visited[INODE_INDEX(node)]) {
-            child_visited[INODE_INDEX(node)] = 1;
+        if (!child_visited[INODE_INDEX(inode)]) {
+            child_visited[INODE_INDEX(inode)] = 1;
             const int reach = reachability_matrix[trav_index][INODE_INDEX(inode)];
             if (reach && reach != RCB_NODE_NOT_HANDLED) {
                 child_is_reachable = true;
