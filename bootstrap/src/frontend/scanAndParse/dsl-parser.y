@@ -157,7 +157,6 @@ entry: phase
      }
      | traversal
      {
-        ITRAVERSAL_INDEX($1) = trav_index++;
         ITRAVERSAL_NEXT($1) = AST_ITRAVERSALS(ast);
         AST_ITRAVERSALS(ast) = $1;
         $$ = ast;
@@ -242,6 +241,7 @@ pass: T_PASS id[name] '{'  info[information] prefix[identifier] func[target_func
 traversal: T_TRAVERSAL id[name] '{' info[information] prefix[identifier] traversalnodes[nodes] travdata[data]'}'
     {
         $$ = ASTitraversal($name);
+        ITRAVERSAL_INDEX($$) = trav_index++;
         ITRAVERSAL_IINFO($$) = $information;
         ITRAVERSAL_IPREFIX($$) = $identifier;
         ITRAVERSAL_INODES($$) = $nodes;
@@ -250,6 +250,7 @@ traversal: T_TRAVERSAL id[name] '{' info[information] prefix[identifier] travers
     | T_TRAVERSAL id[name]
     {
         $$ = ASTitraversal($name);
+        ITRAVERSAL_INDEX($$) = trav_index++;
     }
     ;
 
