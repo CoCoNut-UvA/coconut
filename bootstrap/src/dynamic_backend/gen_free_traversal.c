@@ -128,3 +128,13 @@ node_st *DGFTid(node_st *node)
 {
     return node;
 }
+
+node_st *DGFTilifetime(node_st *node)
+{
+    return node;
+}
+
+node_st *DGFTlifetime_range(node_st *node)
+{
+    return node;
+}

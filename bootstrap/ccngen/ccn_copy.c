@@ -84,6 +84,22 @@ struct ccn_node *CPYchild(struct ccn_node *arg_node) {
     return new_node;
 }
 
+struct ccn_node *CPYlifetime_range(struct ccn_node *arg_node) {
+    struct ccn_node *new_node = ASTlifetime_range();
+    LIFETIME_RANGE_BEGIN(new_node) = TRAVopt(LIFETIME_RANGE_BEGIN(arg_node));
+    LIFETIME_RANGE_END(new_node) = TRAVopt(LIFETIME_RANGE_END(arg_node));
+    return new_node;
+}
+
+struct ccn_node *CPYilifetime(struct ccn_node *arg_node) {
+    struct ccn_node *new_node = ASTilifetime();
+    ILIFETIME_BEGIN(new_node) = TRAVopt(ILIFETIME_BEGIN(arg_node));
+    ILIFETIME_END(new_node) = TRAVopt(ILIFETIME_END(arg_node));
+    ILIFETIME_NEXT(new_node) = TRAVopt(ILIFETIME_NEXT(arg_node));
+    ILIFETIME_TYPE(new_node) = ILIFETIME_TYPE(arg_node);
+    return new_node;
+}
+
 struct ccn_node *CPYinodeset(struct ccn_node *arg_node) {
     struct ccn_node *new_node = ASTinodeset();
     INODESET_NAME(new_node) = TRAVopt(INODESET_NAME(arg_node));
@@ -100,6 +116,7 @@ struct ccn_node *CPYinode(struct ccn_node *arg_node) {
     INODE_NEXT(new_node) = TRAVopt(INODE_NEXT(arg_node));
     INODE_ICHILDREN(new_node) = TRAVopt(INODE_ICHILDREN(arg_node));
     INODE_IATTRIBUTES(new_node) = TRAVopt(INODE_IATTRIBUTES(arg_node));
+    INODE_LIFETIMES(new_node) = TRAVopt(INODE_LIFETIMES(arg_node));
     INODE_IIFNO(new_node) = STRcpy(INODE_IIFNO(arg_node));
     INODE_IS_ROOT(new_node) = INODE_IS_ROOT(arg_node);
     INODE_INDEX(new_node) = INODE_INDEX(arg_node);
@@ -145,6 +162,7 @@ struct ccn_node *CPYiactions(struct ccn_node *arg_node) {
     struct ccn_node *new_node = ASTiactions();
     IACTIONS_NEXT(new_node) = TRAVopt(IACTIONS_NEXT(arg_node));
     IACTIONS_REFERENCE(new_node) = IACTIONS_REFERENCE(arg_node);
+    IACTIONS_ACTION_ID(new_node) = IACTIONS_ACTION_ID(arg_node);
     return new_node;
 }
 

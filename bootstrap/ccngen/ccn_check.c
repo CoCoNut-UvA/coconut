@@ -115,6 +115,30 @@ struct ccn_node *CHKchild(struct ccn_node *arg_node) {
     return arg_node;
 }
 
+struct ccn_node *CHKlifetime_range(struct ccn_node *arg_node) {
+    if (LIFETIME_RANGE_BEGIN(arg_node)) {
+        if (NODE_TYPE(LIFETIME_RANGE_BEGIN(arg_node)) != NT_ID) {
+            CTIerror("Inconsistent node found in AST. Child begin of node lifetime_range has disallowed type %d ", NODE_TYPE(LIFETIME_RANGE_BEGIN(arg_node)));
+        }
+
+    }
+
+    TRAVchildren(arg_node);
+    return arg_node;
+}
+
+struct ccn_node *CHKilifetime(struct ccn_node *arg_node) {
+    if (ILIFETIME_BEGIN(arg_node)) {
+        if (NODE_TYPE(ILIFETIME_BEGIN(arg_node)) != NT_LIFETIME_RANGE) {
+            CTIerror("Inconsistent node found in AST. Child begin of node ilifetime has disallowed type %d ", NODE_TYPE(ILIFETIME_BEGIN(arg_node)));
+        }
+
+    }
+
+    TRAVchildren(arg_node);
+    return arg_node;
+}
+
 struct ccn_node *CHKinodeset(struct ccn_node *arg_node) {
     if (INODESET_NAME(arg_node)) {
         if (NODE_TYPE(INODESET_NAME(arg_node)) != NT_ID) {

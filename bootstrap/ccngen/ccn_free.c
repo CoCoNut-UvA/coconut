@@ -64,6 +64,20 @@ struct ccn_node *DELchild(struct ccn_node *arg_node) {
     return arg_node;
 }
 
+struct ccn_node *DELlifetime_range(struct ccn_node *arg_node) {
+    TRAVchildren(arg_node);
+    MEMfree(arg_node->data.N_lifetime_range);
+    arg_node = MEMfree(arg_node);
+    return arg_node;
+}
+
+struct ccn_node *DELilifetime(struct ccn_node *arg_node) {
+    TRAVchildren(arg_node);
+    MEMfree(arg_node->data.N_ilifetime);
+    arg_node = MEMfree(arg_node);
+    return arg_node;
+}
+
 struct ccn_node *DELinodeset(struct ccn_node *arg_node) {
     TRAVchildren(arg_node);
     MEMfree(arg_node->data.N_inodeset->iinfo);

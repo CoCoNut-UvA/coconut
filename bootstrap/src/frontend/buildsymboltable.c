@@ -216,4 +216,12 @@ node_st *BSTid(node_st *node)
     return node;
 }
 
+node_st *BSTilifetime(node_st *node)
+{
+    return node;
+}
 
+node_st *BSTlifetime_range(node_st *node)
+{
+    return node;
+}

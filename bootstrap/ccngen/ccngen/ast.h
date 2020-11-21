@@ -130,6 +130,32 @@ struct NODE_DATA_CHILD {
     int is_mandatory;
 };
 
+struct NODE_DATA_LIFETIME_RANGE {
+    union NODE_CHILDREN_LIFETIME_RANGE {
+        struct NODE_CHILDREN_LIFETIME_RANGE_STRUCT {
+            node_st *begin;
+            node_st *end;
+        } lifetime_range_children_st;
+
+        node_st *lifetime_range_children_at[2];
+    } lifetime_range_children;
+
+};
+
+struct NODE_DATA_ILIFETIME {
+    union NODE_CHILDREN_ILIFETIME {
+        struct NODE_CHILDREN_ILIFETIME_STRUCT {
+            node_st *begin;
+            node_st *end;
+            node_st *next;
+        } ilifetime_children_st;
+
+        node_st *ilifetime_children_at[3];
+    } ilifetime_children;
+
+    enum lifetime_type type;
+};
+
 struct NODE_DATA_INODESET {
     union NODE_CHILDREN_INODESET {
         struct NODE_CHILDREN_INODESET_STRUCT {
@@ -152,9 +178,10 @@ struct NODE_DATA_INODE {
             node_st *next;
             node_st *ichildren;
             node_st *iattributes;
+            node_st *lifetimes;
         } inode_children_st;
 
-        node_st *inode_children_at[4];
+        node_st *inode_children_at[5];
     } inode_children;
 
     char * iifno;
@@ -222,6 +249,7 @@ struct NODE_DATA_IACTIONS {
     } iactions_children;
 
     node_st *reference;
+    int action_id;
 };
 
 struct NODE_DATA_AST {
@@ -282,6 +310,12 @@ struct NODE_DATA_AST {
 #define CHILD_TYPE(n) ((n)->data.N_child->type)
 #define CHILD_IN_CONSTRUCTOR(n) ((n)->data.N_child->in_constructor)
 #define CHILD_IS_MANDATORY(n) ((n)->data.N_child->is_mandatory)
+#define LIFETIME_RANGE_BEGIN(n) ((n)->data.N_lifetime_range->lifetime_range_children.lifetime_range_children_st.begin)
+#define LIFETIME_RANGE_END(n) ((n)->data.N_lifetime_range->lifetime_range_children.lifetime_range_children_st.end)
+#define ILIFETIME_BEGIN(n) ((n)->data.N_ilifetime->ilifetime_children.ilifetime_children_st.begin)
+#define ILIFETIME_END(n) ((n)->data.N_ilifetime->ilifetime_children.ilifetime_children_st.end)
+#define ILIFETIME_NEXT(n) ((n)->data.N_ilifetime->ilifetime_children.ilifetime_children_st.next)
+#define ILIFETIME_TYPE(n) ((n)->data.N_ilifetime->type)
 #define INODESET_NAME(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.name)
 #define INODESET_EXPR(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.expr)
 #define INODESET_UNPACKED(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.unpacked)
@@ -291,6 +325,7 @@ struct NODE_DATA_AST {
 #define INODE_NEXT(n) ((n)->data.N_inode->inode_children.inode_children_st.next)
 #define INODE_ICHILDREN(n) ((n)->data.N_inode->inode_children.inode_children_st.ichildren)
 #define INODE_IATTRIBUTES(n) ((n)->data.N_inode->inode_children.inode_children_st.iattributes)
+#define INODE_LIFETIMES(n) ((n)->data.N_inode->inode_children.inode_children_st.lifetimes)
 #define INODE_IIFNO(n) ((n)->data.N_inode->iifno)
 #define INODE_IS_ROOT(n) ((n)->data.N_inode->is_root)
 #define INODE_INDEX(n) ((n)->data.N_inode->index)
@@ -316,6 +351,7 @@ struct NODE_DATA_AST {
 #define IPHASE_GATE_FUNC(n) ((n)->data.N_iphase->gate_func)
 #define IACTIONS_NEXT(n) ((n)->data.N_iactions->iactions_children.iactions_children_st.next)
 #define IACTIONS_REFERENCE(n) ((n)->data.N_iactions->reference)
+#define IACTIONS_ACTION_ID(n) ((n)->data.N_iactions->action_id)
 #define AST_IPHASES(n) ((n)->data.N_ast->ast_children.ast_children_st.iphases)
 #define AST_ITRAVERSALS(n) ((n)->data.N_ast->ast_children.ast_children_st.itraversals)
 #define AST_IPASSES(n) ((n)->data.N_ast->ast_children.ast_children_st.ipasses)
@@ -336,6 +372,8 @@ node_st *ASTsetliteral();
 node_st *ASTsetreference();
 node_st *ASTste();
 node_st *ASTchild(node_st *name);
+node_st *ASTlifetime_range();
+node_st *ASTilifetime();
 node_st *ASTinodeset();
 node_st *ASTinode(node_st *name, char * iifno);
 node_st *ASTipass(node_st *name, char * iifno, node_st *iprefix);
@@ -351,6 +389,8 @@ union NODE_DATA {
     struct NODE_DATA_IPASS *N_ipass;
     struct NODE_DATA_INODE *N_inode;
     struct NODE_DATA_INODESET *N_inodeset;
+    struct NODE_DATA_ILIFETIME *N_ilifetime;
+    struct NODE_DATA_LIFETIME_RANGE *N_lifetime_range;
     struct NODE_DATA_CHILD *N_child;
     struct NODE_DATA_STE *N_ste;
     struct NODE_DATA_SETREFERENCE *N_setreference;

@@ -127,7 +127,8 @@ struct ctinfo yy_ctinfo;
 %type<boolean> is_start is_constructor is_root
 %type<node> phase entry pass node traversal cycleheader phaseheader id action actionsbody traversalnodes prefix
     actions childrenbody attributebody attributes attribute children child setoperation setliterals func
-    setexpr enum idlist enumvalues nodeset travdata travdatalist travdataitem
+    setexpr enum idlist enumvalues nodeset travdata travdatalist travdataitem nodelifetimes
+    lifetimes lifetime lifetime_range
 %type<attr_type> attribute_primitive_type
 
 %left '&' '-' '|'
@@ -355,12 +356,13 @@ setliterals: setliterals ',' id
            }
 
 
-node: is_root[root] T_NODE id[name] '{' info[information] childrenbody[children] attributebody[attributes] '}'
+node: is_root[root] T_NODE id[name] '{' info[information] childrenbody[children] attributebody[attributes] nodelifetimes[lifetimes] '}'
     {
         $$ = ASTinode($name, $information);
         INODE_IS_ROOT($$) = $root;
         INODE_ICHILDREN($$) = $children;
         INODE_IATTRIBUTES($$) = $attributes;
+        INODE_LIFETIMES($$) = $lifetimes;
     }
     ;
 
@@ -480,6 +482,42 @@ child: id[type] id[name]
     }
     ;
 
+nodelifetimes: %empty
+    {
+        $$ = NULL;
+    }
+    | T_LIFETIME '{' lifetimes '}'
+    {
+        $$ = $3;
+    }
+    ;
+
+lifetimes: lifetime ';' lifetimes
+    {
+        $$ = $1;
+        ILIFETIME_NEXT($1) = $3;
+    }
+    | lifetime ';'
+    {
+        $$ = $1;
+    }
+    ;
+
+lifetime:
+    T_DISALLOWED
+    {
+        $$ = ASTilifetime();
+        ILIFETIME_TYPE($$) = LT_disallowed;
+    }
+    | T_MANDATORY
+    {
+        $$ = ASTilifetime();
+        ILIFETIME_TYPE($$) = LT_mandatory;
+    }
+    ;
+
+
+
 nodeset: T_NODESET id[name] '{' info[information] T_NODES '=' setexpr[expr] '}'
         {
             $$ = ASTinodeset();
@@ -497,6 +535,7 @@ nodeset: T_NODESET id[name] '{' info[information] T_NODES '=' setexpr[expr] '}'
 
 enum: T_ENUM id[name] '{' info[information] prefix[identifier] enumvalues[values] '}'
     {
+
         $$ = ASTienum($values, $name, $identifier, $information);
     }
 

@@ -17,6 +17,9 @@ CCNAC_ID_DYNAMIC_GEN_AST, CCNAC_ID_DYNAMIC_START_ENUM_HEADER, CCNAC_ID_DYNAMIC_G
 enum ccn_action_id phase_driver_ids_table[] = {
 CCNAC_ID_GEN_ACTION_ARRAY_HEADER, CCNAC_ID_GEN_IDS_TABLES, CCNAC_ID_GEN_ACTION_ARRAY, CCNAC_ID_NULL, };
 
+enum ccn_action_id unpack_lifetimes_ids_table[] = {
+CCNAC_ID_ASSIGN_ID_TO_ACTION, CCNAC_ID_NULL, };
+
 enum ccn_action_id semantic_ids_table[] = {
 CCNAC_ID_BUILDSYMBOLTABLE, CCNAC_ID_CHECKEXISTANCE, CCNAC_ID_UNWRAPSETEXPR, CCNAC_ID_REACHABILITY, CCNAC_ID_NULL, };
 
@@ -28,6 +31,7 @@ static struct ccn_action ccn_action_array[] = {
 {CCN_ACTION_PHASE, CCNAC_ID_DYNAMIC_GEN_TRAV_DATA, "dynamic_gen_trav_data", .phase = {NULL, NT_AST, dynamic_gen_trav_data_ids_table, false, CCNAC_ID_DYNAMIC_GEN_TRAV_DATA,},},
 {CCN_ACTION_PHASE, CCNAC_ID_DYNAMIC_BACKEND, "dynamic_backend", .phase = {NULL, NT_AST, dynamic_backend_ids_table, false, CCNAC_ID_DYNAMIC_BACKEND,},},
 {CCN_ACTION_PHASE, CCNAC_ID_PHASE_DRIVER, "phase_driver", .phase = {NULL, NT_AST, phase_driver_ids_table, false, CCNAC_ID_PHASE_DRIVER,},},
+{CCN_ACTION_PHASE, CCNAC_ID_UNPACK_LIFETIMES, "unpack_lifetimes", .phase = {NULL, NT_AST, unpack_lifetimes_ids_table, false, CCNAC_ID_UNPACK_LIFETIMES,},},
 {CCN_ACTION_PHASE, CCNAC_ID_SEMANTIC, "semantic", .phase = {NULL, NT_AST, semantic_ids_table, false, CCNAC_ID_SEMANTIC,},},
 {CCN_ACTION_PHASE, CCNAC_ID_STARTPHASE, "startPhase", .phase = {NULL, NT_AST, startphase_ids_table, false, CCNAC_ID_STARTPHASE,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_PRINT, "print", .traversal = {TRAV_PRINT,},},
@@ -63,6 +67,7 @@ static struct ccn_action ccn_action_array[] = {
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_GEN_IDS_TABLES, "gen_ids_tables", .traversal = {TRAV_GEN_IDS_TABLES,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_DYNAMIC_GENTRAVDATATABLES, "dynamic_genTravDataTables", .traversal = {TRAV_DYNAMIC_GENTRAVDATATABLES,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_GEN_DOT, "gen_dot", .traversal = {TRAV_GEN_DOT,},},
+{CCN_ACTION_TRAVERSAL, CCNAC_ID_ASSIGN_ID_TO_ACTION, "assign_id_to_action", .traversal = {TRAV_ASSIGN_ID_TO_ACTION,},},
 {CCN_ACTION_PASS, CCNAC_ID_DYNAMIC_GENBASENODEINIT, "dynamic_genBaseNodeInit", .pass = {PASS_DYNAMIC_GENBASENODEINIT,},},
 {CCN_ACTION_PASS, CCNAC_ID_DYNAMIC_SWITCH_TO_AST_SOURCE, "dynamic_switch_to_ast_source", .pass = {PASS_DYNAMIC_SWITCH_TO_AST_SOURCE,},},
 {CCN_ACTION_PASS, CCNAC_ID_DYNAMIC_GENBASENODE, "dynamic_genBaseNode", .pass = {PASS_DYNAMIC_GENBASENODE,},},

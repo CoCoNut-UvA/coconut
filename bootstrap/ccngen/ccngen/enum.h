@@ -19,6 +19,8 @@ enum ccn_nodetype {
     NT_SETREFERENCE,
     NT_STE,
     NT_CHILD,
+    NT_LIFETIME_RANGE,
+    NT_ILIFETIME,
     NT_INODESET,
     NT_INODE,
     NT_IPASS,
@@ -64,6 +66,7 @@ enum ccn_traversal_type {
     TRAV_GEN_IDS_TABLES,
     TRAV_DYNAMIC_GENTRAVDATATABLES,
     TRAV_GEN_DOT,
+    TRAV_ASSIGN_ID_TO_ACTION,
     TRAV_free,
     TRAV_check,
     TRAV_cpy,
@@ -111,5 +114,10 @@ enum attribute_type {
 enum child_type {
     CT_inode,
     CT_inodeset,
+};
+
+enum lifetime_type {
+    LT_disallowed,
+    LT_mandatory,
 };
 

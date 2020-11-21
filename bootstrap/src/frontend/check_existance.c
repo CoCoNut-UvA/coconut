@@ -213,3 +213,13 @@ node_st *CEXid(node_st *node)
     TRAVchildren(node);
     return node;
 }
+
+node_st *CEXilifetime(node_st *node)
+{
+    return node;
+}
+
+node_st *CEXlifetime_range(node_st *node)
+{
+    return node;
+}

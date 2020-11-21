@@ -138,3 +138,13 @@ node_st *DGCTid(node_st *node)
 {
     return node;
 }
+
+node_st *DGCTilifetime(node_st *node)
+{
+    return node;
+}
+
+node_st *DGCTlifetime_range(node_st *node)
+{
+    return node;
+}

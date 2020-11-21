@@ -150,3 +150,13 @@ node_st *DGCHTid(node_st *node)
 {
     return node;
 }
+
+node_st *DGCHTilifetime(node_st *node)
+{
+    return node;
+}
+
+node_st *DGCHTlifetime_range(node_st *node)
+{
+    return node;
+}

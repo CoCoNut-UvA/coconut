@@ -25,6 +25,18 @@ phase semantic {
     }
 };
 
+phase unpack_lifetimes {
+    info = "Unpack lifetime into their action IDS"
+    prefix = ULT
+
+    actions {
+        traversal assign_id_to_action {
+            prefix = AITA
+            nodes = {ast, iactions }
+        };
+    }
+};
+
 
 phase phase_driver {
     info = "Generate the missing parts of the phase driver"
@@ -313,6 +325,7 @@ node iactions {
     }
     attributes {
         id reference;
+        int action_id;
     }
 };
 
@@ -364,6 +377,7 @@ node inode {
         inode next;
         child ichildren;
         attribute iattributes;
+        ilifetime lifetimes;
     }
 
     attributes {
@@ -382,6 +396,32 @@ node inodeset {
     }
     attributes {
         string iinfo;
+    }
+};
+
+enum lifetime_type {
+    prefix = LT
+    values = {
+        disallowed, mandatory
+    }
+};
+
+node ilifetime {
+    children {
+        lifetime_range begin;
+        lifetime_range end;
+        ilifetime next;
+    }
+
+    attributes {
+        lifetime_type type;
+    }
+};
+
+node lifetime_range {
+    children {
+        id begin;
+        id end;
     }
 };
 
@@ -450,6 +490,10 @@ node setoperation {
     }
     attributes {
         setoperation_type type { constructor };
+    }
+
+    lifetime {
+        disallowed;
     }
 };
 

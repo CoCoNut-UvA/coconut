@@ -117,6 +117,28 @@ node_st *ASTchild(node_st *name) {
     NODE_CHILDREN(node) = node->data.N_child->child_children.child_children_at;
     return node;}
 
+node_st *ASTlifetime_range() {
+    node_st *node = NewNode();
+    node->data.N_lifetime_range = MEMmalloc(sizeof(struct NODE_DATA_LIFETIME_RANGE));
+    NODE_TYPE(node) = NT_LIFETIME_RANGE;
+    LIFETIME_RANGE_BEGIN(node) = NULL;
+    LIFETIME_RANGE_END(node) = NULL;
+    NODE_NUMCHILDREN(node) = 2;
+    NODE_CHILDREN(node) = node->data.N_lifetime_range->lifetime_range_children.lifetime_range_children_at;
+    return node;}
+
+node_st *ASTilifetime() {
+    node_st *node = NewNode();
+    node->data.N_ilifetime = MEMmalloc(sizeof(struct NODE_DATA_ILIFETIME));
+    NODE_TYPE(node) = NT_ILIFETIME;
+    ILIFETIME_BEGIN(node) = NULL;
+    ILIFETIME_END(node) = NULL;
+    ILIFETIME_NEXT(node) = NULL;
+    ILIFETIME_TYPE(node) = 0;
+    NODE_NUMCHILDREN(node) = 3;
+    NODE_CHILDREN(node) = node->data.N_ilifetime->ilifetime_children.ilifetime_children_at;
+    return node;}
+
 node_st *ASTinodeset() {
     node_st *node = NewNode();
     node->data.N_inodeset = MEMmalloc(sizeof(struct NODE_DATA_INODESET));
@@ -138,10 +160,11 @@ node_st *ASTinode(node_st *name, char * iifno) {
     INODE_NEXT(node) = NULL;
     INODE_ICHILDREN(node) = NULL;
     INODE_IATTRIBUTES(node) = NULL;
+    INODE_LIFETIMES(node) = NULL;
     INODE_IIFNO(node) = iifno;
     INODE_IS_ROOT(node) = 0;
     INODE_INDEX(node) = 0;
-    NODE_NUMCHILDREN(node) = 4;
+    NODE_NUMCHILDREN(node) = 5;
     NODE_CHILDREN(node) = node->data.N_inode->inode_children.inode_children_at;
     return node;}
 
@@ -195,6 +218,7 @@ node_st *ASTiactions() {
     NODE_TYPE(node) = NT_IACTIONS;
     IACTIONS_NEXT(node) = NULL;
     IACTIONS_REFERENCE(node) = NULL;
+    IACTIONS_ACTION_ID(node) = 0;
     NODE_NUMCHILDREN(node) = 1;
     NODE_CHILDREN(node) = node->data.N_iactions->iactions_children.iactions_children_at;
     return node;}

@@ -22,6 +22,7 @@ node_st *PRTast(node_st *ast)
     TRAVchildren(ast);
 
     for (int i = 0; i < AST_NUM_TRAVERSALS(ast); i++) {
+        printf("%d: ", i);
         for (int j = 0; j < AST_NUM_NODES(ast); j++) {
             printf("%d, ", reachability_matrix[i][j]);
         }
@@ -132,5 +133,17 @@ node_st *PRTste(node_st *node)
 {
     printf("STE: %s, %d\n", ID_ORIG(STE_KEY(node)), NODE_TYPE(STE_VALUE(node)));
     TRAVchildren(node);
+    return node;
+}
+
+node_st *PRTilifetime(node_st *node)
+{
+    TRAVchildren(node);
+    printf("Lifetime: %d\n", ILIFETIME_TYPE(node));
+    return node;
+}
+
+node_st *PRTlifetime_range(node_st *node)
+{
     return node;
 }
