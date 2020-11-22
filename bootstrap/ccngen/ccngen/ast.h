@@ -133,11 +133,10 @@ struct NODE_DATA_CHILD {
 struct NODE_DATA_LIFETIME_RANGE {
     union NODE_CHILDREN_LIFETIME_RANGE {
         struct NODE_CHILDREN_LIFETIME_RANGE_STRUCT {
-            node_st *begin;
-            node_st *end;
+            node_st *target;
         } lifetime_range_children_st;
 
-        node_st *lifetime_range_children_at[2];
+        node_st *lifetime_range_children_at[1];
     } lifetime_range_children;
 
 };
@@ -310,8 +309,7 @@ struct NODE_DATA_AST {
 #define CHILD_TYPE(n) ((n)->data.N_child->type)
 #define CHILD_IN_CONSTRUCTOR(n) ((n)->data.N_child->in_constructor)
 #define CHILD_IS_MANDATORY(n) ((n)->data.N_child->is_mandatory)
-#define LIFETIME_RANGE_BEGIN(n) ((n)->data.N_lifetime_range->lifetime_range_children.lifetime_range_children_st.begin)
-#define LIFETIME_RANGE_END(n) ((n)->data.N_lifetime_range->lifetime_range_children.lifetime_range_children_st.end)
+#define LIFETIME_RANGE_TARGET(n) ((n)->data.N_lifetime_range->lifetime_range_children.lifetime_range_children_st.target)
 #define ILIFETIME_BEGIN(n) ((n)->data.N_ilifetime->ilifetime_children.ilifetime_children_st.begin)
 #define ILIFETIME_END(n) ((n)->data.N_ilifetime->ilifetime_children.ilifetime_children_st.end)
 #define ILIFETIME_NEXT(n) ((n)->data.N_ilifetime->ilifetime_children.ilifetime_children_st.next)

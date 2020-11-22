@@ -64,6 +64,7 @@ node_st *DGCHTinode(node_st *node)
     curr_node = node;
     OUT_START_FUNC("struct ccn_node *CHK%s(struct ccn_node *arg_node)", ID_LWR(INODE_NAME(node)));
     TRAVopt(INODE_ICHILDREN(node));
+    TRAVopt(INODE_LIFETIMES(node));
     if (INODE_ICHILDREN(node)) {
         OUT_FIELD("TRAVchildren(arg_node)");
     }
@@ -153,6 +154,11 @@ node_st *DGCHTid(node_st *node)
 
 node_st *DGCHTilifetime(node_st *node)
 {
+    if (!ILIFETIME_BEGIN(node) && !ILIFETIME_END(node)) {
+        if (ILIFETIME_TYPE(node) == LT_disallowed) {
+            OUT_FIELD("CTIerror(\"Found disallowed node(%s) in tree.\\n\");", ID_ORIG(INODE_NAME(curr_node)));
+        }
+    }
     return node;
 }
 

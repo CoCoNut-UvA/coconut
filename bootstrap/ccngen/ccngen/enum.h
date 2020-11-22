@@ -66,6 +66,7 @@ enum ccn_traversal_type {
     TRAV_GEN_IDS_TABLES,
     TRAV_DYNAMIC_GENTRAVDATATABLES,
     TRAV_GEN_DOT,
+    TRAV_MAP_ID_TO_LIFETIME,
     TRAV_ASSIGN_ID_TO_ACTION,
     TRAV_free,
     TRAV_check,

@@ -15,6 +15,8 @@ void PRTfreeTravData(void *data)
 
 extern int **reachability_matrix;
 
+static char *lifetime_target = NULL;
+
 node_st *PRTast(node_st *ast)
 {
     printf("AST:\n");
@@ -61,6 +63,7 @@ node_st *PRTipass(node_st *node)
 
 node_st *PRTiactions(node_st *node)
 {
+    printf("Action: %s: %d\n", ID_ORIG(IACTIONS_REFERENCE(node)), IACTIONS_ACTION_ID(node));
     TRAVchildren(node);
     return node;
 }
@@ -139,7 +142,6 @@ node_st *PRTste(node_st *node)
 node_st *PRTilifetime(node_st *node)
 {
     TRAVchildren(node);
-    printf("Lifetime: %d\n", ILIFETIME_TYPE(node));
     return node;
 }
 

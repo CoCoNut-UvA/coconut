@@ -116,9 +116,9 @@ struct ccn_node *CHKchild(struct ccn_node *arg_node) {
 }
 
 struct ccn_node *CHKlifetime_range(struct ccn_node *arg_node) {
-    if (LIFETIME_RANGE_BEGIN(arg_node)) {
-        if (NODE_TYPE(LIFETIME_RANGE_BEGIN(arg_node)) != NT_ID) {
-            CTIerror("Inconsistent node found in AST. Child begin of node lifetime_range has disallowed type %d ", NODE_TYPE(LIFETIME_RANGE_BEGIN(arg_node)));
+    if (LIFETIME_RANGE_TARGET(arg_node)) {
+        if (NODE_TYPE(LIFETIME_RANGE_TARGET(arg_node)) != NT_ID) {
+            CTIerror("Inconsistent node found in AST. Child target of node lifetime_range has disallowed type %d ", NODE_TYPE(LIFETIME_RANGE_TARGET(arg_node)));
         }
 
     }

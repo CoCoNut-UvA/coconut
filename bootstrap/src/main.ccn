@@ -6,6 +6,7 @@ start phase startPhase {
     actions {
         pass scanAndParse;
         semantic;
+        unpack_lifetimes;
         dynamic_backend;
         phase_driver;
         gen_dot;
@@ -33,6 +34,11 @@ phase unpack_lifetimes {
         traversal assign_id_to_action {
             prefix = AITA
             nodes = {ast, iactions }
+        };
+
+        traversal map_id_to_lifetime {
+            prefix = MITL
+            nodes = {ast, inode, iactions, ilifetime, lifetime_range, id}
         };
     }
 };
@@ -292,6 +298,7 @@ traversal reachability {
     }
 };
 
+
 traversal print {
     info = "Print the ast"
     prefix = PRT
@@ -326,6 +333,9 @@ node iactions {
     attributes {
         id reference;
         int action_id;
+    }
+    lifetime {
+        disallowed (semantic.reachability -> print);
     }
 };
 
@@ -420,8 +430,7 @@ node ilifetime {
 
 node lifetime_range {
     children {
-        id begin;
-        id end;
+        id target;
     }
 };
 
@@ -490,10 +499,6 @@ node setoperation {
     }
     attributes {
         setoperation_type type { constructor };
-    }
-
-    lifetime {
-        disallowed;
     }
 };
 

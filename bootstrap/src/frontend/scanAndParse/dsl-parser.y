@@ -128,7 +128,7 @@ struct ctinfo yy_ctinfo;
 %type<node> phase entry pass node traversal cycleheader phaseheader id action actionsbody traversalnodes prefix
     actions childrenbody attributebody attributes attribute children child setoperation setliterals func
     setexpr enum idlist enumvalues nodeset travdata travdatalist travdataitem nodelifetimes
-    lifetimes lifetime lifetime_range
+    lifetimes lifetime lifetime_range range_spec
 %type<attr_type> attribute_primitive_type
 
 %left '&' '-' '|'
@@ -509,6 +509,14 @@ lifetime:
         $$ = ASTilifetime();
         ILIFETIME_TYPE($$) = LT_disallowed;
     }
+    | T_DISALLOWED '(' lifetime_range[begin] T_ARROW lifetime_range[end] ')'
+    {
+        $$ = ASTilifetime();
+        ILIFETIME_TYPE($$) = LT_disallowed;
+        ILIFETIME_BEGIN($$) = $begin;
+        ILIFETIME_END($$) = $end;
+    }
+
     | T_MANDATORY
     {
         $$ = ASTilifetime();
@@ -516,7 +524,29 @@ lifetime:
     }
     ;
 
+lifetime_range:
+    %empty
+    {
+        $$ = NULL;
+    }
+    | range_spec
+    {
+        $$ = ASTlifetime_range();
+        LIFETIME_RANGE_TARGET($$) = $1;
+    }
+    ;
 
+range_spec: id '.' range_spec
+    {
+        ID_NEXT($1) = $3;
+        $$ = $1;
+    }
+    | id
+    {
+        $$ = $1;
+        ID_NEXT($1) = NULL;
+    }
+    ;
 
 nodeset: T_NODESET id[name] '{' info[information] T_NODES '=' setexpr[expr] '}'
         {
