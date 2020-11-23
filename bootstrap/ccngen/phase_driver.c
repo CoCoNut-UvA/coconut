@@ -23,6 +23,7 @@ static struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, st
 
 struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype root_type, struct ccn_node *node,
                           bool is_root) {
+    phase_driver.action_id++;
     switch (action->type) {
     case CCN_ACTION_PASS:
         node = PASSstart(node, action->pass.pass_type);
@@ -34,8 +35,11 @@ struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype 
         node = StartPhase(&(action->phase), action->name, node);
         break;
     }
+
+    // TODO: wrap in an ifdef to check for CHECK_ENABLED.
+    node = TRAVstart(node, TRAV_check);
+    CTIabortOnError();
         
-    phase_driver.action_id++;
     return node;
 }
 
@@ -65,5 +69,10 @@ struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, struct cc
 struct ccn_node *CCNstart(struct ccn_node *node)
 {
     return CCNdispatchAction(CCNgetActionFromID(CCN_ROOT_ACTION), CCN_ROOT_TYPE, node, false);
+}
+
+size_t CCNgetCurrentActionId()
+{
+    return phase_driver.action_id;
 }
 

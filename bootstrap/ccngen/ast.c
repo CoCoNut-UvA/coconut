@@ -122,6 +122,7 @@ node_st *ASTlifetime_range() {
     node->data.N_lifetime_range = MEMmalloc(sizeof(struct NODE_DATA_LIFETIME_RANGE));
     NODE_TYPE(node) = NT_LIFETIME_RANGE;
     LIFETIME_RANGE_TARGET(node) = NULL;
+    LIFETIME_RANGE_ACTION_ID(node) = 0;
     NODE_NUMCHILDREN(node) = 1;
     NODE_CHILDREN(node) = node->data.N_lifetime_range->lifetime_range_children.lifetime_range_children_at;
     return node;}

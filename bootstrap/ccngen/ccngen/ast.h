@@ -139,6 +139,7 @@ struct NODE_DATA_LIFETIME_RANGE {
         node_st *lifetime_range_children_at[1];
     } lifetime_range_children;
 
+    int action_id;
 };
 
 struct NODE_DATA_ILIFETIME {
@@ -310,6 +311,7 @@ struct NODE_DATA_AST {
 #define CHILD_IN_CONSTRUCTOR(n) ((n)->data.N_child->in_constructor)
 #define CHILD_IS_MANDATORY(n) ((n)->data.N_child->is_mandatory)
 #define LIFETIME_RANGE_TARGET(n) ((n)->data.N_lifetime_range->lifetime_range_children.lifetime_range_children_st.target)
+#define LIFETIME_RANGE_ACTION_ID(n) ((n)->data.N_lifetime_range->action_id)
 #define ILIFETIME_BEGIN(n) ((n)->data.N_ilifetime->ilifetime_children.ilifetime_children_st.begin)
 #define ILIFETIME_END(n) ((n)->data.N_ilifetime->ilifetime_children.ilifetime_children_st.end)
 #define ILIFETIME_NEXT(n) ((n)->data.N_ilifetime->ilifetime_children.ilifetime_children_st.next)

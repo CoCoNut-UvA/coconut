@@ -87,6 +87,7 @@ struct ccn_node *CPYchild(struct ccn_node *arg_node) {
 struct ccn_node *CPYlifetime_range(struct ccn_node *arg_node) {
     struct ccn_node *new_node = ASTlifetime_range();
     LIFETIME_RANGE_TARGET(new_node) = TRAVopt(LIFETIME_RANGE_TARGET(arg_node));
+    LIFETIME_RANGE_ACTION_ID(new_node) = LIFETIME_RANGE_ACTION_ID(arg_node);
     return new_node;
 }
 

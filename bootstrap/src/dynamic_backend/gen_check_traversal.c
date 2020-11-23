@@ -22,6 +22,7 @@ node_st *DGCHTast(node_st *node)
     globals.fp = fp;
     OUT("#include <stdbool.h>\n");
     OUT("#include \"ccn/dynamic_core.h\"\n");
+    OUT("#include \"ccn/phase_driver.h\"\n");
     OUT("#include \"ccngen/ast.h\"\n");
     OUT("#include \"palm/ctinfo.h\"\n");
     ast = node;
@@ -63,6 +64,7 @@ node_st *DGCHTinode(node_st *node)
 {
     curr_node = node;
     OUT_START_FUNC("struct ccn_node *CHK%s(struct ccn_node *arg_node)", ID_LWR(INODE_NAME(node)));
+    OUT_FIELD("size_t action_id = CCNgetCurrentActionId()");
     TRAVopt(INODE_ICHILDREN(node));
     TRAVopt(INODE_LIFETIMES(node));
     if (INODE_ICHILDREN(node)) {
@@ -158,6 +160,20 @@ node_st *DGCHTilifetime(node_st *node)
         if (ILIFETIME_TYPE(node) == LT_disallowed) {
             OUT_FIELD("CTIerror(\"Found disallowed node(%s) in tree.\\n\");", ID_ORIG(INODE_NAME(curr_node)));
         }
+    } else {
+        OUT("if (");
+        if (ILIFETIME_BEGIN(node)) {
+            OUT_NO_INDENT("action_id >= %d && ", (LIFETIME_RANGE_ACTION_ID(ILIFETIME_BEGIN(node))));
+        }
+        if (ILIFETIME_END(node)) {
+            OUT_NO_INDENT("action_id <= %d && ", (LIFETIME_RANGE_ACTION_ID(ILIFETIME_END(node))));
+        }
+        OUT_NO_INDENT("true) {\n");
+        indent++;
+        OUT_FIELD("CTIerror(\"Found disallowed node(%s) in tree.\\n\")", ID_ORIG(INODE_NAME(curr_node)));
+        OUT_END_IF();
+
+
     }
     return node;
 }

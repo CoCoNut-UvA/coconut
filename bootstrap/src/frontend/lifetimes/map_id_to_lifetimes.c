@@ -81,7 +81,7 @@ node_st *MITLlifetime_range(node_st *node)
     if (!last_action) {
         CTIerror("Lifetime does not target a valid action.");
     } else {
-        printf("ID = %d\n", IACTIONS_ACTION_ID(last_action));
+        LIFETIME_RANGE_ACTION_ID(node) = IACTIONS_ACTION_ID(last_action);
     }
     curr_target = NULL;
     return node;
@@ -103,7 +103,6 @@ node_st *MITLid(node_st *node)
             TRAVopt(IPHASE_IACTIONS(action));
         }
     }
-    printf("ID: %p\n", ID_NEXT(curr_target));
     TRAVopt(ID_NEXT(curr_target));
     return node;
 }

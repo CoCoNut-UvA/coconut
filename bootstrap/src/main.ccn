@@ -334,9 +334,6 @@ node iactions {
         id reference;
         int action_id;
     }
-    lifetime {
-        disallowed (semantic.reachability -> print);
-    }
 };
 
 node iphase {
@@ -432,6 +429,10 @@ node lifetime_range {
     children {
         id target;
     }
+
+    attributes {
+        int action_id;
+    }
 };
 
 enum child_type {
@@ -483,6 +484,10 @@ node setreference {
     children {
         id reference;
     }
+
+    lifetime {
+        disallowed (reachability -> );
+    }
 };
 
 node setliteral {
@@ -499,6 +504,9 @@ node setoperation {
     }
     attributes {
         setoperation_type type { constructor };
+    }
+    lifetime {
+        disallowed (reachability ->);
     }
 };
 
