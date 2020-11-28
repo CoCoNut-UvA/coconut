@@ -77,6 +77,7 @@ struct ccn_node *CPYchild(struct ccn_node *arg_node) {
     struct ccn_node *new_node = ASTchild(    NULL);
     CHILD_NAME(new_node) = TRAVopt(CHILD_NAME(arg_node));
     CHILD_TYPE_REFERENCE(new_node) = TRAVopt(CHILD_TYPE_REFERENCE(arg_node));
+    CHILD_LIFETIMES(new_node) = TRAVopt(CHILD_LIFETIMES(arg_node));
     CHILD_NEXT(new_node) = TRAVopt(CHILD_NEXT(arg_node));
     CHILD_TYPE(new_node) = CHILD_TYPE(arg_node);
     CHILD_IN_CONSTRUCTOR(new_node) = CHILD_IN_CONSTRUCTOR(arg_node);

@@ -109,11 +109,12 @@ node_st *ASTchild(node_st *name) {
     NODE_TYPE(node) = NT_CHILD;
     CHILD_NAME(node) = name;
     CHILD_TYPE_REFERENCE(node) = NULL;
+    CHILD_LIFETIMES(node) = NULL;
     CHILD_NEXT(node) = NULL;
     CHILD_TYPE(node) = 0;
     CHILD_IN_CONSTRUCTOR(node) = 0;
     CHILD_IS_MANDATORY(node) = 0;
-    NODE_NUMCHILDREN(node) = 3;
+    NODE_NUMCHILDREN(node) = 4;
     NODE_CHILDREN(node) = node->data.N_child->child_children.child_children_at;
     return node;}
 

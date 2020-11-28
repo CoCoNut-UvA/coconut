@@ -32,6 +32,7 @@ node_st *MITLast(node_st *node)
 node_st *MITLinode(node_st *node)
 {
     TRAVopt(INODE_LIFETIMES(node));
+    TRAVopt(INODE_ICHILDREN(node));
     TRAVopt(INODE_NEXT(node));
     return node;
 }

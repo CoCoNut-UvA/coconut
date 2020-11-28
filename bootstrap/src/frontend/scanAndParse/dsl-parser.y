@@ -128,7 +128,7 @@ struct ctinfo yy_ctinfo;
 %type<node> phase entry pass node traversal cycleheader phaseheader id action actionsbody traversalnodes prefix
     actions childrenbody attributebody attributes attribute children child setoperation setliterals func
     setexpr enum idlist enumvalues nodeset travdata travdatalist travdataitem nodelifetimes
-    lifetimes lifetime lifetime_range range_spec
+    lifetimes lifetime lifetime_range range_spec childlifetimes
 %type<attr_type> attribute_primitive_type
 
 %left '&' '-' '|'
@@ -474,11 +474,22 @@ child: id[type] id[name]
         $$ = ASTchild($name);
         CHILD_TYPE_REFERENCE($$) = $type;
     }
-    | id[type] id[name] '{' is_constructor[constructor] '}'
+    | id[type] id[name] '{' is_constructor[constructor] childlifetimes[lifetimes] '}'
     {
         $$ = ASTchild($name);
         CHILD_TYPE_REFERENCE($$) = $type;
         CHILD_IN_CONSTRUCTOR($$) = $constructor;
+        CHILD_LIFETIMES($$) = $lifetimes;
+    }
+    ;
+
+childlifetimes: %empty
+    {
+        $$ = NULL;
+    }
+    | lifetimes
+    {
+        $$ = $1;
     }
     ;
 

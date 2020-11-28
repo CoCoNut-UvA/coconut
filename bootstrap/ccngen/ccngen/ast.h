@@ -119,10 +119,11 @@ struct NODE_DATA_CHILD {
         struct NODE_CHILDREN_CHILD_STRUCT {
             node_st *name;
             node_st *type_reference;
+            node_st *lifetimes;
             node_st *next;
         } child_children_st;
 
-        node_st *child_children_at[3];
+        node_st *child_children_at[4];
     } child_children;
 
     enum child_type type;
@@ -306,6 +307,7 @@ struct NODE_DATA_AST {
 #define STE_VALUE(n) ((n)->data.N_ste->value)
 #define CHILD_NAME(n) ((n)->data.N_child->child_children.child_children_st.name)
 #define CHILD_TYPE_REFERENCE(n) ((n)->data.N_child->child_children.child_children_st.type_reference)
+#define CHILD_LIFETIMES(n) ((n)->data.N_child->child_children.child_children_st.lifetimes)
 #define CHILD_NEXT(n) ((n)->data.N_child->child_children.child_children_st.next)
 #define CHILD_TYPE(n) ((n)->data.N_child->type)
 #define CHILD_IN_CONSTRUCTOR(n) ((n)->data.N_child->in_constructor)

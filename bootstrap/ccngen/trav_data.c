@@ -2,6 +2,16 @@
 #include "ccngen/trav_data.h"
 #include "ccn/dynamic_core.h"
 #include "palm/memory.h"
+void TRAVdataInitdynamic_genCheckTraversal(ccn_trav_st *trav) {
+    trav->trav_data.dynamic_genchecktraversal = MEMmalloc(sizeof(struct trav_data_dynamic_genchecktraversal));
+    struct trav_data_dynamic_genchecktraversal *data = trav->trav_data.dynamic_genchecktraversal;
+    data->lifetime_target = 0;
+}
+
+void TRAVdataFreedynamic_genCheckTraversal(ccn_trav_st *trav) {
+    MEMfree(trav->trav_data.dynamic_genchecktraversal);
+}
+
 void TRAVdataInitdynamic_genTravDataTables(ccn_trav_st *trav) {
     trav->trav_data.dynamic_gentravdatatables = MEMmalloc(sizeof(struct trav_data_dynamic_gentravdatatables));
     struct trav_data_dynamic_gentravdatatables *data = trav->trav_data.dynamic_gentravdatatables;

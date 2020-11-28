@@ -43,6 +43,10 @@ struct ccn_node *CHKattribute(struct ccn_node *arg_node) {
 
     }
 
+    if (ATTRIBUTE_NAME(arg_node) == NULL) {
+        CTIerror("Child(name) in node(attribute) is missing, but specified as mandatory.\n");;
+    }
+
     TRAVchildren(arg_node);
     return arg_node;
 }
@@ -54,6 +58,10 @@ struct ccn_node *CHKitravdata(struct ccn_node *arg_node) {
             CTIerror("Inconsistent node found in AST. Child name of node itravdata has disallowed type %d ", NODE_TYPE(ITRAVDATA_NAME(arg_node)));
         }
 
+    }
+
+    if (ITRAVDATA_NAME(arg_node) == NULL) {
+        CTIerror("Child(name) in node(itravdata) is missing, but specified as mandatory.\n");;
     }
 
     TRAVchildren(arg_node);
@@ -129,6 +137,10 @@ struct ccn_node *CHKchild(struct ccn_node *arg_node) {
 
     }
 
+    if (CHILD_NAME(arg_node) == NULL) {
+        CTIerror("Child(name) in node(child) is missing, but specified as mandatory.\n");;
+    }
+
     TRAVchildren(arg_node);
     return arg_node;
 }
@@ -181,6 +193,10 @@ struct ccn_node *CHKinode(struct ccn_node *arg_node) {
 
     }
 
+    if (INODE_NAME(arg_node) == NULL) {
+        CTIerror("Child(name) in node(inode) is missing, but specified as mandatory.\n");;
+    }
+
     TRAVchildren(arg_node);
     return arg_node;
 }
@@ -218,6 +234,10 @@ struct ccn_node *CHKiphase(struct ccn_node *arg_node) {
             CTIerror("Inconsistent node found in AST. Child iactions of node iphase has disallowed type %d ", NODE_TYPE(IPHASE_IACTIONS(arg_node)));
         }
 
+    }
+
+    if (IPHASE_IACTIONS(arg_node) == NULL) {
+        CTIerror("Child(iactions) in node(iphase) is missing, but specified as mandatory.\n");;
     }
 
     TRAVchildren(arg_node);

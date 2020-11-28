@@ -141,11 +141,23 @@ node_st *PRTste(node_st *node)
 
 node_st *PRTilifetime(node_st *node)
 {
-    TRAVchildren(node);
+    if (ILIFETIME_TYPE(node) == LT_mandatory) {
+        printf("mandatory");
+    } else {
+        printf("disallowed");
+    }
+    printf("(");
+    TRAVopt(ILIFETIME_BEGIN(node));
+    printf(" -> ");
+    TRAVopt(ILIFETIME_END(node));
+    printf(")\n");
+
+    TRAVopt(ILIFETIME_NEXT(node));
     return node;
 }
 
 node_st *PRTlifetime_range(node_st *node)
 {
+    printf("%d", LIFETIME_RANGE_ACTION_ID(node));
     return node;
 }

@@ -175,6 +175,10 @@ traversal dynamic_genTravDataStructs {
 
 traversal dynamic_genCheckTraversal {
     prefix = DGCHT
+
+    travdata = {
+        int lifetime_target
+    }
 };
 
 
@@ -338,7 +342,7 @@ node iactions {
 
 node iphase {
     children {
-        iactions iactions;
+        iactions iactions {mandatory; };
         iphase next;
     }
     attributes {
@@ -380,7 +384,7 @@ node ipass {
 
 node inode {
     children {
-        id name { constructor };
+        id name { constructor mandatory; };
         inode next;
         child ichildren;
         attribute iattributes;
@@ -444,8 +448,9 @@ enum child_type {
 
 node child {
     children {
-        id name { constructor };
+        id name { constructor mandatory; };
         id type_reference;
+        ilifetime lifetimes;
         child next;
     }
 
@@ -514,7 +519,7 @@ nodeset setexpr = {setoperation, setreference, setliteral};
 
 node itravdata {
     children {
-        id name { constructor };
+        id name { constructor mandatory; }; 
         id type_reference;
         itravdata next;
     }
@@ -527,7 +532,7 @@ node itravdata {
 
 node attribute {
     children {
-        id name;
+        id name {mandatory; };
         id type_reference;
         attribute next;
     }
