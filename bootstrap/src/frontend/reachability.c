@@ -116,7 +116,6 @@ node_st *RCBsetliteral(node_st *node)
     node_st *inode = lookupST(ste, SETLITERAL_REFERENCE(node));
     assert(NODE_TYPE(inode) == NT_INODE);
     if (is_traversal_nodes) {
-        printf("Handled: %s, %d\n", ID_ORIG(SETLITERAL_REFERENCE(node)), trav_index);
         reachability_matrix[trav_index][INODE_INDEX(inode)] = RCB_NODE_HANDLED_BY_USER;
     } else {
         if (!child_visited[INODE_INDEX(inode)]) {
@@ -130,7 +129,8 @@ node_st *RCBsetliteral(node_st *node)
         }
     }
 
-    TRAVopt(SETLITERAL_NEXT(node));
+    TRAVopt(SETLITERAL_LEFT(node));
+    TRAVopt(SETLITERAL_RIGHT(node));
     return node;
 }
 

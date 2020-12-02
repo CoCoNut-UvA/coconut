@@ -73,13 +73,14 @@ node_st *ASTsetoperation(node_st *left, node_st *right, enum setoperation_type t
     NODE_CHILDREN(node) = node->data.N_setoperation->setoperation_children.setoperation_children_at;
     return node;}
 
-node_st *ASTsetliteral() {
+node_st *ASTsetliteral(node_st *reference) {
     node_st *node = NewNode();
     node->data.N_setliteral = MEMmalloc(sizeof(struct NODE_DATA_SETLITERAL));
     NODE_TYPE(node) = NT_SETLITERAL;
-    SETLITERAL_REFERENCE(node) = NULL;
-    SETLITERAL_NEXT(node) = NULL;
-    NODE_NUMCHILDREN(node) = 2;
+    SETLITERAL_REFERENCE(node) = reference;
+    SETLITERAL_LEFT(node) = NULL;
+    SETLITERAL_RIGHT(node) = NULL;
+    NODE_NUMCHILDREN(node) = 3;
     NODE_CHILDREN(node) = node->data.N_setliteral->setliteral_children.setliteral_children_at;
     return node;}
 

@@ -40,16 +40,9 @@ ast -> inodeset
 ast -> ienum
 ast -> ste
 setexpr [shape=box];
-setexpr -> setliteral
-setexpr -> setreference
 setexpr -> setoperation
 link [shape=box];
-link -> inode
-link -> ipass
-link -> itraversal
 link -> iphase
 action [shape=box];
-action -> ipass
-action -> itraversal
 action -> iphase
 }

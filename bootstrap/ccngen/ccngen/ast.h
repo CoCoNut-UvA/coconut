@@ -82,10 +82,11 @@ struct NODE_DATA_SETLITERAL {
     union NODE_CHILDREN_SETLITERAL {
         struct NODE_CHILDREN_SETLITERAL_STRUCT {
             node_st *reference;
-            node_st *next;
+            node_st *left;
+            node_st *right;
         } setliteral_children_st;
 
-        node_st *setliteral_children_at[2];
+        node_st *setliteral_children_at[3];
     } setliteral_children;
 
 };
@@ -300,7 +301,8 @@ struct NODE_DATA_AST {
 #define SETOPERATION_RIGHT(n) ((n)->data.N_setoperation->setoperation_children.setoperation_children_st.right)
 #define SETOPERATION_TYPE(n) ((n)->data.N_setoperation->type)
 #define SETLITERAL_REFERENCE(n) ((n)->data.N_setliteral->setliteral_children.setliteral_children_st.reference)
-#define SETLITERAL_NEXT(n) ((n)->data.N_setliteral->setliteral_children.setliteral_children_st.next)
+#define SETLITERAL_LEFT(n) ((n)->data.N_setliteral->setliteral_children.setliteral_children_st.left)
+#define SETLITERAL_RIGHT(n) ((n)->data.N_setliteral->setliteral_children.setliteral_children_st.right)
 #define SETREFERENCE_REFERENCE(n) ((n)->data.N_setreference->setreference_children.setreference_children_st.reference)
 #define STE_NEXT(n) ((n)->data.N_ste->ste_children.ste_children_st.next)
 #define STE_KEY(n) ((n)->data.N_ste->key)
@@ -370,7 +372,7 @@ node_st *ASTienum(node_st *vals, node_st *name, node_st *iprefix, char * iinfo);
 node_st *ASTattribute();
 node_st *ASTitravdata(node_st *name);
 node_st *ASTsetoperation(node_st *left, node_st *right, enum setoperation_type type);
-node_st *ASTsetliteral();
+node_st *ASTsetliteral(node_st *reference);
 node_st *ASTsetreference();
 node_st *ASTste();
 node_st *ASTchild(node_st *name);

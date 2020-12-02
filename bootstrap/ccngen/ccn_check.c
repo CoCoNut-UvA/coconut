@@ -5,7 +5,7 @@
 #include "palm/ctinfo.h"
 static bool TypeIssetexpr(node_st *arg_node) {
     enum ccn_nodetype node_type = NODE_TYPE(arg_node);
-    return (false || node_type == NT_SETLITERAL || node_type == NT_SETREFERENCE || node_type == NT_SETOPERATION    );
+    return (false || node_type == NT_SETOPERATION || node_type == NT_SETLITERAL || node_type == NT_SETREFERENCE    );
 }
 
 struct ccn_node *CHKid(struct ccn_node *arg_node) {

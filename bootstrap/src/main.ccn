@@ -302,6 +302,49 @@ traversal reachability {
     }
 };
 
+traversal setliteralInsert {
+    prefix = SLI
+    nodes = {
+        setliteral
+    }
+
+    travdata = {
+	setliteral value,
+        bool inserted
+    }
+};
+
+traversal setliteralUnion {
+    prefix = SLU
+    nodes = {
+        setliteral
+    }
+
+    travdata = {
+        setliteral dst
+    }
+};
+
+traversal setliteralIntersect {
+    prefix = SLIS
+    nodes = {
+        setliteral
+    }
+
+    travdata = {
+        setliteral src,
+        setliteral new
+    }
+};
+
+traversal setliteralContains {
+    prefix = SLC
+    nodes = { setliteral }
+    travdata = {
+        id lookup,
+        bool contains
+    }
+};
 
 traversal print {
     info = "Print the ast"
@@ -497,8 +540,9 @@ node setreference {
 
 node setliteral {
     children {
-        id reference;
-        setliteral next;
+        id reference {constructor};
+        setliteral left;
+        setliteral right;
     }
 };
 

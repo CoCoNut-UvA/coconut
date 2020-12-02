@@ -90,7 +90,7 @@ node_st *DGCHTinodeset(node_st *node)
     OUT_START_FUNC("static bool TypeIs%s(node_st *arg_node)", ID_LWR(INODESET_NAME(node)));
     OUT_FIELD("enum ccn_nodetype node_type = NODE_TYPE(arg_node)");
     OUT("return (false");
-    TRAVdo(INODESET_EXPR(node));
+    TRAVopt(INODESET_EXPR(node));
     OUT(");\n");
     OUT_END_FUNC();
     return node;
@@ -142,11 +142,14 @@ node_st *DGCHTsetoperation(node_st *node)
 
 node_st *DGCHTsetliteral(node_st *node)
 {
-    // In case of an empty setliteral, we have 1 entry with no reference.
+    if (!node) {
+        return node;
+    }
     if (node && SETLITERAL_REFERENCE(node)) {
         OUT_NO_INDENT(" || node_type == NT_%s", ID_UPR(SETLITERAL_REFERENCE(node)));
     }
-    TRAVopt(SETLITERAL_NEXT(node));
+    TRAVopt(SETLITERAL_LEFT(node));
+    TRAVopt(SETLITERAL_RIGHT(node));
     return node;
 }
 

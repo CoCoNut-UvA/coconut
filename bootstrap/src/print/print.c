@@ -108,7 +108,7 @@ node_st *PRTsetliteral(node_st *node)
 node_st *PRTinodeset(node_st *node)
 {
     printf("NODESET {\n");
-    TRAVdo(INODESET_EXPR(node));
+    TRAVopt(INODESET_EXPR(node));
     printf("} END\n");
     TRAVopt(INODESET_NEXT(node));
     return node;

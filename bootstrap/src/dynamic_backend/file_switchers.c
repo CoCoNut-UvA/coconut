@@ -61,6 +61,7 @@ node_st *dynamic_start_trav_data(node_st *root)
     int indent = 0;
     OUT("#include \"ccn/ccn_types.h\"\n");
     OUT("#include \"unsafe_types.h\"\n");
+    OUT("#include \"ccngen/ast.h\"\n");
 
     return root;
 }

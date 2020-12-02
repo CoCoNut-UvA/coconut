@@ -53,9 +53,10 @@ struct ccn_node *CPYsetoperation(struct ccn_node *arg_node) {
 }
 
 struct ccn_node *CPYsetliteral(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTsetliteral();
+    struct ccn_node *new_node = ASTsetliteral(    NULL);
     SETLITERAL_REFERENCE(new_node) = TRAVopt(SETLITERAL_REFERENCE(arg_node));
-    SETLITERAL_NEXT(new_node) = TRAVopt(SETLITERAL_NEXT(arg_node));
+    SETLITERAL_LEFT(new_node) = TRAVopt(SETLITERAL_LEFT(arg_node));
+    SETLITERAL_RIGHT(new_node) = TRAVopt(SETLITERAL_RIGHT(arg_node));
     return new_node;
 }
 

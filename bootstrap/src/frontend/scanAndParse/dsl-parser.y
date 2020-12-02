@@ -12,10 +12,11 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "palm/memory.h"
-#include "palm/set.h"
 
 #include "ccngen/ast.h"
 #include "ccngen/enum.h"
+
+#include "sets/set.h"
 
 extern bool yy_lex_keywords;
 static node_st *ast;
@@ -345,14 +346,12 @@ setoperation: setexpr '|' setexpr
 
 setliterals: setliterals ',' id
            {
-                $$ = ASTsetliteral();
-                SETLITERAL_REFERENCE($$) = $3;
-                SETLITERAL_NEXT($$) = $1;
+                SETIDinsert($1, $3);
+                $$ = $1;
            }
            | id
            {
-                $$ = ASTsetliteral();
-                SETLITERAL_REFERENCE($$) = $1;
+                $$ = SETIDinsert(NULL, $1);
            }
 
 
