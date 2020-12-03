@@ -47,6 +47,24 @@ bool SETIDcontains(node_st *literal, node_st *id)
     return found;
 }
 
+node_st *SETIDdifference(node_st *left, node_st *right)
+{
+    if (left == NULL) {
+        return NULL;
+    }
+
+    node_st *new = NULL;
+    TRAVpush(TRAV_SETLITERALDIFFERENCE);
+    {
+        struct trav_data_setliteraldifference *data = SETLITERALDIFFERENCE_DATA;
+        data->right = right;
+        TRAVdo(left);
+        new = data->new;
+    } TRAVpop();
+
+    return new;
+}
+
 node_st *SETIDintersect(node_st *dst, node_st *src)
 {
     if (dst == NULL) {

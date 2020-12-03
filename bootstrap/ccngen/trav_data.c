@@ -13,6 +13,17 @@ void TRAVdataFreesetliteralContains(ccn_trav_st *trav) {
     MEMfree(trav->trav_data.setliteralcontains);
 }
 
+void TRAVdataInitsetliteralDifference(ccn_trav_st *trav) {
+    trav->trav_data.setliteraldifference = MEMmalloc(sizeof(struct trav_data_setliteraldifference));
+    struct trav_data_setliteraldifference *data = trav->trav_data.setliteraldifference;
+    data->new = NULL;
+    data->right = NULL;
+}
+
+void TRAVdataFreesetliteralDifference(ccn_trav_st *trav) {
+    MEMfree(trav->trav_data.setliteraldifference);
+}
+
 void TRAVdataInitsetliteralIntersect(ccn_trav_st *trav) {
     trav->trav_data.setliteralintersect = MEMmalloc(sizeof(struct trav_data_setliteralintersect));
     struct trav_data_setliteralintersect *data = trav->trav_data.setliteralintersect;

@@ -19,6 +19,8 @@ struct ccn_node *PRTiactions(struct ccn_node *node);
 struct ccn_node *PRTast(struct ccn_node *node);
 struct ccn_node *SLCsetliteral(struct ccn_node *node);
 struct ccn_node *SLCsetliteral(struct ccn_node *node);
+struct ccn_node *SLDsetliteral(struct ccn_node *node);
+struct ccn_node *SLDsetliteral(struct ccn_node *node);
 struct ccn_node *SLISsetliteral(struct ccn_node *node);
 struct ccn_node *SLISsetliteral(struct ccn_node *node);
 struct ccn_node *SLUsetliteral(struct ccn_node *node);

@@ -20,7 +20,12 @@ node_st *USEast(node_st *node)
 node_st *USEsetoperation(node_st *node)
 {
     TRAVchildren(node);
-    assert(NODE_TYPE(SETOPERATION_LEFT(node)) == NT_SETLITERAL && NODE_TYPE(SETOPERATION_RIGHT(node)) == NT_SETLITERAL);
+    if (SETOPERATION_LEFT(node)) {
+        assert(NODE_TYPE(SETOPERATION_LEFT(node)) == NT_SETLITERAL);
+    }
+    if (SETOPERATION_RIGHT(node)) {
+        assert(NODE_TYPE(SETOPERATION_RIGHT(node)) == NT_SETLITERAL);
+    }
     node_st *new = NULL;
     switch(SETOPERATION_TYPE(node)) {
     case SO_iunion:
@@ -30,7 +35,8 @@ node_st *USEsetoperation(node_st *node)
         new = SETIDintersect(SETOPERATION_LEFT(node), SETOPERATION_RIGHT(node));
         break;
     case SO_difference:
-        //return setdifference(node);
+        new = SETIDdifference(SETOPERATION_LEFT(node), SETOPERATION_RIGHT(node));
+        break;
     default:
         assert(false);
     }
@@ -40,13 +46,20 @@ node_st *USEsetoperation(node_st *node)
 
 node_st *USEsetreference(node_st *node)
 {
+    assert(node);
     node_st *nodeset = lookupST(ste, SETREFERENCE_REFERENCE(node));
     assert(nodeset && NODE_TYPE(nodeset) == NT_INODESET);
-    if (NODE_TYPE(INODESET_EXPR(nodeset)) != NT_SETLITERAL) {
+    if (INODESET_EXPR(nodeset) && NODE_TYPE(INODESET_EXPR(nodeset)) != NT_SETLITERAL) {
         TRAVchildren(nodeset);
     }
-    if (NODE_TYPE(INODESET_EXPR(nodeset)) != NT_SETLITERAL) {
-        assert(false);
+    if (INODESET_EXPR(nodeset)) {
+        assert(NODE_TYPE(INODESET_EXPR(nodeset)) == NT_SETLITERAL);
+        if (NODE_TYPE(INODESET_EXPR(nodeset)) != NT_SETLITERAL) {
+            assert(false);
+        }
+    } else {
+        TRAVstart(node, TRAV_free);
+        return NULL;
     }
     node_st *curr = INODESET_EXPR(nodeset);
     node_st *new = TRAVstart(curr, TRAV_cpy);
@@ -56,7 +69,6 @@ node_st *USEsetreference(node_st *node)
 
 node_st *USEsetliteral(node_st *node)
 {
-    TRAVchildren(node);
     return node;
 }
 

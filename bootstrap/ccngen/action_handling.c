@@ -36,6 +36,7 @@ static struct ccn_action ccn_action_array[] = {
 {CCN_ACTION_PHASE, CCNAC_ID_STARTPHASE, "startPhase", .phase = {NULL, NT_AST, startphase_ids_table, false, CCNAC_ID_STARTPHASE,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_PRINT, "print", .traversal = {TRAV_PRINT,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_SETLITERALCONTAINS, "setliteralContains", .traversal = {TRAV_SETLITERALCONTAINS,},},
+{CCN_ACTION_TRAVERSAL, CCNAC_ID_SETLITERALDIFFERENCE, "setliteralDifference", .traversal = {TRAV_SETLITERALDIFFERENCE,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_SETLITERALINTERSECT, "setliteralIntersect", .traversal = {TRAV_SETLITERALINTERSECT,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_SETLITERALUNION, "setliteralUnion", .traversal = {TRAV_SETLITERALUNION,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_SETLITERALINSERT, "setliteralInsert", .traversal = {TRAV_SETLITERALINSERT,},},

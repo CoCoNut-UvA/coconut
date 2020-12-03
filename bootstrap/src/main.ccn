@@ -337,6 +337,18 @@ traversal setliteralIntersect {
     }
 };
 
+traversal setliteralDifference {
+    prefix = SLD
+    nodes = {
+        setliteral
+    }
+
+    travdata = {
+        setliteral right,
+        setliteral new
+    }
+};
+
 traversal setliteralContains {
     prefix = SLC
     nodes = { setliteral }

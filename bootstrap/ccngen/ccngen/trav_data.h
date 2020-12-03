@@ -7,6 +7,11 @@ bool contains;
 node_st *lookup;
 };
 
+struct trav_data_setliteraldifference {
+node_st *new;
+node_st *right;
+};
+
 struct trav_data_setliteralintersect {
 node_st *new;
 node_st *src;
@@ -33,6 +38,7 @@ fileptr file;
 
 union TRAV_DATA {
     struct trav_data_setliteralcontains *setliteralcontains;
+    struct trav_data_setliteraldifference *setliteraldifference;
     struct trav_data_setliteralintersect *setliteralintersect;
     struct trav_data_setliteralunion *setliteralunion;
     struct trav_data_setliteralinsert *setliteralinsert;
@@ -41,6 +47,7 @@ union TRAV_DATA {
 };
 
 #define SETLITERALCONTAINS_DATA (TRAVgetCurrent()->trav_data.setliteralcontains)
+#define SETLITERALDIFFERENCE_DATA (TRAVgetCurrent()->trav_data.setliteraldifference)
 #define SETLITERALINTERSECT_DATA (TRAVgetCurrent()->trav_data.setliteralintersect)
 #define SETLITERALUNION_DATA (TRAVgetCurrent()->trav_data.setliteralunion)
 #define SETLITERALINSERT_DATA (TRAVgetCurrent()->trav_data.setliteralinsert)
@@ -48,6 +55,8 @@ union TRAV_DATA {
 #define DYNAMIC_GENTRAVDATATABLES_DATA (TRAVgetCurrent()->trav_data.dynamic_gentravdatatables)
 void TRAVdataInitsetliteralContains(struct ccn_trav *trav);
 void TRAVdataFreesetliteralContains(struct ccn_trav *trav);
+void TRAVdataInitsetliteralDifference(struct ccn_trav *trav);
+void TRAVdataFreesetliteralDifference(struct ccn_trav *trav);
 void TRAVdataInitsetliteralIntersect(struct ccn_trav *trav);
 void TRAVdataFreesetliteralIntersect(struct ccn_trav *trav);
 void TRAVdataInitsetliteralUnion(struct ccn_trav *trav);
