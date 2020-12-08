@@ -77,9 +77,9 @@ struct ccn_node *CPYste(struct ccn_node *arg_node) {
 struct ccn_node *CPYchild(struct ccn_node *arg_node) {
     struct ccn_node *new_node = ASTchild(    NULL);
     CHILD_NAME(new_node) = TRAVopt(CHILD_NAME(arg_node));
-    CHILD_TYPE_REFERENCE(new_node) = TRAVopt(CHILD_TYPE_REFERENCE(arg_node));
     CHILD_LIFETIMES(new_node) = TRAVopt(CHILD_LIFETIMES(arg_node));
     CHILD_NEXT(new_node) = TRAVopt(CHILD_NEXT(arg_node));
+    CHILD_TYPE_REFERENCE(new_node) = CHILD_TYPE_REFERENCE(arg_node);
     CHILD_TYPE(new_node) = CHILD_TYPE(arg_node);
     CHILD_IN_CONSTRUCTOR(new_node) = CHILD_IN_CONSTRUCTOR(arg_node);
     CHILD_IS_MANDATORY(new_node) = CHILD_IS_MANDATORY(arg_node);
@@ -126,37 +126,37 @@ struct ccn_node *CPYinode(struct ccn_node *arg_node) {
 }
 
 struct ccn_node *CPYipass(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTipass(    NULL    ,     NULL    ,     NULL);
+    struct ccn_node *new_node = ASTipass(    NULL    ,     NULL);
+    IPASS_NAME(new_node) = TRAVopt(IPASS_NAME(arg_node));
+    IPASS_IPREFIX(new_node) = TRAVopt(IPASS_IPREFIX(arg_node));
+    IPASS_TARGET_FUNC(new_node) = TRAVopt(IPASS_TARGET_FUNC(arg_node));
     IPASS_NEXT(new_node) = TRAVopt(IPASS_NEXT(arg_node));
-    IPASS_NAME(new_node) = IPASS_NAME(arg_node);
     IPASS_IIFNO(new_node) = STRcpy(IPASS_IIFNO(arg_node));
-    IPASS_IPREFIX(new_node) = IPASS_IPREFIX(arg_node);
-    IPASS_TARGET_FUNC(new_node) = IPASS_TARGET_FUNC(arg_node);
     return new_node;
 }
 
 struct ccn_node *CPYitraversal(struct ccn_node *arg_node) {
     struct ccn_node *new_node = ASTitraversal(    NULL);
+    ITRAVERSAL_NAME(new_node) = TRAVopt(ITRAVERSAL_NAME(arg_node));
+    ITRAVERSAL_IPREFIX(new_node) = TRAVopt(ITRAVERSAL_IPREFIX(arg_node));
     ITRAVERSAL_INODES(new_node) = TRAVopt(ITRAVERSAL_INODES(arg_node));
     ITRAVERSAL_DATA(new_node) = TRAVopt(ITRAVERSAL_DATA(arg_node));
     ITRAVERSAL_NEXT(new_node) = TRAVopt(ITRAVERSAL_NEXT(arg_node));
     ITRAVERSAL_INDEX(new_node) = ITRAVERSAL_INDEX(arg_node);
-    ITRAVERSAL_NAME(new_node) = ITRAVERSAL_NAME(arg_node);
     ITRAVERSAL_IINFO(new_node) = STRcpy(ITRAVERSAL_IINFO(arg_node));
-    ITRAVERSAL_IPREFIX(new_node) = ITRAVERSAL_IPREFIX(arg_node);
     return new_node;
 }
 
 struct ccn_node *CPYiphase(struct ccn_node *arg_node) {
     struct ccn_node *new_node = ASTiphase(    NULL    ,     0);
+    IPHASE_NAME(new_node) = TRAVopt(IPHASE_NAME(arg_node));
+    IPHASE_IPREFIX(new_node) = TRAVopt(IPHASE_IPREFIX(arg_node));
+    IPHASE_GATE_FUNC(new_node) = TRAVopt(IPHASE_GATE_FUNC(arg_node));
     IPHASE_IACTIONS(new_node) = TRAVopt(IPHASE_IACTIONS(arg_node));
     IPHASE_NEXT(new_node) = TRAVopt(IPHASE_NEXT(arg_node));
-    IPHASE_NAME(new_node) = IPHASE_NAME(arg_node);
     IPHASE_IS_START(new_node) = IPHASE_IS_START(arg_node);
     IPHASE_IS_CYCLE(new_node) = IPHASE_IS_CYCLE(arg_node);
     IPHASE_IINFO(new_node) = STRcpy(IPHASE_IINFO(arg_node));
-    IPHASE_IPREFIX(new_node) = IPHASE_IPREFIX(arg_node);
-    IPHASE_GATE_FUNC(new_node) = IPHASE_GATE_FUNC(arg_node);
     return new_node;
 }
 

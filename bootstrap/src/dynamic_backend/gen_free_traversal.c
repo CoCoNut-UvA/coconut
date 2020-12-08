@@ -88,6 +88,7 @@ node_st *DGFTattribute(node_st *node)
     if (ATTRIBUTE_TYPE(node) == AT_string) {
         OUT_FIELD("MEMfree(arg_node->data.N_%s->%s)", ID_LWR(INODE_NAME(curr_node)), ID_LWR(ATTRIBUTE_NAME(node)));
     }
+    TRAVopt(ATTRIBUTE_NEXT(node));
     return node;
 }
 

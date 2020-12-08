@@ -203,9 +203,9 @@ struct ccn_node *CHKinode(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKipass(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    if (IPASS_NEXT(arg_node)) {
-        if (NODE_TYPE(IPASS_NEXT(arg_node)) != NT_IPASS) {
-            CTIerror("Inconsistent node found in AST. Child next of node ipass has disallowed type %d ", NODE_TYPE(IPASS_NEXT(arg_node)));
+    if (IPASS_NAME(arg_node)) {
+        if (NODE_TYPE(IPASS_NAME(arg_node)) != NT_ID) {
+            CTIerror("Inconsistent node found in AST. Child name of node ipass has disallowed type %d ", NODE_TYPE(IPASS_NAME(arg_node)));
         }
 
     }
@@ -216,9 +216,9 @@ struct ccn_node *CHKipass(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKitraversal(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    if (ITRAVERSAL_INODES(arg_node)) {
-        if (!TypeIssetexpr(ITRAVERSAL_INODES(arg_node))) {
-            CTIerror("Inconsistent node found in AST. Child inodes of node itraversal has disallowed type %d ", NODE_TYPE(ITRAVERSAL_INODES(arg_node)));
+    if (ITRAVERSAL_NAME(arg_node)) {
+        if (NODE_TYPE(ITRAVERSAL_NAME(arg_node)) != NT_ID) {
+            CTIerror("Inconsistent node found in AST. Child name of node itraversal has disallowed type %d ", NODE_TYPE(ITRAVERSAL_NAME(arg_node)));
         }
 
     }
@@ -229,15 +229,11 @@ struct ccn_node *CHKitraversal(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKiphase(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    if (IPHASE_IACTIONS(arg_node)) {
-        if (NODE_TYPE(IPHASE_IACTIONS(arg_node)) != NT_IACTIONS) {
-            CTIerror("Inconsistent node found in AST. Child iactions of node iphase has disallowed type %d ", NODE_TYPE(IPHASE_IACTIONS(arg_node)));
+    if (IPHASE_NAME(arg_node)) {
+        if (NODE_TYPE(IPHASE_NAME(arg_node)) != NT_ID) {
+            CTIerror("Inconsistent node found in AST. Child name of node iphase has disallowed type %d ", NODE_TYPE(IPHASE_NAME(arg_node)));
         }
 
-    }
-
-    if (IPHASE_IACTIONS(arg_node) == NULL) {
-        CTIerror("Child(iactions) in node(iphase) is missing, but specified as mandatory.\n");;
     }
 
     TRAVchildren(arg_node);

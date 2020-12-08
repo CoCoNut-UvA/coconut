@@ -40,6 +40,7 @@ node_st *DGAHitraversal(node_st *node)
         TRAVstart(AST_INODES(ast), TRAV_DYNAMIC_GENTRAVACTIONS);
     }
     TRAVopt(ITRAVERSAL_NEXT(node));
+    current_trav_prefix = NULL;
     return node;
 }
 
@@ -74,6 +75,9 @@ node_st *DGAHsetliteral(node_st *node)
 
 node_st *DGAHid(node_st *node)
 {
+    if (!current_trav_prefix) {
+        return node;
+    }
     OUT_FIELD("struct ccn_node *%s%s(struct ccn_node *node)", current_trav_prefix, ID_LWR(node));
     TRAVchildren(node);
     return node;

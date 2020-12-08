@@ -1,7 +1,7 @@
 
 start phase startPhase {
     info = "The starting point"
-    prefix = RT
+    uid = RT;
 
     actions {
         pass scanAndParse;
@@ -16,7 +16,7 @@ start phase startPhase {
 
 phase semantic {
     info = "Main part"
-    prefix = SEA
+    uid = SEA;
 
     actions {
         buildSymbolTable;
@@ -28,16 +28,16 @@ phase semantic {
 
 phase unpack_lifetimes {
     info = "Unpack lifetime into their action IDS"
-    prefix = ULT
+    uid = ULT;
 
     actions {
         traversal assign_id_to_action {
-            prefix = AITA
+            uid = AITA;
             nodes = {ast, iactions }
         };
 
         traversal map_id_to_lifetime {
-            prefix = MITL
+            uid = MITL;
             nodes = {ast, inode, iactions, ilifetime, lifetime_range, id}
         };
     }
@@ -51,12 +51,14 @@ phase phase_driver {
         gen_action_array_header;
         gen_ids_tables;
         gen_action_array;
+        gen_gate_header;
     }
 };
 
 phase dynamic_backend {
     info = "Generating part for the dynamic backend"
-    prefix = DDB
+    uid = DDB;
+    gate = backendIsDynamic
 
     actions {
         dynamic_gen_ast;
@@ -79,7 +81,7 @@ phase dynamic_backend {
 
 phase dynamic_gen_trav_data {
     info = "Generate the trav data requirements."
-    prefix = DGTD
+    uid = DGTD;
 
     actions {
         pass dynamic_start_trav_data;
@@ -94,7 +96,7 @@ phase dynamic_gen_trav_data {
 
 phase dynamic_gen_ast {
     info = "Generate the required files for managing user nodes and AST manipulation"
-    prefix = DGA
+    uid = DGA;
 
     actions {
         pass dynamic_start_ast_header;
@@ -111,13 +113,13 @@ phase dynamic_gen_ast {
 
 traversal gen_dot {
     info = "Generate a dot diagram of the AST."
-    prefix = GD
+    uid = GD;
 
     nodes = {inode, child, ast, inodeset, setliteral}
 };
 
 traversal dynamic_genTravDataTables {
-    prefix = DGTDT
+    uid = DGTDT;
     nodes = {ast, itraversal}
 
     travdata = {
@@ -127,9 +129,15 @@ traversal dynamic_genTravDataTables {
     }
 };
 
+traversal gen_gate_header {
+    info = "Generate extern for gate functions"
+    uid = GGH;
+    nodes = {ast, iphase}
+
+};
 
 traversal gen_ids_tables {
-    prefix = GIT
+    uid = GIT;
 
     nodes = {
         ast, iphase, iactions
@@ -137,44 +145,44 @@ traversal gen_ids_tables {
 };
 
 traversal gen_action_array_header {
-    prefix = GAAH
+    uid = GAAH;
 
     nodes = action | {ast}
 };
 
 traversal gen_action_array {
-    prefix = GAA
+    uid = GAA;
 
     nodes = action | {ast}
 };
 
 traversal dynamic_genTravDataUnion {
-    prefix = DGTDU
+    uid = DGTDU;
     nodes = {ast, itraversal}
 };
 
 traversal dynamic_genTravDataGetters {
-    prefix = DGTDG
+    uid = DGTDG;
     nodes = {itraversal}
 };
 
 traversal dynamic_genTravDataCtorsHeader {
-    prefix = DGTDCH
+    uid = DGTDCH;
     nodes = {itraversal}
 };
 
 traversal dynamic_genTravDataCtors {
-    prefix = DGTDC
+    uid = DGTDC;
     nodes = {itraversal, itravdata}
 };
 
 traversal dynamic_genTravDataStructs {
-    prefix = DGTDS
+    uid = DGTDS;
     nodes = {itraversal, itravdata}
 };
 
 traversal dynamic_genCheckTraversal {
-    prefix = DGCHT
+    uid = DGCHT;
 
     travdata = {
         int lifetime_target
@@ -183,119 +191,119 @@ traversal dynamic_genCheckTraversal {
 
 
 traversal dynamic_genFreeTraversal {
-    prefix = DGFT
+    uid = DGFT;
 };
 
 traversal dynamic_genConstructorCall {
-    prefix = DGCC
+    uid = DGCC;
 
     nodes = {ast, inode, child, attribute}
 };
 
 traversal dynamic_genCopyTraversal {
-    prefix = DGCT
+    uid = DGCT;
 };
 
 traversal dynamic_genTravActions {
-    prefix = DGTA
+    uid = DGTA;
 
     nodes = {ast, inode}
 };
 
 traversal dynamic_genActionsHeader {
-    prefix = DGAH
+    uid = DGAH;
 
     nodes = {itraversal, ipass, ast, inode, setliteral, id}
 };
 
 traversal dynamic_genSystemTraversals {
-    prefix = DGST
+    uid = DGST;
 
     nodes = {ast, inode}
 };
 
 traversal dynamic_genTravTable {
-    prefix = DGTT
+    uid = DGTT;
 
     nodes = {ast, itraversal}
 };
 
 traversal dynamic_genPassTable {
-    prefix = DGPT
+    uid = DGPT;
 
     nodes = {ast, ipass}
 };
 
 traversal dynamic_genNodesForTravTable {
-    prefix = DGNFTT
+    uid = DGNFTT;
 
     nodes = {ast, inode}
 };
 
 traversal dynamic_genTravVtable {
-    prefix = DGTV
+    uid = DGTV;
 
     nodes = {itraversal, ast}
 };
 
 traversal dynamic_genEnumValues {
-    prefix = DGEV
+    uid = DGEV;
 
     nodes = {ienum, ast, id}
 };
 
 traversal dynamic_genEnum {
-    prefix = DGE
+    uid = DGE;
 
     nodes = {ast, inode, itraversal, inodeset, ipass}
 };
 
 traversal dynamic_genNodeConstructor {
-    prefix = DGNC
+    uid = DGNC;
     nodes = {ast, inode, child, attribute}
 };
 
 traversal dynamic_genNodeUnion {
-    prefix = DGBU
+    uid = DGBU;
 
     nodes = {ast, inode}
 };
 
 traversal dynamic_genNodeInitFunctions {
-    prefix = DGIF
+    uid = DGIF;
 
     nodes = {ast, inode, child, attribute}
 };
 
 
 traversal dynamic_genNodeStructs {
-    prefix = DGNS
+    uid = DGNS;
 
     nodes = {ast, inode, child, attribute}
 };
 
 traversal dynamic_genNodeMacros {
-    prefix = DGNM
+    uid = DGNM;
 
     nodes = {ast, inode, child, attribute}
 };
 
 
 traversal checkExistance {
-    prefix = CEX
+    uid = CEX;
 };
 
 traversal buildSymbolTable {
-    prefix = BST
+    uid = BST;
 };
 
 traversal unwrapSetExpr {
-    prefix = USE
+    uid = USE;
     nodes = setexpr | {ast}
 };
 
 traversal reachability {
-    prefix = RCB
+    uid = RCB;
 
     nodes = {
         ast, setliteral, itraversal, inode, child, inodeset
@@ -303,7 +311,7 @@ traversal reachability {
 };
 
 traversal setliteralInsert {
-    prefix = SLI
+    uid = SLI;
     nodes = {
         setliteral
     }
@@ -315,7 +323,7 @@ traversal setliteralInsert {
 };
 
 traversal setliteralUnion {
-    prefix = SLU
+    uid = SLU;
     nodes = {
         setliteral
     }
@@ -326,7 +334,7 @@ traversal setliteralUnion {
 };
 
 traversal setliteralIntersect {
-    prefix = SLIS
+    uid = SLIS;
     nodes = {
         setliteral
     }
@@ -338,7 +346,7 @@ traversal setliteralIntersect {
 };
 
 traversal setliteralDifference {
-    prefix = SLD
+    uid = SLD;
     nodes = {
         setliteral
     }
@@ -350,7 +358,7 @@ traversal setliteralDifference {
 };
 
 traversal setliteralContains {
-    prefix = SLC
+    uid = SLC;
     nodes = { setliteral }
     travdata = {
         id lookup,
@@ -360,7 +368,7 @@ traversal setliteralContains {
 
 traversal print {
     info = "Print the ast"
-    prefix = PRT
+    uid = PRT;
 };
 
 
@@ -397,43 +405,42 @@ node iactions {
 
 node iphase {
     children {
+        id name { constructor };
+	    id iprefix;
+        id gate_func;
         iactions iactions {mandatory; };
         iphase next;
     }
     attributes {
-        id name { constructor };
         int is_start { constructor };
         int is_cycle;
         string iinfo;
-        id iprefix;
-        id gate_func;
     }
 };
 
 node itraversal {
     children {
+        id name { constructor };
+        id iprefix;
         setexpr inodes;
         itravdata data;
         itraversal next;
     }
     attributes {
         int index;
-        id name { constructor };
         string iinfo;
-        id iprefix;
-
     }
 };
 
 node ipass {
     children {
+        id name { constructor };
+        id iprefix; 
+        id target_func;
         ipass next;
     }
     attributes {
-        id name { constructor };
         string iifno { constructor };
-        id iprefix { constructor };
-        id target_func;
     }
 };
 
@@ -504,12 +511,12 @@ enum child_type {
 node child {
     children {
         id name { constructor mandatory; };
-        id type_reference;
         ilifetime lifetimes;
         child next;
     }
 
     attributes {
+        id type_reference;
         child_type type;
         int in_constructor;
         int is_mandatory;

@@ -92,12 +92,10 @@ node_st *MITLid(node_st *node)
 {
     curr_target = node;
     if (last_action == NULL) {
-        printf("ID: Going in\n");
         TRAVopt(IPHASE_IACTIONS(AST_START_PHASE(ast)));
     } else {
         node_st *action = lookupST(ste, IACTIONS_REFERENCE(last_action));
         if (!action || NODE_TYPE(action) != NT_IPHASE)  {
-            printf("ID: %s\n", ID_ORIG(IACTIONS_REFERENCE(last_action)));
             CTIerror("Lifetime does not target a phase while it nests.");
         } else {
             last_action = NULL;

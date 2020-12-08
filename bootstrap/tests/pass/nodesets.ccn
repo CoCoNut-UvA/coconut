@@ -34,8 +34,8 @@ nodeset nn = m | x;
 nodeset nnn = m & x;
 nodeset nnnn = x & m;
 
-traversal go {
-    prefix = go
+traversal Letsgo {
+    uid = go;
 
     travdata = {
         int val,

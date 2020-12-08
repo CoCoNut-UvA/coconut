@@ -98,6 +98,14 @@ node_st *BSTiphase(node_st *node)
     } else {
         addToST(IPHASE_NAME(node), node);
     }
+    if (IPHASE_IPREFIX(node)) {
+        ste_value = lookupST(first_ste, IPHASE_IPREFIX(node));
+        if (ste_value) {
+            struct ctinfo info;
+            id_to_info(IPHASE_IPREFIX(node), &info);
+            CTIerrorObj(&info, "Duplicate name: %s\n", ID_ORIG(IPHASE_IPREFIX(node)));
+        }
+    }
     TRAVchildren(node);
     return node;
 }
@@ -110,6 +118,14 @@ node_st *BSTitraversal(node_st *node)
         CTIerrorObj(&info, "Duplicate name: %s\n", ID_ORIG(ITRAVERSAL_NAME(node)));
     } else {
         addToST(ITRAVERSAL_NAME(node), node);
+    }
+
+    if (ITRAVERSAL_IPREFIX(node)) {
+        if (lookupST(first_ste, ITRAVERSAL_IPREFIX(node))) {
+            struct ctinfo info;
+            id_to_info(ITRAVERSAL_IPREFIX(node), &info);
+            CTIerrorObj(&info, "Duplicate name: %s\n", ID_ORIG(ITRAVERSAL_IPREFIX(node)));
+        }
     }
     TRAVchildren(node);
     return node;
@@ -129,6 +145,14 @@ node_st *BSTipass(node_st *node)
         CTIerrorObj(&info, "Duplicate name: %s\n", ID_ORIG(IPASS_NAME(node)));
     } else {
         addToST(IPASS_NAME(node), node);
+    }
+
+    if (IPASS_IPREFIX(node)) {
+        if (lookupST(first_ste, IPASS_IPREFIX(node))) {
+            struct ctinfo info;
+            id_to_info(IPASS_IPREFIX(node), &info);
+            CTIerrorObj(&info, "Duplicate name: %s\n", ID_ORIG(IPASS_IPREFIX(node)));
+        }
     }
     TRAVchildren(node);
     return node;
@@ -212,7 +236,6 @@ node_st *BSTienum(node_st *node)
 
 node_st *BSTid(node_st *node)
 {
-    TRAVchildren(node);
     return node;
 }
 

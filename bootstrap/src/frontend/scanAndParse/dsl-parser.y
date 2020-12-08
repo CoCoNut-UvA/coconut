@@ -122,6 +122,7 @@ struct ctinfo yy_ctinfo;
 %token T_GATE "gate"
 %token T_ARROW "->"
 %token T_UNSAFE "unsafe"
+%token T_UID "uid"
 %token END 0 "End-of-file (EOF)"
 
 %type<string> info
@@ -129,7 +130,7 @@ struct ctinfo yy_ctinfo;
 %type<node> phase entry pass node traversal cycleheader phaseheader id action actionsbody traversalnodes prefix
     actions childrenbody attributebody attributes attribute children child setoperation setliterals func
     setexpr enum idlist enumvalues nodeset travdata travdatalist travdataitem nodelifetimes
-    lifetimes lifetime lifetime_range range_spec childlifetimes
+    lifetimes lifetime lifetime_range range_spec childlifetimes uid mandatory_uid gate
 %type<attr_type> attribute_primitive_type
 
 %left '&' '-' '|'
@@ -185,19 +186,32 @@ entry: phase
      ;
 
 /* Root of the config, creating the final config */
-phase: phaseheader '{' info[information] prefix[identifier] actionsbody[actions] '}'
+phase: phaseheader '{' info[information] uid[identifier] gate[gatef] actionsbody[actions] '}'
     {
         $$ = $1;
         IPHASE_IPREFIX($$) = $identifier;
         IPHASE_IINFO($$) = $information;
         IPHASE_IACTIONS($$) = $actions;
+        IPHASE_GATE_FUNC($$) = $gatef;
     }
-    | cycleheader '{' info[information] prefix[identifier] actionsbody[actions] '}'
+    | cycleheader '{' info[information] uid[identifier] gate[gatef] actionsbody[actions] '}'
     {
         $$ = $1;
         IPHASE_IPREFIX($$) = $identifier;
         IPHASE_IINFO($$) = $information;
         IPHASE_IACTIONS($$) = $actions;
+        IPHASE_GATE_FUNC($$) = $gatef;
+    }
+    ;
+
+
+gate: %empty
+    {
+        $$ = NULL;
+    }
+    | T_GATE '=' id
+    {
+        $$ = $3;
     }
     ;
 
@@ -224,23 +238,24 @@ is_start: %empty
      }
      ;
 
-pass: T_PASS id[name] '{'  info[information] prefix[identifier] func[target_func]'}'
+pass: T_PASS id[name] '{'  info[information] uid[identifier] func[target_func]'}'
     {
-        $$ = ASTipass($name, $information, $identifier);
+        $$ = ASTipass($name, $information);
+        IPASS_IPREFIX($$) = $identifier;
         IPASS_TARGET_FUNC($$) = $target_func;
     }
     | T_PASS id[name]
     {
-        $$ = ASTipass($name, NULL, NULL);
+        $$ = ASTipass($name, NULL);
     }
     | T_PASS id[name] '=' id[target_func]
     {
-        $$ = ASTipass($name, NULL, NULL);
+        $$ = ASTipass($name, NULL);
         IPASS_TARGET_FUNC($$) = $target_func;
     }
     ;
 
-traversal: T_TRAVERSAL id[name] '{' info[information] prefix[identifier] traversalnodes[nodes] travdata[data]'}'
+traversal: T_TRAVERSAL id[name] '{' info[information] mandatory_uid[identifier] traversalnodes[nodes] travdata[data]'}'
     {
         $$ = ASTitraversal($name);
         ITRAVERSAL_INDEX($$) = trav_index++;
@@ -664,6 +679,24 @@ prefix: %empty
         $$ = NULL;
     }
     | T_PREFIX '=' id
+    {
+        $$ = $3;
+    }
+    ;
+
+
+mandatory_uid:
+    T_UID '=' id ';'
+    {
+        $$ = $3;
+    }
+    ;
+
+uid: %empty
+    {
+        $$ = NULL;
+    }
+    | T_UID '=' id ';'
     {
         $$ = $3;
     }

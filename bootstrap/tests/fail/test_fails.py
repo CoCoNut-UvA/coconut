@@ -60,3 +60,13 @@ def test_empty_nodeset(exec, testdir):
     assert res.ret != 0
 
 
+def test_missing_uid(exec, testdir):
+    testdir.mkdir("ccngen/")
+    testdir.mkdir("ccngen/ccngen")
+    res = testdir.run(exec, build_filepath("missing_uid_trav.ccn"))
+    res.stderr.fnmatch_lines(["error: syntax error, unexpected nodes, expecting uid"])
+    assert res.ret != 0
+
+
+
+

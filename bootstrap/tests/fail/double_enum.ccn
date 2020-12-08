@@ -18,7 +18,7 @@ enum val {
 };
 
 enum val {
-    prefix = V
+    prefix = V2
     values = {val1, val2}
 };
 

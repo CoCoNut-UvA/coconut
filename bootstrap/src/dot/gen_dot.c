@@ -50,7 +50,8 @@ node_st *GDsetliteral(node_st *node)
     if (node && SETLITERAL_REFERENCE(node)) {
         OUT("%s -> %s\n", ID_ORIG(INODESET_NAME(curr_nodeset)), ID_ORIG(SETLITERAL_REFERENCE(node)));
     }
-    //TRAVopt(SETLITERAL_NEXT(node));
+    TRAVopt(SETLITERAL_RIGHT(node));
+    TRAVopt(SETLITERAL_LEFT(node));
     return node;
 }
 

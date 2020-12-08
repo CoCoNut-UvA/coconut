@@ -25,10 +25,13 @@ inode -> inode
 inode -> child
 inode -> attribute
 inode -> ilifetime
+ipass -> id
 ipass -> ipass
+itraversal -> id
 itraversal -> setexpr
 itraversal -> itravdata
 itraversal -> itraversal
+iphase -> id
 iphase -> iactions
 iphase -> iphase
 iactions -> iactions
@@ -41,8 +44,15 @@ ast -> ienum
 ast -> ste
 setexpr [shape=box];
 setexpr -> setoperation
+setexpr -> setreference
+setexpr -> setliteral
 link [shape=box];
 link -> iphase
+link -> itraversal
+link -> ipass
+link -> inode
 action [shape=box];
 action -> iphase
+action -> itraversal
+action -> ipass
 }

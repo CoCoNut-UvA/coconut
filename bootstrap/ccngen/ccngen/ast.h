@@ -119,14 +119,14 @@ struct NODE_DATA_CHILD {
     union NODE_CHILDREN_CHILD {
         struct NODE_CHILDREN_CHILD_STRUCT {
             node_st *name;
-            node_st *type_reference;
             node_st *lifetimes;
             node_st *next;
         } child_children_st;
 
-        node_st *child_children_at[4];
+        node_st *child_children_at[3];
     } child_children;
 
+    node_st *type_reference;
     enum child_type type;
     int in_constructor;
     int is_mandatory;
@@ -194,51 +194,51 @@ struct NODE_DATA_INODE {
 struct NODE_DATA_IPASS {
     union NODE_CHILDREN_IPASS {
         struct NODE_CHILDREN_IPASS_STRUCT {
+            node_st *name;
+            node_st *iprefix;
+            node_st *target_func;
             node_st *next;
         } ipass_children_st;
 
-        node_st *ipass_children_at[1];
+        node_st *ipass_children_at[4];
     } ipass_children;
 
-    node_st *name;
     char * iifno;
-    node_st *iprefix;
-    node_st *target_func;
 };
 
 struct NODE_DATA_ITRAVERSAL {
     union NODE_CHILDREN_ITRAVERSAL {
         struct NODE_CHILDREN_ITRAVERSAL_STRUCT {
+            node_st *name;
+            node_st *iprefix;
             node_st *inodes;
             node_st *data;
             node_st *next;
         } itraversal_children_st;
 
-        node_st *itraversal_children_at[3];
+        node_st *itraversal_children_at[5];
     } itraversal_children;
 
     int index;
-    node_st *name;
     char * iinfo;
-    node_st *iprefix;
 };
 
 struct NODE_DATA_IPHASE {
     union NODE_CHILDREN_IPHASE {
         struct NODE_CHILDREN_IPHASE_STRUCT {
+            node_st *name;
+            node_st *iprefix;
+            node_st *gate_func;
             node_st *iactions;
             node_st *next;
         } iphase_children_st;
 
-        node_st *iphase_children_at[2];
+        node_st *iphase_children_at[5];
     } iphase_children;
 
-    node_st *name;
     int is_start;
     int is_cycle;
     char * iinfo;
-    node_st *iprefix;
-    node_st *gate_func;
 };
 
 struct NODE_DATA_IACTIONS {
@@ -308,9 +308,9 @@ struct NODE_DATA_AST {
 #define STE_KEY(n) ((n)->data.N_ste->key)
 #define STE_VALUE(n) ((n)->data.N_ste->value)
 #define CHILD_NAME(n) ((n)->data.N_child->child_children.child_children_st.name)
-#define CHILD_TYPE_REFERENCE(n) ((n)->data.N_child->child_children.child_children_st.type_reference)
 #define CHILD_LIFETIMES(n) ((n)->data.N_child->child_children.child_children_st.lifetimes)
 #define CHILD_NEXT(n) ((n)->data.N_child->child_children.child_children_st.next)
+#define CHILD_TYPE_REFERENCE(n) ((n)->data.N_child->type_reference)
 #define CHILD_TYPE(n) ((n)->data.N_child->type)
 #define CHILD_IN_CONSTRUCTOR(n) ((n)->data.N_child->in_constructor)
 #define CHILD_IS_MANDATORY(n) ((n)->data.N_child->is_mandatory)
@@ -333,26 +333,26 @@ struct NODE_DATA_AST {
 #define INODE_IIFNO(n) ((n)->data.N_inode->iifno)
 #define INODE_IS_ROOT(n) ((n)->data.N_inode->is_root)
 #define INODE_INDEX(n) ((n)->data.N_inode->index)
+#define IPASS_NAME(n) ((n)->data.N_ipass->ipass_children.ipass_children_st.name)
+#define IPASS_IPREFIX(n) ((n)->data.N_ipass->ipass_children.ipass_children_st.iprefix)
+#define IPASS_TARGET_FUNC(n) ((n)->data.N_ipass->ipass_children.ipass_children_st.target_func)
 #define IPASS_NEXT(n) ((n)->data.N_ipass->ipass_children.ipass_children_st.next)
-#define IPASS_NAME(n) ((n)->data.N_ipass->name)
 #define IPASS_IIFNO(n) ((n)->data.N_ipass->iifno)
-#define IPASS_IPREFIX(n) ((n)->data.N_ipass->iprefix)
-#define IPASS_TARGET_FUNC(n) ((n)->data.N_ipass->target_func)
+#define ITRAVERSAL_NAME(n) ((n)->data.N_itraversal->itraversal_children.itraversal_children_st.name)
+#define ITRAVERSAL_IPREFIX(n) ((n)->data.N_itraversal->itraversal_children.itraversal_children_st.iprefix)
 #define ITRAVERSAL_INODES(n) ((n)->data.N_itraversal->itraversal_children.itraversal_children_st.inodes)
 #define ITRAVERSAL_DATA(n) ((n)->data.N_itraversal->itraversal_children.itraversal_children_st.data)
 #define ITRAVERSAL_NEXT(n) ((n)->data.N_itraversal->itraversal_children.itraversal_children_st.next)
 #define ITRAVERSAL_INDEX(n) ((n)->data.N_itraversal->index)
-#define ITRAVERSAL_NAME(n) ((n)->data.N_itraversal->name)
 #define ITRAVERSAL_IINFO(n) ((n)->data.N_itraversal->iinfo)
-#define ITRAVERSAL_IPREFIX(n) ((n)->data.N_itraversal->iprefix)
+#define IPHASE_NAME(n) ((n)->data.N_iphase->iphase_children.iphase_children_st.name)
+#define IPHASE_IPREFIX(n) ((n)->data.N_iphase->iphase_children.iphase_children_st.iprefix)
+#define IPHASE_GATE_FUNC(n) ((n)->data.N_iphase->iphase_children.iphase_children_st.gate_func)
 #define IPHASE_IACTIONS(n) ((n)->data.N_iphase->iphase_children.iphase_children_st.iactions)
 #define IPHASE_NEXT(n) ((n)->data.N_iphase->iphase_children.iphase_children_st.next)
-#define IPHASE_NAME(n) ((n)->data.N_iphase->name)
 #define IPHASE_IS_START(n) ((n)->data.N_iphase->is_start)
 #define IPHASE_IS_CYCLE(n) ((n)->data.N_iphase->is_cycle)
 #define IPHASE_IINFO(n) ((n)->data.N_iphase->iinfo)
-#define IPHASE_IPREFIX(n) ((n)->data.N_iphase->iprefix)
-#define IPHASE_GATE_FUNC(n) ((n)->data.N_iphase->gate_func)
 #define IACTIONS_NEXT(n) ((n)->data.N_iactions->iactions_children.iactions_children_st.next)
 #define IACTIONS_REFERENCE(n) ((n)->data.N_iactions->reference)
 #define IACTIONS_ACTION_ID(n) ((n)->data.N_iactions->action_id)
@@ -380,7 +380,7 @@ node_st *ASTlifetime_range();
 node_st *ASTilifetime();
 node_st *ASTinodeset();
 node_st *ASTinode(node_st *name, char * iifno);
-node_st *ASTipass(node_st *name, char * iifno, node_st *iprefix);
+node_st *ASTipass(node_st *name, char * iifno);
 node_st *ASTitraversal(node_st *name);
 node_st *ASTiphase(node_st *name, int is_start);
 node_st *ASTiactions();

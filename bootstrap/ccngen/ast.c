@@ -109,13 +109,13 @@ node_st *ASTchild(node_st *name) {
     node->data.N_child = MEMmalloc(sizeof(struct NODE_DATA_CHILD));
     NODE_TYPE(node) = NT_CHILD;
     CHILD_NAME(node) = name;
-    CHILD_TYPE_REFERENCE(node) = NULL;
     CHILD_LIFETIMES(node) = NULL;
     CHILD_NEXT(node) = NULL;
+    CHILD_TYPE_REFERENCE(node) = NULL;
     CHILD_TYPE(node) = 0;
     CHILD_IN_CONSTRUCTOR(node) = 0;
     CHILD_IS_MANDATORY(node) = 0;
-    NODE_NUMCHILDREN(node) = 4;
+    NODE_NUMCHILDREN(node) = 3;
     NODE_CHILDREN(node) = node->data.N_child->child_children.child_children_at;
     return node;}
 
@@ -170,16 +170,16 @@ node_st *ASTinode(node_st *name, char * iifno) {
     NODE_CHILDREN(node) = node->data.N_inode->inode_children.inode_children_at;
     return node;}
 
-node_st *ASTipass(node_st *name, char * iifno, node_st *iprefix) {
+node_st *ASTipass(node_st *name, char * iifno) {
     node_st *node = NewNode();
     node->data.N_ipass = MEMmalloc(sizeof(struct NODE_DATA_IPASS));
     NODE_TYPE(node) = NT_IPASS;
-    IPASS_NEXT(node) = NULL;
     IPASS_NAME(node) = name;
-    IPASS_IIFNO(node) = iifno;
-    IPASS_IPREFIX(node) = iprefix;
+    IPASS_IPREFIX(node) = NULL;
     IPASS_TARGET_FUNC(node) = NULL;
-    NODE_NUMCHILDREN(node) = 1;
+    IPASS_NEXT(node) = NULL;
+    IPASS_IIFNO(node) = iifno;
+    NODE_NUMCHILDREN(node) = 4;
     NODE_CHILDREN(node) = node->data.N_ipass->ipass_children.ipass_children_at;
     return node;}
 
@@ -187,14 +187,14 @@ node_st *ASTitraversal(node_st *name) {
     node_st *node = NewNode();
     node->data.N_itraversal = MEMmalloc(sizeof(struct NODE_DATA_ITRAVERSAL));
     NODE_TYPE(node) = NT_ITRAVERSAL;
+    ITRAVERSAL_NAME(node) = name;
+    ITRAVERSAL_IPREFIX(node) = NULL;
     ITRAVERSAL_INODES(node) = NULL;
     ITRAVERSAL_DATA(node) = NULL;
     ITRAVERSAL_NEXT(node) = NULL;
     ITRAVERSAL_INDEX(node) = 0;
-    ITRAVERSAL_NAME(node) = name;
     ITRAVERSAL_IINFO(node) = NULL;
-    ITRAVERSAL_IPREFIX(node) = NULL;
-    NODE_NUMCHILDREN(node) = 3;
+    NODE_NUMCHILDREN(node) = 5;
     NODE_CHILDREN(node) = node->data.N_itraversal->itraversal_children.itraversal_children_at;
     return node;}
 
@@ -202,15 +202,15 @@ node_st *ASTiphase(node_st *name, int is_start) {
     node_st *node = NewNode();
     node->data.N_iphase = MEMmalloc(sizeof(struct NODE_DATA_IPHASE));
     NODE_TYPE(node) = NT_IPHASE;
+    IPHASE_NAME(node) = name;
+    IPHASE_IPREFIX(node) = NULL;
+    IPHASE_GATE_FUNC(node) = NULL;
     IPHASE_IACTIONS(node) = NULL;
     IPHASE_NEXT(node) = NULL;
-    IPHASE_NAME(node) = name;
     IPHASE_IS_START(node) = is_start;
     IPHASE_IS_CYCLE(node) = 0;
     IPHASE_IINFO(node) = NULL;
-    IPHASE_IPREFIX(node) = NULL;
-    IPHASE_GATE_FUNC(node) = NULL;
-    NODE_NUMCHILDREN(node) = 2;
+    NODE_NUMCHILDREN(node) = 5;
     NODE_CHILDREN(node) = node->data.N_iphase->iphase_children.iphase_children_at;
     return node;}
 

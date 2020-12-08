@@ -41,6 +41,7 @@ node_st *GITast(node_st *node)
     OUT("#include \"ccngen/action_handling.h\"\n");
     OUT("#include \"ccngen/enum.h\"\n");
     OUT("#include \"ccngen/ast.h\"\n");
+    OUT("#include \"ccngen/gate.h\"\n");
     OUT("#include \"ccn/phase_driver.h\"\n");
 
     ast = node;

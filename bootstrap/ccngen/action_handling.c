@@ -3,6 +3,7 @@
 #include "ccngen/action_handling.h"
 #include "ccngen/enum.h"
 #include "ccngen/ast.h"
+#include "ccngen/gate.h"
 #include "ccn/phase_driver.h"
 enum ccn_action_id cleanup_ids_table[2] = { CCNAC_ID_free, CCNAC_ID_NULL };
 enum ccn_action_id dynamic_gen_ast_ids_table[] = {
@@ -15,7 +16,7 @@ enum ccn_action_id dynamic_backend_ids_table[] = {
 CCNAC_ID_DYNAMIC_GEN_AST, CCNAC_ID_DYNAMIC_START_ENUM_HEADER, CCNAC_ID_DYNAMIC_GENENUM, CCNAC_ID_DYNAMIC_GENENUMVALUES, CCNAC_ID_DYNAMIC_GEN_TRAV_DATA, CCNAC_ID_DYNAMIC_START_TABLE_GEN, CCNAC_ID_DYNAMIC_GENTRAVVTABLE, CCNAC_ID_DYNAMIC_GENPASSTABLE, CCNAC_ID_DYNAMIC_GENSYSTEMTRAVERSALS, CCNAC_ID_DYNAMIC_GENTRAVTABLE, CCNAC_ID_DYNAMIC_GENTRAVDATATABLES, CCNAC_ID_DYNAMIC_GENACTIONSHEADER, CCNAC_ID_DYNAMIC_GENCOPYTRAVERSAL, CCNAC_ID_DYNAMIC_GENFREETRAVERSAL, CCNAC_ID_DYNAMIC_GENCHECKTRAVERSAL, CCNAC_ID_NULL, };
 
 enum ccn_action_id phase_driver_ids_table[] = {
-CCNAC_ID_GEN_ACTION_ARRAY_HEADER, CCNAC_ID_GEN_IDS_TABLES, CCNAC_ID_GEN_ACTION_ARRAY, CCNAC_ID_NULL, };
+CCNAC_ID_GEN_ACTION_ARRAY_HEADER, CCNAC_ID_GEN_IDS_TABLES, CCNAC_ID_GEN_ACTION_ARRAY, CCNAC_ID_GEN_GATE_HEADER, CCNAC_ID_NULL, };
 
 enum ccn_action_id unpack_lifetimes_ids_table[] = {
 CCNAC_ID_ASSIGN_ID_TO_ACTION, CCNAC_ID_MAP_ID_TO_LIFETIME, CCNAC_ID_NULL, };
@@ -29,7 +30,7 @@ CCNAC_ID_SCANANDPARSE, CCNAC_ID_SEMANTIC, CCNAC_ID_UNPACK_LIFETIMES, CCNAC_ID_DY
 static struct ccn_action ccn_action_array[] = {
 {CCN_ACTION_PHASE, CCNAC_ID_DYNAMIC_GEN_AST, "dynamic_gen_ast", .phase = {NULL, NT_AST, dynamic_gen_ast_ids_table, false, CCNAC_ID_DYNAMIC_GEN_AST,},},
 {CCN_ACTION_PHASE, CCNAC_ID_DYNAMIC_GEN_TRAV_DATA, "dynamic_gen_trav_data", .phase = {NULL, NT_AST, dynamic_gen_trav_data_ids_table, false, CCNAC_ID_DYNAMIC_GEN_TRAV_DATA,},},
-{CCN_ACTION_PHASE, CCNAC_ID_DYNAMIC_BACKEND, "dynamic_backend", .phase = {NULL, NT_AST, dynamic_backend_ids_table, false, CCNAC_ID_DYNAMIC_BACKEND,},},
+{CCN_ACTION_PHASE, CCNAC_ID_DYNAMIC_BACKEND, "dynamic_backend", .phase = {backendIsDynamic, NT_AST, dynamic_backend_ids_table, false, CCNAC_ID_DYNAMIC_BACKEND,},},
 {CCN_ACTION_PHASE, CCNAC_ID_PHASE_DRIVER, "phase_driver", .phase = {NULL, NT_AST, phase_driver_ids_table, false, CCNAC_ID_PHASE_DRIVER,},},
 {CCN_ACTION_PHASE, CCNAC_ID_UNPACK_LIFETIMES, "unpack_lifetimes", .phase = {NULL, NT_AST, unpack_lifetimes_ids_table, false, CCNAC_ID_UNPACK_LIFETIMES,},},
 {CCN_ACTION_PHASE, CCNAC_ID_SEMANTIC, "semantic", .phase = {NULL, NT_AST, semantic_ids_table, false, CCNAC_ID_SEMANTIC,},},
@@ -70,6 +71,7 @@ static struct ccn_action ccn_action_array[] = {
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_GEN_ACTION_ARRAY, "gen_action_array", .traversal = {TRAV_GEN_ACTION_ARRAY,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_GEN_ACTION_ARRAY_HEADER, "gen_action_array_header", .traversal = {TRAV_GEN_ACTION_ARRAY_HEADER,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_GEN_IDS_TABLES, "gen_ids_tables", .traversal = {TRAV_GEN_IDS_TABLES,},},
+{CCN_ACTION_TRAVERSAL, CCNAC_ID_GEN_GATE_HEADER, "gen_gate_header", .traversal = {TRAV_GEN_GATE_HEADER,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_DYNAMIC_GENTRAVDATATABLES, "dynamic_genTravDataTables", .traversal = {TRAV_DYNAMIC_GENTRAVDATATABLES,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_GEN_DOT, "gen_dot", .traversal = {TRAV_GEN_DOT,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_MAP_ID_TO_LIFETIME, "map_id_to_lifetime", .traversal = {TRAV_MAP_ID_TO_LIFETIME,},},

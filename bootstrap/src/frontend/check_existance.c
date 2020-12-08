@@ -9,16 +9,6 @@
 
 extern node_st *lookupST(node_st*, node_st*);
 
-void *CEXallocTravData()
-{
-    return 0;
-}
-
-void CEXfreeTravData(void *data)
-{
-
-}
-
 node_st *BSTaddToST(node_st *ste, node_st *key, node_st *val);
 static bool seen_root_node = false;
 static bool seen_start_phase = false;
@@ -186,7 +176,7 @@ node_st *CEXattribute(node_st *node)
     if (ATTRIBUTE_TYPE(node) == AT_link_or_enum) {
         node_st *ste_entry = lookupST(ste, ATTRIBUTE_TYPE_REFERENCE(node));
         if (ste_entry == NULL) {
-            CTIerror("COuld not find type reference for attribute.");
+            CTIerror("Could not find type reference for attribute.");
         } else {
             if (NODE_TYPE(ste_entry) == NT_INODE || NODE_TYPE(ste_entry) == NT_INODESET) {
                 ATTRIBUTE_TYPE(node) = AT_link;

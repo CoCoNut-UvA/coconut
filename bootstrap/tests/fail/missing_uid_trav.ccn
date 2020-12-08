@@ -1,0 +1,14 @@
+
+start phase hello {
+    actions {
+        pass p;
+    }
+};
+
+traversal missinguid {
+    nodes = {ast2};    
+};
+
+root node ast2 {
+
+};

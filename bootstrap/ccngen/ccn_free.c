@@ -2,6 +2,8 @@
 struct ccn_node *DELid(struct ccn_node *arg_node) {
     TRAVchildren(arg_node);
     MEMfree(arg_node->data.N_id->orig);
+    MEMfree(arg_node->data.N_id->lwr);
+    MEMfree(arg_node->data.N_id->upr);
     MEMfree(arg_node->data.N_id);
     arg_node = MEMfree(arg_node);
     return arg_node;
@@ -24,6 +26,7 @@ struct ccn_node *DELattribute(struct ccn_node *arg_node) {
 
 struct ccn_node *DELitravdata(struct ccn_node *arg_node) {
     TRAVchildren(arg_node);
+    MEMfree(arg_node->data.N_itravdata->include_file);
     MEMfree(arg_node->data.N_itravdata);
     arg_node = MEMfree(arg_node);
     return arg_node;
@@ -96,6 +99,7 @@ struct ccn_node *DELinode(struct ccn_node *arg_node) {
 
 struct ccn_node *DELipass(struct ccn_node *arg_node) {
     TRAVchildren(arg_node);
+    MEMfree(arg_node->data.N_ipass->iifno);
     MEMfree(arg_node->data.N_ipass);
     arg_node = MEMfree(arg_node);
     return arg_node;
@@ -103,6 +107,7 @@ struct ccn_node *DELipass(struct ccn_node *arg_node) {
 
 struct ccn_node *DELitraversal(struct ccn_node *arg_node) {
     TRAVchildren(arg_node);
+    MEMfree(arg_node->data.N_itraversal->iinfo);
     MEMfree(arg_node->data.N_itraversal);
     arg_node = MEMfree(arg_node);
     return arg_node;
@@ -110,6 +115,7 @@ struct ccn_node *DELitraversal(struct ccn_node *arg_node) {
 
 struct ccn_node *DELiphase(struct ccn_node *arg_node) {
     TRAVchildren(arg_node);
+    MEMfree(arg_node->data.N_iphase->iinfo);
     MEMfree(arg_node->data.N_iphase);
     arg_node = MEMfree(arg_node);
     return arg_node;

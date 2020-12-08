@@ -33,7 +33,7 @@ nodeset b = z & {tmp} & y;
 nodeset g = {tmp};
 
 traversal all {
-    prefix = a
+    uid = a;
 
     nodes = {newest}
     
@@ -43,7 +43,7 @@ traversal all {
 };
 
 traversal help {
-    prefix = h
+    uid = h;
 
     nodes = x
 };

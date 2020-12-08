@@ -11,8 +11,8 @@ start phase begin {
     }
 };
 
-traversal go {
-    prefix = go
+traversal Letsgo {
+    uid = go;
 
     travdata = {
         int val,
