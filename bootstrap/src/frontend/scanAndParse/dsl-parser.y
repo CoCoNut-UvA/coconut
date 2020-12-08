@@ -517,6 +517,7 @@ nodelifetimes: %empty
     }
     ;
 
+
 lifetimes: lifetime ';' lifetimes
     {
         $$ = $1;
@@ -541,11 +542,17 @@ lifetime:
         ILIFETIME_BEGIN($$) = $begin;
         ILIFETIME_END($$) = $end;
     }
-
     | T_MANDATORY
     {
         $$ = ASTilifetime();
         ILIFETIME_TYPE($$) = LT_mandatory;
+    }
+    | T_MANDATORY '(' lifetime_range[begin] T_ARROW lifetime_range[end] ')'
+    {
+        $$ = ASTilifetime();
+        ILIFETIME_TYPE($$) = LT_mandatory;
+        ILIFETIME_BEGIN($$) = $begin;
+        ILIFETIME_END($$) = $end;
     }
     ;
 

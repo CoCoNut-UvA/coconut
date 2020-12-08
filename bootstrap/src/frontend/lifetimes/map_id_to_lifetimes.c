@@ -10,6 +10,7 @@ static node_st *last_action = NULL;
 static node_st *curr_target = NULL;
 static node_st *ast = NULL;
 static node_st *ste = NULL;
+static bool in_node = false;
 
 static bool CompareID(node_st *id, node_st *other_id)
 {
@@ -31,7 +32,9 @@ node_st *MITLast(node_st *node)
 
 node_st *MITLinode(node_st *node)
 {
+    in_node = true;
     TRAVopt(INODE_LIFETIMES(node));
+    in_node = false;
     TRAVopt(INODE_ICHILDREN(node));
     TRAVopt(INODE_NEXT(node));
     return node;
@@ -68,6 +71,9 @@ node_st *MITLiactions(node_st *node)
 
 node_st *MITLilifetime(node_st *node)
 {
+    if (in_node && ILIFETIME_TYPE(node) == LT_mandatory) {
+        CTIerror("Node lifetime can not use mandatory.");
+    }
     last_action = NULL;
     TRAVopt(ILIFETIME_BEGIN(node));
     last_action = NULL;
