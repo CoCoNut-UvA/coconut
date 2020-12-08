@@ -15,6 +15,7 @@ static bool seen_start_phase = false;
 static node_st *ste = NULL;
 static node_st *node_ste = NULL;
 static node_st *root = NULL;
+static node_st *enum_prefix_ste = NULL;
 
 
 node_st *CEXast(node_st *node)
@@ -194,6 +195,11 @@ node_st *CEXattribute(node_st *node)
 
 node_st *CEXienum(node_st *node)
 {
+    if (lookupST(enum_prefix_ste, IENUM_IPREFIX(node))) {
+        CTIerror("Double declaration of enum prefix: %s\n", ID_ORIG(IENUM_IPREFIX(node)));
+    } else {
+        enum_prefix_ste = BSTaddToST(enum_prefix_ste, IENUM_IPREFIX(node), node);
+    }
     TRAVchildren(node);
     return node;
 }

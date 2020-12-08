@@ -74,3 +74,12 @@ def test_invalid_node_lifetime(exec, testdir):
     res = testdir.run(exec, build_filepath("invalid_node_lifetime.ccn"))
     res.stderr.fnmatch_lines(["error: Node lifetime can not use mandatory."])
     assert res.ret != 0
+
+
+def test_double_enum_prefix(exec, testdir):
+    testdir.mkdir("ccngen/")
+    testdir.mkdir("ccngen/ccngen")
+    res = testdir.run(exec, build_filepath("double_enum_prefix.ccn"))
+    res.stderr.fnmatch_lines(["error: Double declaration of enum prefix: V"])
+    assert res.ret != 0
+

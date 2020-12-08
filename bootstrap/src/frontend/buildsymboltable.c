@@ -50,7 +50,7 @@ node_st *lookupST(node_st *ste, node_st *node)
     }
     node_st *curr = ste;
     while (curr) {
-        if (STReq(ID_ORIG(STE_KEY(curr)), ID_ORIG(node))) {
+        if (STReq(ID_LWR(STE_KEY(curr)), ID_LWR(node))) {
             return STE_VALUE(curr);
         }
         curr = STE_NEXT(curr);
