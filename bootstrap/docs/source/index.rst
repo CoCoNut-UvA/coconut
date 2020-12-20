@@ -11,7 +11,7 @@ Welcome to CoCoNut's documentation!
     :caption: Contents:
 
     manual
-    dsl_syntax
+    codegen
 
 
 ==================
