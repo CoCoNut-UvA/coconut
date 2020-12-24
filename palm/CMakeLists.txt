@@ -16,6 +16,6 @@ if (${CMAKE_C_COMPILER_ID} MATCHES "GNU" OR ${CMAKE_C_COMPILER_ID} MATCHES "Clan
 endif()
 
 
-add_executable(tests tests.c)
+add_executable(palm_tests tests.c)
 
-target_link_libraries(tests PRIVATE coconut::palm)
+target_link_libraries(palm_tests PRIVATE coconut::palm)

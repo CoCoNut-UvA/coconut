@@ -5,7 +5,6 @@
 #include "palm/str.h"
 #include "palm/hash_table.h"
 #include "palm/memory.h"
-#include "palm/set.h"
 #include "palm/dbug.h"
 
 int main() {
@@ -26,31 +25,6 @@ int main() {
 
     printf("%s:%s:%s\n", orig, up, low);
     printf("%s\n", STRonNull("NULL :)", none));
-
-    set_st *set = SETnew_String(10);
-    SETinsert(set, "Hello");
-    bool yes = SETisMember(set, "Hello");
-    bool no = SETisMember(set, "hello");
-    SETremove(set, "Hello");
-    DBUG_ASSERT(!SETisMember(set, "Hello"), "SHould not be a member!");
-    printf("Yes:%d, No:%d\n", yes, no);
-
-    SETinsert(set, "Hello");
-    SETinsert(set, "Doei");
-
-    set_st *copied = SETcpy(set);
-    SETprint_String(copied);
-    SETprint_String(set);
-
-    set_st *set2 = SETnew_String(10);
-    SETinsert(set2, "Doei");
-    set_st *new = SETunion(set, set2);
-    set_st *new2 = SETintersect(set, set2);
-    set_st *diff = SETdifference(set, set2);
-
-    SETprint_String(new);
-    SETprint_String(new2);
-    SETprint_String(diff);
 
     MEMfree(up);
     MEMfree(low);

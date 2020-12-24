@@ -5,5 +5,4 @@ target_sources(${PROJECT_NAME}
         ctinfo.h
         str.h
         hash_table.h
-        set.h
 )
