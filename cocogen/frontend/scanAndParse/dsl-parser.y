@@ -185,14 +185,57 @@ entry: phase
      }
      ;
 
-/* Root of the config, creating the final config */
-phase: phaseheader '{' info[information] uid[identifier] gate[gatef] actionsbody[actions] '}'
+phase: phaseheader '{' info[information] ',' uid[identifier] ',' gate[gatef] ',' actionsbody[actions] '}'
     {
         $$ = $1;
         IPHASE_IPREFIX($$) = $identifier;
         IPHASE_IINFO($$) = $information;
         IPHASE_IACTIONS($$) = $actions;
         IPHASE_GATE_FUNC($$) = $gatef;
+    }
+    | phaseheader '{' uid[identifier] ',' gate[gatef] ',' actionsbody[actions] '}'
+    {
+        $$ = $1;
+        IPHASE_IPREFIX($$) = $identifier;
+        IPHASE_IACTIONS($$) = $actions;
+        IPHASE_GATE_FUNC($$) = $gatef;
+    }
+    | phaseheader '{' info[information] ',' gate[gatef] ',' actionsbody[actions] '}'
+    {
+         $$ = $1;
+         IPHASE_IINFO($$) = $information;
+         IPHASE_IACTIONS($$) = $actions;
+         IPHASE_GATE_FUNC($$) = $gatef;
+    }
+    | phaseheader '{' gate[gatef] ',' actionsbody[actions] '}'
+    {
+         $$ = $1;
+         IPHASE_IACTIONS($$) = $actions;
+         IPHASE_GATE_FUNC($$) = $gatef;
+    }
+    | phaseheader '{' actionsbody[actions] '}'
+    {
+         $$ = $1;
+         IPHASE_IACTIONS($$) = $actions;
+    }
+    | phaseheader '{' info[information] ',' uid[identifier] ',' actionsbody[actions] '}'
+    {
+         $$ = $1;
+         IPHASE_IPREFIX($$) = $identifier;
+         IPHASE_IINFO($$) = $information;
+         IPHASE_IACTIONS($$) = $actions;
+    }
+    | phaseheader '{' info[information] ',' actionsbody[actions] '}'
+    {
+         $$ = $1;
+         IPHASE_IINFO($$) = $information;
+         IPHASE_IACTIONS($$) = $actions;
+    }
+    | phaseheader '{' uid[identifier] ',' actionsbody[actions] '}'
+    {
+         $$ = $1;
+         IPHASE_IPREFIX($$) = $identifier;
+         IPHASE_IACTIONS($$) = $actions;
     }
     | cycleheader '{' info[information] uid[identifier] gate[gatef] actionsbody[actions] '}'
     {
@@ -676,21 +719,16 @@ func: %empty
     }
     ;
 
-info: %empty
-    {
-        $$ = NULL;
-    }
-    | T_INFO '=' T_STRINGVAL
+info:T_INFO '=' T_STRINGVAL
     {
         $$ = $3;
     }
-    ;
-
-prefix: %empty
-    {
+    | %empty {
         $$ = NULL;
     }
-    | T_PREFIX '=' id
+    ;
+
+prefix: T_PREFIX '=' id
     {
         $$ = $3;
     }
@@ -704,11 +742,7 @@ mandatory_uid:
     }
     ;
 
-uid: %empty
-    {
-        $$ = NULL;
-    }
-    | T_UID '=' id ';'
+uid: T_UID '=' id
     {
         $$ = $3;
     }

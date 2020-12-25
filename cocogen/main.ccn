@@ -1,7 +1,7 @@
 
 start phase startPhase {
-    info = "The starting point"
-    uid = RT;
+    info = "The starting point",
+    uid = RT,
 
     actions {
         pass scanAndParse;
@@ -15,8 +15,8 @@ start phase startPhase {
 };
 
 phase semantic {
-    info = "Main part"
-    uid = SEA;
+    info = "Main part",
+    uid = SEA,
 
     actions {
         buildSymbolTable;
@@ -27,8 +27,8 @@ phase semantic {
 };
 
 phase unpack_lifetimes {
-    info = "Unpack lifetime into their action IDS"
-    uid = ULT;
+    info = "Unpack lifetime into their action IDS",
+    uid = ULT,
 
     actions {
         traversal assign_id_to_action {
@@ -45,7 +45,7 @@ phase unpack_lifetimes {
 
 
 phase phase_driver {
-    info = "Generate the missing parts of the phase driver"
+    info = "Generate the missing parts of the phase driver",
 
     actions {
         gen_action_array_header;
@@ -56,9 +56,9 @@ phase phase_driver {
 };
 
 phase dynamic_backend {
-    info = "Generating part for the dynamic backend"
-    uid = DDB;
-    gate = backendIsDynamic
+    info = "Generating part for the dynamic backend",
+    uid = DDB,
+    gate = backendIsDynamic,
 
     actions {
         dynamic_gen_ast;
@@ -80,8 +80,8 @@ phase dynamic_backend {
 };
 
 phase dynamic_gen_trav_data {
-    info = "Generate the trav data requirements."
-    uid = DGTD;
+    info = "Generate the trav data requirements.",
+    uid = DGTD,
 
     actions {
         pass dynamic_start_trav_data;
@@ -95,8 +95,8 @@ phase dynamic_gen_trav_data {
 };
 
 phase dynamic_gen_ast {
-    info = "Generate the required files for managing user nodes and AST manipulation"
-    uid = DGA;
+    info = "Generate the required files for managing user nodes and AST manipulation",
+    uid = DGA,
 
     actions {
         pass dynamic_start_ast_header;
