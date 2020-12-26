@@ -281,11 +281,32 @@ is_start: %empty
      }
      ;
 
-pass: T_PASS id[name] '{'  info[information] uid[identifier] func[target_func]'}'
+pass: T_PASS id[name] '{'  info[information] ',' uid[identifier] ',' func[target_func]'}'
     {
         $$ = ASTipass($name, $information);
         IPASS_IPREFIX($$) = $identifier;
         IPASS_TARGET_FUNC($$) = $target_func;
+    }
+    | T_PASS id[name] '{'  uid[identifier] ',' func[target_func]'}'
+    {
+        $$ = ASTipass($name, NULL);
+        IPASS_IPREFIX($$) = $identifier;
+        IPASS_TARGET_FUNC($$) = $target_func;
+    }
+    | T_PASS id[name] '{'  func[target_func]'}'
+    {
+        $$ = ASTipass($name, NULL);
+        IPASS_TARGET_FUNC($$) = $target_func;
+    }
+    | T_PASS id[name] '{'  info[information] ',' func[target_func]'}'
+    {
+        $$ = ASTipass($name, $information);
+        IPASS_TARGET_FUNC($$) = $target_func;
+    }
+    | T_PASS id[name] '{'  info[information] ',' uid[identifier] '}'
+    {
+        $$ = ASTipass($name, $information);
+        IPASS_IPREFIX($$) = $identifier;
     }
     | T_PASS id[name]
     {
@@ -298,7 +319,7 @@ pass: T_PASS id[name] '{'  info[information] uid[identifier] func[target_func]'}
     }
     ;
 
-traversal: T_TRAVERSAL id[name] '{' info[information] mandatory_uid[identifier] traversalnodes[nodes] travdata[data]'}'
+traversal: T_TRAVERSAL id[name] '{' info[information] ',' mandatory_uid[identifier] ',' traversalnodes[nodes] ',' travdata[data]'}'
     {
         $$ = ASTitraversal($name);
         ITRAVERSAL_INDEX($$) = trav_index++;
@@ -307,12 +328,59 @@ traversal: T_TRAVERSAL id[name] '{' info[information] mandatory_uid[identifier] 
         ITRAVERSAL_INODES($$) = $nodes;
         ITRAVERSAL_DATA($$) = $data;
     }
-    | T_TRAVERSAL id[name]
+
+    | T_TRAVERSAL id[name] '{' mandatory_uid[identifier] ',' traversalnodes[nodes] ',' travdata[data]'}'
+      {
+          $$ = ASTitraversal($name);
+          ITRAVERSAL_INDEX($$) = trav_index++;
+          ITRAVERSAL_IPREFIX($$) = $identifier;
+          ITRAVERSAL_INODES($$) = $nodes;
+          ITRAVERSAL_DATA($$) = $data;
+      }
+    | T_TRAVERSAL id[name] '{' info[information] ',' mandatory_uid[identifier]  ',' travdata[data]'}'
+    {
+           $$ = ASTitraversal($name);
+           ITRAVERSAL_INDEX($$) = trav_index++;
+           ITRAVERSAL_IPREFIX($$) = $identifier;
+           ITRAVERSAL_DATA($$) = $data;
+    }
+    | T_TRAVERSAL id[name] '{' info[information] ',' mandatory_uid[identifier] ',' traversalnodes[nodes]'}'
     {
         $$ = ASTitraversal($name);
         ITRAVERSAL_INDEX($$) = trav_index++;
+        ITRAVERSAL_IINFO($$) = $information;
+        ITRAVERSAL_IPREFIX($$) = $identifier;
+        ITRAVERSAL_INODES($$) = $nodes;
+    }
+    | T_TRAVERSAL id[name] '{' info[information] ',' mandatory_uid[identifier] '}'
+    {
+        $$ = ASTitraversal($name);
+        ITRAVERSAL_INDEX($$) = trav_index++;
+        ITRAVERSAL_IINFO($$) = $information;
+        ITRAVERSAL_IPREFIX($$) = $identifier;
+    }
+    | T_TRAVERSAL id[name] '{'  mandatory_uid[identifier]  ',' travdata[data]'}'
+    {
+        $$ = ASTitraversal($name);
+        ITRAVERSAL_INDEX($$) = trav_index++;
+        ITRAVERSAL_IPREFIX($$) = $identifier;
+        ITRAVERSAL_DATA($$) = $data;
+    }
+    | T_TRAVERSAL id[name] '{'  mandatory_uid[identifier] ',' traversalnodes[nodes] '}'
+    {
+        $$ = ASTitraversal($name);
+        ITRAVERSAL_INDEX($$) = trav_index++;
+        ITRAVERSAL_IPREFIX($$) = $identifier;
+        ITRAVERSAL_INODES($$) = $nodes;
+    }
+    | T_TRAVERSAL id[name] '{' mandatory_uid[identifier]  '}'
+    {
+        $$ = ASTitraversal($name);
+        ITRAVERSAL_INDEX($$) = trav_index++;
+        ITRAVERSAL_IPREFIX($$) = $identifier;
     }
     ;
+
 
 actionsbody: T_ACTIONS '{' actions '}'
      {
@@ -364,10 +432,7 @@ traversalnodes: T_NODES '=' setexpr
             {
                 $$ = $3;
             }
-            | %empty
-            {
-                $$ = NULL;
-            }
+            ;
 
 setexpr: setoperation
        {
@@ -413,13 +478,46 @@ setliterals: setliterals ',' id
            }
 
 
-node: is_root[root] T_NODE id[name] '{' info[information] childrenbody[children] attributebody[attributes] nodelifetimes[lifetimes] '}'
+node: is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebody[attributes] ',' nodelifetimes[lifetimes] '}'
     {
-        $$ = ASTinode($name, $information);
+        $$ = ASTinode($name, NULL);
         INODE_IS_ROOT($$) = $root;
         INODE_ICHILDREN($$) = $children;
         INODE_IATTRIBUTES($$) = $attributes;
         INODE_LIFETIMES($$) = $lifetimes;
+    }
+    | is_root[root] T_NODE id[name] '{' attributebody[attributes] ',' nodelifetimes[lifetimes] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_IATTRIBUTES($$) = $attributes;
+        INODE_LIFETIMES($$) = $lifetimes;
+    }
+    | is_root[root] T_NODE id[name] '{' childrenbody[children] ',' nodelifetimes[lifetimes] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_ICHILDREN($$) = $children;
+        INODE_LIFETIMES($$) = $lifetimes;
+    }
+    | is_root[root] T_NODE id[name] '{' attributebody[attributes]  '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_IATTRIBUTES($$) = $attributes;
+    }
+    | is_root[root] T_NODE id[name] '{'  childrenbody[children]  '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_ICHILDREN($$) = $children;
+    }
+    | is_root[root] T_NODE id[name] '{'  childrenbody[children] ','  attributebody[attributes] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_ICHILDREN($$) = $children;
+        INODE_IATTRIBUTES($$) = $attributes;
     }
     ;
 
@@ -437,10 +535,6 @@ is_root:
 attributebody: T_ATTRIBUTES '{' attributes '}'
     {
         $$ = $3;
-    }
-    | %empty
-    {
-        $$ = NULL;
     }
     ;
 
@@ -504,10 +598,6 @@ is_constructor:
 childrenbody: T_CHILDREN '{' children  '}'
     {
         $$ = $3;
-    }
-    | %empty
-    {
-        $$ = NULL;
     }
     ;
 
@@ -628,12 +718,18 @@ range_spec: id '.' range_spec
     }
     ;
 
-nodeset: T_NODESET id[name] '{' info[information] T_NODES '=' setexpr[expr] '}'
+nodeset: T_NODESET id[name] '{' info[information] ',' T_NODES '=' setexpr[expr] '}'
         {
             $$ = ASTinodeset();
             INODESET_EXPR($$) = $expr;
             INODESET_NAME($$) = $name;
             INODESET_IINFO($$) = $information;
+        }
+        | T_NODESET id[name] '{' T_NODES '=' setexpr[expr] '}'
+        {
+            $$ = ASTinodeset();
+            INODESET_EXPR($$) = $expr;
+            INODESET_NAME($$) = $name;
         }
         | T_NODESET id[name] '=' setexpr[expr]
         {
@@ -643,11 +739,16 @@ nodeset: T_NODESET id[name] '{' info[information] T_NODES '=' setexpr[expr] '}'
         }
         ;
 
-enum: T_ENUM id[name] '{' info[information] prefix[identifier] enumvalues[values] '}'
+enum: T_ENUM id[name] '{' info[information] ',' prefix[identifier] ',' enumvalues[values] '}'
     {
 
         $$ = ASTienum($values, $name, $identifier, $information);
     }
+    |  T_ENUM id[name] '{' prefix[identifier] ',' enumvalues[values] '}'
+    {
+        $$ = ASTienum($values, $name, $identifier, NULL);
+    }
+    ;
 
 enumvalues: T_VALUES '=' '{' idlist '}'
     {
@@ -659,10 +760,6 @@ enumvalues: T_VALUES '=' '{' idlist '}'
 travdata: T_TRAVDATA '=' '{' travdatalist '}'
     {
         $$ = $4;
-    }
-    | %empty
-    {
-        $$ = NULL;
     }
     ;
 
@@ -709,26 +806,22 @@ idlist: id ',' idlist
     ;
 
 
-func: %empty
-    {
-        $$ = NULL;
-    }
-    | T_FUNC '=' id
+func:
+    T_FUNC '=' id
     {
         $$ = $3;
     }
     ;
 
-info:T_INFO '=' T_STRINGVAL
+info:
+    T_INFO '=' T_STRINGVAL
     {
         $$ = $3;
     }
-    | %empty {
-        $$ = NULL;
-    }
     ;
 
-prefix: T_PREFIX '=' id
+prefix:
+    T_PREFIX '=' id
     {
         $$ = $3;
     }
@@ -736,7 +829,7 @@ prefix: T_PREFIX '=' id
 
 
 mandatory_uid:
-    T_UID '=' id ';'
+    T_UID '=' id
     {
         $$ = $3;
     }

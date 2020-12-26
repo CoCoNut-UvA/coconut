@@ -17,7 +17,7 @@ static node_st *node_ste = NULL;
 static node_st *root = NULL;
 static node_st *enum_prefix_ste = NULL;
 
-
+// TODO: Check UID.
 node_st *CEXast(node_st *node)
 {
     root = node;
@@ -193,6 +193,7 @@ node_st *CEXattribute(node_st *node)
     return node;
 }
 
+// TODO: Check enum prefix to reserver prefixes.
 node_st *CEXienum(node_st *node)
 {
     if (lookupST(enum_prefix_ste, IENUM_IPREFIX(node))) {

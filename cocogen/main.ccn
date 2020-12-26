@@ -32,12 +32,12 @@ phase unpack_lifetimes {
 
     actions {
         traversal assign_id_to_action {
-            uid = AITA;
+            uid = AITA,
             nodes = {ast, iactions }
         };
 
         traversal map_id_to_lifetime {
-            uid = MITL;
+            uid = MITL,
             nodes = {ast, inode, iactions, ilifetime, lifetime_range, id}
         };
     }
@@ -76,6 +76,7 @@ phase dynamic_backend {
         dynamic_genCopyTraversal;
         dynamic_genFreeTraversal;
         dynamic_genCheckTraversal;
+        dynamic_gen_user_files;
     }
 };
 
@@ -111,16 +112,36 @@ phase dynamic_gen_ast {
     }
 };
 
+phase dynamic_gen_user_files {
+    info = "Generate base files for defenition the user needs to give.",
+    uid = DGUF,
+    actions {
+        traversal dynamic_user_gen_passes {
+            uid = DUGP,
+            nodes = {
+                ipass, ast
+            }
+        };
+
+        traversal dynamic_user_gen_traversals {
+            uid = DUGT,
+            nodes = {
+                ast, itraversal, inode, id
+            }
+        };
+    }
+};
+
 traversal gen_dot {
-    info = "Generate a dot diagram of the AST."
-    uid = GD;
+    info = "Generate a dot diagram of the AST.",
+    uid = GD,
 
     nodes = {inode, child, ast, inodeset, setliteral}
 };
 
 traversal dynamic_genTravDataTables {
-    uid = DGTDT;
-    nodes = {ast, itraversal}
+    uid = DGTDT,
+    nodes = {ast, itraversal},
 
     travdata = {
         unsafe fileptr file,
@@ -130,14 +151,14 @@ traversal dynamic_genTravDataTables {
 };
 
 traversal gen_gate_header {
-    info = "Generate extern for gate functions"
-    uid = GGH;
+    info = "Generate extern for gate functions",
+    uid = GGH,
     nodes = {ast, iphase}
 
 };
 
 traversal gen_ids_tables {
-    uid = GIT;
+    uid = GIT,
 
     nodes = {
         ast, iphase, iactions
@@ -145,44 +166,44 @@ traversal gen_ids_tables {
 };
 
 traversal gen_action_array_header {
-    uid = GAAH;
+    uid = GAAH,
 
     nodes = action | {ast}
 };
 
 traversal gen_action_array {
-    uid = GAA;
+    uid = GAA,
 
     nodes = action | {ast}
 };
 
 traversal dynamic_genTravDataUnion {
-    uid = DGTDU;
+    uid = DGTDU,
     nodes = {ast, itraversal}
 };
 
 traversal dynamic_genTravDataGetters {
-    uid = DGTDG;
+    uid = DGTDG,
     nodes = {itraversal}
 };
 
 traversal dynamic_genTravDataCtorsHeader {
-    uid = DGTDCH;
+    uid = DGTDCH,
     nodes = {itraversal}
 };
 
 traversal dynamic_genTravDataCtors {
-    uid = DGTDC;
+    uid = DGTDC,
     nodes = {itraversal, itravdata}
 };
 
 traversal dynamic_genTravDataStructs {
-    uid = DGTDS;
+    uid = DGTDS,
     nodes = {itraversal, itravdata}
 };
 
 traversal dynamic_genCheckTraversal {
-    uid = DGCHT;
+    uid = DGCHT,
 
     travdata = {
         int lifetime_target
@@ -191,119 +212,119 @@ traversal dynamic_genCheckTraversal {
 
 
 traversal dynamic_genFreeTraversal {
-    uid = DGFT;
+    uid = DGFT
 };
 
 traversal dynamic_genConstructorCall {
-    uid = DGCC;
+    uid = DGCC,
 
     nodes = {ast, inode, child, attribute}
 };
 
 traversal dynamic_genCopyTraversal {
-    uid = DGCT;
+    uid = DGCT
 };
 
 traversal dynamic_genTravActions {
-    uid = DGTA;
+    uid = DGTA,
 
     nodes = {ast, inode}
 };
 
 traversal dynamic_genActionsHeader {
-    uid = DGAH;
+    uid = DGAH,
 
     nodes = {itraversal, ipass, ast, inode, setliteral, id}
 };
 
 traversal dynamic_genSystemTraversals {
-    uid = DGST;
+    uid = DGST,
 
     nodes = {ast, inode}
 };
 
 traversal dynamic_genTravTable {
-    uid = DGTT;
+    uid = DGTT,
 
     nodes = {ast, itraversal}
 };
 
 traversal dynamic_genPassTable {
-    uid = DGPT;
+    uid = DGPT,
 
     nodes = {ast, ipass}
 };
 
 traversal dynamic_genNodesForTravTable {
-    uid = DGNFTT;
+    uid = DGNFTT,
 
     nodes = {ast, inode}
 };
 
 traversal dynamic_genTravVtable {
-    uid = DGTV;
+    uid = DGTV,
 
     nodes = {itraversal, ast}
 };
 
 traversal dynamic_genEnumValues {
-    uid = DGEV;
+    uid = DGEV,
 
     nodes = {ienum, ast, id}
 };
 
 traversal dynamic_genEnum {
-    uid = DGE;
+    uid = DGE,
 
     nodes = {ast, inode, itraversal, inodeset, ipass}
 };
 
 traversal dynamic_genNodeConstructor {
-    uid = DGNC;
+    uid = DGNC,
     nodes = {ast, inode, child, attribute}
 };
 
 traversal dynamic_genNodeUnion {
-    uid = DGBU;
+    uid = DGBU,
 
     nodes = {ast, inode}
 };
 
 traversal dynamic_genNodeInitFunctions {
-    uid = DGIF;
+    uid = DGIF,
 
     nodes = {ast, inode, child, attribute}
 };
 
 
 traversal dynamic_genNodeStructs {
-    uid = DGNS;
+    uid = DGNS,
 
     nodes = {ast, inode, child, attribute}
 };
 
 traversal dynamic_genNodeMacros {
-    uid = DGNM;
+    uid = DGNM,
 
     nodes = {ast, inode, child, attribute}
 };
 
 
 traversal checkExistance {
-    uid = CEX;
+    uid = CEX
 };
 
 traversal buildSymbolTable {
-    uid = BST;
+    uid = BST
 };
 
 traversal unwrapSetExpr {
-    uid = USE;
+    uid = USE,
     nodes = setexpr | {ast}
 };
 
 traversal reachability {
-    uid = RCB;
+    uid = RCB,
 
     nodes = {
         ast, setliteral, itraversal, inode, child, inodeset
@@ -311,22 +332,22 @@ traversal reachability {
 };
 
 traversal setliteralInsert {
-    uid = SLI;
+    uid = SLI,
     nodes = {
         setliteral
-    }
+    },
 
     travdata = {
-	setliteral value,
+	    setliteral value,
         bool inserted
     }
 };
 
 traversal setliteralUnion {
-    uid = SLU;
+    uid = SLU,
     nodes = {
         setliteral
-    }
+    },
 
     travdata = {
         setliteral dst
@@ -334,10 +355,10 @@ traversal setliteralUnion {
 };
 
 traversal setliteralIntersect {
-    uid = SLIS;
+    uid = SLIS,
     nodes = {
         setliteral
-    }
+    },
 
     travdata = {
         setliteral src,
@@ -346,10 +367,10 @@ traversal setliteralIntersect {
 };
 
 traversal setliteralDifference {
-    uid = SLD;
+    uid = SLD,
     nodes = {
         setliteral
-    }
+    },
 
     travdata = {
         setliteral right,
@@ -358,8 +379,8 @@ traversal setliteralDifference {
 };
 
 traversal setliteralContains {
-    uid = SLC;
-    nodes = { setliteral }
+    uid = SLC,
+    nodes = { setliteral },
     travdata = {
         id lookup,
         bool contains
@@ -367,8 +388,8 @@ traversal setliteralContains {
 };
 
 traversal print {
-    info = "Print the ast"
-    uid = PRT;
+    info = "Print the ast",
+    uid = PRT
 };
 
 
@@ -381,7 +402,7 @@ root node ast {
         inodeset inodesets,
         ienum enums,
         ste stable
-    }
+    },
     attributes {
         int num_traversals,
         int num_nodes,
@@ -396,7 +417,7 @@ nodeset link = action | {inode};
 node iactions {
     children {
         iactions next
-    }
+    },
     attributes {
         id reference,
         int action_id
@@ -410,7 +431,7 @@ node iphase {
         id gate_func,
         iactions iactions {mandatory },
         iphase next
-    }
+    },
     attributes {
         int is_start { constructor },
         int is_cycle,
@@ -425,7 +446,7 @@ node itraversal {
         setexpr inodes,
         itravdata data,
         itraversal next
-    }
+    },
     attributes {
         int index,
         string iinfo
@@ -438,7 +459,7 @@ node ipass {
         id iprefix,
         id target_func,
         ipass next
-    }
+    },
     attributes {
         string iifno { constructor }
     }
@@ -451,7 +472,7 @@ node inode {
         child ichildren,
         attribute iattributes,
         ilifetime lifetimes
-    }
+    },
 
     attributes {
         string iifno { constructor },
@@ -466,14 +487,15 @@ node inodeset {
         setexpr expr,
         id unpacked,
         inodeset next
-    }
+    },
+
     attributes {
         string iinfo
     }
 };
 
 enum lifetime_type {
-    prefix = LT
+    prefix = LT,
     values = {
         disallowed, mandatory
     }
@@ -484,7 +506,7 @@ node ilifetime {
         lifetime_range begin,
         lifetime_range end,
         ilifetime next
-    }
+    },
 
     attributes {
         lifetime_type type
@@ -494,7 +516,7 @@ node ilifetime {
 node lifetime_range {
     children {
         id target
-    }
+    },
 
     attributes {
         int action_id
@@ -502,7 +524,7 @@ node lifetime_range {
 };
 
 enum child_type {
-    prefix = CT
+    prefix = CT,
     values = {
         inode, inodeset
     }
@@ -513,7 +535,7 @@ node child {
         id name { constructor, mandatory },
         ilifetime lifetimes,
         child next
-    }
+    },
 
     attributes {
         id type_reference,
@@ -526,7 +548,7 @@ node child {
 node ste {
     children {
         ste next
-    }
+    },
     attributes {
         id key,
         link value
@@ -534,14 +556,14 @@ node ste {
 };
 
 enum attribute_type {
-    prefix = AT
+    prefix = AT,
     values = {
         user, link, link_or_enum, int, string, bool, int8, int16, int32, float, double, uint, uint8, uint16, uint32
     }
 };
 
 enum setoperation_type {
-    prefix = SO
+    prefix = SO,
     values = {
         iunion, intersect, difference
     }
@@ -550,7 +572,7 @@ enum setoperation_type {
 node setreference {
     children {
         id reference
-    }
+    },
 
     lifetime {
         disallowed (reachability -> )
@@ -569,10 +591,10 @@ node setoperation {
     children {
         setexpr left {constructor},
         setexpr right {constructor}
-    }
+    },
     attributes {
         setoperation_type type { constructor }
-    }
+    },
     lifetime {
         disallowed (reachability ->)
     }
@@ -585,7 +607,7 @@ node itravdata {
         id name { constructor, mandatory },
         id type_reference,
         itravdata next
-    }
+    },
 
     attributes {
         attribute_type type,
@@ -598,7 +620,8 @@ node attribute {
         id name {mandatory },
         id type_reference,
         attribute next
-    }
+    },
+
     attributes {
         attribute_type type,
         int in_constructor
@@ -611,7 +634,8 @@ node ienum {
         id name {constructor},
         id iprefix {constructor},
         ienum next
-    }
+    },
+
     attributes {
         string iinfo { constructor }
     }
@@ -620,7 +644,8 @@ node ienum {
 node id {
     children {
         id next
-    }
+    },
+
     attributes {
         string orig { constructor },
         string lwr { constructor },

@@ -136,7 +136,7 @@ node_st  *BSTitravdata(node_st *node)
     return node;
 }
 
-
+// TODO: Check pass func duplicates.
 node_st *BSTipass(node_st *node)
 {
     if (lookupST(first_ste, IPASS_NAME(node))) {

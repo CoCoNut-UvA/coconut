@@ -3,5 +3,5 @@
 
 bool backendIsDynamic()
 {
-    return false;
+    return true;
 }
