@@ -59,6 +59,6 @@ bin/
 
 # Doxygen generated docs file
 
-/generated/src
-/generated/include/ccngen/
 .vscode
+.idea
+cmake-*
