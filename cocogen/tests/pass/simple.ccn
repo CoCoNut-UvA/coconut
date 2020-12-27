@@ -1,0 +1,12 @@
+
+root node ast {
+    attributes {
+        int val {}
+    }
+};
+
+start phase dooo {
+    actions {
+        pass x;
+    }
+};

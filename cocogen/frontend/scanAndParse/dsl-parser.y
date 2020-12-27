@@ -606,6 +606,12 @@ attribute: attribute_primitive_type[type] id[name] '{' is_constructor[constructo
           ATTRIBUTE_NAME($$) = $name;
           ATTRIBUTE_TYPE($$) = $type;
     }
+    | attribute_primitive_type[type] id[name] '{' '}'
+    {
+          $$ = ASTattribute();
+          ATTRIBUTE_NAME($$) = $name;
+          ATTRIBUTE_TYPE($$) = $type;
+    }
     | id[type] id[name] '{' is_constructor[constructor] '}'
     {
         $$ = ASTattribute();
@@ -657,6 +663,11 @@ children: child ',' children
     ;
 
 child: id[type] id[name]
+    {
+        $$ = ASTchild($name);
+        CHILD_TYPE_REFERENCE($$) = $type;
+    }
+    | id[type] id[name] '{' '}'
     {
         $$ = ASTchild($name);
         CHILD_TYPE_REFERENCE($$) = $type;

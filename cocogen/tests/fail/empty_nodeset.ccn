@@ -1,0 +1,27 @@
+
+start phase hello {
+    actions {
+        pass p;
+        phase1;
+    }
+};
+
+root node ast {
+    children {
+        ast next
+    }
+};
+
+node tmp {
+    children {
+        ast nextt
+    }
+};
+
+nodeset x = {};
+
+phase phase1 {
+    actions {
+        pass doSomething;
+    } 
+};

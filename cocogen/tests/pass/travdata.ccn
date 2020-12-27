@@ -1,0 +1,21 @@
+
+root node ast {
+    attributes {
+        int val {}
+    }
+};
+
+start phase begin {
+    actions {
+        pass x;
+    }
+};
+
+traversal Letsgo {
+    uid = go,
+
+    travdata = {
+        int val,
+        ast ast
+    }
+};

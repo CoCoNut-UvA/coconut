@@ -1,0 +1,20 @@
+
+start phase hello {
+    actions {
+        pass p;
+        phase1;
+    }
+};
+
+root node ast {
+    children {
+        ast next,
+        ast next
+    }
+};
+
+phase phase1 {
+    actions {
+        pass doSomething;
+    } 
+};

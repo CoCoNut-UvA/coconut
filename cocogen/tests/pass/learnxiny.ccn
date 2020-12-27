@@ -1,0 +1,8 @@
+start phase begin {
+    uid = beg,
+    info = "The starting point of your compiler.",
+    actions {
+
+    }
+};
+

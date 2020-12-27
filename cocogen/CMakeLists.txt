@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.13)
 
 file(GLOB COCONUT_FILES "${CMAKE_CURRENT_LIST_DIR}/ccngen/*.c" "${PROJECT_SOURCE_DIR}/copra/src/*.c")
 
-enable_testing()
-
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
 
@@ -35,7 +33,7 @@ target_compile_options(cocogen PRIVATE
         )
 
 #add_subdirectory(../cunit/CUnit cunit)
-#add_subdirectory(./tests)
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/tests")
 
 target_include_directories(cocogen PUBLIC "${CMAKE_CURRENT_LIST_DIR}/ccngen" "${CMAKE_CURRENT_LIST_DIR}" "${PROJECT_SOURCE_DIR}/copra")
 
