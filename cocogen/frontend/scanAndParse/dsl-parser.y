@@ -23,7 +23,7 @@ static node_st *ast;
 static int trav_index = 0;
 static int node_index = 0;
 
-static struct ctinfo *NewLocation(struct ctinfo *info);
+//static struct ctinfo *NewLocation(struct ctinfo *info);
 
 
 void yyerror(const char* s);
@@ -895,7 +895,7 @@ id: T_ID
   ;
 %%
 
-static struct ctinfo *NewLocation(struct ctinfo *info)
+/*static struct ctinfo *NewLocation(struct ctinfo *info)
 {
     struct ctinfo *locinfo = MEMmalloc(sizeof(struct ctinfo));
     memcpy(locinfo, info, sizeof(struct ctinfo));
@@ -904,6 +904,7 @@ static struct ctinfo *NewLocation(struct ctinfo *info)
 
     return locinfo;
 }
+*/
 
 
 node_st *SPparseDSL(FILE *fp)

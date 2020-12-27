@@ -8,6 +8,7 @@
 
 void TRAVdataNOP(ccn_trav_st *trav)
 {
+    trav = (void*)trav;
     return;
 }
 
@@ -88,6 +89,7 @@ struct ccn_node *PASSstart(struct ccn_node *syntaxtree, enum ccn_pass_type pass_
 }
 
 struct ccn_node *PASSerror(struct ccn_node *arg_node) {
+    arg_node = arg_node;
     abort();
 }
 

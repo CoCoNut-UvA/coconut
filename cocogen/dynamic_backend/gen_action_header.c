@@ -12,11 +12,6 @@
 FILE *fp;
 char *current_trav_prefix = NULL;
 static int indent = 0;
-static char *basic_node_type = "node_st";
-static char *curr_node_name = NULL;
-static char *curr_node_name_upr = NULL;
-static int child_num = 0;
-static char *prefix = NULL;
 static node_st *ast;
 
 node_st *DGAHast(node_st *node)

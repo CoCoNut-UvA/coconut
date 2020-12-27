@@ -12,11 +12,6 @@
 
 static FILE *fp;
 static int indent = 0;
-static char *basic_node_type = "node_st";
-static char *curr_node_name = NULL;
-static char *curr_node_name_upr = NULL;
-static int arg_num = 0;
-static char *node_type_enum_prefix = "NT_";
 static node_st *ast;
 static node_st *curr_node;
 static node_st *curr_child;
@@ -72,6 +67,7 @@ node_st *DGCHTinode(node_st *node)
     curr_node = node;
     OUT_START_FUNC("struct ccn_node *CHK%s(struct ccn_node *arg_node)", ID_LWR(INODE_NAME(node)));
     OUT_FIELD("size_t action_id = CCNgetCurrentActionId()");
+    OUT_FIELD("action_id = action_id"); // Prevents unused error.
     TRAVopt(INODE_ICHILDREN(node));
     // Child changes the target, so change it back.
     data->lifetime_target = LT_NODE;

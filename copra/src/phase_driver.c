@@ -7,6 +7,8 @@
 #include "ccn/dynamic_core.h"
 #include "ccngen/action_handling.h"
 #include "palm/ctinfo.h"
+#include <err.h>
+#include <stdlib.h>
 
 struct phase_driver {
     size_t level;
@@ -39,12 +41,15 @@ struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype 
     case CCN_ACTION_PHASE:
         node = StartPhase(&(action->phase), action->name, node);
         break;
+    case CCN_ACTION_NULL:
+        err(EXIT_FAILURE, "[coconut] error in phase driver.");
     }
 
     // TODO: wrap in an ifdef to check for CHECK_ENABLED.
     node = TRAVstart(node, TRAV_check);
     CTIabortOnError();
-
+    root_type = root_type;
+    is_root = is_root;
     return node;
 }
 

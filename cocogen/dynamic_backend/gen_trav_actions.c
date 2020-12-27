@@ -11,7 +11,6 @@
 extern char *current_trav_prefix;
 static FILE *fp;
 static int indent = 0;
-static node_st *ast;
 
 node_st *DGTAast(node_st *node)
 {

@@ -9,6 +9,7 @@ extern node_st *SPparseDSL(FILE *);
 
 node_st *scanAndParse(node_st *root)
 {
+    root = (void*)root; // unused error
     FILE *fp = fopen(global_command_line.input_file, "r");
     if (fp == NULL) {
         err(EXIT_FAILURE, "Can not open DSL file: %s", global_command_line.input_file);

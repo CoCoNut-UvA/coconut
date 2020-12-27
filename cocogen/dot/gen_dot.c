@@ -27,7 +27,6 @@ node_st *GDast(node_st *node)
 node_st *GDinode(node_st *node)
 {
     HTclear(seen);
-    int indent = 0;
     curr_node = node;
     TRAVopt(INODE_ICHILDREN(node));
     TRAVopt(INODE_NEXT(node));

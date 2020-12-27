@@ -8,11 +8,7 @@
 
 static FILE *fp;
 static int indent = 0;
-static char *basic_node_type = "node_st";
-static char *curr_node_name = NULL;
-static char *curr_node_name_upr = NULL;
-static int child_num = 0;
-static char *node_type_enum_prefix = "NT_";
+
 static node_st *ast;
 
 node_st *DGTTast(node_st *node)

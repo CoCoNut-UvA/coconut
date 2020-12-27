@@ -10,23 +10,8 @@
 #include "ccn/dynamic_core.h"
 #include "filesystem/gen_files.h"
 
-void *GAAallocTravData()
-{
-    return 0;
-}
-
-void GAAfreeTravData(void *data)
-{
-
-}
-
 static FILE *fp;
 static int indent = 0;
-static char *basic_node_type = "node_st";
-static char *curr_node_name = NULL;
-static char *curr_node_name_upr = NULL;
-static int arg_num = 0;
-static char *node_type_enum_prefix = "NT_";
 static node_st *ast;
 
 static char *enum_action_pref = "CCNAC_ID";

@@ -1,8 +1,10 @@
 #include "gen_helpers/format.h"
 
-#include <stdio.h>
 #include <assert.h>
+#include <err.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 void FMTprintIndentLevel(FILE *fp, int indent)
 {
@@ -33,6 +35,8 @@ char *FMTattributeDefaultVal(enum attribute_type type)
         return "NULL";
     case AT_link_or_enum:
         return "0";
+    case AT_user:
+        err(EXIT_FAILURE, "AT_user is a special type and not handled by this function.");
     }
     assert(false);
 }
@@ -66,6 +70,10 @@ char *FMTattributeTypeToString(enum attribute_type type)
         return "node_st";
     case AT_string:
         return "char *";
+    case AT_link_or_enum:
+        return "enum";
+    case AT_user:
+        err(EXIT_FAILURE, "AT_user is a special type and not handled by this function.");
     }
     assert(false);
     return "IMPOSSIBLE VALUE";

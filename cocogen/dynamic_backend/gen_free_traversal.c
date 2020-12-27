@@ -11,11 +11,6 @@
 
 static FILE *fp;
 static int indent = 0;
-static char *basic_node_type = "node_st";
-static char *curr_node_name = NULL;
-static char *curr_node_name_upr = NULL;
-static int arg_num = 0;
-static char *node_type_enum_prefix = "NT_";
 static node_st *ast;
 static node_st *curr_node;
 
@@ -23,6 +18,8 @@ node_st *DGFTast(node_st *node)
 {
     fp = FSgetSourceFile("ccn_free.c");
     OUT("#include \"ccngen/ast.h\"\n");
+    OUT("#include \"ccn/dynamic_core.h\"\n");
+    OUT("#include \"palm/memory.h\"\n");
     ast = node;
     TRAVopt(AST_INODES(node));
     fclose(fp);
@@ -64,8 +61,8 @@ node_st *DGFTinode(node_st *node)
     }
     TRAVopt(INODE_IATTRIBUTES(node));
     OUT_FIELD("MEMfree(arg_node->data.N_%s)", ID_LWR(INODE_NAME(node)));
-    OUT_FIELD("arg_node = MEMfree(arg_node)");
-    OUT_FIELD("return arg_node");
+    OUT_FIELD("MEMfree(arg_node)");
+    OUT_FIELD("return NULL");
     OUT_END_FUNC();
     TRAVopt(INODE_NEXT(node));
     return node;

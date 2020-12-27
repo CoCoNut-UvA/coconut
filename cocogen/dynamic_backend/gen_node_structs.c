@@ -29,7 +29,7 @@ node_st *DGNSinode(node_st *node)
             child_num = 0;
             TRAVdo(INODE_ICHILDREN(node));
             OUT_TYPEDEF_STRUCT_END("%s_children_st", name_lwr);
-            OUT_FIELD("%s *%s_children_at[%ld]", basic_node_type, name_lwr, child_num);
+            OUT_FIELD("%s *%s_children_at[%d]", basic_node_type, name_lwr, child_num);
             OUT_TYPEDEF_STRUCT_END("%s_children", name_lwr);
         }
 

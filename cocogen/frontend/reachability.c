@@ -11,16 +11,6 @@
 
 #include "frontend/reachability.h"
 
-void *RCBallocTravData()
-{
-    return 0;
-}
-
-void RCBfreeTravData(void *data)
-{
-
-}
-
 int **reachability_matrix = NULL;
 int *child_visited = NULL;
 

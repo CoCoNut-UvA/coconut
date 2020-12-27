@@ -11,14 +11,7 @@
 
 static FILE *fp;
 static int indent = 0;
-static char *basic_node_type = "node_st";
-static char *curr_node_name = NULL;
-static char *curr_node_name_upr = NULL;
-static int child_num = 0;
-static char *node_type_enum_prefix = "NT_";
-
 node_st *curr_trav_prefix = NULL;
-node_st *curr_trav_nodes = NULL;
 int curr_trav_index = 0;
 extern bool in_set(node_st *node, node_st *vale);
 extern int **reachability_matrix;

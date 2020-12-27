@@ -4,19 +4,9 @@
 #include "ccn/dynamic_core.h"
 #include "ccn/phase_driver.h"
 
-void *PRTallocTravData()
-{
-    return 0;
-}
-
-void PRTfreeTravData(void *data)
-{
-
-}
 
 extern int **reachability_matrix;
 
-static char *lifetime_target = NULL;
 
 static int opt_counter = 0;
 node_st *doOpts(node_st *ast)

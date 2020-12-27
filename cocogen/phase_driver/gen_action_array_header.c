@@ -9,23 +9,9 @@
 #include "ccn/dynamic_core.h"
 #include "filesystem/gen_files.h"
 
-void *GAAHallocTravData()
-{
-    return 0;
-}
-
-void GAAHfreeTravData(void *data)
-{
-
-}
 
 static FILE *fp;
 static int indent = 0;
-static char *basic_node_type = "node_st";
-static char *curr_node_name = NULL;
-static char *curr_node_name_upr = NULL;
-static int arg_num = 0;
-static char *node_type_enum_prefix = "NT_";
 static node_st *ast;
 static size_t size = 0;
 
