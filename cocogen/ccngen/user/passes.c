@@ -40,6 +40,11 @@ node_st *dynamic_start_enum_header(node_st *root)
     return root;
 }
 
+node_st *doOpts(node_st *root)
+{
+    return root;
+}
+
 node_st *scanAndParse(node_st *root)
 {
     return root;

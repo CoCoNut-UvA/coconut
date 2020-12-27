@@ -11,6 +11,16 @@ start phase startPhase {
         phase_driver;
         gen_dot;
         print;
+        opts;
+    }
+};
+
+cycle opts {
+    info = "Do non existing optimisations.",
+    uid = OPT,
+
+    actions {
+        pass doOpts;
     }
 };
 

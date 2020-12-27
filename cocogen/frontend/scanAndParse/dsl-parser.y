@@ -245,6 +245,50 @@ phase: phaseheader '{' info[information] ',' uid[identifier] ',' gate[gatef] ','
         IPHASE_IACTIONS($$) = $actions;
         IPHASE_GATE_FUNC($$) = $gatef;
     }
+    | cycleheader '{' uid[identifier] ',' gate[gatef] ',' actionsbody[actions] '}'
+    {
+        $$ = $1;
+        IPHASE_IPREFIX($$) = $identifier;
+        IPHASE_IACTIONS($$) = $actions;
+        IPHASE_GATE_FUNC($$) = $gatef;
+    }
+    | cycleheader '{' info[information] ',' gate[gatef] ',' actionsbody[actions] '}'
+    {
+         $$ = $1;
+         IPHASE_IINFO($$) = $information;
+         IPHASE_IACTIONS($$) = $actions;
+         IPHASE_GATE_FUNC($$) = $gatef;
+    }
+    | cycleheader '{' gate[gatef] ',' actionsbody[actions] '}'
+    {
+         $$ = $1;
+         IPHASE_IACTIONS($$) = $actions;
+         IPHASE_GATE_FUNC($$) = $gatef;
+    }
+    | cycleheader '{' actionsbody[actions] '}'
+    {
+         $$ = $1;
+         IPHASE_IACTIONS($$) = $actions;
+    }
+    | cycleheader '{' info[information] ',' uid[identifier] ',' actionsbody[actions] '}'
+    {
+         $$ = $1;
+         IPHASE_IPREFIX($$) = $identifier;
+         IPHASE_IINFO($$) = $information;
+         IPHASE_IACTIONS($$) = $actions;
+    }
+    | cycleheader '{' info[information] ',' actionsbody[actions] '}'
+    {
+         $$ = $1;
+         IPHASE_IINFO($$) = $information;
+         IPHASE_IACTIONS($$) = $actions;
+    }
+    | cycleheader '{' uid[identifier] ',' actionsbody[actions] '}'
+    {
+         $$ = $1;
+         IPHASE_IPREFIX($$) = $identifier;
+         IPHASE_IACTIONS($$) = $actions;
+    }
     ;
 
 

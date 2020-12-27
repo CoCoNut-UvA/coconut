@@ -12,6 +12,7 @@ struct phase_driver {
     size_t level;
     size_t action_id;
     size_t cycle_iter;
+    bool fixed_point;
     struct ccn_phase *current_phase;
 };
 
@@ -19,7 +20,8 @@ static struct phase_driver phase_driver = {
     .level = 0,
     .action_id = 0,
     .cycle_iter = 0,
-    .current_phase = NULL
+    .current_phase = NULL,
+    .fixed_point = false
 };
 
 static struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, struct ccn_node *node);
@@ -71,6 +73,7 @@ struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, struct cc
     uint64_t curr_action_id = phase_driver.action_id;
     do {
         // If we cycle around, reset the action id.
+        phase_driver.fixed_point = true;
         phase_driver.action_id = curr_action_id;
         size_t action_counter = 0;
         enum ccn_action_id action_id = phase->action_table[action_counter];
@@ -81,13 +84,18 @@ struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, struct cc
             action_id = phase->action_table[action_counter];
         }
         phase_driver.cycle_iter++;
-    } while(cycle && phase_driver.cycle_iter < CCN_MAX_CYCLES);
+    } while(cycle && phase_driver.cycle_iter < CCN_MAX_CYCLES && !(phase_driver.fixed_point));
 
     phase_driver.cycle_iter = 0;
     phase_driver.level--;
 
     phase_driver.current_phase = prev;
     return node;
+}
+
+void CCNcycleNotify()
+{
+    phase_driver.fixed_point = false;
 }
 
 void CCNrun(struct ccn_node *node)

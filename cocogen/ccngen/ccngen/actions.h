@@ -325,6 +325,7 @@ struct ccn_node *dynamic_switch_trav_data(struct ccn_node *);
 struct ccn_node *dynamic_start_trav_data(struct ccn_node *);
 struct ccn_node *dynamic_start_table_gen(struct ccn_node *);
 struct ccn_node *dynamic_start_enum_header(struct ccn_node *);
+struct ccn_node *doOpts(struct ccn_node *);
 struct ccn_node *scanAndParse(struct ccn_node *);
 struct ccn_node *CPYid(struct ccn_node *arg_node);
 struct ccn_node *DELid(struct ccn_node *arg_node);

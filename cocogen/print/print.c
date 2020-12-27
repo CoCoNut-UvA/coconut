@@ -2,6 +2,7 @@
 
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
+#include "ccn/phase_driver.h"
 
 void *PRTallocTravData()
 {
@@ -16,6 +17,17 @@ void PRTfreeTravData(void *data)
 extern int **reachability_matrix;
 
 static char *lifetime_target = NULL;
+
+static int opt_counter = 0;
+node_st *doOpts(node_st *ast)
+{
+    printf("Opt: %d\n", opt_counter);
+    if (opt_counter < 50) {
+        CCNcycleNotify();
+    }
+    opt_counter++;
+    return ast;
+}
 
 node_st *PRTast(node_st *ast)
 {

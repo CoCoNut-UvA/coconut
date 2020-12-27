@@ -27,8 +27,11 @@ CCNAC_ID_ASSIGN_ID_TO_ACTION, CCNAC_ID_MAP_ID_TO_LIFETIME, CCNAC_ID_NULL, };
 enum ccn_action_id semantic_ids_table[] = {
 CCNAC_ID_BUILDSYMBOLTABLE, CCNAC_ID_CHECKEXISTANCE, CCNAC_ID_UNWRAPSETEXPR, CCNAC_ID_REACHABILITY, CCNAC_ID_NULL, };
 
+enum ccn_action_id opts_ids_table[] = {
+CCNAC_ID_DOOPTS, CCNAC_ID_NULL, };
+
 enum ccn_action_id startphase_ids_table[] = {
-CCNAC_ID_SCANANDPARSE, CCNAC_ID_SEMANTIC, CCNAC_ID_UNPACK_LIFETIMES, CCNAC_ID_DYNAMIC_BACKEND, CCNAC_ID_PHASE_DRIVER, CCNAC_ID_GEN_DOT, CCNAC_ID_PRINT, CCNAC_ID_NULL, };
+CCNAC_ID_SCANANDPARSE, CCNAC_ID_SEMANTIC, CCNAC_ID_UNPACK_LIFETIMES, CCNAC_ID_DYNAMIC_BACKEND, CCNAC_ID_PHASE_DRIVER, CCNAC_ID_GEN_DOT, CCNAC_ID_PRINT, CCNAC_ID_OPTS, CCNAC_ID_NULL, };
 
 static struct ccn_action ccn_action_array[] = {
 {CCN_ACTION_PHASE, CCNAC_ID_DYNAMIC_GEN_USER_FILES, "dynamic_gen_user_files", .phase = {NULL, NT_AST, dynamic_gen_user_files_ids_table, false, CCNAC_ID_DYNAMIC_GEN_USER_FILES,},},
@@ -38,6 +41,7 @@ static struct ccn_action ccn_action_array[] = {
 {CCN_ACTION_PHASE, CCNAC_ID_PHASE_DRIVER, "phase_driver", .phase = {NULL, NT_AST, phase_driver_ids_table, false, CCNAC_ID_PHASE_DRIVER,},},
 {CCN_ACTION_PHASE, CCNAC_ID_UNPACK_LIFETIMES, "unpack_lifetimes", .phase = {NULL, NT_AST, unpack_lifetimes_ids_table, false, CCNAC_ID_UNPACK_LIFETIMES,},},
 {CCN_ACTION_PHASE, CCNAC_ID_SEMANTIC, "semantic", .phase = {NULL, NT_AST, semantic_ids_table, false, CCNAC_ID_SEMANTIC,},},
+{CCN_ACTION_PHASE, CCNAC_ID_OPTS, "opts", .phase = {NULL, NT_AST, opts_ids_table, true, CCNAC_ID_OPTS,},},
 {CCN_ACTION_PHASE, CCNAC_ID_STARTPHASE, "startPhase", .phase = {NULL, NT_AST, startphase_ids_table, false, CCNAC_ID_STARTPHASE,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_PRINT, "print", .traversal = {TRAV_PRINT,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_SETLITERALCONTAINS, "setliteralContains", .traversal = {TRAV_SETLITERALCONTAINS,},},
@@ -90,6 +94,7 @@ static struct ccn_action ccn_action_array[] = {
 {CCN_ACTION_PASS, CCNAC_ID_DYNAMIC_START_TRAV_DATA, "dynamic_start_trav_data", .pass = {PASS_DYNAMIC_START_TRAV_DATA,},},
 {CCN_ACTION_PASS, CCNAC_ID_DYNAMIC_START_TABLE_GEN, "dynamic_start_table_gen", .pass = {PASS_DYNAMIC_START_TABLE_GEN,},},
 {CCN_ACTION_PASS, CCNAC_ID_DYNAMIC_START_ENUM_HEADER, "dynamic_start_enum_header", .pass = {PASS_DYNAMIC_START_ENUM_HEADER,},},
+{CCN_ACTION_PASS, CCNAC_ID_DOOPTS, "doOpts", .pass = {PASS_DOOPTS,},},
 {CCN_ACTION_PASS, CCNAC_ID_SCANANDPARSE, "scanAndParse", .pass = {PASS_SCANANDPARSE,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_free, "Free", .traversal = {TRAV_free,},},
 {CCN_ACTION_PHASE, CCNAC_ID_cleanup, "Cleanup", .phase = {NULL, NT_AST, cleanup_ids_table, false, CCNAC_ID_cleanup,},},
