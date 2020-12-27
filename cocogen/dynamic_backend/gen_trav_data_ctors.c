@@ -12,9 +12,9 @@ node_st *DGTDCitraversal(node_st *node)
     node_st *id = ITRAVERSAL_NAME(node);
     if (ITRAVERSAL_DATA(node)) {
         OUT_START_FUNC("void TRAVdataInit%s(ccn_trav_st *trav)", ID_ORIG(id));
-        OUT_FIELD("trav->trav_data.%s = MEMmalloc(sizeof(struct trav_data_%s))",
-                  ID_LWR(id), ID_LWR(id));
-        OUT_FIELD("struct trav_data_%s *data = trav->trav_data.%s", ID_LWR(id), ID_LWR(id));
+        OUT_FIELD("trav->trav_data.%s = MEMmalloc(sizeof(struct data_%s))",
+                  ID_LWR(id), ID_LWR(ITRAVERSAL_IPREFIX(node)));
+        OUT_FIELD("struct data_%s *data = trav->trav_data.%s", ID_LWR(ITRAVERSAL_IPREFIX(node)), ID_LWR(id));
         TRAVdo(ITRAVERSAL_DATA(node));
         if (has_user_type) {
             OUT_FIELD("%sinit()", ID_UPR(ITRAVERSAL_IPREFIX(node)));

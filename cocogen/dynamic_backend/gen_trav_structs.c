@@ -9,7 +9,7 @@ node_st *DGTDSitraversal(node_st *node)
     int indent = 0;
     FILE *fp = globals.fp;
     if (ITRAVERSAL_DATA(node)) {
-        OUT_STRUCT("trav_data_%s", ID_LWR(ITRAVERSAL_NAME(node)));
+        OUT_STRUCT("data_%s", ID_LWR(ITRAVERSAL_IPREFIX(node)));
         TRAVdo(ITRAVERSAL_DATA(node));
         OUT_STRUCT_END();
     }

@@ -15,7 +15,7 @@ void DGTDTfini()
 
 node_st *DGTDTast(node_st *node)
 {
-    struct trav_data_dynamic_gentravdatatables *data = DYNAMIC_GENTRAVDATATABLES_DATA;
+    struct data_dgtdt *data = DATA_DGTDT_GET();
     int indent = data->indent;
 
     FILE *fp = globals.fp;
@@ -40,7 +40,7 @@ node_st *DGTDTast(node_st *node)
 
 node_st *DGTDTitraversal(node_st *node)
 {
-    struct trav_data_dynamic_gentravdatatables *data = DYNAMIC_GENTRAVDATATABLES_DATA;
+    struct data_dgtdt *data = DATA_DGTDT_GET();
     int indent = data->indent;
     FILE *fp = globals.fp;
     if (ITRAVERSAL_DATA(node)) {

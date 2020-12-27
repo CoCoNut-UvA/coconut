@@ -67,7 +67,7 @@ node_st *DGCHTipass(node_st *node)
 
 node_st *DGCHTinode(node_st *node)
 {
-    struct trav_data_dynamic_genchecktraversal *data = DYNAMIC_GENCHECKTRAVERSAL_DATA;
+    struct data_dgcht *data = DATA_DGCHT_GET();
     data->lifetime_target = LT_NODE;
     curr_node = node;
     OUT_START_FUNC("struct ccn_node *CHK%s(struct ccn_node *arg_node)", ID_LWR(INODE_NAME(node)));
@@ -98,7 +98,7 @@ node_st *DGCHTinodeset(node_st *node)
 
 node_st *DGCHTchild(node_st *node)
 {
-    struct trav_data_dynamic_genchecktraversal *data = DYNAMIC_GENCHECKTRAVERSAL_DATA;
+    struct data_dgcht *data = DATA_DGCHT_GET();
     data->lifetime_target = LT_CHILD;
     curr_child = node;
     OUT_BEGIN_IF("%s_%s(arg_node)", ID_UPR(INODE_NAME(curr_node)), ID_UPR(CHILD_NAME(node)));
@@ -235,7 +235,7 @@ static void LifetimeChildGen(node_st *node)
 
 node_st *DGCHTilifetime(node_st *node)
 {
-    struct trav_data_dynamic_genchecktraversal *data = DYNAMIC_GENCHECKTRAVERSAL_DATA;
+    struct data_dgcht *data = DATA_DGCHT_GET();
     if (data->lifetime_target == LT_NODE) {
         LifetimeNodeGen(node);
     } else if (data->lifetime_target == LT_CHILD) {

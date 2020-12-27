@@ -1,3 +1,5 @@
+#include "ccngen/ast.h"
+
 node_st *dynamic_genBaseNodeInit(node_st *root)
 {
     return root;

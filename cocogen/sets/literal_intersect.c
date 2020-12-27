@@ -5,7 +5,7 @@
 
 node_st *SLISsetliteral(node_st *node)
 {
-    struct trav_data_setliteralintersect *data = SETLITERALINTERSECT_DATA;
+    struct data_slis *data = DATA_SLIS_GET();
     if (SETIDcontains(data->src, SETLITERAL_REFERENCE(node))) {
         data->new = SETIDinsert(data->new, SETLITERAL_REFERENCE(node));
     }

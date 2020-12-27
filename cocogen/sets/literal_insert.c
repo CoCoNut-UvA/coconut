@@ -6,7 +6,7 @@
 
 /* Insertion consumes the ID stored in the data struct.
  */
-static node_st *NewLiteral(struct trav_data_setliteralinsert *data)
+static node_st *NewLiteral(struct data_sli *data)
 {
     assert(data->value);
     node_st *new = ASTsetliteral(data->value);
@@ -17,7 +17,7 @@ static node_st *NewLiteral(struct trav_data_setliteralinsert *data)
 
 node_st *SLIsetliteral(node_st *node)
 {
-    struct trav_data_setliteralinsert *data = SETLITERALINSERT_DATA;
+    struct data_sli *data = DATA_SLI_GET();
     assert(NODE_TYPE(data->value) == NT_ID);
     int cmp = strcmp(ID_LWR(data->value), ID_LWR(SETLITERAL_REFERENCE(node)));
 

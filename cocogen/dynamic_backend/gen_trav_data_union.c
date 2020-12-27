@@ -20,7 +20,7 @@ node_st *DGTDUitraversal(node_st *node)
     FILE *fp = globals.fp;
     node_st *id = ITRAVERSAL_NAME(node);
     if (ITRAVERSAL_DATA(node)) {
-        OUT_FIELD("struct trav_data_%s *%s", ID_LWR(id), ID_LWR(id));
+        OUT_FIELD("struct data_%s *%s", ID_LWR(ITRAVERSAL_IPREFIX(node)), ID_LWR(id));
     }
     TRAVopt(ITRAVERSAL_NEXT(node));
     return node;

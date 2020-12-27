@@ -8,10 +8,10 @@ node_st *DGTDGitraversal(node_st *node)
     if (ITRAVERSAL_DATA(node)) {
         FILE *fp = globals.fp;
         int indent = 0;
-        node_st *id =  ITRAVERSAL_NAME(node);
+        node_st *id =  ITRAVERSAL_IPREFIX(node);
 
-        OUT("#define %s_DATA (TRAVgetCurrent()->trav_data.%s)\n",
-            ID_UPR(id), ID_LWR(id));
+        OUT("#define DATA_%s_GET() (TRAVgetCurrent()->trav_data.%s)\n",
+            ID_UPR(id), ID_LWR(ITRAVERSAL_NAME(node)));
     }
 
     TRAVopt(ITRAVERSAL_NEXT(node));

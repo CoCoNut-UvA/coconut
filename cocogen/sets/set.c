@@ -10,7 +10,7 @@ static node_st *DoInsert(node_st *literal, node_st *id)
     printf("Inserting: %s\n", ID_LWR(id));
 
     TRAVpush(TRAV_SETLITERALINSERT);
-    struct trav_data_setliteralinsert *data = SETLITERALINSERT_DATA;
+    struct data_sli *data = DATA_SLI_GET();
     data->value = TRAVstart(id, TRAV_cpy);
     TRAVdo(literal);
     if (!data->inserted) {
@@ -36,7 +36,7 @@ bool SETIDcontains(node_st *literal, node_st *id)
 
     TRAVpush(TRAV_SETLITERALCONTAINS);
     {
-        struct trav_data_setliteralcontains *data = SETLITERALCONTAINS_DATA;
+        struct data_slc *data = DATA_SLC_GET();
         data->lookup = id;
         TRAVdo(literal);
         if (data->contains) {
@@ -56,7 +56,7 @@ node_st *SETIDdifference(node_st *left, node_st *right)
     node_st *new = NULL;
     TRAVpush(TRAV_SETLITERALDIFFERENCE);
     {
-        struct trav_data_setliteraldifference *data = SETLITERALDIFFERENCE_DATA;
+        struct data_sld *data = DATA_SLD_GET();
         data->right = right;
         TRAVdo(left);
         new = data->new;
@@ -73,7 +73,7 @@ node_st *SETIDintersect(node_st *dst, node_st *src)
     node_st *new = NULL;
     TRAVpush(TRAV_SETLITERALINTERSECT);
     {
-        struct trav_data_setliteralintersect *data = SETLITERALINTERSECT_DATA;
+        struct data_slis *data = DATA_SLIS_GET();
         data->src = src;
         TRAVdo(dst);
         new = data->new;
@@ -87,7 +87,7 @@ node_st *SETIDunion(node_st *set1, node_st *set2)
     node_st *new = NULL;
     TRAVpush(TRAV_SETLITERALUNION);
     {
-        struct trav_data_setliteralunion *data = SETLITERALUNION_DATA;
+        struct data_slu *data = DATA_SLU_GET();
         TRAVopt(set1);
         TRAVopt(set2);
         new = data->dst;

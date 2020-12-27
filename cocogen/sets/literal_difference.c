@@ -5,7 +5,7 @@
 
 node_st *SLDsetliteral(node_st *node)
 {
-    struct trav_data_setliteraldifference *data = SETLITERALDIFFERENCE_DATA;
+    struct data_sld *data = DATA_SLD_GET();
     if(!SETIDcontains(data->right, SETLITERAL_REFERENCE(node))) {
         data->new = SETIDinsert(data->new, SETLITERAL_REFERENCE(node));
     }

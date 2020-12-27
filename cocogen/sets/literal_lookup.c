@@ -6,7 +6,7 @@
 
 node_st *SLCsetliteral(node_st *node)
 {
-    struct trav_data_setliteralcontains *data = SETLITERALCONTAINS_DATA;
+    struct data_slc *data = DATA_SLC_GET();
     assert(NODE_TYPE(data->lookup) == NT_ID);
     int cmp = strcmp(ID_LWR(data->lookup), ID_LWR(SETLITERAL_REFERENCE(node)));
 

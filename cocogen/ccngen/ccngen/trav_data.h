@@ -2,57 +2,57 @@
 #include "ccn/ccn_types.h"
 #include "unsafe_types.h"
 #include "ccngen/ast.h"
-struct trav_data_setliteralcontains {
+struct data_slc {
 bool contains;
 node_st *lookup;
 };
 
-struct trav_data_setliteraldifference {
+struct data_sld {
 node_st *new;
 node_st *right;
 };
 
-struct trav_data_setliteralintersect {
+struct data_slis {
 node_st *new;
 node_st *src;
 };
 
-struct trav_data_setliteralunion {
+struct data_slu {
 node_st *dst;
 };
 
-struct trav_data_setliteralinsert {
+struct data_sli {
 bool inserted;
 node_st *value;
 };
 
-struct trav_data_dynamic_genchecktraversal {
+struct data_dgcht {
 int lifetime_target;
 };
 
-struct trav_data_dynamic_gentravdatatables {
+struct data_dgtdt {
 int indent;
 int in_init_round;
 fileptr file;
 };
 
 union TRAV_DATA {
-    struct trav_data_setliteralcontains *setliteralcontains;
-    struct trav_data_setliteraldifference *setliteraldifference;
-    struct trav_data_setliteralintersect *setliteralintersect;
-    struct trav_data_setliteralunion *setliteralunion;
-    struct trav_data_setliteralinsert *setliteralinsert;
-    struct trav_data_dynamic_genchecktraversal *dynamic_genchecktraversal;
-    struct trav_data_dynamic_gentravdatatables *dynamic_gentravdatatables;
+    struct data_slc *setliteralcontains;
+    struct data_sld *setliteraldifference;
+    struct data_slis *setliteralintersect;
+    struct data_slu *setliteralunion;
+    struct data_sli *setliteralinsert;
+    struct data_dgcht *dynamic_genchecktraversal;
+    struct data_dgtdt *dynamic_gentravdatatables;
 };
 
-#define SETLITERALCONTAINS_DATA (TRAVgetCurrent()->trav_data.setliteralcontains)
-#define SETLITERALDIFFERENCE_DATA (TRAVgetCurrent()->trav_data.setliteraldifference)
-#define SETLITERALINTERSECT_DATA (TRAVgetCurrent()->trav_data.setliteralintersect)
-#define SETLITERALUNION_DATA (TRAVgetCurrent()->trav_data.setliteralunion)
-#define SETLITERALINSERT_DATA (TRAVgetCurrent()->trav_data.setliteralinsert)
-#define DYNAMIC_GENCHECKTRAVERSAL_DATA (TRAVgetCurrent()->trav_data.dynamic_genchecktraversal)
-#define DYNAMIC_GENTRAVDATATABLES_DATA (TRAVgetCurrent()->trav_data.dynamic_gentravdatatables)
+#define DATA_SLC_GET() (TRAVgetCurrent()->trav_data.setliteralcontains)
+#define DATA_SLD_GET() (TRAVgetCurrent()->trav_data.setliteraldifference)
+#define DATA_SLIS_GET() (TRAVgetCurrent()->trav_data.setliteralintersect)
+#define DATA_SLU_GET() (TRAVgetCurrent()->trav_data.setliteralunion)
+#define DATA_SLI_GET() (TRAVgetCurrent()->trav_data.setliteralinsert)
+#define DATA_DGCHT_GET() (TRAVgetCurrent()->trav_data.dynamic_genchecktraversal)
+#define DATA_DGTDT_GET() (TRAVgetCurrent()->trav_data.dynamic_gentravdatatables)
 void TRAVdataInitsetliteralContains(struct ccn_trav *trav);
 void TRAVdataFreesetliteralContains(struct ccn_trav *trav);
 void TRAVdataInitsetliteralDifference(struct ccn_trav *trav);

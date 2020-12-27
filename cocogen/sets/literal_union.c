@@ -5,7 +5,7 @@
 
 node_st *SLUsetliteral(node_st *node)
 {
-    struct trav_data_setliteralunion *data = SETLITERALUNION_DATA;
+    struct data_slu *data = DATA_SLU_GET();
     data->dst = SETIDinsert(data->dst, SETLITERAL_REFERENCE(node));
     TRAVchildren(node);
 
