@@ -50,15 +50,15 @@ In every 'program' there must be one *root* node present. The *root* node will b
 
     [root] node <name> {
         [children {
-            <child 1>;
+            <child 1>,
             ...
-        }]
+        },]
         [attributes {
-            <attribute 1>;
+            <attribute 1>,
             ...
-        }]
+        },]
         [lifetime {
-            <node lifetime 1>;
+            <node lifetime 1>,
             ...
         }]
     }
@@ -77,11 +77,11 @@ An example node, without lifetimes, is as follows:
 
     root node BinOp {
         children {
-            Expr left { constructor};
-            Expr right { constructor};
+            Expr left { constructor},
+            Expr right { constructor}
         },
         attributes {
-            BinOpEnum op { constructor };
+            BinOpEnum op { constructor }
         }
     };
 
@@ -126,14 +126,14 @@ So, we can rewrite the previous node definition with lifetimes the following way
 
     root node BinOp {
         children {
-            Expr left { constructor, mandatory};
-            Expr right { constructor, mandatory};
+            Expr left { constructor, mandatory},
+            Expr right { constructor, mandatory}
         },
         attributes {
-            BinOpEnum op { constructor, disallowed (CompileBooleanExpressions -> ) = {and, or} };
+            BinOpEnum op { constructor, disallowed (CompileBooleanExpressions -> ) = {and, or} }
         },
         lifetime {
-            disallowed (Stage1.TBO -> Stage3.OPT];
+            disallowed (Stage1.TBO -> Stage3.OPT]
         }
     };
 
@@ -158,7 +158,7 @@ The nodes specifier in a nodeset uses a set expression, providing the option to 
 .. code-block:: text
 
     nodeset <name> {
-        nodes = <set expr>;
+        nodes = <set expr>
     }
 
 
@@ -179,7 +179,7 @@ Combining the set operations with inline definitions and references, we can defi
 Expr nodeset as follows:
 ::
 
-    nodeset Expr = {Var, Cast} | Constant
+    nodeset Expr = {Var, Cast} | Constant;
 
 While in the longer form it looks as follows:
 ::
@@ -213,7 +213,7 @@ An example of a pass looks as follows:
     pass ScanParse {
         info = "Scan and parse the source files and construct the AST.";
         uid = SP,
-        func = doScanParse,
+        func = doScanParse
     }
 
 
@@ -240,7 +240,10 @@ The nodes are in the form of a set expression and can use defined nodesets.
     traversal <name> {
         [info = <string>,]
         uid = <identifier>,
-        [nodes = <set expression>]
+        [nodes = <set expression>,]
+        [travdata {
+            [[user] <type> <name>,]
+        }]
     }
 
 An example of a traversal is as follows:
@@ -249,7 +252,10 @@ An example of a traversal is as follows:
 
     traversal RenameFor {
         uid = RFOR,
-        nodes = {For, VarLet, Var}
+        nodes = {For, VarLet, Var},
+        travdata {
+            int changes_made
+        }
     }
 
 
@@ -286,7 +292,6 @@ The phase also accepts the info string and a unique id.
     phase <name> {
         [info = <string>,]
         [uid = <identifier>,]
-        [root = <node identifier>,]
         [gate [= <function name>],]
 
         actions {
@@ -324,7 +329,6 @@ A cycle is defined as follows:
     cycle <name> {
         [info = <string>,]
         [uid = <identifier>,]
-        [root = <node identifier>,]
         [gate [= <function name>],]
 
         actions {

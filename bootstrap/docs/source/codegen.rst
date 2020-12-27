@@ -1,6 +1,6 @@
-=============
-Codegen
-=============
+=========
+ Codegen
+=========
 
 From the specification CoCoNut generates C code. In this section, the generated code and how to integrate the rest of your program with CoCoNut is described.
 
@@ -64,7 +64,7 @@ So, the BinOp node will get the following access macros:
     BINOP_RIGHT(node)
     BINOP_TYPE(node)
 
-These access macros can be used as a lvalue or rvalue. For example, changing the type of a BinOp, when it is a mul, is done as follows
+These access macros can be used as an lvalue or rvalue. For example, changing the type of a BinOp, when it is a mul, is done as follows
 
 .. code-block:: C
 
@@ -97,15 +97,51 @@ You then have to define it. If no func is specified, the pass name will be used.
 So, the pass would then be declared as: node_st *ScanParse(node_st *node);
 
 
+Traversals
+==========
+CoCoNut generates the declaration for every function the traversal targets(specified in nodes). To do this, the uid is used as the prefix, in all caps, and the node name, all lowercase, is appended to the uid. The following traversal specification
+
+.. code-block:: text
+
+    traversal RenameFor {
+        uid = RFOR,
+        nodes = {For, VarLet, Var},
+        travdata {
+            int changes_made
+        }
+    }
+
+will get the following functions:
+
+.. code-block:: c
+
+   node_st *RFORfor(node_st *)
+   node_st *RFORvarlet(node_st *)
+   node_st *RFORvar(node_st *)
+
+Traversal Data
+==============
+Traversal data defined in the DSL is mapped to a struct and can be queried with a macro. The struct is of the type *struct data_<uid>* and the macro is given by
+*DATA_<UID>_GET()*. So, the travdata for the previous traversal has the following struct and get macro:
+
+.. code-block:: c
+
+    struct data_rfor;
+    DATA_RFOR_GET()
+
+
+
 Files
 =====
 The generated code is distributed among several files, where the headers are sometimes required to operatore on generated data, like the nodes. All include files
 are in the directory used for generation under the "ccngen" directory. So, if the gen directory specified is "gen_files", then all files are found under "gen_files/ccngen/"
 
-+------------+---------------+
-| Primitive  |  Include file |
-+============+===============+
-| enums      | enum.h        |
-+------------+---------------+
-| nodes      | ast.h         |
-+------------+---------------+
++------------------+---------------+
+| Primitive        |  Include file |
++==================+===============+
+| enums            | enum.h        |
++------------------+---------------+
+| nodes            | ast.h         |
++------------------+---------------+
+| traversal data   | trav_data.h   |
++------------------+---------------+
