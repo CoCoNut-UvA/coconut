@@ -15,6 +15,8 @@ struct phase_driver {
     size_t action_id;
     size_t cycle_iter;
     bool fixed_point;
+    bool action_error;
+    bool phase_error;
     struct ccn_phase *current_phase;
 };
 
@@ -23,7 +25,9 @@ static struct phase_driver phase_driver = {
     .action_id = 0,
     .cycle_iter = 0,
     .current_phase = NULL,
-    .fixed_point = false
+    .fixed_point = false,
+    .action_error = false,
+    .phase_error = false
 };
 
 static struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, struct ccn_node *node);
@@ -43,6 +47,10 @@ struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype 
         break;
     case CCN_ACTION_NULL:
         err(EXIT_FAILURE, "[coconut] error in phase driver.");
+    }
+    if (phase_driver.action_error) {
+        fprintf(stderr, "CoCoNut: Action error received. Stopping...\n");
+        exit(EXIT_FAILURE);
     }
 
     // TODO: wrap in an ifdef to check for CHECK_ENABLED.
@@ -91,6 +99,11 @@ struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, struct cc
         phase_driver.cycle_iter++;
     } while(cycle && phase_driver.cycle_iter < CCN_MAX_CYCLES && !(phase_driver.fixed_point));
 
+    if (phase_driver.phase_error) {
+        fprintf(stderr, "CoCoNut: Phase error received. Stopping...\n");
+        exit(EXIT_FAILURE);
+    }
+
     phase_driver.cycle_iter = 0;
     phase_driver.level--;
 
@@ -101,6 +114,16 @@ struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, struct cc
 void CCNcycleNotify()
 {
     phase_driver.fixed_point = false;
+}
+
+void CCNerrorAction()
+{
+    phase_driver.action_error = true;
+}
+
+void CCNerrorPhase()
+{
+    phase_driver.phase_error = true;
 }
 
 void CCNrun(struct ccn_node *node)
