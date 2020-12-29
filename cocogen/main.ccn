@@ -105,7 +105,7 @@ phase static_gen_ast {
     actions {
         traversal static_gen_node_structs {
             uid = sgns,
-            nodes = {inode}
+            nodes = {ast, inode, child, attribute, inodeset, setliteral}
         };
     }
 };

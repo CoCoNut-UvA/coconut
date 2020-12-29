@@ -4,7 +4,6 @@
 
 #include "globals.h"
 #include "gen_helpers/out_macros.h"
-#include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
 
@@ -29,6 +28,7 @@ node_st *DGNCinode(node_st *node)
 {
     num_children = 0;
     node_st *next = INODE_NEXT(node);
+    // Set next to NULL to prevent init funcs generating others after this node.
     INODE_NEXT(node) = NULL;
     TRAVstart(node, TRAV_DYNAMIC_GENNODEINITFUNCTIONS);
 
@@ -50,7 +50,10 @@ node_st *DGNCinode(node_st *node)
     }
     OUT("return node;");
     OUT_END_FUNC();
+
     INODE_NEXT(node) = next;
+    assert(INODE_NEXT(node) == next);
+
     TRAVopt(INODE_NEXT(node));
     return node;
 }
