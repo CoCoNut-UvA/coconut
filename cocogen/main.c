@@ -22,6 +22,11 @@ int main(int argc, char *argv[])
     FSensureDirExists(globals.gen_hdr_dir, 0755);
     FSensureDirExists(globals.gen_user_dir, 0755);
     globals.gen_src_dir = global_command_line.gen_dir;
+    if (global_command_line.backend == NULL) {
+        globals.backend = "dynamic";
+    } else {
+        globals.backend = global_command_line.backend;
+    }
     CCNrun(NULL);
 
     return 0;

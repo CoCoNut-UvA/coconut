@@ -1,2 +1,2 @@
 #pragma once
-bool backendIsDynamic();
+bool backendIsStatic();bool backendIsDynamic();

@@ -67,6 +67,7 @@ void TRAVdataFreedynamic_genCheckTraversal(ccn_trav_st *trav) {
 }
 
 extern void DGTDTinit();
+extern void DGTDTfini();
 void TRAVdataInitdynamic_genTravDataTables(ccn_trav_st *trav) {
     trav->trav_data.dynamic_gentravdatatables = MEMmalloc(sizeof(struct data_dgtdt));
     struct data_dgtdt *data = trav->trav_data.dynamic_gentravdatatables;
@@ -76,7 +77,6 @@ void TRAVdataInitdynamic_genTravDataTables(ccn_trav_st *trav) {
     DGTDTinit();
 }
 
-extern void DGTDTfini();
 void TRAVdataFreedynamic_genTravDataTables(ccn_trav_st *trav) {
     DGTDTfini();
     MEMfree(trav->trav_data.dynamic_gentravdatatables);

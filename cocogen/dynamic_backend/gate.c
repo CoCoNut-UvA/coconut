@@ -1,7 +1,8 @@
 #include <stdbool.h>
-
+#include "palm/str.h"
+#include "globals.h"
 
 bool backendIsDynamic()
 {
-    return true;
+    return STReq("dynamic", globals.backend);
 }

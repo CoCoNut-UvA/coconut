@@ -8,6 +8,7 @@ start phase startPhase {
         semantic;
         unpack_lifetimes;
         dynamic_backend;
+        static_backend;
         phase_driver;
         gen_dot;
         print;
@@ -87,6 +88,25 @@ phase dynamic_backend {
         dynamic_genFreeTraversal;
         dynamic_genCheckTraversal;
         dynamic_gen_user_files;
+    }
+};
+
+phase static_backend {
+    info = "Generating part for the static backend",
+    uid = STB,
+    gate = backendIsStatic,
+
+    actions {
+        static_gen_ast;
+    }
+};
+
+phase static_gen_ast {
+    actions {
+        traversal static_gen_node_structs {
+            uid = sgns,
+            nodes = {inode}
+        };
     }
 };
 

@@ -76,9 +76,8 @@ void TRAVdataInitdynamic_genTravDataTables(ccn_trav_st *trav) {
     DGTDTinit();
 }
 
-extern void DGTDTfini();
+extern void DGDTfini();
 void TRAVdataFreedynamic_genTravDataTables(ccn_trav_st *trav) {
-    DGTDTfini();
     MEMfree(trav->trav_data.dynamic_gentravdatatables);
 }
 

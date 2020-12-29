@@ -1,7 +1,6 @@
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
 #include "palm/memory.h"
-
 struct ccn_node *DELid(struct ccn_node *arg_node) {
     TRAVchildren(arg_node);
     MEMfree(arg_node->data.N_id->orig);

@@ -7,7 +7,6 @@
 
 extern int **reachability_matrix;
 
-
 static int opt_counter = 0;
 node_st *doOpts(node_st *ast)
 {

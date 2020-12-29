@@ -301,6 +301,8 @@ struct ccn_node *DUGPipass(struct ccn_node *node);
 struct ccn_node *DUGPipass(struct ccn_node *node);
 struct ccn_node *DUGPast(struct ccn_node *node);
 struct ccn_node *DUGPast(struct ccn_node *node);
+struct ccn_node *SGNSinode(struct ccn_node *node);
+struct ccn_node *SGNSinode(struct ccn_node *node);
 struct ccn_node *MITLast(struct ccn_node *node);
 struct ccn_node *MITLast(struct ccn_node *node);
 struct ccn_node *MITLinode(struct ccn_node *node);

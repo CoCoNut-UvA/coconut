@@ -1,6 +1,7 @@
 #pragma once
 
 #include "palm/hash_table.h"
+#include <stdio.h>
 
 struct globals {
     char *filename;
@@ -8,6 +9,7 @@ struct globals {
     char *gen_src_dir;
     char *gen_hdr_dir;
     char *gen_user_dir;
+    char *backend;
     FILE *fp;
 };
 
