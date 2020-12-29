@@ -11,10 +11,8 @@ struct command_line {
     bool consistcheck;
     bool serialise;
     bool gen_user_files;
+    bool show_ast;
     char *backend;
-    char *user_dir;
-    char *dot_dir;
-    char *doc_dir;
     char *gen_dir;
 };
 

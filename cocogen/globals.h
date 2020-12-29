@@ -10,6 +10,7 @@ struct globals {
     char *gen_hdr_dir;
     char *gen_user_dir;
     char *backend;
+    bool show_ast;
     FILE *fp;
 };
 

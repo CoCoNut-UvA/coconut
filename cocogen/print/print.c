@@ -3,6 +3,7 @@
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
 #include "ccn/phase_driver.h"
+#include "globals.h"
 
 
 extern int **reachability_matrix;
@@ -20,8 +21,9 @@ node_st *doOpts(node_st *ast)
 
 node_st *PRTast(node_st *ast)
 {
-    printf("AST:\n");
-    printf("Child: %d\n", NODE_TYPE(AST_IPHASES(ast)));
+    if (!globals.show_ast) {
+        return ast;
+    }
     TRAVchildren(ast);
 
     for (int i = 0; i < AST_NUM_TRAVERSALS(ast); i++) {
