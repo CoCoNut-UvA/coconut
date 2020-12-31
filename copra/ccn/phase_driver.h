@@ -2,8 +2,9 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include "ccngen/ast.h"
 
-void CCNrun(struct ccn_node *node);
+void CCNrun(node_st *node);
 void CCNcycleNotify();
 size_t CCNgetCurrentActionId();
 void CCNerrorPhase();
