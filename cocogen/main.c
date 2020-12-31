@@ -19,7 +19,7 @@ node_st *genDefines(node_st *ast)
 {
     int indent = 0;
     FILE *fp = FSgetIncludeFile("ccn_defs.h");
-    OUT("#pragma once\n\n");
+
     if (AST_USES_UNSAFE(ast)) {
         OUT("#define CCN_USES_UNSAFE true\n");
     }
