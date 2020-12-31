@@ -6,8 +6,25 @@
 #include "globals.h"
 #include "palm/str.h"
 #include "palm/filesystem.h"
+#include "filesystem/gen_files.h"
+#include "gen_helpers/out_macros.h"
 
 struct globals globals;
+
+
+/* Last pass to run before printing. Outputs a file with #define statement
+ * to enable/disable certain parts of CoCoNut.
+ */
+node_st *genDefines(node_st *ast)
+{
+    int indent = 0;
+    FILE *fp = FSgetIncludeFile("ccn_defs.h");
+    OUT("#pragma once\n\n");
+    if (AST_USES_UNSAFE(ast)) {
+        OUT("#define CCN_USES_UNSAFE true\n");
+    }
+    return ast;
+}
 
 int main(int argc, char *argv[])
 {

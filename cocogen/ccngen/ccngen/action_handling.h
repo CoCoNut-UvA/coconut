@@ -64,6 +64,7 @@ enum ccn_action_id {
     CCNAC_ID_DYNAMIC_START_TABLE_GEN,
     CCNAC_ID_DYNAMIC_START_ENUM_HEADER,
     CCNAC_ID_DOOPTS,
+    CCNAC_ID_GENDEFINES,
     CCNAC_ID_SCANANDPARSE,
     CCNAC_ID_check,
     CCNAC_ID_free,
@@ -72,7 +73,7 @@ enum ccn_action_id {
 };
 
 #ifndef CCN_NUM_OF_ACTIONS
-#define CCN_NUM_OF_ACTIONS 68
+#define CCN_NUM_OF_ACTIONS 69
 #endif
 #ifndef CCN_ROOT_TYPE
 #define CCN_ROOT_TYPE NT_AST

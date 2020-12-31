@@ -11,6 +11,7 @@ start phase startPhase {
         static_backend;
         phase_driver;
         gen_dot;
+        pass genDefines;
         print;
         opts;
     }
@@ -229,7 +230,7 @@ traversal dynamic_genTravDataCtors {
 
 traversal dynamic_genTravDataStructs {
     uid = DGTDS,
-    nodes = {itraversal, itravdata}
+    nodes = {ast, itraversal, itravdata}
 };
 
 traversal dynamic_genCheckTraversal {
@@ -437,7 +438,8 @@ root node ast {
         int num_traversals,
         int num_nodes,
         inode root_node,
-        iphase start_phase
+        iphase start_phase,
+        bool uses_unsafe
     }
 };
 

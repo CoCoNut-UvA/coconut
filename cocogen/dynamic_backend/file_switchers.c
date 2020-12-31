@@ -59,8 +59,11 @@ node_st *dynamic_start_trav_data(node_st *root)
     globals.fp = FSgetIncludeFile("trav_data.h");
     FILE *fp = globals.fp;
     int indent = 0;
+    OUT("#include\"ccngen/ccn_defs.h\"\n");
     OUT("#include \"ccn/ccn_types.h\"\n");
+    OUT("#ifdef CCN_USES_UNSAFE\n");
     OUT("#include \"unsafe_types.h\"\n");
+    OUT("#endif\n");
     OUT("#include \"ccngen/ast.h\"\n");
 
     return root;

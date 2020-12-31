@@ -240,6 +240,7 @@ node_st *ASTast() {
     AST_NUM_NODES(node) = 0;
     AST_ROOT_NODE(node) = NULL;
     AST_START_PHASE(node) = NULL;
+    AST_USES_UNSAFE(node) = false;
     NODE_NUMCHILDREN(node) = 7;
     NODE_CHILDREN(node) = node->data.N_ast->ast_children.ast_children_at;
     return node;}

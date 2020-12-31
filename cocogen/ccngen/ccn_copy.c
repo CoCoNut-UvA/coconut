@@ -181,6 +181,7 @@ struct ccn_node *CPYast(struct ccn_node *arg_node) {
     AST_NUM_NODES(new_node) = AST_NUM_NODES(arg_node);
     AST_ROOT_NODE(new_node) = AST_ROOT_NODE(arg_node);
     AST_START_PHASE(new_node) = AST_START_PHASE(arg_node);
+    AST_USES_UNSAFE(new_node) = AST_USES_UNSAFE(arg_node);
     return new_node;
 }
 

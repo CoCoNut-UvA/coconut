@@ -45,6 +45,11 @@ node_st *doOpts(node_st *root)
     return root;
 }
 
+node_st *genDefines(node_st *root)
+{
+    return root;
+}
+
 node_st *scanAndParse(node_st *root)
 {
     return root;
