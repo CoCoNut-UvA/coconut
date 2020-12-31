@@ -1,14 +1,14 @@
-
+#include <stdio.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <err.h>
+#include <stdlib.h>
 
 #include "ccn/action_types.h"
 #include "ccn/dynamic_core.h"
 #include "ccngen/action_handling.h"
 #include "palm/ctinfo.h"
-#include <err.h>
-#include <stdlib.h>
 
 struct phase_driver {
     size_t level;
