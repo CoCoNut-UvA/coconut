@@ -1,5 +1,0 @@
-=======================
-Working With Traversals
-=======================
-
-Traversals
