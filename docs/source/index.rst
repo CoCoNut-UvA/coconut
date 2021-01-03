@@ -13,6 +13,7 @@ Welcome to CoCoNut's documentation!
     manual
     codegen
     working_with_traversals
+    calculator
 
 
 ==================
