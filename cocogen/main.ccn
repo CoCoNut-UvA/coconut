@@ -167,7 +167,7 @@ traversal gen_dot {
     info = "Generate a dot diagram of the AST.",
     uid = GD,
 
-    nodes = {inode, child, ast, inodeset, setliteral}
+    nodes = {inode, child, ast, inodeset, setliteral, attribute}
 };
 
 traversal dynamic_genTravDataTables {
@@ -384,6 +384,7 @@ traversal setliteralUnion {
         setliteral dst
     }
 };
+
 
 traversal setliteralIntersect {
     uid = SLIS,

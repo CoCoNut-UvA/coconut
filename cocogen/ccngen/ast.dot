@@ -1,58 +1,71 @@
 digraph Ast {
-id -> id
-ienum -> id
-ienum -> ienum
-attribute -> id
-attribute -> attribute
-itravdata -> id
-itravdata -> itravdata
-setoperation -> setexpr
-setliteral -> id
-setliteral -> setliteral
-setreference -> id
-ste -> ste
-child -> id
-child -> ilifetime
-child -> child
-lifetime_range -> id
-ilifetime -> lifetime_range
-ilifetime -> ilifetime
-inodeset -> id
-inodeset -> setexpr
-inodeset -> inodeset
-inode -> id
-inode -> inode
-inode -> child
-inode -> attribute
-inode -> ilifetime
-ipass -> id
-ipass -> ipass
-itraversal -> id
-itraversal -> setexpr
-itraversal -> itravdata
-itraversal -> itraversal
-iphase -> id
-iphase -> iactions
-iphase -> iphase
-iactions -> iactions
-ast -> iphase
-ast -> itraversal
-ast -> ipass
-ast -> inode
-ast -> inodeset
-ast -> ienum
-ast -> ste
-setexpr [shape=box];
-setexpr -> setoperation
-setexpr -> setreference
-setexpr -> setliteral
-link [shape=box];
-link -> iphase
-link -> itraversal
-link -> ipass
-link -> inode
-action [shape=box];
-action -> iphase
-action -> itraversal
-action -> ipass
+id -> id[label="next"]
+ienum -> id[label="vals"]
+ienum -> id[label="name"]
+ienum -> id[label="iprefix"]
+ienum -> ienum[label="next"]
+attribute -> id[label="name"]
+attribute -> id[label="type_reference"]
+attribute -> attribute[label="next"]
+itravdata -> id[label="name"]
+itravdata -> id[label="type_reference"]
+itravdata -> itravdata[label="next"]
+setoperation -> setexpr[label="left"]
+setoperation -> setexpr[label="right"]
+setliteral -> id[label="reference"]
+setliteral -> setliteral[label="left"]
+setliteral -> setliteral[label="right"]
+setreference -> id[label="reference"]
+ste -> ste[label="next"]
+child -> id[label="name"]
+child -> ilifetime[label="lifetimes"]
+child -> child[label="next"]
+lifetime_range -> id[label="target"]
+ilifetime -> lifetime_range[label="begin"]
+ilifetime -> lifetime_range[label="end"]
+ilifetime -> ilifetime[label="next"]
+inodeset -> id[label="name"]
+inodeset -> setexpr[label="expr"]
+inodeset -> id[label="unpacked"]
+inodeset -> inodeset[label="next"]
+inode -> id[label="name"]
+inode -> inode[label="next"]
+inode -> child[label="ichildren"]
+inode -> attribute[label="iattributes"]
+inode -> ilifetime[label="lifetimes"]
+ipass -> id[label="name"]
+ipass -> id[label="iprefix"]
+ipass -> id[label="target_func"]
+ipass -> ipass[label="next"]
+itraversal -> id[label="name"]
+itraversal -> id[label="iprefix"]
+itraversal -> setexpr[label="inodes"]
+itraversal -> itravdata[label="data"]
+itraversal -> itraversal[label="next"]
+iphase -> id[label="name"]
+iphase -> id[label="iprefix"]
+iphase -> id[label="gate_func"]
+iphase -> iactions[label="iactions"]
+iphase -> iphase[label="next"]
+iactions -> iactions[label="next"]
+ast -> iphase[label="iphases"]
+ast -> itraversal[label="itraversals"]
+ast -> ipass[label="ipasses"]
+ast -> inode[label="inodes"]
+ast -> inodeset[label="inodesets"]
+ast -> ienum[label="enums"]
+ast -> ste[label="stable"]
+setexpr;
+setexpr -> setoperation [color=blue]
+setexpr -> setreference [color=blue]
+setexpr -> setliteral [color=blue]
+link;
+link -> iphase [color=blue]
+link -> itraversal [color=blue]
+link -> ipass [color=blue]
+link -> inode [color=blue]
+action;
+action -> iphase [color=blue]
+action -> itraversal [color=blue]
+action -> ipass [color=blue]
 }

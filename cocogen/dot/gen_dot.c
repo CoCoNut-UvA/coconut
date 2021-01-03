@@ -29,6 +29,7 @@ node_st *GDinode(node_st *node)
     HTclear(seen);
     curr_node = node;
     TRAVopt(INODE_ICHILDREN(node));
+    TRAVopt(INODE_IATTRIBUTES(node));
     TRAVopt(INODE_NEXT(node));
     return node;
 }
@@ -36,7 +37,7 @@ node_st *GDinode(node_st *node)
 node_st *GDinodeset(node_st *node)
 {
     int indent = 0;
-    OUT("%s [shape=box];\n", ID_ORIG(INODESET_NAME(node)));
+    OUT("%s;\n", ID_ORIG(INODESET_NAME(node)));
     curr_nodeset = node;
     TRAVopt(INODESET_EXPR(node));
     TRAVopt(INODESET_NEXT(node));
@@ -47,20 +48,32 @@ node_st *GDsetliteral(node_st *node)
 {
     int indent = 0;
     if (node && SETLITERAL_REFERENCE(node)) {
-        OUT("%s -> %s\n", ID_ORIG(INODESET_NAME(curr_nodeset)), ID_ORIG(SETLITERAL_REFERENCE(node)));
+        OUT("%s -> %s [color=blue]\n", ID_ORIG(INODESET_NAME(curr_nodeset)), ID_ORIG(SETLITERAL_REFERENCE(node)));
     }
     TRAVopt(SETLITERAL_RIGHT(node));
     TRAVopt(SETLITERAL_LEFT(node));
     return node;
 }
 
+node_st *GDattribute(node_st *node)
+{
+    int indent = 0;
+    if (ATTRIBUTE_TYPE(node) == AT_link) {
+        OUT("%s -> %s[color=red, label=\"%s\"]\n",
+            ID_ORIG(INODE_NAME(curr_node)), ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(node)),
+            ID_ORIG(ATTRIBUTE_NAME(node)));
+    }
+
+    TRAVopt(ATTRIBUTE_NEXT(node));
+    return node;
+}
 
 node_st *GDchild(node_st *node)
 {
     if (!HTlookup(seen, ID_LWR(CHILD_TYPE_REFERENCE(node)))) {
         int indent = 0;
-        OUT("%s -> %s\n", ID_ORIG(INODE_NAME(curr_node)), ID_ORIG(CHILD_TYPE_REFERENCE(node)));
-        HTinsert(seen, ID_LWR(CHILD_TYPE_REFERENCE(node)), node);
+        OUT("%s -> %s[label=\"%s\"]\n", ID_ORIG(INODE_NAME(curr_node)), ID_ORIG(CHILD_TYPE_REFERENCE(node)), ID_ORIG(CHILD_NAME(node)));
+        //HTinsert(seen, ID_LWR(CHILD_TYPE_REFERENCE(node)), node);
     }
 
     TRAVopt(CHILD_NEXT(node));

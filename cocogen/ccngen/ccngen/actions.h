@@ -287,6 +287,8 @@ struct ccn_node *GDchild(struct ccn_node *node);
 struct ccn_node *GDchild(struct ccn_node *node);
 struct ccn_node *GDast(struct ccn_node *node);
 struct ccn_node *GDast(struct ccn_node *node);
+struct ccn_node *GDattribute(struct ccn_node *node);
+struct ccn_node *GDattribute(struct ccn_node *node);
 struct ccn_node *GDinodeset(struct ccn_node *node);
 struct ccn_node *GDinodeset(struct ccn_node *node);
 struct ccn_node *GDsetliteral(struct ccn_node *node);

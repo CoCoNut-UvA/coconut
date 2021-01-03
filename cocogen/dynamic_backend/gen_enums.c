@@ -17,7 +17,7 @@ static void do_enum(char *name, node_st *node, char *prefix)
     OUT_ENUM("%s", name);
     OUT_ENUM_FIELD("%sNULL", prefix);
     TRAVopt(node);
-    if (node && NODE_TYPE(node) == NT_ITRAVERSAL) {
+    if (STReq("TRAV_", prefix)) {
         OUT_ENUM_FIELD("TRAV_free");
         OUT_ENUM_FIELD("TRAV_check");
         OUT_ENUM_FIELD("TRAV_cpy");

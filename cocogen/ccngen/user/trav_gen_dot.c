@@ -16,6 +16,11 @@ node_st *GDast(node_st *node)
     return node;
 }
 
+node_st *GDattribute(node_st *node)
+{
+    return node;
+}
+
 node_st *GDinodeset(node_st *node)
 {
     return node;
