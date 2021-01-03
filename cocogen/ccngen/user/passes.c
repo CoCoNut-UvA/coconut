@@ -50,7 +50,7 @@ node_st *genDefines(node_st *root)
     return root;
 }
 
-node_st *scanAndParse(node_st *root)
+node_st *SPscanAndParse(node_st *root)
 {
     return root;
 }

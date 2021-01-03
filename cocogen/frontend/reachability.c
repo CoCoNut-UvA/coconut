@@ -1,3 +1,8 @@
+/**
+ * Reachability is based on: https://github.com/MaicoTimmerman/CoCoNut/blob/e8b03f14a283372ec561b61a59a76ff2d7fdffc6/src/cocogen/gen-trav-functions.c
+ * and is licensed under the MIT license.
+ */
+
 #include <stddef.h>
 #include <stdio.h>
 #include <palm/memory.h>

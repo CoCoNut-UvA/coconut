@@ -4,6 +4,7 @@
 #include "palm/str.h"
 #include "palm/memory.h"
 #include "gen_helpers/out_macros.h"
+#include "dynamic_backend/gen_helpers.h"
 #include <err.h>
 
 static FILE *fp = 0;
@@ -24,11 +25,9 @@ node_st *DUGPast(node_st *node)
 
 node_st *DUGPipass(node_st *node)
 {
-    char *func = ID_ORIG(IPASS_NAME(node));
-    if (IPASS_TARGET_FUNC(node)) {
-        func = ID_ORIG(IPASS_TARGET_FUNC(node));
-    }
+    char *func = DGHpassFuncName(node);
     OUT("node_st *%s(node_st *root)\n{\n    return root;\n}\n\n", func);
+    MEMfree(func);
     TRAVopt(IPASS_NEXT(node));
     return node;
 }

@@ -7,7 +7,7 @@
 
 extern node_st *SPparseDSL(FILE *);
 
-node_st *scanAndParse(node_st *root)
+node_st *SPscanAndParse(node_st *root)
 {
     root = (void*)root; // unused error
     FILE *fp = fopen(global_command_line.input_file, "r");

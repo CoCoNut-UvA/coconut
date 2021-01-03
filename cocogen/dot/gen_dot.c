@@ -8,7 +8,7 @@
 static node_st *curr_node;
 static node_st *curr_nodeset;
 static htable_st *seen;
-FILE *fp;
+static FILE *fp;
 
 node_st *GDast(node_st *node)
 {

@@ -4,7 +4,9 @@ start phase startPhase {
     uid = RT,
 
     actions {
-        pass scanAndParse;
+        pass scanAndParse {
+            uid = SP
+        };
         semantic;
         unpack_lifetimes;
         dynamic_backend;

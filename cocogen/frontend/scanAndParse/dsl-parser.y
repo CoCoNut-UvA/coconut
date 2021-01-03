@@ -337,6 +337,11 @@ pass: T_PASS id[name] '{'  info[information] ',' uid[identifier] ',' func[target
         IPASS_IPREFIX($$) = $identifier;
         IPASS_TARGET_FUNC($$) = $target_func;
     }
+    | T_PASS id[name] '{'  uid[identifier] '}'
+    {
+        $$ = ASTipass($name, NULL);
+        IPASS_IPREFIX($$) = $identifier;
+    }
     | T_PASS id[name] '{'  func[target_func]'}'
     {
         $$ = ASTipass($name, NULL);

@@ -7,7 +7,9 @@
 #include "gen_helpers/out_macros.h"
 #include "palm/ctinfo.h"
 #include "palm/str.h"
+#include "palm/memory.h"
 #include "ccn/dynamic_core.h"
+#include "dynamic_backend/gen_helpers.h"
 
 static FILE *fp;
 static int indent = 0;
@@ -26,11 +28,9 @@ node_st *DGPTast(node_st *node)
 
 node_st *DGPTipass(node_st *node)
 {
-    char *func = ID_ORIG(IPASS_NAME(node));
-    if (IPASS_TARGET_FUNC(node)) {
-        func = ID_ORIG(IPASS_TARGET_FUNC(node));
-    }
+    char *func = DGHpassFuncName(node);
     OUT("&%s, ", func);
+    MEMfree(func);
     TRAVopt(IPASS_NEXT(node));
     return node;
 }

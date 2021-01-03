@@ -343,7 +343,7 @@ struct ccn_node *dynamic_start_table_gen(struct ccn_node *);
 struct ccn_node *dynamic_start_enum_header(struct ccn_node *);
 struct ccn_node *doOpts(struct ccn_node *);
 struct ccn_node *genDefines(struct ccn_node *);
-struct ccn_node *scanAndParse(struct ccn_node *);
+struct ccn_node *SPscanAndParse(struct ccn_node *);
 struct ccn_node *CPYid(struct ccn_node *arg_node);
 struct ccn_node *DELid(struct ccn_node *arg_node);
 struct ccn_node *CHKid(struct ccn_node *arg_node);

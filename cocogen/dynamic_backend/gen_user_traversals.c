@@ -25,6 +25,16 @@ node_st *DUGTitraversal(node_st *node)
         err(EXIT_FAILURE, "Can not open user file: %s", filename);
     }
     int indent = 0;
+    OUT("/**\n");
+    OUT(" * TODO: add a doxygen file here with your prefered file name.\n");
+    OUT(" * Traversal: %s\n", ID_ORIG(ITRAVERSAL_NAME(node)));
+    OUT(" *\n");
+    OUT(" * Prefix: %s\n", ID_UPR(ITRAVERSAL_IPREFIX(node)));
+    OUT(" *\n");
+    if (ITRAVERSAL_IINFO(node)) {
+        OUT(" * Description: %s\n", ITRAVERSAL_IINFO(node));
+    }
+    OUT(" */\n\n");
     OUT("#include \"ccngen/ast.h\"\n");
     OUT("#include \"ccn/dynamic_core.h\"\n");
     OUT("\n");
@@ -52,6 +62,9 @@ node_st *DUGTinode(node_st *node)
 node_st *DUGTid(node_st *node)
 {
     int indent = 0;
+    OUT("/**\n");
+    OUT(" * @fn %s%s\n", curr_trav, ID_LWR(node));
+    OUT(" */\n");
     OUT("node_st *%s%s(node_st *node)\n{\n    return node;\n}\n\n", curr_trav, ID_LWR(node));
     TRAVopt(ID_NEXT(node));
     return node;
