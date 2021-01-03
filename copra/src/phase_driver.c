@@ -30,6 +30,17 @@ static struct phase_driver phase_driver = {
     .phase_error = false
 };
 
+static void resetPhaseDriver()
+{
+    phase_driver.level = 0;
+    phase_driver.action_id = 0;
+    phase_driver.cycle_iter = 0;
+    phase_driver.current_phase = NULL;
+    phase_driver.fixed_point = false;
+    phase_driver.action_error = false;
+    phase_driver.phase_error = false;
+}
+
 static struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, struct ccn_node *node);
 
 struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype root_type, struct ccn_node *node,
@@ -128,6 +139,7 @@ void CCNerrorPhase()
 
 void CCNrun(struct ccn_node *node)
 {
+    resetPhaseDriver();
     node = CCNdispatchAction(CCNgetActionFromID(CCN_ROOT_ACTION), CCN_ROOT_TYPE, node, false);
     TRAVstart(node, TRAV_free);
 }
