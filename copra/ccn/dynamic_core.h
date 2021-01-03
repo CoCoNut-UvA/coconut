@@ -22,3 +22,5 @@ struct ccn_node *TRAVchildren(struct ccn_node *arg_node);
 struct ccn_node *TRAVnop(struct ccn_node *arg_node);
 void TRAVdataNOP(ccn_trav_st *);
 ccn_trav_st *TRAVgetCurrent(void);
+struct ccn_node *CCNcopy(struct ccn_node *arg_node) { return TRAVstart(arg_node, TRAV_copy); }
+struct ccn_node *CCNfree(struct ccn_node *arg_node) { return TRAVstart(arg_node, TRAV_free); }
