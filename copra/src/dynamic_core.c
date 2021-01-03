@@ -92,5 +92,5 @@ struct ccn_node *PASSerror(struct ccn_node *arg_node) {
     abort();
 }
 
-struct ccn_node *CCNcopy(struct ccn_node *arg_node) { return TRAVstart(arg_node, TRAV_copy); }
+struct ccn_node *CCNcopy(struct ccn_node *arg_node) { return TRAVstart(arg_node, TRAV_cpy); }
 struct ccn_node *CCNfree(struct ccn_node *arg_node) { return TRAVstart(arg_node, TRAV_free); }
