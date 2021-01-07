@@ -62,7 +62,7 @@ node_st *dynamic_start_trav_data(node_st *root)
     OUT("#include\"ccngen/ccn_defs.h\"\n");
     OUT("#include \"ccn/ccn_types.h\"\n");
     OUT("#ifdef CCN_USES_UNSAFE\n");
-    OUT("#include \"unsafe_types.h\"\n");
+    OUT("#include \"user_types.h\"\n");
     OUT("#endif\n");
     OUT("#include \"ccngen/ast.h\"\n");
 

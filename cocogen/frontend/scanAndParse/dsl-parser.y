@@ -121,7 +121,7 @@ struct ctinfo yy_ctinfo;
 %token T_DISALLOWED "disallowed"
 %token T_GATE "gate"
 %token T_ARROW "->"
-%token T_UNSAFE "unsafe"
+%token T_UNSAFE "user"
 %token T_UID "uid"
 %token END 0 "End-of-file (EOF)"
 

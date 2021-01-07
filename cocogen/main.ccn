@@ -177,7 +177,7 @@ traversal dynamic_genTravDataTables {
     nodes = {ast, itraversal},
 
     travdata = {
-        unsafe fileptr file,
+        user fileptr file,
         int in_init_round,
         int indent
     }

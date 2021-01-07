@@ -2,7 +2,7 @@
 #include"ccngen/ccn_defs.h"
 #include "ccn/ccn_types.h"
 #ifdef CCN_USES_UNSAFE
-#include "unsafe_types.h"
+#include "user_types.h"
 #endif
 #include "ccngen/ast.h"
 struct data_slc {
