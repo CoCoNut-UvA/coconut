@@ -3,6 +3,9 @@
 #include <assert.h>
 #include "ccn/dynamic_core.h"
 
+void SLCinit() { return; }
+void SLCfini() { return; }
+
 
 node_st *SLCsetliteral(node_st *node)
 {

@@ -2,6 +2,8 @@
 #include "ccn/dynamic_core.h"
 #include "sets/set.h"
 
+void SLDinit() {return; }
+void SLDfini() {return; }
 
 node_st *SLDsetliteral(node_st *node)
 {

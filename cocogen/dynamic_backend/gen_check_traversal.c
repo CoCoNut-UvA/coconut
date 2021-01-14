@@ -16,6 +16,10 @@ static node_st *ast;
 static node_st *curr_node;
 static node_st *curr_child;
 
+void DGCHTinit() { return; }
+void DGCHTfini() { return; }
+
+
 node_st *DGCHTast(node_st *node)
 {
     fp = FSgetSourceFile("ccn_check.c");

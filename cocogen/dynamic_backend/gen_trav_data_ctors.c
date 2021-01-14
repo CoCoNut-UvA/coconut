@@ -16,24 +16,19 @@ node_st *DGTDCitraversal(node_st *node)
         check_user_type = true;
         TRAVdo(ITRAVERSAL_DATA(node));
         check_user_type = false;
-        if (has_user_type) {
-            OUT_FIELD("extern void %sinit()", ID_UPR(ITRAVERSAL_IPREFIX(node)));
-            OUT_FIELD("extern void %sfini()", ID_UPR(ITRAVERSAL_IPREFIX(node)));
-        }
+        OUT_FIELD("extern void %sinit()", ID_UPR(ITRAVERSAL_IPREFIX(node)));
+        OUT_FIELD("extern void %sfini()", ID_UPR(ITRAVERSAL_IPREFIX(node)));
+        
         OUT_START_FUNC("void TRAVdataInit%s(ccn_trav_st *trav)", ID_ORIG(id));
         OUT_FIELD("trav->trav_data.%s = MEMmalloc(sizeof(struct data_%s))",
                   ID_LWR(id), ID_LWR(ITRAVERSAL_IPREFIX(node)));
         OUT_FIELD("struct data_%s *data = trav->trav_data.%s", ID_LWR(ITRAVERSAL_IPREFIX(node)), ID_LWR(id));
         TRAVdo(ITRAVERSAL_DATA(node));
-        if (has_user_type) {
-            OUT_FIELD("%sinit()", ID_UPR(ITRAVERSAL_IPREFIX(node)));
-        }
+        OUT_FIELD("%sinit()", ID_UPR(ITRAVERSAL_IPREFIX(node)));
         OUT_END_FUNC();
 
         OUT_START_FUNC("void TRAVdataFree%s(ccn_trav_st *trav)", ID_ORIG(id));
-        if (has_user_type) {
-            OUT_FIELD("%sfini()", ID_UPR(ITRAVERSAL_IPREFIX(node)));
-        }
+        OUT_FIELD("%sfini()", ID_UPR(ITRAVERSAL_IPREFIX(node)));
         OUT_FIELD("MEMfree(trav->trav_data.%s)", ID_LWR(id));
         OUT_END_FUNC();
     }

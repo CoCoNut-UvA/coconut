@@ -4,6 +4,10 @@
 #include <string.h>
 #include <assert.h>
 
+void SLIinit() { return; }
+void SLIfini() { return; }
+
+
 /* Insertion consumes the ID stored in the data struct.
  */
 static node_st *NewLiteral(struct data_sli *data)

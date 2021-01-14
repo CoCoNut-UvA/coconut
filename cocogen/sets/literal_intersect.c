@@ -2,6 +2,9 @@
 #include "ccn/dynamic_core.h"
 #include "sets/set.h"
 
+void SLISinit() { return; }
+void SLISfini() { return; }
+
 
 node_st *SLISsetliteral(node_st *node)
 {

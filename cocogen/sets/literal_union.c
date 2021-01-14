@@ -2,6 +2,9 @@
 #include "ccn/dynamic_core.h"
 #include "sets/set.h"
 
+void SLUinit() { return; }
+void SLUfini() { return; }
+
 
 node_st *SLUsetliteral(node_st *node)
 {
