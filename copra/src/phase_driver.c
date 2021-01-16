@@ -48,6 +48,7 @@ static struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, st
 struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype root_type, struct ccn_node *node,
                           bool is_root) {
     phase_driver.action_id++;
+    bool phase_error = false;
     switch (action->type) {
     case CCN_ACTION_PASS:
         node = PASSstart(node, action->pass.pass_type);
@@ -56,7 +57,7 @@ struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype 
         node = TRAVstart(node, action->traversal.trav_type);
         break;
     case CCN_ACTION_PHASE:
-        bool phase_error = phase_driver.phase_error;
+        phase_error = phase_driver.phase_error;
         phase_driver.phase_error = false;
         node = StartPhase(&(action->phase), action->name, node);
         phase_driver.phase_error = phase_error || phase_driver.phase_error;
@@ -93,6 +94,7 @@ struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, struct cc
         SkipPhase(phase);
         return node;
     }
+    phase_name = phase_name;
     
     struct ccn_phase *prev = phase_driver.current_phase;
     phase_driver.current_phase = phase;
