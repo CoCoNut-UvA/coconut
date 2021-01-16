@@ -516,14 +516,17 @@ setoperation: setexpr '|' setexpr
             }
             ;
 
+
 setliterals: setliterals ',' id
            {
                 SETIDinsert($1, $3);
                 $$ = $1;
+                CCNfree($3);
            }
            | id
            {
                 $$ = SETIDinsert(NULL, $1);
+                CCNfree($1);
            }
 
 

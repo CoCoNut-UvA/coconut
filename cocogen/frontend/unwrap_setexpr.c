@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include "assert.h"
 #include "palm/str.h"
@@ -12,6 +13,7 @@ node_st *ste;
 
 node_st *USEast(node_st *node)
 {
+    exit(0);
     ste = AST_STABLE(node);
     TRAVchildren(node);
     return node;

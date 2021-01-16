@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include "assert.h"
 
@@ -20,6 +21,7 @@ static node_st *enum_prefix_ste = NULL;
 // TODO: Check UID.
 node_st *CEXast(node_st *node)
 {
+    exit(0);
     root = node;
     ste = AST_STABLE(node);
     TRAVchildren(node);

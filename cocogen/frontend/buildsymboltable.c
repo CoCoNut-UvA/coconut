@@ -61,6 +61,7 @@ node_st *lookupST(node_st *ste, node_st *node)
 
 node_st *BSTast(node_st *node)
 {
+    exit(0);
     if (AST_STABLE(node)) {
         first_ste = AST_STABLE(node);
         last_ste = AST_STABLE(node);
