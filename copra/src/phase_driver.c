@@ -14,6 +14,7 @@ struct phase_driver {
     size_t level;
     size_t action_id;
     size_t cycle_iter;
+    size_t max_cycles;
     bool fixed_point;
     bool action_error;
     bool phase_error;
@@ -24,6 +25,7 @@ static struct phase_driver phase_driver = {
     .level = 0,
     .action_id = 0,
     .cycle_iter = 0,
+    .max_cycles = 100,
     .current_phase = NULL,
     .fixed_point = false,
     .action_error = false,
@@ -54,7 +56,10 @@ struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype 
         node = TRAVstart(node, action->traversal.trav_type);
         break;
     case CCN_ACTION_PHASE:
+        bool phase_error = phase_driver.phase_error;
+        phase_driver.phase_error = false;
         node = StartPhase(&(action->phase), action->name, node);
+        phase_driver.phase_error = phase_error || phase_driver.phase_error;
         break;
     case CCN_ACTION_NULL:
         err(EXIT_FAILURE, "[coconut] error in phase driver.");
@@ -72,6 +77,7 @@ struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype 
     return node;
 }
 
+/* Moves action counter used by lifetimes forward when we skip. */
 static void SkipPhase(struct ccn_phase *phase) {
     size_t action_counter = 0;
     enum ccn_action_id action_id = phase->action_table[action_counter];
@@ -81,20 +87,19 @@ static void SkipPhase(struct ccn_phase *phase) {
         action_id = phase->action_table[action_counter];
     }
 }
-// For now 100, will be configurable later and possible to define a per-cycle config.
-#define CCN_MAX_CYCLES 100
 
 struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, struct ccn_node *node) {
-    struct ccn_phase *prev = phase_driver.current_phase;
-    phase_driver.current_phase = phase;
     if (phase->gate_func && !phase->gate_func()) {
         SkipPhase(phase);
         return node;
     }
-    CTIstate("** %s\n", phase_name);
+    
+    struct ccn_phase *prev = phase_driver.current_phase;
+    phase_driver.current_phase = phase;
     phase_driver.level++;
     bool cycle = phase->is_cycle;
     uint64_t curr_action_id = phase_driver.action_id;
+
     do {
         // If we cycle around, reset the action id.
         phase_driver.fixed_point = true;
@@ -108,7 +113,7 @@ struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, struct cc
             action_id = phase->action_table[action_counter];
         }
         phase_driver.cycle_iter++;
-    } while(cycle && phase_driver.cycle_iter < CCN_MAX_CYCLES && !(phase_driver.fixed_point));
+    } while(cycle && phase_driver.cycle_iter < phase_driver.max_cycles && !(phase_driver.fixed_point));
 
     if (phase_driver.phase_error) {
         fprintf(stderr, "CoCoNut: Phase error received. Stopping...\n");
@@ -135,6 +140,11 @@ void CCNerrorAction()
 void CCNerrorPhase()
 {
     phase_driver.phase_error = true;
+}
+
+void CCNsetCycles(size_t cycle_count)
+{
+    phase_driver.max_cycles = cycle_count;
 }
 
 void CCNrun(struct ccn_node *node)

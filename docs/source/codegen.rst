@@ -153,6 +153,14 @@ Also, every traversal that uses travdata needs to define two functions:
     void <trav_uid>init();
     void <trav_uid>fini();
 
+so, for rfor, the following two functions:
+    
+.. code-block:: c
+
+    void RFORinit();
+    void RFORfini();
+
+
 Init is called after construction of the trav data struct, but before starting the traversal. The fini function is called after
 the traversal. Note: do not free the traversal data struct, as it is controlled by CoCoNut.
 

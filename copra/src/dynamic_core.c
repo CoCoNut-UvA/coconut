@@ -68,7 +68,7 @@ struct ccn_node *TRAVopt(struct ccn_node *arg_node) {
 /* Don't traverse through children and return */
 struct ccn_node *TRAVnop(struct ccn_node *arg_node) { return arg_node; }
 
-/* ccn_trav_sterse through each child node and return */
+/* Traverse through each child node and return */
 struct ccn_node *TRAVchildren(struct ccn_node *arg_node) {
     for (int i = 0; i < NODE_NUMCHILDREN(arg_node); i++) {
         NODE_CHILDREN(arg_node)[i] = TRAVopt(NODE_CHILDREN(arg_node)[i]);
@@ -78,6 +78,7 @@ struct ccn_node *TRAVchildren(struct ccn_node *arg_node) {
 
 struct ccn_node *TRAVerror(struct ccn_node *arg_node) {
     //"Trying to traverse through node of unknown type.");
+    fprintf(stderr, "Traversing trough unkown node, is the node corrupted?");
     abort();
     return arg_node;
 }
@@ -92,5 +93,8 @@ struct ccn_node *PASSerror(struct ccn_node *arg_node) {
     abort();
 }
 
+/* Make a deep copy of the given node. */
 struct ccn_node *CCNcopy(struct ccn_node *arg_node) { return TRAVstart(arg_node, TRAV_cpy); }
+
+/* Free a node and all its children. */
 struct ccn_node *CCNfree(struct ccn_node *arg_node) { return TRAVstart(arg_node, TRAV_free); }

@@ -1,6 +1,8 @@
 =============
 DSL
 =============
+The DSL used by CoCoNut is case-insensitive for names and other attributes. In some cases, the fully upercase/lowercase version of a name is used.
+The CoCoNut compiler gives an error if you have two names that are equal in their lowercase form.
 
 Enum
 ================
