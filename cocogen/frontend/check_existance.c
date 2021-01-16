@@ -53,8 +53,20 @@ node_st *CEXiphase(node_st *node)
     return node;
 }
 
+#define UID_RESERVED_N 3
+char *uid_reserved[UID_RESERVED_N] = {
+    "TRAV",
+    "TRV",
+    "CCN",
+};
+
 node_st *CEXitraversal(node_st *node)
 {
+    for (int i = 0; i < UID_RESERVED_N; i++) {
+        if (STReq(ID_UPR(ITRAVERSAL_IPREFIX(node)), uid_reserved[i])) {
+            CTIerror("Traverel uid is reversed: %s\n", uid_reserved[i]);
+        }
+    }
     TRAVchildren(node);
     return node;
 }
@@ -195,9 +207,22 @@ node_st *CEXattribute(node_st *node)
     return node;
 }
 
+#define PRESERVED_ENUM_PREFIX 4
+char *preserved_enum_prefix[] = {
+    "NT",
+    "NS",
+    "TRAV",
+    "PASS"
+};
+
 // TODO: Check enum prefix to reserver prefixes.
 node_st *CEXienum(node_st *node)
 {
+    for (int i = 0; i < PRESERVED_ENUM_PREFIX; i++) {
+        if (STReq(preserved_enum_prefix[i], ID_UPR(IENUM_IPREFIX(node)))) {
+            CTIerror("Enum prefix %s is reversed.", preserved_enum_prefix[i]);
+        }
+    }
     if (lookupST(enum_prefix_ste, IENUM_IPREFIX(node))) {
         CTIerror("Double declaration of enum prefix: %s\n", ID_ORIG(IENUM_IPREFIX(node)));
     } else {
