@@ -1,5 +1,6 @@
 #include "ccn/dynamic_core.h"
 #include "ccn/ccn_types.h"
+#include <stdio.h>
 
 #include "ccngen/ast.h"
 
