@@ -92,7 +92,7 @@ So, the following pass:
 
 ::
 
-    pass ScanParse {
+    pass scanParse {
         info = "Scan and parse the source files and construct the AST.";
         uid = SP,
         func = doScanParse,
@@ -105,12 +105,13 @@ will generate the following C declaration:
     node_st *doScanParse(node_st *node);
 
 
-You then have to define it. If no func is specified, the pass name will be used.
+You then have to define it. If no func is specified, the pass name will be used, with the uid as a prefix, if no uid is specified only the pass name
+is used.
 Thus, the previous pass, without a func defined, would be declared as:
 
 .. code-block:: C
 
-    *node_st *ScanParse(node_st *node);*
+    *node_st *SPscanParse(node_st *node);*
 
 
 Traversals
@@ -144,6 +145,18 @@ Traversal data defined in the DSL is mapped to a struct and can be queried with 
 
     struct data_rfor;
     DATA_RFOR_GET()
+
+Also, every traversal that uses travdata needs to define two functions:
+
+.. code-block:: c
+    
+    void <trav_uid>init();
+    void <trav_uid>fini();
+
+Init is called after construction of the trav data struct, but before starting the traversal. The fini function is called after
+the traversal. Note: do not free the traversal data struct, as it is controlled by CoCoNut.
+
+If a user type is used, a header file, called *user_types.h* is required to be available on the include path of your compiler containing the user type. For example, if you need a FILE* in your travdata, you can define it as a typedef FILE* fileptr and then use the fileptr as a user type.
 
 
 Generated Skeleton

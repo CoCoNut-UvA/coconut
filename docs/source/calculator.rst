@@ -6,8 +6,8 @@ In this tutorial, we will build a small calculator with a REPL where an expressi
 CoCoNut. A skeleton structure can be found at https://github.com/CoCoNut-UvA/calculator-example
 
 The skeleton contains a basic RELP that parses a line into an AST and then prints the AST. Currently, the AST only
-exists out of one number. The parser and lexer are found in the src/scanParse directory. The REPL is present in
-src/main.c. Besides, there is also the src/calc.ccn file, which defines the AST and three actions: A repl phase,
+exists out of one number. The parser and lexer are found in the src/scanParse directory and the REPL is present in
+src/main.c. There is also the src/calc.ccn file, which defines the AST and three actions: A repl phase,
 a scanParse pass and a print traversal. The code for the print traversal is found in src/print.c and the code for the
 scanParse pass is found in the src/scanParse/scanParse.c file.
 
@@ -25,14 +25,14 @@ First, to support binary operations, we will add a binary operation(binop) node.
 and an operation type. The left and right child can be another binop or a number, therefore we have to define a nodeset.
 We define the nodeset by adding the following lines to the src/calc.ccn file:
 
-.. code-block:: text
+..code-block::
 
     nodeset expr = {num, binop};
 
 
 Now, we can define the binop node by extending the src/calc.ccn file with the following lines:
 
-..code-block:: text
+..code-block:: 
 
     root node binop {
         children {

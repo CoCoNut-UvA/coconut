@@ -2,9 +2,10 @@
 Working With CoCoNut
 =======================
 
+All *CCN* functions are found in the *ccn/ccn.h* header file.
+
 Traversals
 ===========
-
 Traversals require most interaction with CoCoNut, therefore, CoCoNut defines some helpers to make working
 with traversal smoother. CoCoNut also makes optimisations and only traverses sub-trees that can contain
 nodes the traversal targets.
@@ -58,6 +59,10 @@ Cycles
 ======
 Cycles
 
+The maximum cycles has the default set to 100, however, that can be changed any time by calling the *CCNsetCycles(size_t cycle_count)* function.
+
 Error signals
 =============
-Error signals.
+There are two ways to signal an error to CoCoNut: *CCNerrorPhase()* and *CCNerrorAction()*. The error phase function stops the compiler
+after the current phase and the error action function stops the compiler after the current action.
+
