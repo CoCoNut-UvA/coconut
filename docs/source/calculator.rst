@@ -1,4 +1,4 @@
-
+===================
 Calculator Example
 ===================
 
@@ -25,14 +25,14 @@ First, to support binary operations, we will add a binary operation(binop) node.
 and an operation type. The left and right child can be another binop or a number, therefore we have to define a nodeset.
 We define the nodeset by adding the following lines to the src/calc.ccn file:
 
-..code-block::
+.. code-block:: text
 
     nodeset expr = {num, binop};
 
 
 Now, we can define the binop node by extending the src/calc.ccn file with the following lines:
 
-..code-block:: 
+.. code-block:: text
 
     root node binop {
         children {
@@ -41,13 +41,14 @@ Now, we can define the binop node by extending the src/calc.ccn file with the fo
         }
     };
 
+
 We make the binop the root node, therefore we have to remove 'root' before the num node. If you do not do this, the
 following error is displayed: *error: Double definition of root node*
 
 Because our print traversal targets all nodes, we need to add the function to handle a binop. Add the following lines
 to the src/print.c file:
 
-..code-block::
+.. code-block:: text
 
     node_st *PRTbinop(node_st *node)
     {
@@ -58,7 +59,7 @@ to the src/print.c file:
 This result in the calculator being compiled again. However, we have no way to distingoush between the operation in a
 binop node. Therefore, we add an enum to the specification by extending the src/calc.ccn file with the following lines:
 
-..code-block::
+.. code-block:: text
 
     enum binop_type {
         prefix = BT,
@@ -67,9 +68,10 @@ binop node. Therefore, we add an enum to the specification by extending the src/
         }
     };
 
+
 and add that enum, as an attribute, to the binop the node. This is done by changing the binop definition to the following:
 
-..code-block::
+.. code-block:: text
 
     root node binop {
         children {
@@ -82,9 +84,10 @@ and add that enum, as an attribute, to the binop the node. This is done by chang
         }
     };
 
+
 Now, we have the full binop node defined and can extend our parser to understand add and substraction operations:
 
-..code-block::
+.. code-block:: text
 
     expr: expr '+' expr { $$ = ASTbinop($1, $3, BT_add); }
     |     expr '-' expr { $$ = ASTbinop($1, $3, BT_sub); }
@@ -101,7 +104,7 @@ order in the example. If the constructor specifier is not used you can add chang
 Now, after compiling, the repl understands add and substract operations on numbers. However, the REPL does not show anything. We have to adapt the print traversal
 to print the binop:
 
-..code-block::
+.. code-block:: text
 
     node_st *PRTbinop(node_st *node)
     {
@@ -120,15 +123,15 @@ Adding a traversal
 Thus, we have a read and print part, but are still missing the evaluate part of the REPL. To add the evaluate we add a new traversal to coconut.
 Add the following to the src/calc.ccn file:
 
-..code-block::
+.. code-block:: text
 
     traversal eval {
         uid = EV
     };
 
-Now, run make and you will see the following errors:
+Now, run make and see the following errors:
 
-..code-block::
+.. code-block:: text
 
      undefined reference to `EVbinop'
      undefined reference to `EVnum'
@@ -138,7 +141,7 @@ CoCoNut generated the declaration for the traversal functions, but we need to de
 in *<gendir>/user/trav_eval.c*, <gendir> is in our example *build/ccngen/*. So, we can copy that file to our src directory and name it whatever we want, in this
 case we name it eval.c by executing the following command from the project root:
 
-..code-block::
+.. code-block:: text
 
     cp ./build/ccngen/user/trav_eval.c ./src/eval.c
 
@@ -150,7 +153,7 @@ to the REPL phase, between the scanParse and print actions, in *src/calc.ccn*.
 We introduced and referenced a whole new traversal, lets implement the traversal now. The eval traversal executes evaluates the left and right
 child. Therefore, we first have to evaluate the left and right child. That can be done by adding a *TRAVchildren* call to the binop function:
 
-..code-block::
+.. code-block:: text
 
     node_st *EVbinop(node_st *node)
     {
@@ -162,7 +165,7 @@ After the children traversal, we should have a left and right child of type NUM.
 We then return the NUM node replacing the original binop node. To do this, we introduce a new node called *new* and assign it the value of the operation in a NUM
 node:
 
-..code-block::
+.. code-block:: text
 
     node_st *EVbinop(node_st *node)
     {
@@ -186,7 +189,7 @@ Fully using CoCoNut
 Nonetheless, we do not take full advantage of CoCoNut features.
 First of all, the eval traversal does nothing with the NUM node, so we can specify that the eval only targets the binop node:
 
-..code-block::
+.. code-block:: text
 
     traversal eval {
         uid = EV,
@@ -196,7 +199,7 @@ First of all, the eval traversal does nothing with the NUM node, so we can speci
 After, we can remove the EVnum function in *eval.c*. Another improvement we can make is denote that a binop should always have a left and right child by specifying
 mandatory.
 
-..code-block::
+.. code-block:: text
 
     root node binop {
         children {
@@ -213,7 +216,7 @@ If CoCoNut find a binop node in the AST with a left or right child being NULL an
 The binop node itself also has a lifetime, because after the eval traversal all binop nodes should be evaluated to a num node. This can be specified by a
 lifetime on the node:
 
-..code-block::
+.. code-block:: text
 
     root node binop {
         children {
@@ -230,7 +233,7 @@ lifetime on the node:
         }
     }
 
-Here, we specify that the binop node is disallowed after the *eval* action. Therefore, if CoCoNut finds a binop node after the eval traversal it will error.
+Here, we specify that the binop node is disallowed after the *eval* action, therefore, if CoCoNut finds a binop node after the eval traversal it will error.
 You can try it out by returning the node in the eval traversal instead of evaluating it. That will result in the following:
 *error: Found disallowed node(binop) in tree.*
 
