@@ -643,6 +643,22 @@ attribute_primitive_type: T_BOOL
     { $$ = AT_string; }
     | T_INT
     { $$ = AT_int; }
+    | T_float
+    { $$ = AT_float; }
+    | T_double
+    { $$ = AT_double; }
+    | T_uint8
+    { $$ = AT_uint8; }
+    | T_uint16
+    { $$ = AT_uint16; }
+    | T_uint32
+    { $$ = AT_uint32; }
+    | T_int8
+    { $$ = AT_int8; }
+    | T_int16
+    { $$ = AT_int16; }
+    | T_int32
+    { $$ = AT_int32; }
     ;
 
 

@@ -44,7 +44,7 @@ node_st *MITLiactions(node_st *node)
 {
     node_st *action_lookup = lookupST(ste, IACTIONS_REFERENCE(node));
     if (action_lookup == NULL) {
-        CTIerror("Lifetime target does not reference a valid action.");
+        CTIerror("Lifetime target(%s) does not reference a valid action.", ID_ORIG(IACTIONS_REFERENCE(node)));
     }
     if (NODE_TYPE(action_lookup) == NT_IPHASE) {
         if (CompareID(IPHASE_NAME(action_lookup), curr_target) || CompareID(IPHASE_IPREFIX(action_lookup), curr_target)) {

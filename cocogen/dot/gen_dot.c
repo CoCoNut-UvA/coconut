@@ -1,3 +1,9 @@
+/**
+ * Generates a DOT diagram of the AST. Attributes of type node are
+ * displayed via red eges. Elements from nodesets are displayed as blue and
+ * nodesets are rectangles.
+ */
+
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
 #include <stdio.h>
