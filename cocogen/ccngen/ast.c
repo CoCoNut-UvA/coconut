@@ -115,7 +115,7 @@ node_st *ASTchild(node_st *name) {
     CHILD_TYPE(node) = 0;
     CHILD_IN_CONSTRUCTOR(node) = 0;
     CHILD_IS_MANDATORY(node) = 0;
-    NODE_NUMCHILDREN(node) = 3;
+    NODE_NUMCHILDREN(node) = 4;
     NODE_CHILDREN(node) = node->data.N_child->child_children.child_children_at;
     return node;}
 
@@ -124,7 +124,9 @@ node_st *ASTlifetime_range() {
     node->data.N_lifetime_range = MEMmalloc(sizeof(struct NODE_DATA_LIFETIME_RANGE));
     NODE_TYPE(node) = NT_LIFETIME_RANGE;
     LIFETIME_RANGE_TARGET(node) = NULL;
+    LIFETIME_RANGE_INCLUSIVE(node) = false;
     LIFETIME_RANGE_ACTION_ID(node) = 0;
+    LIFETIME_RANGE_NEXT_ACTION_ID(node) = 0;
     NODE_NUMCHILDREN(node) = 1;
     NODE_CHILDREN(node) = node->data.N_lifetime_range->lifetime_range_children.lifetime_range_children_at;
     return node;}

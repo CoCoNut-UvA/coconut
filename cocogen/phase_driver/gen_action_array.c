@@ -61,7 +61,7 @@ node_st *GAAitraversal(node_st *node)
 {
     char *name_upr = ID_UPR(ITRAVERSAL_NAME(node));
     OUT("{CCN_ACTION_TRAVERSAL, %s_%s, \"%s\", .traversal = "
-        "{TRAV_%s,},},\n", enum_action_pref, name_upr, ID_ORIG(ITRAVERSAL_NAME(node)), name_upr);
+        "{TRAV_%s,},},\n", enum_action_pref, name_upr, ID_ORIG(ITRAVERSAL_NAME(node)), ID_UPR(ITRAVERSAL_IPREFIX(node)));
 
     TRAVopt(ITRAVERSAL_NEXT(node));
     return node;

@@ -28,7 +28,7 @@ node_st *DGTVitraversal(node_st *node)
     curr_trav_prefix = ITRAVERSAL_IPREFIX(node);
     OUT("const ccn_trav_ft %s_vtable[_NT_SIZE] = { &TRAVerror, ", ID_LWR(ITRAVERSAL_NAME(node)));
     curr_trav_index = ITRAVERSAL_INDEX(node);
-    TRAVstart(AST_INODES(ast), TRAV_DYNAMIC_GENNODESFORTRAVTABLE);
+    TRAVstart(AST_INODES(ast), TRAV_DGNFTT);
     OUT("};\n");
     TRAVchildren(node);
     return node;

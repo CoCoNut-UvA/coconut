@@ -32,7 +32,7 @@ node_st *DGAHitraversal(node_st *node)
     if (ITRAVERSAL_INODES(node)) {
         TRAVdo(ITRAVERSAL_INODES(node));
     } else {
-        TRAVstart(AST_INODES(ast), TRAV_DYNAMIC_GENTRAVACTIONS);
+        TRAVstart(AST_INODES(ast), TRAV_DGTA);
     }
     TRAVopt(ITRAVERSAL_NEXT(node));
     current_trav_prefix = NULL;

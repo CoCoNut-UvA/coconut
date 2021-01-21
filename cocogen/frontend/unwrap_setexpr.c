@@ -13,7 +13,6 @@ node_st *ste;
 
 node_st *USEast(node_st *node)
 {
-    exit(0);
     ste = AST_STABLE(node);
     TRAVchildren(node);
     return node;

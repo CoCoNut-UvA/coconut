@@ -30,7 +30,7 @@ node_st *DGNCinode(node_st *node)
     node_st *next = INODE_NEXT(node);
     // Set next to NULL to prevent init funcs generating others after this node.
     INODE_NEXT(node) = NULL;
-    TRAVstart(node, TRAV_DYNAMIC_GENNODEINITFUNCTIONS);
+    TRAVstart(node, TRAV_DGIF);
 
     node_name_upr = ID_UPR(INODE_NAME(node));
     OUT_START_FUNC_FIELD();

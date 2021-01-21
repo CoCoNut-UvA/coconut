@@ -2,6 +2,7 @@
 
 #include "ccngen/enum.h"
 #include <stdbool.h>
+#include <stdint.h>
 
 struct ccn_node;
 struct ccn_trav;

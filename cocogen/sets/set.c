@@ -9,7 +9,7 @@ static node_st *DoInsert(node_st *literal, node_st *id)
     }
     printf("Inserting: %s\n", ID_LWR(id));
 
-    TRAVpush(TRAV_SETLITERALINSERT);
+    TRAVpush(TRAV_SLI);
     struct data_sli *data = DATA_SLI_GET();
     data->value = TRAVstart(id, TRAV_cpy);
     TRAVdo(literal);
@@ -34,7 +34,7 @@ bool SETIDcontains(node_st *literal, node_st *id)
     bool found = false;
     printf("Checking: %s\n", ID_LWR(id));
 
-    TRAVpush(TRAV_SETLITERALCONTAINS);
+    TRAVpush(TRAV_SLC);
     {
         struct data_slc *data = DATA_SLC_GET();
         data->lookup = id;
@@ -54,7 +54,7 @@ node_st *SETIDdifference(node_st *left, node_st *right)
     }
 
     node_st *new = NULL;
-    TRAVpush(TRAV_SETLITERALDIFFERENCE);
+    TRAVpush(TRAV_SLD);
     {
         struct data_sld *data = DATA_SLD_GET();
         data->right = right;
@@ -71,7 +71,7 @@ node_st *SETIDintersect(node_st *dst, node_st *src)
         return NULL;
     }
     node_st *new = NULL;
-    TRAVpush(TRAV_SETLITERALINTERSECT);
+    TRAVpush(TRAV_SLIS);
     {
         struct data_slis *data = DATA_SLIS_GET();
         data->src = src;
@@ -85,7 +85,7 @@ node_st *SETIDintersect(node_st *dst, node_st *src)
 node_st *SETIDunion(node_st *set1, node_st *set2)
 {
     node_st *new = NULL;
-    TRAVpush(TRAV_SETLITERALUNION);
+    TRAVpush(TRAV_SLU);
     {
         struct data_slu *data = DATA_SLU_GET();
         TRAVopt(set1);

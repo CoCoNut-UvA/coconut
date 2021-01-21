@@ -40,7 +40,7 @@ node_st *DGEast(node_st *node)
 
 node_st *DGEitraversal(node_st *node)
 {
-    OUT_ENUM_FIELD("TRAV_%s", ID_UPR(ITRAVERSAL_NAME(node)));
+    OUT_ENUM_FIELD("TRAV_%s", ID_UPR(ITRAVERSAL_IPREFIX(node)));
     TRAVchildren(node);
     return node;
 }

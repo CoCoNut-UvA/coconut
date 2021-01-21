@@ -19,10 +19,12 @@ char *FMTattributeDefaultVal(enum attribute_type type)
     case AT_uint8:
     case AT_uint16:
     case AT_uint32:
+    case AT_uint64:
     case AT_uint:
     case AT_int8:
     case AT_int16:
     case AT_int32:
+    case AT_int64:
     case AT_int:
         return "0";
     case AT_float:
@@ -50,6 +52,8 @@ char *FMTattributeTypeToString(enum attribute_type type)
         return "int16_t";
     case AT_int32:
         return "int32_t";
+    case AT_int64:
+        return "int64_t";
     case AT_int:
         return "int";
     case AT_uint8:
@@ -58,6 +62,8 @@ char *FMTattributeTypeToString(enum attribute_type type)
         return "uint16_t";
     case AT_uint32:
         return "uint32_t";
+    case AT_uint64:
+        return "uint64_t";
     case AT_uint:
         return "unsigned int";
     case AT_float:

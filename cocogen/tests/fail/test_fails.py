@@ -58,7 +58,7 @@ def test_missing_uid(exec, testdir):
 
 def test_invalid_node_lifetime(exec, testdir):
     res = testdir.run(exec, build_filepath("invalid_node_lifetime.ccn"))
-    res.stderr.fnmatch_lines(["error: Node lifetime can not use mandatory."])
+    res.stderr.fnmatch_lines(["error: Node lifetime can not use mandatory/optional."])
     assert res.ret != 0
 
 

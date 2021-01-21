@@ -60,7 +60,7 @@ node_st *DGCTinode(node_st *node)
     curr_node = node;
     arg_num = 0;
     OUT_START_FUNC("struct ccn_node *CPY%s(struct ccn_node *arg_node)", ID_LWR(INODE_NAME(node)));
-    TRAVstart(node, TRAV_DYNAMIC_GENCONSTRUCTORCALL);
+    TRAVstart(node, TRAV_DGCC);
     TRAVopt(INODE_ICHILDREN(node));
     TRAVopt(INODE_IATTRIBUTES(node));
     OUT_FIELD("return new_node");

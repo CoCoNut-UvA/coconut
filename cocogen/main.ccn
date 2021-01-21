@@ -1,4 +1,3 @@
-
 start phase startPhase {
     info = "The starting point",
     uid = RT,
@@ -15,7 +14,6 @@ start phase startPhase {
         gen_dot;
         pass genDefines;
         print;
-        opts;
     }
 };
 
@@ -179,7 +177,7 @@ traversal dynamic_genTravDataTables {
     travdata = {
         user fileptr file,
         int in_init_round,
-        int indent
+        uint64 indent
     }
 };
 
@@ -532,7 +530,7 @@ node inodeset {
 enum lifetime_type {
     prefix = LT,
     values = {
-        disallowed, mandatory
+        disallowed, mandatory, optional, allowed
     }
 };
 
@@ -554,7 +552,9 @@ node lifetime_range {
     },
 
     attributes {
-        int action_id
+        bool inclusive,
+        int action_id,
+        int next_action_id
     }
 };
 
@@ -569,11 +569,11 @@ node child {
     children {
         id name { constructor, mandatory },
         ilifetime lifetimes,
-        child next
+        child next,
+        id type_reference
     },
 
     attributes {
-        id type_reference,
         child_type type,
         int in_constructor,
         int is_mandatory
@@ -593,7 +593,7 @@ node ste {
 enum attribute_type {
     prefix = AT,
     values = {
-        user, link, link_or_enum, int, string, bool, int8, int16, int32, float, double, uint, uint8, uint16, uint32
+        user, link, link_or_enum, int, string, bool, int8, int16, int32, int64, float, double, uint, uint8, uint16, uint32, uint64
     }
 };
 
@@ -610,7 +610,7 @@ node setreference {
     },
 
     lifetime {
-        disallowed (reachability -> )
+        allowed (-> semantic]
     }
 };
 
@@ -624,14 +624,14 @@ node setliteral {
 
 node setoperation {
     children {
-        setexpr left {constructor},
-        setexpr right {constructor}
+        setexpr left {constructor, mandatory},
+        setexpr right {constructor, mandatory }
     },
     attributes {
         setoperation_type type { constructor }
     },
     lifetime {
-        disallowed (reachability ->)
+        disallowed (semantic ->)
     }
 };
 

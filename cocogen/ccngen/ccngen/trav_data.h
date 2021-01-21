@@ -34,7 +34,7 @@ int lifetime_target;
 };
 
 struct data_dgtdt {
-int indent;
+uint64_t indent;
 int in_init_round;
 fileptr file;
 };

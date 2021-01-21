@@ -82,7 +82,11 @@ struct ccn_node *CHKsetoperation(struct ccn_node *arg_node) {
 
     }
 
-    if (action_id >= 7 && true) {
+    if (SETOPERATION_LEFT(arg_node) == NULL) {
+        CTIerror("Child(left) in node(setoperation) is missing, but specified as mandatory.\n");;
+    }
+
+    if (action_id >= 8 && true) {
         CTIerror("Found disallowed node(setoperation) in tree.\n");
     }
 
@@ -114,8 +118,8 @@ struct ccn_node *CHKsetreference(struct ccn_node *arg_node) {
 
     }
 
-    if (action_id >= 7 && true) {
-        CTIerror("Found disallowed node(setreference) in tree.\n");
+    if (action_id >= 8 || false) {
+        CTIerror("Found disallowed Found disallowed node(setreference) in tree. in tree.\n");
     }
 
     TRAVchildren(arg_node);

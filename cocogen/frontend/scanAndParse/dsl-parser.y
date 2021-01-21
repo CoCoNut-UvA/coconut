@@ -85,6 +85,7 @@ struct ctinfo yy_ctinfo;
 %token T_UINT32 "uint32"
 %token T_UINT64 "uint64"
 
+
 %token T_BOOL "bool"
 %token T_TRUE "true"
 %token T_FALSE "false"
@@ -119,6 +120,8 @@ struct ctinfo yy_ctinfo;
 %token T_NULL "NULL"
 %token T_LIFETIME "lifetime"
 %token T_DISALLOWED "disallowed"
+%token T_OPTIONAL "optional"
+%token T_ALLOWED "allowed"
 %token T_GATE "gate"
 %token T_ARROW "->"
 %token T_UNSAFE "user"
@@ -472,6 +475,7 @@ action: traversal
       }
       | id
       {
+      // TODO: THIS LEAKS!!!!
         $$ = ASTiactions();
         IACTIONS_REFERENCE($$) = $1;
       }
@@ -643,22 +647,26 @@ attribute_primitive_type: T_BOOL
     { $$ = AT_string; }
     | T_INT
     { $$ = AT_int; }
-    | T_float
+    | T_FLOAT
     { $$ = AT_float; }
-    | T_double
+    | T_DOUBLE
     { $$ = AT_double; }
-    | T_uint8
+    | T_UINT8
     { $$ = AT_uint8; }
-    | T_uint16
+    | T_UINT16
     { $$ = AT_uint16; }
-    | T_uint32
+    | T_UINT32
     { $$ = AT_uint32; }
-    | T_int8
+    | T_UINT64
+    { $$ = AT_uint64; }
+    | T_INT8
     { $$ = AT_int8; }
-    | T_int16
+    | T_INT16
     { $$ = AT_int16; }
-    | T_int32
+    | T_INT32
     { $$ = AT_int32; }
+    | T_INT64
+    { $$ = AT_int64; }
     ;
 
 
@@ -752,10 +760,17 @@ lifetime:
         $$ = ASTilifetime();
         ILIFETIME_TYPE($$) = LT_disallowed;
     }
-    | T_DISALLOWED '(' lifetime_range[begin] T_ARROW lifetime_range[end] ')'
+    | T_DISALLOWED lifetime_range[begin] T_ARROW lifetime_range[end]
     {
         $$ = ASTilifetime();
         ILIFETIME_TYPE($$) = LT_disallowed;
+        ILIFETIME_BEGIN($$) = $begin;
+        ILIFETIME_END($$) = $end;
+    }
+    | T_ALLOWED lifetime_range[begin] T_ARROW lifetime_range[end]
+    {
+        $$ = ASTilifetime();
+        ILIFETIME_TYPE($$) = LT_allowed;
         ILIFETIME_BEGIN($$) = $begin;
         ILIFETIME_END($$) = $end;
     }
@@ -764,24 +779,55 @@ lifetime:
         $$ = ASTilifetime();
         ILIFETIME_TYPE($$) = LT_mandatory;
     }
-    | T_MANDATORY '(' lifetime_range[begin] T_ARROW lifetime_range[end] ')'
+    | T_MANDATORY lifetime_range[begin] T_ARROW lifetime_range[end]
     {
         $$ = ASTilifetime();
         ILIFETIME_TYPE($$) = LT_mandatory;
         ILIFETIME_BEGIN($$) = $begin;
         ILIFETIME_END($$) = $end;
     }
-    ;
+    | T_OPTIONAL lifetime_range[begin] T_ARROW lifetime_range[end]
+    {
+        $$ = ASTilifetime();
+        ILIFETIME_TYPE($$) = LT_optional;
+        ILIFETIME_BEGIN($$) = $begin;
+        ILIFETIME_END($$) = $end;
+    }
 
 lifetime_range:
     %empty
     {
         $$ = NULL;
     }
-    | range_spec
+    | '('
+    {
+        $$ = NULL;
+    }
+    | ')'
+    {
+        $$ = NULL;
+    }
+    | '(' range_spec
+    {
+        $$ = ASTlifetime_range();
+        LIFETIME_RANGE_TARGET($$) = $2;
+    }
+    | range_spec ')'
     {
         $$ = ASTlifetime_range();
         LIFETIME_RANGE_TARGET($$) = $1;
+    }
+    | range_spec ']'
+    {
+        $$ = ASTlifetime_range();
+        LIFETIME_RANGE_INCLUSIVE($$) = true;
+        LIFETIME_RANGE_TARGET($$) = $1;
+    }
+    | '[' range_spec
+    {
+        $$ = ASTlifetime_range();
+        LIFETIME_RANGE_INCLUSIVE($$) = true;
+        LIFETIME_RANGE_TARGET($$) = $2;
     }
     ;
 

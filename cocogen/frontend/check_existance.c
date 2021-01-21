@@ -21,7 +21,6 @@ static node_st *enum_prefix_ste = NULL;
 // TODO: Check UID.
 node_st *CEXast(node_st *node)
 {
-    exit(0);
     root = node;
     ste = AST_STABLE(node);
     TRAVchildren(node);
@@ -191,14 +190,14 @@ node_st *CEXattribute(node_st *node)
     if (ATTRIBUTE_TYPE(node) == AT_link_or_enum) {
         node_st *ste_entry = lookupST(ste, ATTRIBUTE_TYPE_REFERENCE(node));
         if (ste_entry == NULL) {
-            CTIerror("Could not find type reference for attribute.");
+            CTIerror("Could not find type reference for attribute with type %s.", ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(node)));
         } else {
             if (NODE_TYPE(ste_entry) == NT_INODE || NODE_TYPE(ste_entry) == NT_INODESET) {
                 ATTRIBUTE_TYPE(node) = AT_link;
             } else if (NODE_TYPE(ste_entry) == NT_IENUM) {
                 ATTRIBUTE_TYPE(node) = AT_link_or_enum;
             } else {
-                CTIerror("Invalid type in attribute type.");
+                CTIerror("Invalid type in attribute type: %s", ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(node)));
             }
         }
     }
@@ -207,15 +206,15 @@ node_st *CEXattribute(node_st *node)
     return node;
 }
 
-#define PRESERVED_ENUM_PREFIX 4
+#define PRESERVED_ENUM_PREFIX 5
 char *preserved_enum_prefix[] = {
     "NT",
     "NS",
     "TRAV",
-    "PASS"
+    "PASS",
+    "CCN"
 };
 
-// TODO: Check enum prefix to reserver prefixes.
 node_st *CEXienum(node_st *node)
 {
     for (int i = 0; i < PRESERVED_ENUM_PREFIX; i++) {

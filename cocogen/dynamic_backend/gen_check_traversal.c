@@ -1,11 +1,13 @@
+#include <assert.h>
+#include <palm/memory.h>
 #include <stddef.h>
 #include <stdio.h>
-#include <assert.h>
 
-#include "gen_helpers/out_macros.h"
-#include "filesystem/gen_files.h"
 #include "ccn/dynamic_core.h"
+#include "filesystem/gen_files.h"
+#include "gen_helpers/out_macros.h"
 #include "globals.h"
+#include "palm/str.h"
 
 #define LT_NODE 1
 #define LT_CHILD 2
@@ -170,30 +172,228 @@ node_st *DGCHTid(node_st *node)
     return node;
 }
 
+static void LifetimeNodeDisallowed(node_st *lifetime_begin, node_st *lifetime_end, char *error)
+{
+    OUT("if (");
+    if (lifetime_begin) {
+        if (LIFETIME_RANGE_INCLUSIVE(lifetime_begin)) {
+            OUT_NO_INDENT(
+                "action_id >= %d && ",
+                (LIFETIME_RANGE_ACTION_ID(lifetime_begin)));
+        } else {
+            OUT_NO_INDENT(
+                "action_id >= %d && ",
+                (LIFETIME_RANGE_NEXT_ACTION_ID(lifetime_begin)));
+        }
+    }
+    if (lifetime_end) {
+        if (LIFETIME_RANGE_INCLUSIVE(lifetime_end)) {
+            OUT_NO_INDENT(
+                "action_id < %d && ",
+                (LIFETIME_RANGE_NEXT_ACTION_ID(lifetime_end)));
+        } else {
+            OUT_NO_INDENT(
+                "action_id < %d && ",
+                (LIFETIME_RANGE_ACTION_ID(lifetime_end)));
+        }
+    }
+    OUT_NO_INDENT("true) {\n");
+    indent++;
+    OUT_FIELD("CTIerror(\"%s\\n\")",
+              error);
+    OUT_END_IF();
+}
+
+static void LifetimeNodeAllowed(node_st *lifetime_begin, node_st *lifetime_end, char *error)
+{
+    OUT("if (");
+    if (lifetime_begin) {
+        if (LIFETIME_RANGE_INCLUSIVE(lifetime_begin)) {
+            OUT_NO_INDENT("action_id < %d || ", LIFETIME_RANGE_ACTION_ID(lifetime_begin));
+        } else {
+            OUT_NO_INDENT("action_id < %d || ", LIFETIME_RANGE_NEXT_ACTION_ID(lifetime_begin));
+        }
+    }
+
+    if (lifetime_end) {
+        if (LIFETIME_RANGE_INCLUSIVE(lifetime_end)) {
+            OUT_NO_INDENT("action_id >= %d || ", LIFETIME_RANGE_NEXT_ACTION_ID(lifetime_end));
+        } else {
+            OUT_NO_INDENT("action_id >= %d || ", LIFETIME_RANGE_ACTION_ID(lifetime_end));
+        }
+    }
+    OUT_NO_INDENT("false) {\n");
+    indent++;
+    OUT_FIELD("CTIerror(\"Found disallowed %s in tree.\\n\")",
+              error);
+    OUT_END_IF();
+}
+
 /* Generation of lifetimes that are defined for a node.
  */
 static void LifetimeNodeGen(node_st *node)
 {
     assert(NODE_TYPE(node) == NT_ILIFETIME);
     // Nodes can only specify disallowed lifetimes.
-    assert(ILIFETIME_TYPE(node) == LT_disallowed);
+    assert(ILIFETIME_TYPE(node) == LT_disallowed || ILIFETIME_TYPE(node) == LT_allowed);
     if (!ILIFETIME_BEGIN(node) && !ILIFETIME_END(node)) {
         if (ILIFETIME_TYPE(node) == LT_disallowed) {
             OUT_FIELD("CTIerror(\"Found disallowed node(%s) in tree.\\n\");", ID_ORIG(INODE_NAME(curr_node)));
         }
     } else {
-        OUT("if (");
-        if (ILIFETIME_BEGIN(node)) {
-            OUT_NO_INDENT("action_id >= %d && ", (LIFETIME_RANGE_ACTION_ID(ILIFETIME_BEGIN(node))));
+        char *error = STRcatn(3, "Found disallowed node(", ID_ORIG(INODE_NAME(curr_node)), ") in tree.");
+        if (ILIFETIME_TYPE(node) == LT_disallowed) {
+            LifetimeNodeDisallowed(ILIFETIME_BEGIN(node), ILIFETIME_END(node), error);
+        } else {
+            LifetimeNodeAllowed(ILIFETIME_BEGIN(node), ILIFETIME_END(node), error);
         }
-        if (ILIFETIME_END(node)) {
-            OUT_NO_INDENT("action_id <= %d &&", (LIFETIME_RANGE_ACTION_ID(ILIFETIME_END(node))));
-        }
-        OUT_NO_INDENT("true) {\n");
-        indent++;
-        OUT_FIELD("CTIerror(\"Found disallowed node(%s) in tree.\\n\")", ID_ORIG(INODE_NAME(curr_node)));
-        OUT_END_IF();
+        MEMfree(error);
     }
+}
+
+static void LifetimeChildDisallowed(node_st *lifetime_begin, node_st *lifetime_end)
+{
+    OUT("if (");
+    if (lifetime_begin) {
+        if (LIFETIME_RANGE_INCLUSIVE(lifetime_begin)) {
+            OUT_NO_INDENT(
+                "action_id >= %d && ",
+                (LIFETIME_RANGE_ACTION_ID(lifetime_begin)));
+        } else {
+            OUT_NO_INDENT(
+                "action_id >= %d && ",
+                (LIFETIME_RANGE_NEXT_ACTION_ID(lifetime_begin)));
+        }
+    }
+    if (lifetime_end) {
+        if (LIFETIME_RANGE_INCLUSIVE(lifetime_end)) {
+            OUT_NO_INDENT(
+                "action_id < %d && ",
+                (LIFETIME_RANGE_NEXT_ACTION_ID(lifetime_end)));
+        } else {
+            OUT_NO_INDENT(
+                "action_id < %d && ",
+                (LIFETIME_RANGE_ACTION_ID(lifetime_end)));
+        }
+    }
+    OUT_NO_INDENT("true) {\n");
+    indent++;
+
+    OUT_BEGIN_IF("%s_%s(arg_node) != NULL",
+                 ID_UPR(INODE_NAME(curr_node)),
+                 ID_UPR(CHILD_NAME(curr_child)));
+    OUT_FIELD(
+        "CTIerror(\"Found disallowed child(%s) in node(%s).\\n\");",
+        ID_ORIG(CHILD_NAME(curr_child)),
+        ID_ORIG(INODE_NAME(curr_node)));
+    OUT_END_IF();
+
+    OUT_END_IF();
+}
+static void LifetimeChildAllowed(node_st *lifetime_begin, node_st *lifetime_end)
+{
+    OUT("if (");
+    if (lifetime_begin) {
+        if (LIFETIME_RANGE_INCLUSIVE(lifetime_begin)) {
+            OUT_NO_INDENT("action_id < %d || ", LIFETIME_RANGE_ACTION_ID(lifetime_begin));
+        } else {
+            OUT_NO_INDENT("action_id < %d || ", LIFETIME_RANGE_NEXT_ACTION_ID(lifetime_begin));
+        }
+    }
+
+    if (lifetime_end) {
+        if (LIFETIME_RANGE_INCLUSIVE(lifetime_end)) {
+            OUT_NO_INDENT("action_id >= %d || ", LIFETIME_RANGE_NEXT_ACTION_ID(lifetime_end));
+        } else {
+            OUT_NO_INDENT("action_id >= %d || ", LIFETIME_RANGE_ACTION_ID(lifetime_end));
+        }
+    }
+    OUT_NO_INDENT("false) {\n");
+    indent++;
+
+    OUT_BEGIN_IF("%s_%s(arg_node) != NULL",
+                 ID_UPR(INODE_NAME(curr_node)),
+                 ID_UPR(CHILD_NAME(curr_child)));
+    OUT_FIELD(
+        "CTIerror(\"Found disallowed child(%s) in node(%s).\\n\");",
+        ID_ORIG(CHILD_NAME(curr_child)),
+        ID_ORIG(INODE_NAME(curr_node)));
+    OUT_END_IF();
+
+    OUT_END_IF();
+}
+
+static void LifetimeChildMandatory(node_st *lifetime_begin, node_st *lifetime_end)
+{
+    OUT("if (");
+    if (lifetime_begin) {
+        if (LIFETIME_RANGE_INCLUSIVE(lifetime_begin)) {
+            OUT_NO_INDENT(
+                "action_id >= %d && ",
+                (LIFETIME_RANGE_ACTION_ID(lifetime_begin)));
+        } else {
+            OUT_NO_INDENT(
+                "action_id >= %d && ",
+                (LIFETIME_RANGE_NEXT_ACTION_ID(lifetime_begin)));
+        }
+    }
+    if (lifetime_end) {
+        if (LIFETIME_RANGE_INCLUSIVE(lifetime_end)) {
+            OUT_NO_INDENT(
+                "action_id < %d && ",
+                (LIFETIME_RANGE_NEXT_ACTION_ID(lifetime_end)));
+        } else {
+            OUT_NO_INDENT(
+                "action_id < %d && ",
+                (LIFETIME_RANGE_ACTION_ID(lifetime_end)));
+        }
+    }
+    OUT_NO_INDENT("true) {\n");
+    indent++;
+
+    OUT_BEGIN_IF("%s_%s(arg_node) == NULL",
+                 ID_UPR(INODE_NAME(curr_node)),
+                 ID_UPR(CHILD_NAME(curr_child)));
+    OUT_FIELD(
+        "CTIerror(\"Mandatory child(%s) in node(%s) is missing.\\n\");",
+        ID_ORIG(CHILD_NAME(curr_child)),
+        ID_ORIG(INODE_NAME(curr_node)));
+    OUT_END_IF();
+
+    OUT_END_IF();
+}
+
+static void LifetimeChildOptional(node_st *lifetime_begin, node_st *lifetime_end)
+{
+    OUT("if (");
+    if (lifetime_begin) {
+        if (LIFETIME_RANGE_INCLUSIVE(lifetime_begin)) {
+            OUT_NO_INDENT("action_id < %d || ", LIFETIME_RANGE_ACTION_ID(lifetime_begin));
+        } else {
+            OUT_NO_INDENT("action_id < %d || ", LIFETIME_RANGE_NEXT_ACTION_ID(lifetime_begin));
+        }
+    }
+
+    if (lifetime_end) {
+        if (LIFETIME_RANGE_INCLUSIVE(lifetime_end)) {
+            OUT_NO_INDENT("action_id >= %d || ", LIFETIME_RANGE_NEXT_ACTION_ID(lifetime_end));
+        } else {
+            OUT_NO_INDENT("action_id >= %d || ", LIFETIME_RANGE_ACTION_ID(lifetime_end));
+        }
+    }
+    OUT_NO_INDENT("false) {\n");
+    indent++;
+
+    OUT_BEGIN_IF("%s_%s(arg_node) == NULL",
+                 ID_UPR(INODE_NAME(curr_node)),
+                 ID_UPR(CHILD_NAME(curr_child)));
+    OUT_FIELD(
+        "CTIerror(\"Mandatory child(%s) in node(%s) is missing.\\n\");",
+        ID_ORIG(CHILD_NAME(curr_child)),
+        ID_ORIG(INODE_NAME(curr_node)));
+    OUT_END_IF();
+
+    OUT_END_IF();
 }
 
 /* The check is executed in the parent of this child. */
@@ -211,25 +411,15 @@ static void LifetimeChildGen(node_st *node)
             OUT_END_IF();
         }
     } else {
-        OUT("if (");
-        if (ILIFETIME_BEGIN(node)) {
-            OUT_NO_INDENT("action_id >= %d && ", (LIFETIME_RANGE_ACTION_ID(ILIFETIME_BEGIN(node))));
-        }
-        if (ILIFETIME_END(node)) {
-            OUT_NO_INDENT("action_id <= %d && ", (LIFETIME_RANGE_ACTION_ID(ILIFETIME_END(node))));
-        }
-        OUT_NO_INDENT("true) {\n");
-        indent++;
         if (ILIFETIME_TYPE(node) == LT_disallowed) {
-            OUT_BEGIN_IF("%s_%s(arg_node) != NULL", ID_UPR(INODE_NAME(curr_node)), ID_UPR(CHILD_NAME(curr_child)));
-            OUT_FIELD("CTIerror(\"Found disallowed child(%s) in node(%s).\\n\");", ID_ORIG(CHILD_NAME(curr_child)), ID_ORIG(INODE_NAME(curr_node)));
-            OUT_END_IF();
-        }else if (ILIFETIME_TYPE(node) == LT_mandatory) {
-            OUT_BEGIN_IF("%s_%s(arg_node) == NULL", ID_UPR(INODE_NAME(curr_node)), ID_UPR(CHILD_NAME(curr_child)));
-            OUT_FIELD("CTIerror(\"Child(%s) in node(%s) is missing, but specified as mandatory.\\n\");", ID_ORIG(CHILD_NAME(curr_child)), ID_ORIG(INODE_NAME(curr_node)));
-            OUT_END_IF();
+            LifetimeChildDisallowed(ILIFETIME_BEGIN(node), ILIFETIME_END(node));
+        } else if (ILIFETIME_TYPE(node) == LT_allowed) {
+            LifetimeChildAllowed(ILIFETIME_BEGIN(node), ILIFETIME_END(node));
+        } else if (ILIFETIME_TYPE(node) == LT_mandatory) {
+            LifetimeChildMandatory(ILIFETIME_BEGIN(node), ILIFETIME_END(node));
+        } else if (ILIFETIME_TYPE(node) == LT_optional) {
+            LifetimeChildOptional(ILIFETIME_BEGIN(node), ILIFETIME_END(node));
         }
-        OUT_END_IF();
     }
 }
 

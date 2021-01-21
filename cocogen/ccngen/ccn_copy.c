@@ -79,7 +79,7 @@ struct ccn_node *CPYchild(struct ccn_node *arg_node) {
     CHILD_NAME(new_node) = TRAVopt(CHILD_NAME(arg_node));
     CHILD_LIFETIMES(new_node) = TRAVopt(CHILD_LIFETIMES(arg_node));
     CHILD_NEXT(new_node) = TRAVopt(CHILD_NEXT(arg_node));
-    CHILD_TYPE_REFERENCE(new_node) = CHILD_TYPE_REFERENCE(arg_node);
+    CHILD_TYPE_REFERENCE(new_node) = TRAVopt(CHILD_TYPE_REFERENCE(arg_node));
     CHILD_TYPE(new_node) = CHILD_TYPE(arg_node);
     CHILD_IN_CONSTRUCTOR(new_node) = CHILD_IN_CONSTRUCTOR(arg_node);
     CHILD_IS_MANDATORY(new_node) = CHILD_IS_MANDATORY(arg_node);
@@ -89,7 +89,9 @@ struct ccn_node *CPYchild(struct ccn_node *arg_node) {
 struct ccn_node *CPYlifetime_range(struct ccn_node *arg_node) {
     struct ccn_node *new_node = ASTlifetime_range();
     LIFETIME_RANGE_TARGET(new_node) = TRAVopt(LIFETIME_RANGE_TARGET(arg_node));
+    LIFETIME_RANGE_INCLUSIVE(new_node) = LIFETIME_RANGE_INCLUSIVE(arg_node);
     LIFETIME_RANGE_ACTION_ID(new_node) = LIFETIME_RANGE_ACTION_ID(arg_node);
+    LIFETIME_RANGE_NEXT_ACTION_ID(new_node) = LIFETIME_RANGE_NEXT_ACTION_ID(arg_node);
     return new_node;
 }
 

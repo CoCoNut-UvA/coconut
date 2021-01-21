@@ -121,12 +121,12 @@ struct NODE_DATA_CHILD {
             node_st *name;
             node_st *lifetimes;
             node_st *next;
+            node_st *type_reference;
         } child_children_st;
 
-        node_st *child_children_at[3];
+        node_st *child_children_at[4];
     } child_children;
 
-    node_st *type_reference;
     enum child_type type;
     int in_constructor;
     int is_mandatory;
@@ -141,7 +141,9 @@ struct NODE_DATA_LIFETIME_RANGE {
         node_st *lifetime_range_children_at[1];
     } lifetime_range_children;
 
+    bool inclusive;
     int action_id;
+    int next_action_id;
 };
 
 struct NODE_DATA_ILIFETIME {
@@ -311,12 +313,14 @@ struct NODE_DATA_AST {
 #define CHILD_NAME(n) ((n)->data.N_child->child_children.child_children_st.name)
 #define CHILD_LIFETIMES(n) ((n)->data.N_child->child_children.child_children_st.lifetimes)
 #define CHILD_NEXT(n) ((n)->data.N_child->child_children.child_children_st.next)
-#define CHILD_TYPE_REFERENCE(n) ((n)->data.N_child->type_reference)
+#define CHILD_TYPE_REFERENCE(n) ((n)->data.N_child->child_children.child_children_st.type_reference)
 #define CHILD_TYPE(n) ((n)->data.N_child->type)
 #define CHILD_IN_CONSTRUCTOR(n) ((n)->data.N_child->in_constructor)
 #define CHILD_IS_MANDATORY(n) ((n)->data.N_child->is_mandatory)
 #define LIFETIME_RANGE_TARGET(n) ((n)->data.N_lifetime_range->lifetime_range_children.lifetime_range_children_st.target)
+#define LIFETIME_RANGE_INCLUSIVE(n) ((n)->data.N_lifetime_range->inclusive)
 #define LIFETIME_RANGE_ACTION_ID(n) ((n)->data.N_lifetime_range->action_id)
+#define LIFETIME_RANGE_NEXT_ACTION_ID(n) ((n)->data.N_lifetime_range->next_action_id)
 #define ILIFETIME_BEGIN(n) ((n)->data.N_ilifetime->ilifetime_children.ilifetime_children_st.begin)
 #define ILIFETIME_END(n) ((n)->data.N_ilifetime->ilifetime_children.ilifetime_children_st.end)
 #define ILIFETIME_NEXT(n) ((n)->data.N_ilifetime->ilifetime_children.ilifetime_children_st.next)

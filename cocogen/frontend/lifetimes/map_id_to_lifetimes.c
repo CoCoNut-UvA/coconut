@@ -7,6 +7,7 @@
 extern node_st *lookupST(node_st*, node_st*);
 
 static node_st *last_action = NULL;
+static node_st *last_node = NULL;
 static node_st *curr_target = NULL;
 static node_st *ast = NULL;
 static node_st *ste = NULL;
@@ -49,16 +50,19 @@ node_st *MITLiactions(node_st *node)
     if (NODE_TYPE(action_lookup) == NT_IPHASE) {
         if (CompareID(IPHASE_NAME(action_lookup), curr_target) || CompareID(IPHASE_IPREFIX(action_lookup), curr_target)) {
             last_action = node;
+            last_node = action_lookup;
             return node;
         }
         TRAVopt(IPHASE_IACTIONS(action_lookup));
     } else if (NODE_TYPE(action_lookup) == NT_IPASS) {
         if (CompareID(IPASS_NAME(action_lookup), curr_target) || CompareID(IPASS_IPREFIX(action_lookup), curr_target)) {
             last_action = node;
+            last_node = action_lookup;
             return node;
         }
     } else if (NODE_TYPE(action_lookup) == NT_ITRAVERSAL) {
         if (CompareID(ITRAVERSAL_NAME(action_lookup), curr_target) || CompareID(ITRAVERSAL_IPREFIX(action_lookup), curr_target)) {
+            last_node = action_lookup;
             last_action = node;
             return node;
         }
@@ -71,8 +75,8 @@ node_st *MITLiactions(node_st *node)
 
 node_st *MITLilifetime(node_st *node)
 {
-    if (in_node && ILIFETIME_TYPE(node) == LT_mandatory) {
-        CTIerror("Node lifetime can not use mandatory.");
+    if (in_node && (ILIFETIME_TYPE(node) == LT_mandatory || ILIFETIME_TYPE(node) == LT_optional)) {
+        CTIerror("Node lifetime can not use mandatory/optional.");
     }
     last_action = NULL;
     TRAVopt(ILIFETIME_BEGIN(node));
@@ -80,6 +84,7 @@ node_st *MITLilifetime(node_st *node)
     TRAVopt(ILIFETIME_END(node));
     return node;
 }
+
 
 node_st *MITLlifetime_range(node_st *node)
 {
@@ -89,6 +94,17 @@ node_st *MITLlifetime_range(node_st *node)
         CTIerror("Lifetime does not target a valid action.");
     } else {
         LIFETIME_RANGE_ACTION_ID(node) = IACTIONS_ACTION_ID(last_action);
+        if (NODE_TYPE(last_node) == NT_IPHASE) {
+            node_st *phase_actions = IPHASE_IACTIONS(last_node);
+            node_st *next = IACTIONS_NEXT(phase_actions);
+            while (next) {
+                phase_actions = next;
+                next = IACTIONS_NEXT(phase_actions);
+            }
+            LIFETIME_RANGE_NEXT_ACTION_ID(node) = IACTIONS_ACTION_ID(phase_actions) + 1;
+        } else {
+            LIFETIME_RANGE_NEXT_ACTION_ID(node) = IACTIONS_ACTION_ID(last_action) + 1;
+        }
     }
     curr_target = NULL;
     return node;
@@ -105,6 +121,7 @@ node_st *MITLid(node_st *node)
             CTIerror("Lifetime does not target a phase while it nests.");
         } else {
             last_action = NULL;
+            last_node = NULL;
             TRAVopt(IPHASE_IACTIONS(action));
         }
     }

@@ -147,6 +147,8 @@ static inline void check_c_keyword(const char *);
 "bool"          { LEX_KEYWORD(T_BOOL);}
 "lifetime"      { LEX_KEYWORD(T_LIFETIME);}
 "disallowed"    { LEX_KEYWORD(T_DISALLOWED);}
+"optional"      { LEX_KEYWORD(T_OPTIONAL);}
+"allowed"       { LEX_KEYWORD(T_ALLOWED); }
 "->"            { LEX_KEYWORD(T_ARROW);}
 "false"         { LEX_KEYWORD(T_FALSE);}
 "true"          { LEX_KEYWORD(T_TRUE);}
