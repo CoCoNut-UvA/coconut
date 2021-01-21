@@ -449,10 +449,10 @@ nodeset link = action | {inode};
 
 node iactions {
     children {
+        id reference,
         iactions next
     },
     attributes {
-        id reference,
         int action_id
     }
 };

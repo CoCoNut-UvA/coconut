@@ -164,8 +164,8 @@ struct ccn_node *CPYiphase(struct ccn_node *arg_node) {
 
 struct ccn_node *CPYiactions(struct ccn_node *arg_node) {
     struct ccn_node *new_node = ASTiactions();
+    IACTIONS_REFERENCE(new_node) = TRAVopt(IACTIONS_REFERENCE(arg_node));
     IACTIONS_NEXT(new_node) = TRAVopt(IACTIONS_NEXT(arg_node));
-    IACTIONS_REFERENCE(new_node) = IACTIONS_REFERENCE(arg_node);
     IACTIONS_ACTION_ID(new_node) = IACTIONS_ACTION_ID(arg_node);
     return new_node;
 }

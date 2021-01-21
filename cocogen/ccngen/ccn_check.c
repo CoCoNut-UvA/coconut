@@ -263,9 +263,9 @@ struct ccn_node *CHKiphase(struct ccn_node *arg_node) {
 struct ccn_node *CHKiactions(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
     action_id = action_id;
-    if (IACTIONS_NEXT(arg_node)) {
-        if (NODE_TYPE(IACTIONS_NEXT(arg_node)) != NT_IACTIONS) {
-            CTIerror("Inconsistent node found in AST. Child next of node iactions has disallowed type %d ", NODE_TYPE(IACTIONS_NEXT(arg_node)));
+    if (IACTIONS_REFERENCE(arg_node)) {
+        if (NODE_TYPE(IACTIONS_REFERENCE(arg_node)) != NT_ID) {
+            CTIerror("Inconsistent node found in AST. Child reference of node iactions has disallowed type %d ", NODE_TYPE(IACTIONS_REFERENCE(arg_node)));
         }
 
     }

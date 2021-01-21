@@ -246,13 +246,13 @@ struct NODE_DATA_IPHASE {
 struct NODE_DATA_IACTIONS {
     union NODE_CHILDREN_IACTIONS {
         struct NODE_CHILDREN_IACTIONS_STRUCT {
+            node_st *reference;
             node_st *next;
         } iactions_children_st;
 
-        node_st *iactions_children_at[1];
+        node_st *iactions_children_at[2];
     } iactions_children;
 
-    node_st *reference;
     int action_id;
 };
 
@@ -358,8 +358,8 @@ struct NODE_DATA_AST {
 #define IPHASE_IS_START(n) ((n)->data.N_iphase->is_start)
 #define IPHASE_IS_CYCLE(n) ((n)->data.N_iphase->is_cycle)
 #define IPHASE_IINFO(n) ((n)->data.N_iphase->iinfo)
+#define IACTIONS_REFERENCE(n) ((n)->data.N_iactions->iactions_children.iactions_children_st.reference)
 #define IACTIONS_NEXT(n) ((n)->data.N_iactions->iactions_children.iactions_children_st.next)
-#define IACTIONS_REFERENCE(n) ((n)->data.N_iactions->reference)
 #define IACTIONS_ACTION_ID(n) ((n)->data.N_iactions->action_id)
 #define AST_IPHASES(n) ((n)->data.N_ast->ast_children.ast_children_st.iphases)
 #define AST_ITRAVERSALS(n) ((n)->data.N_ast->ast_children.ast_children_st.itraversals)

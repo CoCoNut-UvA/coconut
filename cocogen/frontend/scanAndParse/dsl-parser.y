@@ -455,27 +455,26 @@ actions: action ';' actions
 action: traversal
       {
         $$ = ASTiactions();
-        IACTIONS_REFERENCE($$) = ITRAVERSAL_NAME($1);
+        IACTIONS_REFERENCE($$) = CCNcopy(ITRAVERSAL_NAME($1));
         ITRAVERSAL_NEXT($1) = AST_ITRAVERSALS(ast);
         AST_ITRAVERSALS(ast) = $1;
       }
       | pass
       {
         $$ = ASTiactions();
-        IACTIONS_REFERENCE($$) = IPASS_NAME($1);
+        IACTIONS_REFERENCE($$) = CCNcopy(IPASS_NAME($1));
         IPASS_NEXT($1) = AST_IPASSES(ast);
         AST_IPASSES(ast) = $1;
       }
       | phase
       {
         $$ = ASTiactions();
-        IACTIONS_REFERENCE($$) = IPHASE_NAME($1);
+        IACTIONS_REFERENCE($$) = CCNcopy(IPHASE_NAME($1));
         IPHASE_NEXT($1) = AST_IPHASES(ast);
         AST_IPHASES(ast) = $1;
       }
       | id
       {
-      // TODO: THIS LEAKS!!!!
         $$ = ASTiactions();
         IACTIONS_REFERENCE($$) = $1;
       }

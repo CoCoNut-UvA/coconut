@@ -220,10 +220,10 @@ node_st *ASTiactions() {
     node_st *node = NewNode();
     node->data.N_iactions = MEMmalloc(sizeof(struct NODE_DATA_IACTIONS));
     NODE_TYPE(node) = NT_IACTIONS;
-    IACTIONS_NEXT(node) = NULL;
     IACTIONS_REFERENCE(node) = NULL;
+    IACTIONS_NEXT(node) = NULL;
     IACTIONS_ACTION_ID(node) = 0;
-    NODE_NUMCHILDREN(node) = 1;
+    NODE_NUMCHILDREN(node) = 2;
     NODE_CHILDREN(node) = node->data.N_iactions->iactions_children.iactions_children_at;
     return node;}
 
