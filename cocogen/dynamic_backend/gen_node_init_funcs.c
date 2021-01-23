@@ -72,7 +72,6 @@ node_st *DGIFattribute(node_st *node)
         } else {
             OUT("%s %s", FMTattributeTypeToString(ATTRIBUTE_TYPE(node)), ID_ORIG(ATTRIBUTE_NAME(node)));
         }
-        // TODO: handle other attributes.
     }
     TRAVchildren(node);
     return node;

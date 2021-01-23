@@ -26,19 +26,26 @@ node_st *DUGTitraversal(node_st *node)
     }
     int indent = 0;
     OUT("/**\n");
-    OUT(" * TODO: add a doxygen file here with your prefered file name.\n");
-    OUT(" * Traversal: %s\n", ID_ORIG(ITRAVERSAL_NAME(node)));
+    OUT(" * @file\n");
     OUT(" *\n");
-    OUT(" * Prefix: %s\n", ID_UPR(ITRAVERSAL_IPREFIX(node)));
+    OUT(" * This file contains the code for the %s traversal.\n", ID_ORIG(ITRAVERSAL_NAME(node)));
+    OUT(" * The traversal has the uid: %s\n", ID_UPR(ITRAVERSAL_IPREFIX(node)));
+    OUT(" *\n");
     OUT(" *\n");
     if (ITRAVERSAL_IINFO(node)) {
-        OUT(" * Description: %s\n", ITRAVERSAL_IINFO(node));
+        OUT(" * @brief %s\n", ITRAVERSAL_IINFO(node));
     }
     OUT(" */\n\n");
+    OUT("#include \"ccn/ccn.h\"\n");
     OUT("#include \"ccngen/ast.h\"\n");
-    OUT("#include \"ccn/dynamic_core.h\"\n");
     OUT("\n");
+
     curr_trav = ID_UPR(ITRAVERSAL_IPREFIX(node));
+    if (ITRAVERSAL_DATA(node)) {
+        OUT("void %sinit() { return; }\n", curr_trav);
+        OUT("void %sfini() { return; }\n", curr_trav);
+        OUT("\n");
+    }
     if (ITRAVERSAL_INODES(node)) {
         TRAVdo(ITRAVERSAL_INODES(node));
     } else {

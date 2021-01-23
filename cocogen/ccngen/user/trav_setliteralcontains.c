@@ -9,6 +9,8 @@
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
 
+void SLCinit() { return; }
+void SLCfini() { return; }
 /**
  * @fn SLCsetliteral
  */

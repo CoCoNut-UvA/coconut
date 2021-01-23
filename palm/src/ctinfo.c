@@ -251,7 +251,6 @@ static void PrintInfo(struct ctinfo *info)
     } else if (info->last_column > 0) {
         PrintRange(info);
     }
-    // TODO: do somethingm for last line as well???
 }
 
 /** <!--********************************************************************-->

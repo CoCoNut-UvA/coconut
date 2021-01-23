@@ -9,6 +9,8 @@
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
 
+void SLISinit() { return; }
+void SLISfini() { return; }
 /**
  * @fn SLISsetliteral
  */

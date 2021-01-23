@@ -8,6 +8,7 @@
 
 #include "palm/ctinfo.h"
 #include "palm/str.h"
+#include "palm/dbug.h"
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
 #include "globals.h"
@@ -39,7 +40,7 @@ void addToST(node_st *key, node_st *val)
     if (last_ste) {
         STE_NEXT(last_ste) = new_ste;
     }
-
+    DBUGF("BST add: %s\n", ID_ORIG(key));
     last_ste = new_ste;
 }
 

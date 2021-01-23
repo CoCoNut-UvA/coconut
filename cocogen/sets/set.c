@@ -1,13 +1,12 @@
-#include <assert.h>
 #include "set.h"
-
+#include "palm/dbug.h"
 
 static node_st *DoInsert(node_st *literal, node_st *id)
 {
     if (literal == NULL) {
         return ASTsetliteral(TRAVstart(id, TRAV_cpy));
     }
-    printf("Inserting: %s\n", ID_LWR(id));
+    DBUGF("Inserting: %s\n", ID_LWR(id));
 
     TRAVpush(TRAV_SLI);
     struct data_sli *data = DATA_SLI_GET();

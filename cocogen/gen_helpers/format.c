@@ -41,6 +41,7 @@ char *FMTattributeDefaultVal(enum attribute_type type)
         err(EXIT_FAILURE, "AT_user is a special type and not handled by this function.");
     }
     assert(false);
+    return NULL;
 }
 
 char *FMTattributeTypeToString(enum attribute_type type)
@@ -82,6 +83,6 @@ char *FMTattributeTypeToString(enum attribute_type type)
         err(EXIT_FAILURE, "AT_user is a special type and not handled by this function.");
     }
     assert(false);
-    return "IMPOSSIBLE VALUE";
+    return NULL;
 }
 

@@ -199,7 +199,7 @@ traversal gen_ids_tables {
 traversal gen_action_array_header {
     uid = GAAH,
 
-    nodes = action | {ast}
+    nodes = action | {ast} | {ast}
 };
 
 traversal gen_action_array {
@@ -445,7 +445,7 @@ root node ast {
 };
 
 nodeset action = { iphase, itraversal, ipass};
-nodeset link = action | {inode};
+nodeset link = action | {inode, id};
 
 node iactions {
     children {
@@ -610,7 +610,7 @@ node setreference {
     },
 
     lifetime {
-        allowed (-> semantic]
+        allowed (-> semantic] // Same as disallowed (semantic ->)
     }
 };
 

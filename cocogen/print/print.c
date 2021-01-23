@@ -9,6 +9,18 @@
 extern int **reachability_matrix;
 
 static int opt_counter = 0;
+static int indent = 0;
+
+#define INDENT indent += 4
+#define UNINDENT indent -= 4
+
+static void PrintIndent()
+{
+    for (int i = 0; i < indent; i++) {
+        putchar(' ');
+    }
+}
+
 node_st *doOpts(node_st *ast)
 {
     printf("Opt: %d\n", opt_counter);
@@ -26,6 +38,7 @@ node_st *PRTast(node_st *ast)
     }
     TRAVchildren(ast);
 
+    printf("Reachability table:\n");
     for (int i = 0; i < AST_NUM_TRAVERSALS(ast); i++) {
         printf("%d: ", i);
         for (int j = 0; j < AST_NUM_NODES(ast); j++) {
@@ -38,100 +51,144 @@ node_st *PRTast(node_st *ast)
 
 node_st *PRTiphase(node_st *node)
 {
-    printf("Phase: %s\n", ID_ORIG(IPHASE_NAME(node)));
-    TRAVchildren(node);
+    printf("Phase %s {\n", ID_ORIG(IPHASE_NAME(node)));
+    INDENT;
+    PrintIndent();
+    printf("Actions {\n");
+    INDENT;
+    TRAVopt(IPHASE_IACTIONS(node));
+    UNINDENT;
+    PrintIndent();
+    printf("}\n");
+    UNINDENT;
+    printf("}\n");
+    TRAVopt(IPHASE_NEXT(node));
     return node;
 }
 
 node_st *PRTitraversal(node_st *node)
 {
-    printf("Trav: %s(%d)\n", ID_ORIG(ITRAVERSAL_NAME(node)), ITRAVERSAL_INDEX(node));
-    TRAVchildren(node);
+    printf("Trav %s {\n", ID_ORIG(ITRAVERSAL_NAME(node)));
+    INDENT;
+    PrintIndent();
+    printf("Traversal index: %d\n", ITRAVERSAL_INDEX(node));
+    PrintIndent();
+    printf("nodes {\n");
+    INDENT;
+    TRAVopt(ITRAVERSAL_INODES(node));
+    UNINDENT;
+    PrintIndent();
+    printf("}\n");
+    UNINDENT;
+    printf("}\n");
+    TRAVopt(ITRAVERSAL_NEXT(node));
     return node;
 }
 
 node_st *PRTitravdata(node_st *node)
 {
-    printf("Travdata: %s\n", ID_ORIG(ITRAVDATA_NAME(node)));
+    PrintIndent();
+    printf("Travdata %s\n", ID_ORIG(ITRAVDATA_NAME(node)));
     return node;
 }
 
 node_st *PRTipass(node_st *node)
 {
     printf("Pass: %s\n", ID_ORIG(IPASS_NAME(node)));
-    TRAVchildren(node);
     return node;
 }
 
 
 node_st *PRTiactions(node_st *node)
 {
-    printf("Action: %s: %d\n", ID_ORIG(IACTIONS_REFERENCE(node)), IACTIONS_ACTION_ID(node));
-    TRAVchildren(node);
+    PrintIndent();
+    printf("%s: %d\n", ID_ORIG(IACTIONS_REFERENCE(node)), IACTIONS_ACTION_ID(node));
+    TRAVopt(IACTIONS_NEXT(node));
     return node;
 }
 
 
 node_st *PRTinode(node_st *node)
 {
-    printf("NODE: %s(%d)\n", ID_ORIG(INODE_NAME(node)), INODE_INDEX(node));
-    TRAVchildren(node);
+    printf("NODE: %s(%d) {\n", ID_ORIG(INODE_NAME(node)), INODE_INDEX(node));
+    INDENT;
+    PrintIndent();
+    printf("Children {\n");
+    INDENT;
+    TRAVopt(INODE_ICHILDREN(node));
+    UNINDENT;
+    PrintIndent();
+    printf("}\n");
+    PrintIndent();
+    printf("Attributes {\n");
+    INDENT;
+    TRAVopt(INODE_IATTRIBUTES(node));
+    UNINDENT;
+    PrintIndent();
+    printf("}\n");
+    UNINDENT;
+    printf("}\n");
+    TRAVopt(INODE_NEXT(node));
     return node;
 }
 
 node_st *PRTchild(node_st *node)
 {
-    TRAVchildren(node);
+    TRAVopt(CHILD_NAME(node));
+    TRAVopt(CHILD_NEXT(node));
     return node;
 }
 
 node_st *PRTattribute(node_st *node)
 {
-    printf("Attr: %s\n", ID_ORIG(ATTRIBUTE_NAME(node)));
-    TRAVchildren(node);
+    PrintIndent();
+    printf("%s\n", ID_ORIG(ATTRIBUTE_NAME(node)));
+    TRAVopt(ATTRIBUTE_NEXT(node));
     return node;
 }
 
 node_st *PRTsetreference(node_st *node)
 {
-    printf("Set refence: %s\n", ID_ORIG(SETREFERENCE_REFERENCE(node)));
-    TRAVchildren(node);
     return node;
 }
 
 node_st *PRTsetliteral(node_st *node)
 {
     if (SETLITERAL_REFERENCE(node)) {
+        PrintIndent();
         printf("%s\n", ID_ORIG(SETLITERAL_REFERENCE(node)));
     }
-    TRAVchildren(node);
+    TRAVopt(SETLITERAL_LEFT(node));
+    TRAVopt(SETLITERAL_RIGHT(node));
     return node;
 }
 
 node_st *PRTinodeset(node_st *node)
 {
-    printf("NODESET {\n");
+    printf("nodeset %s {\n", ID_ORIG(INODESET_NAME(node)));
+    INDENT;
     TRAVopt(INODESET_EXPR(node));
-    printf("} END\n");
+    UNINDENT;
+    PrintIndent();
+    printf("}\n");
     TRAVopt(INODESET_NEXT(node));
     return node;
 }
 
 node_st *PRTid(node_st *node)
 {
-    printf("Ref: %s\n", ID_ORIG(node));
+    PrintIndent();
+    printf("%s\n", ID_ORIG(node));
     return node;
 }
 
 node_st *PRTsetoperation(node_st *node)
 {
-    TRAVchildren(node);
     return node;
 }
 
 node_st *PRTienum(node_st *node)
 {
-    TRAVchildren(node);
     return node;
 }
 

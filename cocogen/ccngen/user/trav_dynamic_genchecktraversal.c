@@ -9,6 +9,8 @@
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
 
+void DGCHTinit() { return; }
+void DGCHTfini() { return; }
 /**
  * @fn DGCHTast
  */

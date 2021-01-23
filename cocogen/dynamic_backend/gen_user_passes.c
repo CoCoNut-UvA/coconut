@@ -17,6 +17,7 @@ node_st *DUGPast(node_st *node)
     if (!fp) {
         err(EXIT_FAILURE, "Could not open %s", filename);
     }
+    OUT("#include \"ccn/ccn.h\"\n\n");
     OUT("#include \"ccngen/ast.h\"\n\n");
     MEMfree(filename);
     TRAVopt(AST_IPASSES(node));
