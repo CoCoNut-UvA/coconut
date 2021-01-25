@@ -7,11 +7,11 @@ start phase startPhase {
             uid = SP
         };
         semantic;
-        unpack_lifetimes;
-        dynamic_backend;
-        static_backend;
-        phase_driver;
-        gen_dot;
+        unpackLifetimes;
+        dynamicBackend;
+        staticBackend;
+        phaseDriver;
+        genDot;
         pass genDefines;
         print;
     }
@@ -38,17 +38,17 @@ phase semantic {
     }
 };
 
-phase unpack_lifetimes {
+phase unpackLifetimes {
     info = "Unpack lifetime into their action IDS",
     uid = ULT,
 
     actions {
-        traversal assign_id_to_action {
+        traversal assignIdToAction {
             uid = AITA,
             nodes = {ast, iactions }
         };
 
-        traversal map_id_to_lifetime {
+        traversal mapIdToLifetime {
             uid = MITL,
             nodes = {ast, inode, iactions, ilifetime, lifetime_range, id}
         };
@@ -56,105 +56,105 @@ phase unpack_lifetimes {
 };
 
 
-phase phase_driver {
+phase phaseDriver {
     info = "Generate the missing parts of the phase driver",
 
     actions {
-        gen_action_array_header;
-        gen_ids_tables;
-        gen_action_array;
-        gen_gate_header;
+        genActionArrayHeader;
+        genIdsTables;
+        genActionArray;
+        genGateHeader;
     }
 };
 
-phase dynamic_backend {
+phase dynamicBackend {
     info = "Generating part for the dynamic backend",
     uid = DDB,
     gate = backendIsDynamic,
 
     actions {
-        dynamic_gen_ast;
-        pass dynamic_start_enum_header;
-        dynamic_genEnum;
-        dynamic_genEnumValues;
-        dynamic_gen_trav_data;
-        pass dynamic_start_table_gen;
-        dynamic_genTravVtable;
-        dynamic_genPassTable;
-        dynamic_genSystemTraversals;
-        dynamic_genTravTable;
-        dynamic_genTravDataTables;
-        dynamic_genActionsHeader;
-        dynamic_genCopyTraversal;
-        dynamic_genFreeTraversal;
-        dynamic_genCheckTraversal;
-        dynamic_gen_user_files;
+        dynamicGenAst;
+        pass dynamicStartEnumHeader;
+        dynamicGenEnum;
+        dynamicGenEnumValues;
+        dynamicGenTravData;
+        pass dynamicStartTableGen;
+        dynamicGenTravVtable;
+        dynamicGenPassTable;
+        dynamicGenSystemTraversals;
+        dynamicGenTravTable;
+        dynamicGenTravDataTables;
+        dynamicGenActionsHeader;
+        dynamicGenCopyTraversal;
+        dynamicGenFreeTraversal;
+        dynamicGenCheckTraversal;
+        dynamicGenUserFiles;
     }
 };
 
-phase static_backend {
+phase staticBackend {
     info = "Generating part for the static backend",
     uid = STB,
     gate = backendIsStatic,
 
     actions {
-        static_gen_ast;
+        staticGenAst;
     }
 };
 
-phase static_gen_ast {
+phase staticGenAst {
     actions {
-        traversal static_gen_node_structs {
+        traversal staticGenNodeStructs {
             uid = sgns,
             nodes = {ast, inode, child, attribute, inodeset, setliteral}
         };
     }
 };
 
-phase dynamic_gen_trav_data {
+phase dynamicGenTravData {
     info = "Generate the trav data requirements.",
     uid = DGTD,
 
     actions {
-        pass dynamic_start_trav_data;
-        dynamic_genTravDataStructs;
-        dynamic_genTravDataUnion;
-        dynamic_genTravDataGetters;
-        dynamic_genTravDataCtorsHeader;
-        pass dynamic_switch_trav_data;
-        dynamic_genTravDataCtors;
+        pass dynamicStartTravData;
+        dynamicGenTravDataStructs;
+        dynamicGenTravDataUnion;
+        dynamicGenTravDataGetters;
+        dynamicGenTravDataCtorsHeader;
+        pass dynamicSwitchTravData;
+        dynamicGenTravDataCtors;
     }
 };
 
-phase dynamic_gen_ast {
+phase dynamicGenAst {
     info = "Generate the required files for managing user nodes and AST manipulation",
     uid = DGA,
 
     actions {
         pass dynamic_start_ast_header;
-        dynamic_genNodeStructs;
-        dynamic_genNodeMacros;
-        dynamic_genNodeInitFunctions;
-        dynamic_genNodeUnion;
-        pass dynamic_genBaseNode;
-        pass dynamic_switch_to_ast_source;
-        pass dynamic_genBaseNodeInit;
-        dynamic_genNodeConstructor;
+        dynamicGenNodeStructs;
+        dynamicGenNodeMacros;
+        dynamicGenNodeInitFunctions;
+        dynamicGenNodeUnion;
+        pass dynamicGenBaseNode;
+        pass dynamicSwitchToAstSource;
+        pass dynamicGenBaseNodeInit;
+        dynamicGenNodeConstructor;
     }
 };
 
-phase dynamic_gen_user_files {
+phase dynamicGenUserFiles {
     info = "Generate base files for defenition the user needs to give.",
     uid = DGUF,
     actions {
-        traversal dynamic_user_gen_passes {
+        traversal dynamicUserGenPasses {
             uid = DUGP,
             nodes = {
                 ipass, ast
             }
         };
 
-        traversal dynamic_user_gen_traversals {
+        traversal dynamicUserGenTraversals {
             uid = DUGT,
             nodes = {
                 ast, itraversal, inode, id
@@ -163,14 +163,14 @@ phase dynamic_gen_user_files {
     }
 };
 
-traversal gen_dot {
+traversal genDot {
     info = "Generate a dot diagram of the AST.",
     uid = GD,
 
     nodes = {inode, child, ast, inodeset, setliteral, attribute}
 };
 
-traversal dynamic_genTravDataTables {
+traversal dynamicGenTravDataTables {
     uid = DGTDT,
     nodes = {ast, itraversal},
 
@@ -181,14 +181,14 @@ traversal dynamic_genTravDataTables {
     }
 };
 
-traversal gen_gate_header {
+traversal genGateHeader {
     info = "Generate extern for gate functions",
     uid = GGH,
     nodes = {ast, iphase}
 
 };
 
-traversal gen_ids_tables {
+traversal genIdsTables {
     uid = GIT,
 
     nodes = {
@@ -196,44 +196,44 @@ traversal gen_ids_tables {
     }
 };
 
-traversal gen_action_array_header {
+traversal genActionArrayHeader {
     uid = GAAH,
 
     nodes = action | {ast} | {ast}
 };
 
-traversal gen_action_array {
+traversal genActionArray {
     uid = GAA,
 
     nodes = action | {ast}
 };
 
-traversal dynamic_genTravDataUnion {
+traversal dynamicGenTravDataUnion {
     uid = DGTDU,
     nodes = {ast, itraversal}
 };
 
-traversal dynamic_genTravDataGetters {
+traversal dynamicGenTravDataGetters {
     uid = DGTDG,
     nodes = {itraversal}
 };
 
-traversal dynamic_genTravDataCtorsHeader {
+traversal dynamicGenTravDataCtorsHeader {
     uid = DGTDCH,
     nodes = {itraversal}
 };
 
-traversal dynamic_genTravDataCtors {
+traversal dynamicGenTravDataCtors {
     uid = DGTDC,
     nodes = {itraversal, itravdata}
 };
 
-traversal dynamic_genTravDataStructs {
+traversal dynamicGenTravDataStructs {
     uid = DGTDS,
     nodes = {ast, itraversal, itravdata}
 };
 
-traversal dynamic_genCheckTraversal {
+traversal dynamicGenCheckTraversal {
     uid = DGCHT,
 
     travdata = {
@@ -242,99 +242,99 @@ traversal dynamic_genCheckTraversal {
 };
 
 
-traversal dynamic_genFreeTraversal {
+traversal dynamicGenFreeTraversal {
     uid = DGFT
 };
 
-traversal dynamic_genConstructorCall {
+traversal dynamicGenConstructorCall {
     uid = DGCC,
 
     nodes = {ast, inode, child, attribute}
 };
 
-traversal dynamic_genCopyTraversal {
+traversal dynamicGenCopyTraversal {
     uid = DGCT
 };
 
-traversal dynamic_genTravActions {
+traversal dynamicGenTravActions {
     uid = DGTA,
 
     nodes = {ast, inode}
 };
 
-traversal dynamic_genActionsHeader {
+traversal dynamicGenActionsHeader {
     uid = DGAH,
 
     nodes = {itraversal, ipass, ast, inode, setliteral, id}
 };
 
-traversal dynamic_genSystemTraversals {
+traversal dynamicGenSystemTraversals {
     uid = DGST,
 
     nodes = {ast, inode}
 };
 
-traversal dynamic_genTravTable {
+traversal dynamicGenTravTable {
     uid = DGTT,
 
     nodes = {ast, itraversal}
 };
 
-traversal dynamic_genPassTable {
+traversal dynamicGenPassTable {
     uid = DGPT,
 
     nodes = {ast, ipass}
 };
 
-traversal dynamic_genNodesForTravTable {
+traversal dynamicGenNodesForTravTable {
     uid = DGNFTT,
 
     nodes = {ast, inode}
 };
 
-traversal dynamic_genTravVtable {
+traversal dynamicGenTravVtable {
     uid = DGTV,
 
     nodes = {itraversal, ast}
 };
 
-traversal dynamic_genEnumValues {
+traversal dynamicGenEnumValues {
     uid = DGEV,
 
     nodes = {ienum, ast, id}
 };
 
-traversal dynamic_genEnum {
+traversal dynamicGenEnum {
     uid = DGE,
 
     nodes = {ast, inode, itraversal, inodeset, ipass}
 };
 
-traversal dynamic_genNodeConstructor {
+traversal dynamicGenNodeConstructor {
     uid = DGNC,
     nodes = {ast, inode, child, attribute}
 };
 
-traversal dynamic_genNodeUnion {
+traversal dynamicGenNodeUnion {
     uid = DGBU,
 
     nodes = {ast, inode}
 };
 
-traversal dynamic_genNodeInitFunctions {
+traversal dynamicGenNodeInitFunctions {
     uid = DGIF,
 
     nodes = {ast, inode, child, attribute}
 };
 
 
-traversal dynamic_genNodeStructs {
+traversal dynamicGenNodeStructs {
     uid = DGNS,
 
     nodes = {ast, inode, child, attribute}
 };
 
-traversal dynamic_genNodeMacros {
+traversal dynamicGenNodeMacros {
     uid = DGNM,
 
     nodes = {ast, inode, child, attribute}

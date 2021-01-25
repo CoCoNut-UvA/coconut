@@ -17,7 +17,7 @@ node_st *dynamic_start_ast_header(node_st *root)
     return root;
 }
 
-node_st *dynamic_switch_to_ast_source(node_st *root)
+node_st *dynamicSwitchToAstSource(node_st *root)
 {
     fclose(globals.fp);
     globals.fp = FSgetSourceFile("ast.c");
@@ -29,7 +29,7 @@ node_st *dynamic_switch_to_ast_source(node_st *root)
     return root;
 }
 
-node_st *dynamic_start_enum_header(node_st *root)
+node_st *dynamicStartEnumHeader(node_st *root)
 {
     fclose(globals.fp);
     globals.fp = FSgetIncludeFile("enum.h");
@@ -39,7 +39,7 @@ node_st *dynamic_start_enum_header(node_st *root)
     return root;
 }
 
-node_st *dynamic_start_table_gen(node_st *root)
+node_st *dynamicStartTableGen(node_st *root)
 {
     fclose(globals.fp);
     globals.fp = FSgetSourceFile("vtables.c");
@@ -51,7 +51,7 @@ node_st *dynamic_start_table_gen(node_st *root)
     return root;
 }
 
-node_st *dynamic_start_trav_data(node_st *root)
+node_st *dynamicStartTravData(node_st *root)
 {
     if (globals.fp) {
         fclose(globals.fp);
@@ -69,7 +69,7 @@ node_st *dynamic_start_trav_data(node_st *root)
     return root;
 }
 
-node_st *dynamic_switch_trav_data(node_st *root)
+node_st *dynamicSwitchTravData(node_st *root)
 {
     if (globals.fp) {
         fclose(globals.fp);

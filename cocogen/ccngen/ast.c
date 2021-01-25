@@ -5,6 +5,10 @@ node_st *NewNode() {
     NODE_TYPE(node) = NT_NULL;
     NODE_CHILDREN(node) = NULL;
     NODE_NUMCHILDREN(node) = 0;
+    NODE_BLINE(node) = 0;
+    NODE_ELINE(node) = 0;
+    NODE_BCOL(node) = 0;
+    NODE_ECOL(node) = 0;
     return node;
 }
 

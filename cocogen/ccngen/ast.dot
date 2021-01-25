@@ -70,6 +70,7 @@ link -> iphase [color=blue]
 link -> itraversal [color=blue]
 link -> ipass [color=blue]
 link -> inode [color=blue]
+link -> id [color=blue]
 action;
 action -> iphase [color=blue]
 action -> itraversal [color=blue]

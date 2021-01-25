@@ -13,7 +13,7 @@ static FILE *fp;
 static int indent = 0;
 static char *basic_node_type = "node_st";
 
-node_st *dynamic_genBaseNodeInit(node_st *root)
+node_st *dynamicGenBaseNodeInit(node_st *root)
 {
     indent = 0;
     fp = globals.fp;
@@ -22,6 +22,10 @@ node_st *dynamic_genBaseNodeInit(node_st *root)
     OUT_FIELD("NODE_TYPE(node) = NT_NULL");
     OUT_FIELD("NODE_CHILDREN(node) = NULL");
     OUT_FIELD("NODE_NUMCHILDREN(node) = 0");
+    OUT_FIELD("NODE_BLINE(node) = 0");
+    OUT_FIELD("NODE_ELINE(node) = 0");
+    OUT_FIELD("NODE_BCOL(node) = 0");
+    OUT_FIELD("NODE_ECOL(node) = 0");
     OUT_FIELD("return node");
     OUT_END_FUNC();
 
@@ -29,18 +33,26 @@ node_st *dynamic_genBaseNodeInit(node_st *root)
 }
 
 
-node_st *dynamic_genBaseNode(node_st *root)
+node_st *dynamicGenBaseNode(node_st *root)
 {
     indent = 0;
     fp = globals.fp;
     OUT("#define NODE_TYPE(n) ((n)->nodetype)\n");
     OUT("#define NODE_CHILDREN(n) ((n)->children)\n");
     OUT("#define NODE_NUMCHILDREN(n) ((n)->num_children)\n");
+    OUT("#define NODE_BLINE(n) ((n)->num_children)\n");
+    OUT("#define NODE_ELINE(n) ((n)->num_children)\n");
+    OUT("#define NODE_BCOL(n) ((n)->num_children)\n");
+    OUT("#define NODE_ECOL(n) ((n)->num_children)\n");
     OUT_STRUCT("ccn_node");
     OUT_FIELD("enum ccn_nodetype nodetype");
     OUT_FIELD("union NODE_DATA data");
     OUT_FIELD("struct ccn_node **children");
     OUT_FIELD("long int num_children");
+    OUT_FIELD("uint32_t begin_line");
+    OUT_FIELD("uint32_t end_line");
+    OUT_FIELD("uint32_t begin_col");
+    OUT_FIELD("uint32_t end_col");
     OUT_STRUCT_END();
 
     return root;

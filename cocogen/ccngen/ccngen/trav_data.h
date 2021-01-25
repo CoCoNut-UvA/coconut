@@ -45,8 +45,8 @@ union TRAV_DATA {
     struct data_slis *setliteralintersect;
     struct data_slu *setliteralunion;
     struct data_sli *setliteralinsert;
-    struct data_dgcht *dynamic_genchecktraversal;
-    struct data_dgtdt *dynamic_gentravdatatables;
+    struct data_dgcht *dynamicgenchecktraversal;
+    struct data_dgtdt *dynamicgentravdatatables;
 };
 
 #define DATA_SLC_GET() (TRAVgetCurrent()->trav_data.setliteralcontains)
@@ -54,8 +54,8 @@ union TRAV_DATA {
 #define DATA_SLIS_GET() (TRAVgetCurrent()->trav_data.setliteralintersect)
 #define DATA_SLU_GET() (TRAVgetCurrent()->trav_data.setliteralunion)
 #define DATA_SLI_GET() (TRAVgetCurrent()->trav_data.setliteralinsert)
-#define DATA_DGCHT_GET() (TRAVgetCurrent()->trav_data.dynamic_genchecktraversal)
-#define DATA_DGTDT_GET() (TRAVgetCurrent()->trav_data.dynamic_gentravdatatables)
+#define DATA_DGCHT_GET() (TRAVgetCurrent()->trav_data.dynamicgenchecktraversal)
+#define DATA_DGTDT_GET() (TRAVgetCurrent()->trav_data.dynamicgentravdatatables)
 void TRAVdataInitsetliteralContains(struct ccn_trav *trav);
 void TRAVdataFreesetliteralContains(struct ccn_trav *trav);
 void TRAVdataInitsetliteralDifference(struct ccn_trav *trav);
@@ -66,7 +66,7 @@ void TRAVdataInitsetliteralUnion(struct ccn_trav *trav);
 void TRAVdataFreesetliteralUnion(struct ccn_trav *trav);
 void TRAVdataInitsetliteralInsert(struct ccn_trav *trav);
 void TRAVdataFreesetliteralInsert(struct ccn_trav *trav);
-void TRAVdataInitdynamic_genCheckTraversal(struct ccn_trav *trav);
-void TRAVdataFreedynamic_genCheckTraversal(struct ccn_trav *trav);
-void TRAVdataInitdynamic_genTravDataTables(struct ccn_trav *trav);
-void TRAVdataFreedynamic_genTravDataTables(struct ccn_trav *trav);
+void TRAVdataInitdynamicGenCheckTraversal(struct ccn_trav *trav);
+void TRAVdataFreedynamicGenCheckTraversal(struct ccn_trav *trav);
+void TRAVdataInitdynamicGenTravDataTables(struct ccn_trav *trav);
+void TRAVdataFreedynamicGenTravDataTables(struct ccn_trav *trav);

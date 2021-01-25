@@ -415,10 +415,18 @@ union NODE_DATA {
 #define NODE_TYPE(n) ((n)->nodetype)
 #define NODE_CHILDREN(n) ((n)->children)
 #define NODE_NUMCHILDREN(n) ((n)->num_children)
+#define NODE_BLINE(n) ((n)->num_children)
+#define NODE_ELINE(n) ((n)->num_children)
+#define NODE_BCOL(n) ((n)->num_children)
+#define NODE_ECOL(n) ((n)->num_children)
 struct ccn_node {
     enum ccn_nodetype nodetype;
     union NODE_DATA data;
     struct ccn_node **children;
     long int num_children;
+    uint32_t begin_line;
+    uint32_t end_line;
+    uint32_t begin_col;
+    uint32_t end_col;
 };
 

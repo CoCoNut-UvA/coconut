@@ -78,31 +78,31 @@ void TRAVdataFreesetliteralInsert(ccn_trav_st *trav) {
 
 extern void DGCHTinit();
 extern void DGCHTfini();
-void TRAVdataInitdynamic_genCheckTraversal(ccn_trav_st *trav) {
-    trav->trav_data.dynamic_genchecktraversal = MEMmalloc(sizeof(struct data_dgcht));
-    struct data_dgcht *data = trav->trav_data.dynamic_genchecktraversal;
+void TRAVdataInitdynamicGenCheckTraversal(ccn_trav_st *trav) {
+    trav->trav_data.dynamicgenchecktraversal = MEMmalloc(sizeof(struct data_dgcht));
+    struct data_dgcht *data = trav->trav_data.dynamicgenchecktraversal;
     data->lifetime_target = 0;
     DGCHTinit();
 }
 
-void TRAVdataFreedynamic_genCheckTraversal(ccn_trav_st *trav) {
+void TRAVdataFreedynamicGenCheckTraversal(ccn_trav_st *trav) {
     DGCHTfini();
-    MEMfree(trav->trav_data.dynamic_genchecktraversal);
+    MEMfree(trav->trav_data.dynamicgenchecktraversal);
 }
 
 extern void DGTDTinit();
 extern void DGTDTfini();
-void TRAVdataInitdynamic_genTravDataTables(ccn_trav_st *trav) {
-    trav->trav_data.dynamic_gentravdatatables = MEMmalloc(sizeof(struct data_dgtdt));
-    struct data_dgtdt *data = trav->trav_data.dynamic_gentravdatatables;
+void TRAVdataInitdynamicGenTravDataTables(ccn_trav_st *trav) {
+    trav->trav_data.dynamicgentravdatatables = MEMmalloc(sizeof(struct data_dgtdt));
+    struct data_dgtdt *data = trav->trav_data.dynamicgentravdatatables;
     data->indent = 0;
     data->in_init_round = 0;
     data->file = 0;
     DGTDTinit();
 }
 
-void TRAVdataFreedynamic_genTravDataTables(ccn_trav_st *trav) {
+void TRAVdataFreedynamicGenTravDataTables(ccn_trav_st *trav) {
     DGTDTfini();
-    MEMfree(trav->trav_data.dynamic_gentravdatatables);
+    MEMfree(trav->trav_data.dynamicgentravdatatables);
 }
 
