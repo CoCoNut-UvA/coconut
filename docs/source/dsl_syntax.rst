@@ -19,9 +19,9 @@ An enum is defined as follows:
     enum <name> {
         prefix = <identifier>,
         values {
-            <value 1>, ...
+            <value 1>, ..., <value n>
         }
-    }
+    };
 
 An example enum definition looks as follows:
 
@@ -32,7 +32,7 @@ An example enum definition looks as follows:
         values {
             add, sub, mul, div, rem
         }
-    }
+    };
 
 
 Node
@@ -47,17 +47,20 @@ In every 'program' there must be one *root* node present. The *root* node will b
     [root] node <name> {
         [children {
             <child 1>,
-            ...
+            ...,
+            <child n>
         },]
         [attributes {
             <attribute 1>,
-            ...
+            ...,
+            <attribute n>
         },]
         [lifetime {
             <node lifetime 1>,
-            ...
+            ...,
+            <lifetime n>
         }]
-    }
+    };
 
 Children and attributes, for a node, are defined in the following way, respectively:
 <child> :: <node type> <name> [ { [constructor], [<lifetimes>] } ]
@@ -73,8 +76,8 @@ An example node, without lifetimes, is as follows:
 
     root node BinOp {
         children {
-            Expr left { constructor},
-            Expr right { constructor}
+            Expr left { constructor },
+            Expr right { constructor }
         },
         attributes {
             BinOpEnum op { constructor }
@@ -86,7 +89,7 @@ This will result in the constructor: ASTbinop(left, right, op);
 
 Lifetimes
 ==========
-Lifetimes allow you to describe the lifetime of a node, attribute or child. When a lifetime is violated, the AST is incosistent and CoCoNut will error.
+Lifetimes allow you to describe the lifetime of a node or a child. When a lifetime is violated, the AST is incosistent and CoCoNut will error.
 Lifetimes are described in the following way:
 
 <lifetime> :: <lifetime specifier> <lifetime range>
@@ -110,9 +113,9 @@ If the lifetime is 'allowed' the node is disallowed outside the given range.
 For example, if we have the following actions A -> B -> C -> D -> E
 and a node is disallowed from A->B and D->E, we can use allow to specify this by stating: allowed (B -> C]
 
-In children and some attributes, namely enums and pointers, the lifetime specifier can be 'disallowed' and 'allowed', but also 'mandatory' or 'optional'.
-Mandatory means that the child or attribute must be present in the node, if not, the AST is inconsistent.
-Optional means that outside the given range the attribute or child is mandatory.
+In children, the lifetime specifier can be 'disallowed' and 'allowed', but also 'mandatory' or 'optional'.
+Mandatory means that the child must be present in the node, if not, the AST is inconsistent.
+Optional means that outside the given range the child is mandatory.
 Attributes and children can also apply the lifetime on a subset of its values by giving the lifetime
 a set to target. This is done by using the '=' sign and a set of values corresponding to the type.
 
@@ -126,7 +129,7 @@ So, we can rewrite the previous node definition with lifetimes the following way
             Expr right { constructor, mandatory}
         },
         attributes {
-            BinOpEnum op { constructor, disallowed (CompileBooleanExpressions -> ) = {and, or} }
+            BinOpEnum op { constructor }
         },
         lifetime {
             disallowed (Stage1.TBO -> Stage3.OPT]
@@ -135,9 +138,8 @@ So, we can rewrite the previous node definition with lifetimes the following way
 
 We state that the two children are mandatory in the BinOp node throughout the whole compilation. So if the phase driver finds a
 BinOp node where a child is equal to NULL, the AST is inconsistent.
-The attribute has two values, 'and' and 'or', that are disallowed after the action named 'CompileBooleanExpressions'.
 Also, the node itself is disallowed after the 'TBO' action, located in the 'Stage1' phase and up to and including the 'OPT' action in the 'Stage3' phase.
-The 'TBO' and 'OPT' values are identifiers and not full names. This is especially useful when you want to target an action that is a couple of levels deep.
+The 'TBO' and 'OPT' values are unique ids and not full names. This is especially useful when you want to target an action that is a couple of levels deep.
 
 When no specific location is specified, using the '.' operator, the first encounter of the action is used. Therefore, in the example, if we had 'OPT' instead of 'Stage3.OPT'
 and 'Stage2' also has an 'OTP' then the 'OTP' from 'Stage2' would be seen as the end of the lifetime because it is the first encounter. If only one 'OPT' is present, the need
@@ -155,13 +157,13 @@ The nodes specifier in a nodeset uses a set expression, providing the option to 
 
     nodeset <name> {
         nodes = <set expr>
-    }
+    };
 
 
 It is also possible to use a short notation for nodesets.
 ::
 
-    nodeset <name> = <set expr>
+    nodeset <name> = <set expr>;
 
 A set expression is given by a combination of set operations, inline set definitions and references to defined nodesets.
 The following set operations are supported:
@@ -182,10 +184,10 @@ While in the longer form it looks as follows:
 
     nodeset Expr {
         nodes = {Var, Cast} | Constant
-    }
+    };
 
 The {Var, Cast} statement is an inline set definition and the *Constant* is a reference to another defined nodeset. So, when an identifier is not
-enclosed with {} it is seen as a reference to another nodeset. It is also possible to use () to group set expressions and define the determination order.
+enclosed with {} it is seen as a reference to another nodeset. It is also possible to use () to group set expressions and define the evaluation order.
 
 
 Pass
@@ -200,17 +202,17 @@ It is possible to define information in the info field and unique identifier ava
         [info = <string>,]
         [uid = <identifier>,]
         func = <function name>
-    }
+    };
 
 An example of a pass looks as follows:
 
 ::
 
     pass ScanParse {
-        info = "Scan and parse the source files and construct the AST.";
+        info = "Scan and parse the source files and construct the AST.",
         uid = SP,
         func = doScanParse
-    }
+    };
 
 
 It is also possible to define a pass using a shorter notation. With the shorter notation the
@@ -218,7 +220,7 @@ name of the pass will be the function name.
 
 .. code-block:: text
 
-    pass <name>
+    pass <name>;
 
 
 In C you need to define the pass yourself. A pass accept the specified root node and should return a node
@@ -240,7 +242,7 @@ The nodes are in the form of a set expression and can use defined nodesets.
         [travdata {
             [[user] <type> <name>,]
         }]
-    }
+    };
 
 An example of a traversal is as follows:
 
@@ -252,21 +254,21 @@ An example of a traversal is as follows:
         travdata {
             int changes_made
         }
-    }
+    };
 
 
 Some traversals need to traverse all nodes, in such cases, the *nodes* block can be left out.
-The previous traversal will change as follows:
+If the previous traversal targets all nodes it can be defined as follows:
 
 .. code-block:: text
 
     traversal RenameFor {
         uid = RFOR
-    }
+    };
 
 
 The meta compiler will generate a function for every node in the traversal and you need to provide a definition for the
-generated functions. (Reference to the generated document).
+generated functions.
 
 Traversal Data
 ==============
@@ -300,7 +302,7 @@ The phase also accepts the info string and a unique id.
             ...
         }
 
-    }
+    };
 
 An example phase is as follows:
 
@@ -314,7 +316,7 @@ An example phase is as follows:
         actions {
             constantFoldOperators;
         }
-    }
+    };
 
 Cycles
 ========
@@ -335,7 +337,7 @@ A cycle is defined as follows:
         actions {
             <action>;
         }
-    }
+    };
 
 
 Fixed-point detection
