@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+#include "ccngen/trav.c"
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
 #include "ccn/phase_driver.h"
@@ -38,13 +39,15 @@ node_st *PRTast(node_st *ast)
     }
     TRAVchildren(ast);
 
-    printf("Reachability table:\n");
-    for (int i = 0; i < AST_NUM_TRAVERSALS(ast); i++) {
-        printf("%d: ", i);
-        for (int j = 0; j < AST_NUM_NODES(ast); j++) {
-            printf("%d, ", reachability_matrix[i][j]);
+    if (reachability_matrix) {
+        printf("Reachability table:\n");
+        for (int i = 0; i < AST_NUM_TRAVERSALS(ast); i++) {
+            printf("%d: ", i);
+            for (int j = 0; j < AST_NUM_NODES(ast); j++) {
+                printf("%d, ", reachability_matrix[i][j]);
+            }
+            printf("\n");
         }
-        printf("\n");
     }
     return ast;
 }
@@ -56,13 +59,13 @@ node_st *PRTiphase(node_st *node)
     PrintIndent();
     printf("Actions {\n");
     INDENT;
-    TRAVopt(IPHASE_IACTIONS(node));
+    TRAViactions(node);
     UNINDENT;
     PrintIndent();
     printf("}\n");
     UNINDENT;
     printf("}\n");
-    TRAVopt(IPHASE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -75,13 +78,13 @@ node_st *PRTitraversal(node_st *node)
     PrintIndent();
     printf("nodes {\n");
     INDENT;
-    TRAVopt(ITRAVERSAL_INODES(node));
+    TRAVinodes(node);
     UNINDENT;
     PrintIndent();
     printf("}\n");
     UNINDENT;
     printf("}\n");
-    TRAVopt(ITRAVERSAL_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -103,7 +106,7 @@ node_st *PRTiactions(node_st *node)
 {
     PrintIndent();
     printf("%s: %d\n", ID_ORIG(IACTIONS_REFERENCE(node)), IACTIONS_ACTION_ID(node));
-    TRAVopt(IACTIONS_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 

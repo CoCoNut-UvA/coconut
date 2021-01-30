@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "filesystem/utils.h"
+#include "ccn/ccn.h"
 
 extern char *yy_filename;
 
@@ -39,6 +40,7 @@ void Usage(char *program) {
            "files.(NOT IMPLEMENTED)\n");
     */
     printf("  --verbose/-v                 Enable verbose mode.\n");
+    printf("  --breakpoint/-b <breakpoint> Set a breakpoint.\n");
     printf("  --dot                        Will produce ast.dot in "
            "<gen_dir>/dot.\n");
     printf("  --consistency-checks         Do consistency checks on the AST "
@@ -73,6 +75,7 @@ void CLprocessArgs(int argc, char *argv[]) {
         {"backend", required_argument, 0, 30},
         {"gen-dir", required_argument, 0, 31},
         {"show-ast", no_argument, 0, 32},
+        {"breakpoint", required_argument, 0, 33},
         {0, 0, 0, 0}};
 
     int option_index;
@@ -118,6 +121,9 @@ void CLprocessArgs(int argc, char *argv[]) {
             break;
         case 32:
             global_command_line.show_ast = true;
+            break;
+        case 33:
+            CCNsetBreakpoint(optarg);
             break;
         case 'h':
             Usage(argv[0]);

@@ -407,22 +407,6 @@ int STRlen(const char *s)
     return len;
 }
 
-/*******************************************************************************
- *
- * Description: Tokenize string. On first call the str will be copied to internal
- *              static variable, next calls str should be NULL. With last call the
- *              allocated memory of the copy will be freed.
- *
- *              In contrast to strtok, STRtok leaves the argument string untouched
- *              and always allocates the tokens in fresh memory.
- *
- * Parameters: - str, string to tokenize
- *             - tok, tokenizer
- *
- * Return: - pointer to the next token
- *         - NULL, no more tokens
- *
- *******************************************************************************/
 
 static bool CharInString(char c, const char *str)
 {
@@ -442,6 +426,23 @@ static bool CharInString(char c, const char *str)
     return res;
 }
 
+
+/*******************************************************************************
+ *
+ * Description: Tokenize string. On first call the str will be copied to internal
+ *              static variable, next calls str should be NULL. With last call the
+ *              allocated memory of the copy will be freed.
+ *
+ *              In contrast to strtok, STRtok leaves the argument string untouched
+ *              and always allocates the tokens in fresh memory.
+ *
+ * Parameters: - str, string to tokenize
+ *             - tok, tokenizer
+ *
+ * Return: - pointer to the next token
+ *         - NULL, no more tokens
+ *
+ *******************************************************************************/
 char *STRtok(const char *first, const char *sep)
 {
     static char *keep_string = NULL;
@@ -568,6 +569,31 @@ char *STRsubstToken(const char *str, const char *token, const char *subst)
     *pos = '\0';
 
     return result;
+}
+
+
+void STRtoLower(char *str)
+{
+    if (!str) {
+        return;
+    }
+
+    while (*str != '\0') {
+        *str = tolower(*str);
+        str++;
+    }
+}
+
+void STRtoUpper(char *str)
+{
+    if (!str) {
+        return;
+    }
+
+    while (*str != '\0') {
+        *str = toupper(*str);
+        str++;
+    }
 }
 
 char *STRlower(const char *str)

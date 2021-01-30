@@ -6,11 +6,8 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <palm/memory.h>
-#include <stdlib.h>
 #include <memory.h>
 #include "assert.h"
-
-#include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
@@ -44,7 +41,6 @@ node_st *RCBitraversal(node_st *node)
     trav_index = ITRAVERSAL_INDEX(node);
     reachability_matrix[trav_index] = MEMmalloc(sizeof(int) * AST_NUM_NODES(ast));
     memset(reachability_matrix[trav_index], 0, sizeof(int) *AST_NUM_NODES(ast));
-    printf("Starting: %s\n", ID_ORIG(ITRAVERSAL_NAME(node)));
 
     if (!ITRAVERSAL_INODES(node)) {
         const int num_nodes = AST_NUM_NODES(ast);

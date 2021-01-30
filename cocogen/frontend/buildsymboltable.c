@@ -29,7 +29,7 @@ node_st *BSTaddToST(node_st *ste, node_st *key, node_st *val)
     return new;
 }
 
-void addToST(node_st *key, node_st *val)
+static void addToST(node_st *key, node_st *val)
 {
     node_st *new_ste = ASTste();
     STE_KEY(new_ste) = key;
@@ -40,7 +40,7 @@ void addToST(node_st *key, node_st *val)
     if (last_ste) {
         STE_NEXT(last_ste) = new_ste;
     }
-    DBUGF("BST add: %s\n", ID_ORIG(key));
+    DBUGF("BST", "add: %s\n", ID_ORIG(key));
     last_ste = new_ste;
 }
 

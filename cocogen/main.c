@@ -1,13 +1,14 @@
-#include "commandline.h"
-#include "ccngen/ast.h"
 #include "ccn/phase_driver.h"
-#include <stddef.h>
-#include <stdio.h>
-#include "globals.h"
-#include "palm/str.h"
-#include "palm/filesystem.h"
+#include "ccngen/ast.h"
+#include "commandline.h"
 #include "filesystem/gen_files.h"
 #include "gen_helpers/out_macros.h"
+#include "globals.h"
+#include "palm/filesystem.h"
+#include "palm/str.h"
+#include <ccn/ccn.h>
+#include <stddef.h>
+#include <stdio.h>
 
 struct globals globals;
 
@@ -24,6 +25,11 @@ node_st *genDefines(node_st *ast)
         OUT("#define CCN_USES_UNSAFE true\n");
     }
     return ast;
+}
+
+void BreakpointHandler(node_st *node)
+{
+    TRAVstart(node, TRAV_PRT);
 }
 
 int main(int argc, char *argv[])

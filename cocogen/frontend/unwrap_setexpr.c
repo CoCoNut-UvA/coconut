@@ -8,7 +8,6 @@
 #include "sets/set.h"
 
 node_st *lookupST(node_st *ste, node_st *node);
-
 node_st *ste;
 
 node_st *USEast(node_st *node)

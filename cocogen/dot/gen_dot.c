@@ -34,6 +34,8 @@ node_st *GDinode(node_st *node)
 {
     HTclear(seen);
     curr_node = node;
+    int indent = 0;
+    OUT("%s;\n", ID_ORIG(INODE_NAME(node)));
     TRAVopt(INODE_ICHILDREN(node));
     TRAVopt(INODE_IATTRIBUTES(node));
     TRAVopt(INODE_NEXT(node));

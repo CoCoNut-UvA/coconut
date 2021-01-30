@@ -4,5 +4,5 @@
 
 bool backendIsDynamic()
 {
-    return STReq("dynamic", globals.backend);
+    return STReqci("dynamic", globals.backend);
 }

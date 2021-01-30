@@ -9,3 +9,4 @@ void CCNcycleNotify();
 size_t CCNgetCurrentActionId();
 void CCNerrorPhase();
 void CCNerrorAction();
+void CCNsetBreakpoint(char *breakpoint);

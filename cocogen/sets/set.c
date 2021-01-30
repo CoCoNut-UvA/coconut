@@ -6,7 +6,7 @@ static node_st *DoInsert(node_st *literal, node_st *id)
     if (literal == NULL) {
         return ASTsetliteral(TRAVstart(id, TRAV_cpy));
     }
-    DBUGF("Inserting: %s\n", ID_LWR(id));
+    DBUGF("SET", "Inserting: %s\n", ID_LWR(id));
 
     TRAVpush(TRAV_SLI);
     struct data_sli *data = DATA_SLI_GET();
@@ -20,11 +20,22 @@ static node_st *DoInsert(node_st *literal, node_st *id)
     return literal;
 }
 
+/**
+ * @brief Insert an identifier into the set.
+ * @param literal  The set to insert into.
+ * @param id The id to insert.
+ * @return a new set containing the id.
+ */
 node_st *SETIDinsert(node_st *literal, node_st *id)
 {
     return DoInsert(literal, id);
 }
 
+/**
+ * @param literal The set literal
+ * @param id id to search for in set.
+ * @return true if id in set, else false.
+ */
 bool SETIDcontains(node_st *literal, node_st *id)
 {
     if (literal == NULL) {
@@ -45,6 +56,7 @@ bool SETIDcontains(node_st *literal, node_st *id)
     printf("Found: %d\n", found);
     return found;
 }
+
 
 node_st *SETIDdifference(node_st *left, node_st *right)
 {

@@ -7,6 +7,7 @@ typedef struct htable htable_st;
 typedef size_t (*hash_key_ft)(void *);
 typedef bool (*is_equal_ft)(void *, void *);
 typedef void *(*map_ft)(void *);
+typedef void *(*mapk_ft)(void *key, void *item);
 typedef void *(*fold_ft)(void *acc, void *item);
 
 
@@ -17,6 +18,7 @@ void *HTremove(htable_st *table, void *key);
 void HTclear(struct htable *table);
 void HTdelete(htable_st *table);
 void HTmap(htable_st *table, map_ft fun);
+void HTmapWithKey(htable_st *table, mapk_ft fun);
 void HTfold(htable_st *table, fold_ft fun, void *init_acc);
 size_t HTelementCount(htable_st *table);
 

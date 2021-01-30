@@ -89,6 +89,7 @@ phase dynamicBackend {
         dynamicGenFreeTraversal;
         dynamicGenCheckTraversal;
         dynamicGenUserFiles;
+        dynamicGenTravFunctions;
     }
 };
 
@@ -206,6 +207,15 @@ traversal genActionArray {
     uid = GAA,
 
     nodes = action | {ast}
+};
+
+traversal dynamicGenTravFunctions {
+    uid = DGT_F,
+    nodes = {ast, inode, child},
+
+    travdata = {
+        inode curr_node
+    }
 };
 
 traversal dynamicGenTravDataUnion {

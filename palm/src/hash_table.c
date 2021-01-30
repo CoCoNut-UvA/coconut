@@ -66,11 +66,13 @@ bool Insert(struct htable *table, void *key, void *value)
         struct htable_entry *last = table->entries[index];
         for (; last->next; last = last->next) {
             if (table->is_equal_f(last->key, key)) {
-                return false;
+                last->value = value;
+                return true;
             }
         }
         if (table->is_equal_f(last->key, key)) {
-            return false;
+            last->value = value;
+            return true;
         }
 
         target = &(last->next);
@@ -187,6 +189,18 @@ void HTmap(struct htable *table, map_ft fun)
         }
     }
 }
+
+void HTmapWithKey(struct htable *table, mapk_ft fun)
+{
+    for (size_t i = 0; i < table->size; i++) {
+        struct htable_entry *entry = table->entries[i];
+        while (entry) {
+            entry->value = fun(entry->key, entry->value);
+            entry = entry->next;
+        }
+    }
+}
+
 
 
 
