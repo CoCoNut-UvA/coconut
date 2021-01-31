@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "ccngen/trav.c"
+#include "ccngen/trav.h"
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
 #include "ccn/phase_driver.h"
