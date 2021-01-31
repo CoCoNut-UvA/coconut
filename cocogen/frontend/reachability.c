@@ -4,7 +4,6 @@
  */
 
 #include <stddef.h>
-#include <stdio.h>
 #include <palm/memory.h>
 #include <memory.h>
 #include "assert.h"

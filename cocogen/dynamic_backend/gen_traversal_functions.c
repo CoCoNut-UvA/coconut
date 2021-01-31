@@ -66,7 +66,7 @@ node_st *DGT_Fast(node_st *node)
     fp = FSgetSourceFile("trav.c");
     OUT("#include <stdbool.h>\n");
     OUT("#include \"palm/dbug.h\"\n");
-    OUT("#include \"ccn.h\"\n");
+    OUT("#include \"ccn/ccn.h\"\n");
     OUT("#include \"ccngen/ast.h\"\n");
     HTmapWithKey(lookup, MapChildrenSource);
     fclose(fp);

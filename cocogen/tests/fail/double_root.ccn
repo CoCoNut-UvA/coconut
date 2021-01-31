@@ -6,9 +6,13 @@ start phase hello {
 };
 
 root node ast {
-
+    attributes {
+        int val
+    }
 };
 
 root node ast2 {
-
+    attributes {
+        int val
+    }
 };

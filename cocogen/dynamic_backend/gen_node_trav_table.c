@@ -26,7 +26,6 @@ node_st *DGNFTTinode(node_st *node)
 {
     fp = globals.fp;
     const int reachability = reachability_matrix[curr_trav_index][INODE_INDEX(node)];
-    // TODO: remove magic number, see reachability.c
     if (reachability == RCB_NODE_HANDLED_BY_USER) {
         OUT("&%s%s", ID_UPR(curr_trav_prefix), ID_LWR(INODE_NAME(node)));
     } else if (reachability == RCB_NODE_HANDLED_BY_TRAV) {

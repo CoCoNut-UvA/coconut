@@ -62,3 +62,5 @@ bin/
 .vscode
 .idea
 cmake-*
+build*
+__pycache__

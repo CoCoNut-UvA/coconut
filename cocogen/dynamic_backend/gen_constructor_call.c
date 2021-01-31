@@ -1,10 +1,13 @@
-#include <stddef.h>
+/**
+ * @file
+ *
+ * Helper traversal that generates a constructor call for a node.
+ * Can be used when needing to generate a new node.
+ */
+
 #include <stdio.h>
-#include "assert.h"
 
 #include "gen_helpers/out_macros.h"
-#include "palm/ctinfo.h"
-#include "palm/str.h"
 #include "ccn/dynamic_core.h"
 #include "globals.h"
 

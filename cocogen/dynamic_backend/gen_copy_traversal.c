@@ -1,3 +1,10 @@
+/**
+ * @file
+ *
+ * This generates the copy traversal to be used in a compiler.
+ * Copying of children is deep, copying of attributes is deep on
+ * primitives types. Attribute nodes are shallow copied.
+ */
 
 #include <stddef.h>
 #include <stdio.h>

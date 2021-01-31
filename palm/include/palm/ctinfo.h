@@ -1,7 +1,14 @@
 #pragma once
 
 #include <stdarg.h>
+#include <stdbool.h>
 
+/**
+ * Object to describe location information of a compile time object.
+ * Pass this to CTIobj function.
+ *
+ * Values that are 0/NULL are not displayed, but are handled.
+ */
 struct ctinfo {
     int first_line;
     int first_column;
@@ -11,28 +18,25 @@ struct ctinfo {
     char *line;
 };
 
+/**
+ * Type of message for the CTI and CTIobj functions.
+ * Determine header and the error and warning messages have a counter
+ * counting the errors and warnings.
+ */
+enum cti_type {
+    CTI_STATE,
+    CTI_NOTE,
+    CTI_WARN,
+    CTI_ERROR,
+
+};
+
 extern void CTIinstallInterruptHandlers(void);
-extern void CTIerror(const char *format, ...);
-extern void CTIerrorObj(struct ctinfo *info, const char *format, ...);
-extern void CTIerrorObjVA(struct ctinfo *info, const char *format, va_list arg_p);
-extern void CTIerrorContinued(const char *format, ...);
-extern void CTIerrorContinuedObj(struct ctinfo *info, const char *format, ...);
 extern int CTIgetErrorMessageLineLength();
-extern void CTIabortOnError(void);
-extern void CTIabort(const char *format, ...);
-extern void CTIabortObj(struct ctinfo *info, const char *format, ...);
-extern void CTIabortObjVA(struct ctinfo *info, const char *format, va_list arg_p);
-extern void CTIwarn(const char *format, ...);
-extern void CTIwarnObj(struct ctinfo *info, const char *format, ...);
-extern void CTIwarnObjVA(struct ctinfo *info, const char *format, va_list arg_p);
-extern void CTIwarnContinued(const char *format, ...);
 extern int CTIgetWarnMessageLineLength(void);
 extern int CTIgetWarnings();
-extern void CTIstate(const char *format, ...);
-extern void CTInote(const char *format, ...);
-extern void CTInoteObj(struct ctinfo *info, const char *format, ...);
-extern void CTInoteObjVA(struct ctinfo *info, const char *format, va_list arg_p);
-extern void CTInoteContinuedObj(struct ctinfo *info, const char *format, ...);
-extern void CTInoteContinued(const char *format, ...);
+extern void CTIabortCompilation();
+extern void CTIabortOnError();
 extern void CTIabortOutOfMemory(unsigned int request);
-extern void CTIwarnContinuedObj(struct ctinfo *info, const char *format, ...);
+extern void CTI(enum cti_type type, bool newline, const char *format, ...);
+extern void CTIobj(enum cti_type type, bool newline, struct ctinfo obj, const char *format, ...);

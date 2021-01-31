@@ -185,7 +185,7 @@ static inline void check_c_keyword(const char *);
 }
 . {
     struct ctinfo info = {yylineno, yycolumn - 1, 0, 0, globals.filename, yy_linebuf};
-    CTIerrorObj(&info, "Unexpected token found, quit parsing", yytext);
+    CTIobj(CTI_ERROR, true, info, "Unexpected token found, quit parsing", yytext);
     CTIabortOnError();
 }
 %%
@@ -202,7 +202,7 @@ static inline void lexer_init(void) {
         "\\|unsigned\\|void\\|volatile\\|while\\)$";
     int reti = regcomp(&regex, regex_str, 0);
     if (reti) {
-        CTIerror("Could not compile C keyword regex.");
+        CTI(CTI_ERROR, true, "Could not compile C keyword regex.");
         CTIabortOnError();
     }
 }
@@ -216,7 +216,7 @@ static inline void check_c_keyword(const char *str) {
     int reti = regexec(&regex, str, 0, NULL, 0);
     if (!reti) {
         struct ctinfo info = {yylineno, yycolumn - strlen(str), 0, yycolumn - 1, globals.filename, HTlookup(globals.line_map, &yylineno)};
-        CTIerrorObj(&info, "Found C-keyword as identifier, "
+        CTIobj(CTI_ERROR, true, info, "Found C-keyword as identifier, "
                 "which would generate invalid C code.");
         CTIabortOnError();
     }
@@ -237,6 +237,6 @@ int yywrap() {
 
 void yyerror(const char* s) {
     struct ctinfo info = {yylineno, yycolumn - yyleng, 0, yycolumn - 1, global_command_line.input_file, HTlookup(globals.line_map, &yylineno)};
-    CTIerrorObj(&info, s);
+    CTIobj(CTI_ERROR, true, info, s);
     CTIabortOnError();
 }

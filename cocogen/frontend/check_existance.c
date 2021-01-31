@@ -1,8 +1,4 @@
 #include <stddef.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include "assert.h"
-
 #include "globals.h"
 #include "palm/ctinfo.h"
 #include "palm/str.h"
@@ -38,7 +34,7 @@ void checkUID(node_st *id)
     }
     for (unsigned int i = 0; i < sizeof(uid_reserved)/sizeof(uid_reserved[0]); i++) {
         if (STReq(ID_UPR(id), uid_reserved[i])) {
-            CTIerror("Uid is reversed: %s\n", uid_reserved[i]);
+            CTI(CTI_ERROR, true, "Uid is reversed: %s\n", uid_reserved[i]);
         }
     }
 }
@@ -57,7 +53,7 @@ node_st *CEXiactions(node_st *node)
     TRAVchildren(node);
     node_st *ref = lookupST(ste, IACTIONS_REFERENCE(node));
     if (ref == NULL) {
-        CTIerror("Could not find action: %s\n", ID_ORIG(IACTIONS_REFERENCE(node)));
+        CTI(CTI_ERROR, true, "Could not find action: %s\n", ID_ORIG(IACTIONS_REFERENCE(node)));
     }
     return node;
 }
@@ -67,7 +63,7 @@ node_st *CEXiphase(node_st *node)
     checkUID(IPHASE_IPREFIX(node));
     if (IPHASE_IS_START(node)) {
         if (seen_start_phase) {
-            CTIerror("Double definition of a starting phase.");
+            CTI(CTI_ERROR, true, "Double definition of a starting phase.");
         } else {
             AST_START_PHASE(root) = node;
             seen_start_phase = true;
@@ -94,9 +90,9 @@ node_st  *CEXitravdata(node_st *node)
     node_st *poss_conflict = lookupST(trav_data_names, ITRAVDATA_NAME(node));
     if (poss_conflict != NULL) {
         struct ctinfo info = {.filename = globals.filename, .first_line = ID_ROW(ITRAVDATA_NAME(node))};
-        CTIerrorObj(&info, "Name(%s) is used multiple times in travdata.", ID_ORIG(ITRAVDATA_NAME(node)));
+        CTIobj(CTI_ERROR, false, info, "Name(%s) is used multiple times in travdata.", ID_ORIG(ITRAVDATA_NAME(node)));
         struct ctinfo conf_info = {.filename = globals.filename, .first_line = ID_ROW((poss_conflict))};
-        CTInoteObj(&conf_info, "Used here as well.");
+        CTIobj(CTI_NOTE, true, conf_info, "Used here as well.");
     } else {
         trav_data_names = BSTaddToST(trav_data_names, ITRAVDATA_NAME(node), ITRAVDATA_NAME(node));
     }
@@ -104,14 +100,14 @@ node_st  *CEXitravdata(node_st *node)
     if (ITRAVDATA_TYPE(node) == AT_link_or_enum) {
         node_st *ste_entry = lookupST(ste, ITRAVDATA_TYPE_REFERENCE(node));
         if (ste_entry == NULL) {
-            CTIerror("Could not find type reference for travdata entry.");
+            CTI(CTI_ERROR, true, "Could not find type reference for travdata entry.");
         } else {
             if (NODE_TYPE(ste_entry) == NT_INODE || NODE_TYPE(ste_entry) == NT_INODESET) {
                 ITRAVDATA_TYPE(node) = AT_link;
             } else if (NODE_TYPE(ste_entry) == NT_IENUM) {
                 ITRAVDATA_TYPE(node) = AT_link_or_enum;
             } else {
-                CTIerror("Invalid type in travdata entry.");
+                CTI(CTI_ERROR, true, "Invalid type in travdata entry.");
             }
         }
     }
@@ -130,14 +126,14 @@ node_st *CEXipass(node_st *node)
 node_st *CEXinode(node_st *node)
 {
     if (STReq(ID_LWR(INODE_NAME(node)), "node")) {
-        CTIerror("Can not call node 'node'.");
+        CTI(CTI_ERROR, true, "Can not call node 'node'.");
     }
     if (INODE_IS_ROOT(node)) {
         if (!seen_root_node) {
             AST_ROOT_NODE(root) = node;
             seen_root_node = true;
         } else {
-            CTIerror("Double definition of root node");
+            CTI(CTI_ERROR, true, "Double definition of root node");
         }
     }
     TRAVopt(INODE_IATTRIBUTES(node));
@@ -162,7 +158,7 @@ node_st *CEXchild(node_st *node)
     if (!ref) {
         struct ctinfo info;
         id_to_info(CHILD_TYPE_REFERENCE(node), &info);
-        CTIerrorObj(&info, "Child type %s is not defined.", ID_ORIG(CHILD_TYPE_REFERENCE(node)));
+        CTIobj(CTI_ERROR, true, info, "Child type %s is not defined.", ID_ORIG(CHILD_TYPE_REFERENCE(node)));
     }
     if (NODE_TYPE(ref) == NT_INODESET) {
         CHILD_TYPE(node) = CT_inodeset;
@@ -171,14 +167,14 @@ node_st *CEXchild(node_st *node)
     } else {
         struct ctinfo info;
         id_to_info(CHILD_NAME(node), &info);
-        CTIerrorObj(&info, "Child is not a node or nodeset: %s\n", ID_ORIG(CHILD_NAME(node)));
+        CTIobj(CTI_ERROR, true, info, "Child is not a node or nodeset: %s\n", ID_ORIG(CHILD_NAME(node)));
     }
     if (lookupST(node_ste, CHILD_NAME(node)) == NULL) {
         node_ste = BSTaddToST(node_ste, CHILD_NAME(node), node);
     } else {
         struct ctinfo info;
         id_to_info(CHILD_NAME(node), &info);
-        CTIerrorObj(&info, "Double declaration of attribute/child name: %s\n", ID_ORIG(CHILD_NAME(node)));
+        CTIobj(CTI_ERROR, true, info, "Double declaration of attribute/child name: %s\n", ID_ORIG(CHILD_NAME(node)));
     }
     TRAVchildren(node);
     return node;
@@ -200,9 +196,9 @@ node_st *CEXsetreference(node_st *node)
 {
     node_st *ref_node = lookupST(ste, SETREFERENCE_REFERENCE(node));
     if (!ref_node) {
-        CTIerror("Set reference is undefined: %s\n", ID_ORIG(SETREFERENCE_REFERENCE(node)));
+        CTI(CTI_ERROR, true, "Set reference is undefined: %s\n", ID_ORIG(SETREFERENCE_REFERENCE(node)));
     } else if (NODE_TYPE(ref_node) != NT_INODESET) {
-        CTIerror("Set reference is not a reference to a nodeset: %s\n", ID_ORIG(SETREFERENCE_REFERENCE(node)));
+        CTI(CTI_ERROR, true, "Set reference is not a reference to a nodeset: %s\n", ID_ORIG(SETREFERENCE_REFERENCE(node)));
     }
     TRAVchildren(node);
     return node;
@@ -211,7 +207,7 @@ node_st *CEXsetreference(node_st *node)
 node_st *CEXsetliteral(node_st *node)
 {
     if (lookupST(ste, SETLITERAL_REFERENCE(node)) == NULL) {
-        CTIerror("Set member is undefined: %s\n", ID_ORIG(SETLITERAL_REFERENCE(node)));
+        CTI(CTI_ERROR, true, "Set member is undefined: %s\n", ID_ORIG(SETLITERAL_REFERENCE(node)));
     }
     TRAVchildren(node);
     return node;
@@ -222,7 +218,7 @@ node_st *CEXattribute(node_st *node)
     if (lookupST(node_ste, ATTRIBUTE_NAME(node)) == NULL) {
         node_ste = BSTaddToST(node_ste, ATTRIBUTE_NAME(node), node);
     } else {
-        CTIerror("Double declaration of attribute/child name: %s\n", ID_ORIG(ATTRIBUTE_NAME(node)));
+        CTI(CTI_ERROR, true, "Double declaration of attribute/child name: %s\n", ID_ORIG(ATTRIBUTE_NAME(node)));
     }
 
     if (ATTRIBUTE_TYPE(node) == AT_link_or_enum) {
@@ -230,14 +226,14 @@ node_st *CEXattribute(node_st *node)
         if (ste_entry == NULL) {
             struct ctinfo info;
             id_to_info(ATTRIBUTE_TYPE_REFERENCE(node), &info);
-            CTIerrorObj(&info, "Could not find type reference for attribute with type %s.", ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(node)));
+            CTIobj(CTI_ERROR, true, info, "Could not find type reference for attribute with type %s.", ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(node)));
         } else {
             if (NODE_TYPE(ste_entry) == NT_INODE || NODE_TYPE(ste_entry) == NT_INODESET) {
                 ATTRIBUTE_TYPE(node) = AT_link;
             } else if (NODE_TYPE(ste_entry) == NT_IENUM) {
                 ATTRIBUTE_TYPE(node) = AT_link_or_enum;
             } else {
-                CTIerror("Invalid type in attribute type: %s", ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(node)));
+                CTI(CTI_ERROR, true, "Invalid type in attribute type: %s", ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(node)));
             }
         }
     }
@@ -258,11 +254,11 @@ node_st *CEXienum(node_st *node)
 {
     for (unsigned int i = 0; i < sizeof(preserved_enum_prefix)/sizeof(preserved_enum_prefix[0]); i++) {
         if (STReq(preserved_enum_prefix[i], ID_UPR(IENUM_IPREFIX(node)))) {
-            CTIerror("Enum prefix %s is reversed.", preserved_enum_prefix[i]);
+            CTI(CTI_ERROR, true, "Enum prefix %s is reversed.", preserved_enum_prefix[i]);
         }
     }
     if (lookupST(enum_prefix_ste, IENUM_IPREFIX(node))) {
-        CTIerror("Double declaration of enum prefix: %s\n", ID_ORIG(IENUM_IPREFIX(node)));
+        CTI(CTI_ERROR, true, "Double declaration of enum prefix: %s\n", ID_ORIG(IENUM_IPREFIX(node)));
     } else {
         enum_prefix_ste = BSTaddToST(enum_prefix_ste, IENUM_IPREFIX(node), node);
     }

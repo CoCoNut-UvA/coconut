@@ -41,15 +41,15 @@ void Usage(char *program) {
     */
     printf("  --verbose/-v                 Enable verbose mode.\n");
     printf("  --breakpoint/-b <breakpoint> Set a breakpoint.\n");
-    printf("  --dot                        Will produce ast.dot in "
-           "<gen_dir>/dot.\n");
+    //printf("  --dot                        Will produce ast.dot in "
+//"<gen_dir>/dot.\n");
     printf("  --consistency-checks         Do consistency checks on the AST "
            "during runtime.\n");
-    printf("  --profiling                  Generate the requirements for a "
-           "time and memory profile in your compiler.\n");
-    printf("  --breakpoints                Enable setting breakpoints in your "
-           "compiler, generates an API for this.\n");
-    printf("  --gen_user_files             Generates user traversal files.\n");
+    //printf("  --profiling                  Generate the requirements for a "
+//           "time and memory profile in your compiler.\n");
+    //printf("  --breakpoints                Enable setting breakpoints in your "
+ //          "compiler, generates an API for this.\n");
+    //printf("  --gen_user_files             Generates user traversal files.\n");
     printf("  --backend <backend name>     Selects generation backend, either "
            "typed or dynamic(default=dynamic).\n");
     printf("  --show-ast                   Pretty print the ast at end of compilation\n");
@@ -93,6 +93,7 @@ void CLprocessArgs(int argc, char *argv[]) {
             Version();
             exit(EXIT_SUCCESS);
         case 'v':
+            CCNsetVerbosity(PD_V_MEDIUM);
             global_command_line.verbose = 1;
             break;
         case 24:

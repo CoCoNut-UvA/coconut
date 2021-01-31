@@ -1,5 +1,6 @@
 #include "ccn/dynamic_core.h"
 #include "ccn/ccn_types.h"
+#include <err.h>
 #include <stdio.h>
 
 #include "ccngen/ast.h"
@@ -21,15 +22,13 @@ void TRAVpush(enum ccn_traversal_type trav_type) {
     trav->prev = current_traversal;
     current_traversal = trav;
 
-    // TODO: handle trav data.
     ccn_trav_data_ft init_func = trav_data_init_vtable[trav_type];
     init_func(trav);
 }
 
 void TRAVpop() {
     if (current_traversal == NULL) {
-        // TODO: throw an error?
-        return;
+        err(EXIT_FAILURE, "[coconut] Error in framework.");
     }
     ccn_trav_st *prev = current_traversal->prev;
 

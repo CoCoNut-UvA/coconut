@@ -11,13 +11,8 @@
 #include "ccn/dynamic_core.h"
 #include "ccngen/action_handling.h"
 #include "palm/ctinfo.h"
+#include "ccn/phase_driver.h"
 
-enum pd_verbosity {
-    PD_V_QUIET = 0,
-    PD_V_SMALL = 1,
-    PD_V_MEDIUM = 2,
-    PD_V_HIGH = 3,
-};
 
 struct phase_driver {
     size_t level;
@@ -43,7 +38,7 @@ static struct phase_driver phase_driver = {
     .action_error = false,
     .phase_error = false,
     .tree_check = false,
-    .verbosity = PD_V_HIGH,
+    .verbosity = PD_V_QUIET,
     .breakpoint = NULL,
 };
 
@@ -68,10 +63,10 @@ struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype 
 
 
     if (action->type == CCN_ACTION_PHASE && phase_driver.verbosity > PD_V_QUIET) {
-        fprintf(stderr, "** %s", action->name);
+        fprintf(stderr, "** %s\n", action->name);
     } else {
         if (phase_driver.verbosity > PD_V_SMALL) {
-            CTIstate(">> %s", action->name);
+            fprintf(stderr, "** %s\n", action->name);
         }
     }
 
@@ -99,7 +94,7 @@ struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype 
     }
     if (phase_driver.action_error) {
         fprintf(stderr, "[coconut] Action error received. Stopping...\n");
-        exit(EXIT_FAILURE);
+        CTIabortCompilation();
     }
 
     if (phase_driver.breakpoint) {
@@ -153,6 +148,9 @@ char *Checkbreakpoint(char *name)
 
 struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, struct ccn_node *node) {
     if (phase->gate_func && !phase->gate_func()) {
+        if (phase_driver.verbosity >= PD_V_HIGH) {
+            fprintf(stderr, "[coconut] Skipping phase %s because gate function returned false.", phase_name);
+        }
         SkipPhase(phase);
         return node;
     }
@@ -188,8 +186,8 @@ struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, struct cc
     } while(cycle && phase_driver.cycle_iter < phase_driver.max_cycles && !(phase_driver.fixed_point));
 
     if (phase_driver.phase_error) {
-        fprintf(stderr, "CoCoNut: Phase error received. Stopping...\n");
-        exit(EXIT_FAILURE);
+        fprintf(stderr, "[coconut] Phase error received. Stopping...\n");
+        CTIabortCompilation();
     }
 
     phase_driver.cycle_iter = 0;
@@ -202,31 +200,73 @@ struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, struct cc
     return node;
 }
 
+/**
+ * Notify CoCoNut that a fixed point is not reached in current cycle.
+ */
 void CCNcycleNotify()
 {
     phase_driver.fixed_point = false;
 }
 
+/**
+ * Signal an action error. CoCoNut will call CTIabortCompilation
+ * after the action this error was signalled in.
+ */
 void CCNerrorAction()
 {
     phase_driver.action_error = true;
 }
 
+/**
+ * Signal an phase error. As a result, CoCoNut will call CTIabortCompilation
+ * at the end of the phase this error was signalled in.
+ */
 void CCNerrorPhase()
 {
     phase_driver.phase_error = true;
 }
 
+/**
+ * Set the maximum number of cycles for a cycle. Can be changed at runtime.
+ * @param cycle_count the maximum number of cycles.
+ */
 void CCNsetCycles(size_t cycle_count)
 {
     phase_driver.max_cycles = cycle_count;
 }
 
+/**
+ * Set a breakpoint at which CoCoNut will stop and call the handler:
+ * *BreakpointHandler*.
+ * @param breakpoint The breakpoint in format: <phase>.<phase>.<action>
+ */
 void CCNsetBreakpoint(char *breakpoint)
 {
     phase_driver.breakpoint = breakpoint;
 }
 
+/**
+ * Set the verbosity level of CoCoNut.
+ * @param type the type of verbosity.
+ */
+void CCNsetVerbosity(enum pd_verbosity type)
+{
+    phase_driver.verbosity = type;
+}
+
+/**
+ * Enable or disable consistency checking your tree.
+ * @param enable
+ */
+void CCNsetTreeCheck(bool enable)
+{
+    phase_driver.tree_check = enable;
+}
+
+/**
+ * Perform a invocation of your compiler.
+ * @param node the root of the tree.
+ */
 void CCNrun(struct ccn_node *node)
 {
     resetPhaseDriver();

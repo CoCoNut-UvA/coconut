@@ -1,3 +1,10 @@
+/**
+ * @file
+ *
+ * Contains most passes that handle creation and closing of file handlers
+ * used in traversals.
+ */
+
 #include "stdio.h"
 #include "gen_helpers/out_macros.h"
 #include "globals.h"

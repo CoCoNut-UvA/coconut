@@ -7,6 +7,12 @@
 #include "palm/ctinfo.h"
 
 
+/**
+ * Allocate memory. If memory can not be allocated this function
+ * calls the CTIabortOufOfMemory function and exists.
+ * @param size Amount to allocate.
+ * @return A pointer to an allocated structure.
+ */
 void *MEMmalloc(size_t size)
 {
     void *ptr;
@@ -31,6 +37,11 @@ void *MEMmalloc(size_t size)
     return ptr;
 }
 
+/**
+ * Free memory. Returns NULL, but allows to do assignment to freed structure.
+ * @param address address to free.
+ * @return
+ */
 void *MEMfree(void *address)
 {
     if(address != NULL) {

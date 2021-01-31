@@ -1,10 +1,12 @@
-#include <stddef.h>
-#include <stdio.h>
-#include "assert.h"
+/**
+ * @file
+ *
+ * Generate the base node, which contains node type and integers for locations
+ * and generate the union containing all nodes.
+ */
 
+#include <stdio.h>
 #include "gen_helpers/out_macros.h"
-#include "palm/ctinfo.h"
-#include "palm/str.h"
 #include "ccn/dynamic_core.h"
 #include "globals.h"
 

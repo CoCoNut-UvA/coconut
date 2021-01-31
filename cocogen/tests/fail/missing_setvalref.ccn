@@ -12,7 +12,7 @@ nodeset z = {missing2} | undefined2;
 
 root node ast {
     children {
-        ast next;
+        ast next
     }
 };
 

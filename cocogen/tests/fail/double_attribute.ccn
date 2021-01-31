@@ -8,8 +8,8 @@ start phase hello {
 
 root node ast {
     attributes {
-        ast next;
-        ast next;
+        ast next,
+        ast next
     }
 };
 

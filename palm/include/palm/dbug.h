@@ -24,12 +24,12 @@ extern void DBUGprintAssert(int line, char *file, const char *func, char *msg, .
 // Debug message identified by header.
 #define DBUG(header, msg) \
     do { \
-        printf("[%s] %s\n", header, msg); \
+        fprintf(stderr, "[%s] %s\n", header, msg); \
     } while (0)
 
 // Formatted debug message identified by header.
 #define DBUGF(header, format, ...) \
     do {                           \
-        printf("[%s] ", header); \
-        printf(format, __VA_ARGS__);\
+        fprintf(stderr, "[%s] ", header); \
+        fprintf(stderr, format, __VA_ARGS__);\
     } while (0)

@@ -571,7 +571,10 @@ char *STRsubstToken(const char *str, const char *token, const char *subst)
     return result;
 }
 
-
+/**
+ * Convert string to lower string by consuming the string.
+ * @param str the string to convert to lower form.
+ */
 void STRtoLower(char *str)
 {
     if (!str) {
@@ -584,6 +587,10 @@ void STRtoLower(char *str)
     }
 }
 
+/**
+ * Convert string to upper string by consuming the string.
+ * @param str the string to convert to upper form.
+ */
 void STRtoUpper(char *str)
 {
     if (!str) {
@@ -596,6 +603,11 @@ void STRtoUpper(char *str)
     }
 }
 
+/**
+ * Convert a string to its lower form but does not consume original string.
+ * @param str
+ * @return Malloced string, which is the lower form of str.
+ */
 char *STRlower(const char *str)
 {
     if (!str) {
@@ -615,6 +627,11 @@ char *STRlower(const char *str)
     return ret;
 }
 
+/**
+ *
+ * @param str
+ * @return Malloced string, which is the upper form of str.
+ */
 char *STRupper(const char *str)
 {
     if (!str) {

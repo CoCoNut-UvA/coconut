@@ -1,6 +1,12 @@
+/**
+ * @file
+ *
+ * Traversal that generates the consitency checking traversal based
+ * on node information and lifetimes.
+ */
+
 #include <assert.h>
 #include <palm/memory.h>
-#include <stddef.h>
 #include <stdio.h>
 
 #include "ccn/dynamic_core.h"
@@ -112,7 +118,7 @@ node_st *DGCHTchild(node_st *node)
             OUT_BEGIN_IF("!TypeIs%s(%s_%s(arg_node))", ID_LWR(CHILD_TYPE_REFERENCE(node)),
                          ID_UPR(INODE_NAME(curr_node)), ID_UPR(CHILD_NAME(node)));
         }
-        OUT_FIELD("CTIerror(\"Inconsistent node found in AST. Child %s of node %s has disallowed type %%d \", NODE_TYPE(%s_%s(arg_node)))",
+        OUT_FIELD("CTI(CTI_ERROR, true, \"Inconsistent node found in AST. Child %s of node %s has disallowed type %%d \", NODE_TYPE(%s_%s(arg_node)))",
             ID_ORIG(CHILD_NAME(node)), ID_ORIG(INODE_NAME(curr_node)), ID_UPR(INODE_NAME(curr_node)), ID_UPR(CHILD_NAME(node)));
         OUT_END_IF();
     }
@@ -199,7 +205,7 @@ static void LifetimeNodeDisallowed(node_st *lifetime_begin, node_st *lifetime_en
     }
     OUT_NO_INDENT("true) {\n");
     indent++;
-    OUT_FIELD("CTIerror(\"%s\\n\")",
+    OUT_FIELD("CTI(CTI_ERROR, true, \"%s\\n\")",
               error);
     OUT_END_IF();
 }
@@ -224,7 +230,7 @@ static void LifetimeNodeAllowed(node_st *lifetime_begin, node_st *lifetime_end, 
     }
     OUT_NO_INDENT("false) {\n");
     indent++;
-    OUT_FIELD("CTIerror(\"Found disallowed %s in tree.\\n\")",
+    OUT_FIELD("CTI(CTI_ERROR, true, \"Found disallowed %s in tree.\\n\")",
               error);
     OUT_END_IF();
 }
@@ -238,7 +244,7 @@ static void LifetimeNodeGen(node_st *node)
     assert(ILIFETIME_TYPE(node) == LT_disallowed || ILIFETIME_TYPE(node) == LT_allowed);
     if (!ILIFETIME_BEGIN(node) && !ILIFETIME_END(node)) {
         if (ILIFETIME_TYPE(node) == LT_disallowed) {
-            OUT_FIELD("CTIerror(\"Found disallowed node(%s) in tree.\\n\");", ID_ORIG(INODE_NAME(curr_node)));
+            OUT_FIELD("CTI(CTI_ERROR, true, \"Found disallowed node(%s) in tree.\\n\");", ID_ORIG(INODE_NAME(curr_node)));
         }
     } else {
         char *error = STRcatn(3, "Found disallowed node(", ID_ORIG(INODE_NAME(curr_node)), ") in tree.");
@@ -283,7 +289,7 @@ static void LifetimeChildDisallowed(node_st *lifetime_begin, node_st *lifetime_e
                  ID_UPR(INODE_NAME(curr_node)),
                  ID_UPR(CHILD_NAME(curr_child)));
     OUT_FIELD(
-        "CTIerror(\"Found disallowed child(%s) in node(%s).\\n\");",
+        "CTI(CTI_ERROR, true, \"Found disallowed child(%s) in node(%s).\\n\");",
         ID_ORIG(CHILD_NAME(curr_child)),
         ID_ORIG(INODE_NAME(curr_node)));
     OUT_END_IF();
@@ -355,7 +361,7 @@ static void LifetimeChildMandatory(node_st *lifetime_begin, node_st *lifetime_en
                  ID_UPR(INODE_NAME(curr_node)),
                  ID_UPR(CHILD_NAME(curr_child)));
     OUT_FIELD(
-        "CTIerror(\"Mandatory child(%s) in node(%s) is missing.\\n\");",
+        "CTI(CTI_ERROR, true, \"Mandatory child(%s) in node(%s) is missing.\\n\");",
         ID_ORIG(CHILD_NAME(curr_child)),
         ID_ORIG(INODE_NAME(curr_node)));
     OUT_END_IF();
@@ -388,7 +394,7 @@ static void LifetimeChildOptional(node_st *lifetime_begin, node_st *lifetime_end
                  ID_UPR(INODE_NAME(curr_node)),
                  ID_UPR(CHILD_NAME(curr_child)));
     OUT_FIELD(
-        "CTIerror(\"Mandatory child(%s) in node(%s) is missing.\\n\");",
+        "CTI(CTI_ERROR, true, \"Mandatory child(%s) in node(%s) is missing.\\n\");",
         ID_ORIG(CHILD_NAME(curr_child)),
         ID_ORIG(INODE_NAME(curr_node)));
     OUT_END_IF();
@@ -403,11 +409,11 @@ static void LifetimeChildGen(node_st *node)
     if (!ILIFETIME_BEGIN(node) && !ILIFETIME_END(node)) {
         if (ILIFETIME_TYPE(node) == LT_disallowed) {
             OUT_BEGIN_IF("%s_%s(arg_node) != NULL", ID_UPR(INODE_NAME(curr_node)), ID_UPR(CHILD_NAME(curr_child)));
-            OUT_FIELD("CTIerror(\"Found disallowed child(%s) in node(%s).\\n\");", ID_ORIG(CHILD_NAME(curr_child)), ID_ORIG(INODE_NAME(curr_node)));
+            OUT_FIELD("CTI(CTI_ERROR, true, \"Found disallowed child(%s) in node(%s).\\n\");", ID_ORIG(CHILD_NAME(curr_child)), ID_ORIG(INODE_NAME(curr_node)));
             OUT_END_IF();
         }else if (ILIFETIME_TYPE(node) == LT_mandatory) {
             OUT_BEGIN_IF("%s_%s(arg_node) == NULL", ID_UPR(INODE_NAME(curr_node)), ID_UPR(CHILD_NAME(curr_child)));
-            OUT_FIELD("CTIerror(\"Child(%s) in node(%s) is missing, but specified as mandatory.\\n\");", ID_ORIG(CHILD_NAME(curr_child)), ID_ORIG(INODE_NAME(curr_node)));
+            OUT_FIELD("CTI(CTI_ERROR, true, \"Child(%s) in node(%s) is missing, but specified as mandatory.\\n\");", ID_ORIG(CHILD_NAME(curr_child)), ID_ORIG(INODE_NAME(curr_node)));
             OUT_END_IF();
         }
     } else {

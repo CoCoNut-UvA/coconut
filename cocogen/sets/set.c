@@ -1,3 +1,10 @@
+/**
+ * @file
+ *
+ * This module provides a set of identifiers and uses corresponding
+ * traversals for operations on sets. Literals are copied on insertions.
+ */
+
 #include "set.h"
 #include "palm/dbug.h"
 

@@ -1,6 +1,11 @@
+/**
+ * @file
+ *
+ * This traversal unwraps set expressions such that all operations become
+ * set literals.
+ */
+
 #include <stddef.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include "assert.h"
 #include "palm/str.h"
 #include "ccngen/ast.h"
@@ -44,6 +49,12 @@ node_st *USEsetoperation(node_st *node)
     return new;
 }
 
+/**
+ * Unpacks a set reference by looking up the corresponding nodeset,
+ * evaluating the nodeset and returning the resulting set literal.
+ * @param node Setreference that is freed after this traversal.
+ * @return
+ */
 node_st *USEsetreference(node_st *node)
 {
     assert(node);

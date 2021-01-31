@@ -1,57 +1,75 @@
 digraph Ast {
+id;
 id -> id[label="next"]
+ienum;
 ienum -> id[label="vals"]
 ienum -> id[label="name"]
 ienum -> id[label="iprefix"]
 ienum -> ienum[label="next"]
+attribute;
 attribute -> id[label="name"]
 attribute -> id[label="type_reference"]
 attribute -> attribute[label="next"]
+itravdata;
 itravdata -> id[label="name"]
 itravdata -> id[label="type_reference"]
 itravdata -> itravdata[label="next"]
+setoperation;
 setoperation -> setexpr[label="left"]
 setoperation -> setexpr[label="right"]
+setliteral;
 setliteral -> id[label="reference"]
 setliteral -> setliteral[label="left"]
 setliteral -> setliteral[label="right"]
+setreference;
 setreference -> id[label="reference"]
+ste;
 ste -> ste[label="next"]
 ste -> id[color=red, label="key"]
 ste -> link[color=red, label="value"]
+child;
 child -> id[label="name"]
 child -> ilifetime[label="lifetimes"]
 child -> child[label="next"]
 child -> id[label="type_reference"]
+lifetime_range;
 lifetime_range -> id[label="target"]
+ilifetime;
 ilifetime -> lifetime_range[label="begin"]
 ilifetime -> lifetime_range[label="end"]
 ilifetime -> ilifetime[label="next"]
+inodeset;
 inodeset -> id[label="name"]
 inodeset -> setexpr[label="expr"]
 inodeset -> id[label="unpacked"]
 inodeset -> inodeset[label="next"]
+inode;
 inode -> id[label="name"]
 inode -> inode[label="next"]
 inode -> child[label="ichildren"]
 inode -> attribute[label="iattributes"]
 inode -> ilifetime[label="lifetimes"]
+ipass;
 ipass -> id[label="name"]
 ipass -> id[label="iprefix"]
 ipass -> id[label="target_func"]
 ipass -> ipass[label="next"]
+itraversal;
 itraversal -> id[label="name"]
 itraversal -> id[label="iprefix"]
 itraversal -> setexpr[label="inodes"]
 itraversal -> itravdata[label="data"]
 itraversal -> itraversal[label="next"]
+iphase;
 iphase -> id[label="name"]
 iphase -> id[label="iprefix"]
 iphase -> id[label="gate_func"]
 iphase -> iactions[label="iactions"]
 iphase -> iphase[label="next"]
+iactions;
 iactions -> id[label="reference"]
 iactions -> iactions[label="next"]
+ast;
 ast -> iphase[label="iphases"]
 ast -> itraversal[label="itraversals"]
 ast -> ipass[label="ipasses"]

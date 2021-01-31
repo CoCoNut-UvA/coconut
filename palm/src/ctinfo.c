@@ -193,6 +193,8 @@ char *CTIgetErrorMessageVA(int line, const char *format, va_list arg_p)
     return res;
 }
 
+//TODO: make this inline with message length.
+
 static void PrintLocation(struct ctinfo *info)
 {
     if (info->line != NULL) {
@@ -271,7 +273,7 @@ static void PrintInfo(struct ctinfo *info)
  *
  ******************************************************************************/
 
-static void PrintMessage(char *header, const char *format, va_list arg_p, bool prepend_empty_line, struct ctinfo *info)
+static void PrintMessage(char *header, const char *format, va_list arg_p, bool newline, struct ctinfo *info)
 {
     char *line;
     bool first_line = true;
@@ -279,10 +281,6 @@ static void PrintMessage(char *header, const char *format, va_list arg_p, bool p
     Format2Buffer(format, arg_p);
 
     ProcessMessage(message_buffer, message_line_length - strlen(header));
-
-    if (prepend_empty_line) {
-        fprintf(stderr, "\n");
-    }
 
     line = strtok(message_buffer, "@");
 
@@ -293,6 +291,10 @@ static void PrintMessage(char *header, const char *format, va_list arg_p, bool p
     }
 
     PrintInfo(info);
+
+    if (newline) {
+        fprintf(stderr, "\n");
+    }
 }
 
 /** <!--********************************************************************-->
@@ -325,6 +327,11 @@ static void AbortCompilation()
     CleanUp();
 
     exit(1);
+}
+
+void CTIabortCompilation()
+{
+    AbortCompilation();
 }
 
 /** <!--********************************************************************-->
@@ -393,79 +400,6 @@ void CTIinstallInterruptHandlers(void)
     signal(SIGINT, UserForcedBreak); /* Interrupt (Control-C) */
 }
 
-/** <!--********************************************************************-->
- *
- * @fn void CTIerror( const char *format, ...)
- *
- *   @brief  produces an error message without file name and line number.
- *
- *   @param format  format string like in printf
- *
- ******************************************************************************/
-
-void CTIerror(const char *format, ...)
-{
-    va_list arg_p;
-
-    va_start(arg_p, format);
-
-    PrintMessage(error_message_header, format, arg_p, true, NULL);
-
-    va_end(arg_p);
-
-    errors++;
-}
-
-void CTIerrorObj(struct ctinfo *info, const char *format, ...)
-{
-    va_list arg_p;
-
-    va_start(arg_p, format);
-
-    PrintMessage(error_message_header, format, arg_p, true, info);
-
-    va_end(arg_p);
-
-    errors++;
-}
-
-void CTIerrorObjVA(struct ctinfo *info, const char *format, va_list arg_p)
-{
-    PrintMessage(error_message_header, format, arg_p, true, info);
-    errors++;
-}
-
-/** <!--********************************************************************-->
- *
- * @fn void CTIerrorContinued( const char *format, ...)
- *
- *   @brief  continues an error message without file name and line number.
- *
- *   @param format  format string like in printf
- *
- ******************************************************************************/
-
-void CTIerrorContinued(const char *format, ...)
-{
-    va_list arg_p;
-
-    va_start(arg_p, format);
-
-    PrintMessage(error_message_header, format, arg_p, false, NULL);
-
-    va_end(arg_p);
-}
-
-void CTIerrorContinuedObj(struct ctinfo *info, const char *format, ...)
-{
-    va_list arg_p;
-
-    va_start(arg_p, format);
-
-    PrintMessage(error_message_header, format, arg_p, false, info);
-
-    va_end(arg_p);
-}
 
 /** <!--********************************************************************-->
  *
@@ -497,98 +431,6 @@ void CTIabortOnError(void)
     }
 }
 
-void CTIabort(const char *format, ...)
-{
-    va_list arg_p;
-
-    va_start(arg_p, format);
-
-    PrintMessage(abort_message_header, format, arg_p, true, NULL);
-
-    va_end(arg_p);
-}
-
-void CTIabortObj(struct ctinfo *info, const char *format, ...)
-{
-    va_list arg_p;
-
-    va_start(arg_p, format);
-
-    PrintMessage(abort_message_header, format, arg_p, true, info);
-
-    va_end(arg_p);
-}
-
-void CTIabortObjVA(struct ctinfo *info, const char *format, va_list arg_p)
-{
-    PrintMessage(abort_message_header, format, arg_p, true, info);
-}
-
-void CTIwarn(const char *format, ...)
-{
-    va_list arg_p;
-
-    va_start(arg_p, format);
-
-    PrintMessage(warn_message_header, format, arg_p, true, NULL);
-
-    va_end(arg_p);
-
-    warnings++;
-}
-
-void CTIwarnObj(struct ctinfo *info, const char *format, ...)
-{
-    va_list arg_p;
-
-    va_start(arg_p, format);
-
-    PrintMessage(warn_message_header, format, arg_p, true, info);
-
-    va_end(arg_p);
-
-    warnings++;
-}
-
-void CTIwarnObjVA(struct ctinfo *info, const char *format, va_list arg_p)
-{
-    PrintMessage(warn_message_header, format, arg_p, true, info);
-    warnings++;
-}
-
-/** <!--********************************************************************-->
- *
- * @fn void CTIerrorContinued( const char *format, ...)
- *
- *   @brief  continues an error message without file name and line number.
- *
- *   @param format  format string like in printf
- *
- ******************************************************************************/
-
-void CTIwarnContinued(const char *format, ...)
-{
-    va_list arg_p;
-
-    va_start(arg_p, format);
-
-    PrintMessage(warn_message_header, format, arg_p, false, NULL);
-
-    va_end(arg_p);
-}
-
-void CTIwarnContinuedObj(struct ctinfo *info, const char *format, ...)
-{
-    va_list arg_p;
-
-    va_start(arg_p, format);
-
-    PrintMessage(warn_message_header, format, arg_p, false, info);
-
-    va_end(arg_p);
-}
-
-
 
 /** <!--********************************************************************-->
  *
@@ -613,65 +455,6 @@ int CTIgetWarnings()
     return warnings;
 }
 
-void CTInote(const char *format, ...)
-{
-    va_list arg_p;
-
-    va_start(arg_p, format);
-
-    PrintMessage(note_message_header, format, arg_p, true, NULL);
-
-    va_end(arg_p);
-}
-
-void CTInoteObj(struct ctinfo *info, const char *format, ...)
-{
-    va_list arg_p;
-
-    va_start(arg_p, format);
-
-    PrintMessage(note_message_header, format, arg_p, true, info);
-
-    va_end(arg_p);
-}
-
-void CTInoteObjVA(struct ctinfo *info, const char *format, va_list arg_p)
-{
-    PrintMessage(error_message_header, format, arg_p, true, info);
-}
-
-void CTInoteContinued(const char *format, ...)
-{
-    va_list arg_p;
-
-    va_start(arg_p, format);
-
-    PrintMessage(note_message_header, format, arg_p, false, NULL);
-
-    va_end(arg_p);
-}
-
-void CTInoteContinuedObj(struct ctinfo *info, const char *format, ...)
-{
-    va_list arg_p;
-
-    va_start(arg_p, format);
-
-    PrintMessage(note_message_header, format, arg_p, false, info);
-
-    va_end(arg_p);
-}
-
-void CTIstate(const char *format, ...)
-{
-    va_list arg_p;
-
-    va_start(arg_p, format);
-
-    PrintMessage(state_message_header, format, arg_p, true, NULL);
-
-    va_end(arg_p);
-}
 
 /** <!--********************************************************************-->
  *
@@ -703,4 +486,66 @@ void CTIabortOutOfMemory(unsigned int request)
     errors++;
 
     AbortCompilation();
+}
+
+static void HandleCtiCall(enum cti_type type)
+{
+    if (type == CTI_ERROR) {
+        errors++;
+    } else if (type == CTI_WARN) {
+        warnings++;
+    }
+}
+
+static char *GetMessageHeader(enum cti_type type)
+{
+    switch (type) {
+    case CTI_WARN:
+        return warn_message_header;
+    case CTI_ERROR:
+        return error_message_header;
+    case CTI_NOTE:
+        return note_message_header;
+    case CTI_STATE:
+        return state_message_header;
+    default:
+        return "";
+    }
+}
+
+/**
+ * Prints a message to stderr with header according to the type.
+ * @param type the type of message, see enum cti_type
+ * @param newline Whether to append a newline to the output or not.
+ * @param format printf style format string
+ * @param ... variable args.
+ */
+void CTI(enum cti_type type, bool newline, const char *format, ...)
+{
+    char *message_header = GetMessageHeader(type);
+    HandleCtiCall(type);
+    va_list arg_p;
+
+    va_start(arg_p, format);
+
+    PrintMessage(message_header, format, arg_p, newline, NULL);
+
+    va_end(arg_p);
+}
+
+/**
+ * See @CTI
+ * @param obj an object of type struct ctinfo with extra information.
+ */
+void CTIobj(enum cti_type type, bool newline, struct ctinfo obj, const char *format, ...)
+{
+    char *message_header = GetMessageHeader(type);
+    HandleCtiCall(type);
+    va_list arg_p;
+
+    va_start(arg_p, format);
+
+    PrintMessage(message_header, format, arg_p, newline, &obj);
+
+    va_end(arg_p);
 }

@@ -1,3 +1,10 @@
+/**
+ * @file
+ *
+ * This traversal maps lifetime targets to the action ID the target belongs
+ * to.
+ */
+
 #include <palm/ctinfo.h>
 #include <palm/str.h>
 #include "ccngen/ast.h"
@@ -13,6 +20,12 @@ static node_st *ste = NULL;
 static bool in_node = false;
 static bool in_lifetime = false;
 
+/**
+ * Compare if two identifiers are equal by comparing their lower case form.
+ * @param id
+ * @param other_id
+ * @return lower(id) == lower(other_id)
+ */
 static bool CompareID(node_st *id, node_st *other_id)
 {
     if (id == NULL || other_id == NULL) {
@@ -33,6 +46,8 @@ node_st *MITLast(node_st *node)
 
 node_st *MITLinode(node_st *node)
 {
+    // Node lifetimes have special requirements(less options), so denote
+    // we are in a node.
     in_node = true;
     TRAVopt(INODE_LIFETIMES(node));
     in_node = false;
@@ -45,7 +60,7 @@ node_st *MITLiactions(node_st *node)
 {
     node_st *action_lookup = lookupST(ste, IACTIONS_REFERENCE(node));
     if (action_lookup == NULL) {
-        CTIerror("Lifetime target(%s) does not reference a valid action.", ID_ORIG(IACTIONS_REFERENCE(node)));
+        CTI(CTI_ERROR, true, "Lifetime target(%s) does not reference a valid action.", ID_ORIG(IACTIONS_REFERENCE(node)));
     }
     if (NODE_TYPE(action_lookup) == NT_IPHASE) {
         if (CompareID(IPHASE_NAME(action_lookup), curr_target) || CompareID(IPHASE_IPREFIX(action_lookup), curr_target)) {
@@ -76,7 +91,7 @@ node_st *MITLiactions(node_st *node)
 node_st *MITLilifetime(node_st *node)
 {
     if (in_node && (ILIFETIME_TYPE(node) == LT_mandatory || ILIFETIME_TYPE(node) == LT_optional)) {
-        CTIerror("Node lifetime can not use mandatory/optional.");
+        CTI(CTI_ERROR, true, "Node lifetime can not use mandatory/optional.");
     }
     last_action = NULL;
     TRAVopt(ILIFETIME_BEGIN(node));
@@ -95,7 +110,7 @@ node_st *MITLlifetime_range(node_st *node)
         struct ctinfo info;
         id_to_info(LIFETIME_RANGE_TARGET(node), &info);
         info.last_column = 0;
-        CTIerrorObj(&info, "Lifetime does not target a valid action.");
+        CTIobj(CTI_ERROR, true, info, "Lifetime does not target a valid action.");
     } else {
         LIFETIME_RANGE_ACTION_ID(node) = IACTIONS_ACTION_ID(last_action);
         if (NODE_TYPE(last_node) == NT_IPHASE) {
@@ -134,7 +149,7 @@ node_st *MITLid(node_st *node)
             if (info.first_column > 0) {
                 info.first_column -= 1;
             }
-            CTIerrorObj(&info, "Lifetime does not target a phase while it nests.");
+            CTIobj(CTI_ERROR, true, info, "Lifetime does not target a phase while it nests.");
         } else {
             last_action = NULL;
             last_node = NULL;

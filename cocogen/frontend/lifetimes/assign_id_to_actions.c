@@ -1,3 +1,10 @@
+/**
+ * @file
+ *
+ * This traversal assigns a unique ID(integer) to every action.
+ * These IDS are used in the check traversal and lifetimes.
+ */
+
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
 #include <stdint.h>

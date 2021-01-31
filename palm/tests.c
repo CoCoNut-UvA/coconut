@@ -8,14 +8,8 @@
 #include "palm/dbug.h"
 
 int main() {
-    CTIerror("Hello");
     struct ctinfo info = {1, 1, 0, 0, "simple.ccn", "Phase"};
-    CTIerrorObj(&info, "Phase unkown this is a rather long error message how is that handled i dont really know do you?");
     info.last_column = 5;
-    CTIerrorObj(&info, "Phase unkown");
-    CTIwarn("This is a warning");
-    CTInote("You can find the phase here");
-    CTIstate("Phase Root");
 
     char *orig = "hello";
     char *up = STRupper(orig);
@@ -30,6 +24,5 @@ int main() {
     MEMfree(low);
 
     MEMmalloc((size_t)-1);
-    CTIabortOnError();
     return 0;
 }
