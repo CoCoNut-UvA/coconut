@@ -126,6 +126,7 @@ node_st *DGCHTchild(node_st *node)
     }
     OUT_END_IF();
     TRAVopt(CHILD_LIFETIMES(node));
+    TRAVnext(node);
 
     return node;
 }

@@ -38,6 +38,7 @@ char *FMTattributeDefaultVal(enum attribute_type type)
     case AT_link_or_enum:
         return "0";
     case AT_user:
+    default:
         err(EXIT_FAILURE, "AT_user is a special type and not handled by this function.");
     }
     assert(false);
@@ -80,6 +81,7 @@ char *FMTattributeTypeToString(enum attribute_type type)
     case AT_link_or_enum:
         return "enum";
     case AT_user:
+    default:
         err(EXIT_FAILURE, "AT_user is a special type and not handled by this function.");
     }
     assert(false);

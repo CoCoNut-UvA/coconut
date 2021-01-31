@@ -19,6 +19,7 @@ node_st *DGEVienum(node_st *node)
 {
     OUT_ENUM("%s", ID_LWR(IENUM_NAME(node)));
     enum_prefx = ID_UPR(IENUM_IPREFIX(node));
+    OUT_ENUM_FIELD("%s_NULL", enum_prefx);
     TRAVopt(IENUM_VALS(node));
     OUT_ENUM_END();
     TRAVopt(IENUM_NEXT(node));

@@ -101,12 +101,14 @@ enum ccn_pass_type {
 };
 
 enum setoperation_type {
+    SO_NULL,
     SO_iunion,
     SO_intersect,
     SO_difference,
 };
 
 enum attribute_type {
+    AT_NULL,
     AT_user,
     AT_link,
     AT_link_or_enum,
@@ -127,11 +129,13 @@ enum attribute_type {
 };
 
 enum child_type {
+    CT_NULL,
     CT_inode,
     CT_inodeset,
 };
 
 enum lifetime_type {
+    LT_NULL,
     LT_disallowed,
     LT_mandatory,
     LT_optional,

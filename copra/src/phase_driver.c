@@ -37,7 +37,7 @@ static struct phase_driver phase_driver = {
     .fixed_point = false,
     .action_error = false,
     .phase_error = false,
-    .tree_check = false,
+    .tree_check = true,
     .verbosity = PD_V_QUIET,
     .breakpoint = NULL,
 };
@@ -63,10 +63,10 @@ struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype 
 
 
     if (action->type == CCN_ACTION_PHASE && phase_driver.verbosity > PD_V_QUIET) {
-        fprintf(stderr, "** %s\n", action->name);
+        fprintf(stderr, ">> %s\n", action->name);
     } else {
         if (phase_driver.verbosity > PD_V_SMALL) {
-            fprintf(stderr, "** %s\n", action->name);
+            fprintf(stderr, "  *** %s\n", action->name);
         }
     }
 
@@ -102,6 +102,9 @@ struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype 
             BreakpointHandler(node);
             exit(0);
         }
+    }
+    if (action->type == CCN_ACTION_PHASE && phase_driver.verbosity > PD_V_QUIET) {
+        fprintf(stderr, "<< %s\n", action->name);
     }
 
     root_type = root_type;
