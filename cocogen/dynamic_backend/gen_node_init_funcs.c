@@ -30,7 +30,7 @@ node_st *DGIFinode(node_st *node)
     fp = globals.fp;
     curr_node_name = ID_LWR(INODE_NAME(node));
     curr_node_name_upr = ID_UPR(INODE_NAME(node));
-    OUT("%s *%s%s(", basic_node_type, "AST", ID_ORIG(INODE_NAME(node)));
+    OUT("%s *%s%s(", basic_node_type, "AST", ID_LWR(INODE_NAME(node)));
     arg_num = 0;
     TRAVopt(INODE_ICHILDREN(node));
     TRAVopt(INODE_IATTRIBUTES(node));

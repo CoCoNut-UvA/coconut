@@ -175,7 +175,7 @@ traversal dynamicGenTravDataTables {
     uid = DGTDT,
     nodes = {ast, itraversal},
 
-    travdata = {
+    travdata {
         user fileptr file,
         int in_init_round,
         uint64 indent
@@ -213,7 +213,7 @@ traversal dynamicGenTravFunctions {
     uid = DGT_F,
     nodes = {ast, inode, child},
 
-    travdata = {
+    travdata {
         inode curr_node
     }
 };
@@ -246,7 +246,7 @@ traversal dynamicGenTravDataStructs {
 traversal dynamicGenCheckTraversal {
     uid = DGCHT,
 
-    travdata = {
+    travdata {
         int lifetime_target
     }
 };
@@ -378,7 +378,7 @@ traversal setliteralInsert {
         setliteral
     },
 
-    travdata = {
+    travdata {
 	    setliteral value,
         bool inserted
     }
@@ -390,7 +390,7 @@ traversal setliteralUnion {
         setliteral
     },
 
-    travdata = {
+    travdata {
         setliteral dst
     }
 };
@@ -402,7 +402,7 @@ traversal setliteralIntersect {
         setliteral
     },
 
-    travdata = {
+    travdata {
         setliteral src,
         setliteral new
     }
@@ -414,7 +414,7 @@ traversal setliteralDifference {
         setliteral
     },
 
-    travdata = {
+    travdata {
         setliteral right,
         setliteral new
     }
@@ -423,7 +423,7 @@ traversal setliteralDifference {
 traversal setliteralContains {
     uid = SLC,
     nodes = { setliteral },
-    travdata = {
+    travdata {
         id lookup,
         bool contains
     }
@@ -539,7 +539,7 @@ node inodeset {
 
 enum lifetime_type {
     prefix = LT,
-    values = {
+    values {
         disallowed, mandatory, optional, allowed
     }
 };
@@ -570,7 +570,7 @@ node lifetime_range {
 
 enum child_type {
     prefix = CT,
-    values = {
+    values {
         inode, inodeset
     }
 };
@@ -602,14 +602,14 @@ node ste {
 
 enum attribute_type {
     prefix = AT,
-    values = {
+    values {
         user, link, link_or_enum, int, string, bool, int8, int16, int32, int64, float, double, uint, uint8, uint16, uint32, uint64
     }
 };
 
 enum setoperation_type {
     prefix = SO,
-    values = {
+    values {
         iunion, intersect, difference
     }
 };

@@ -1,8 +1,12 @@
 =============
 DSL
 =============
-The DSL used by CoCoNut is case-insensitive for names and other attributes. In some cases, the fully upercase/lowercase version of a name is used.
+The DSL used by CoCoNut is mostly case-insensitive for names and other attributes. In some cases, the fully uppercase/lowercase version of a name is used.
 The CoCoNut compiler gives an error if you have two names that are equal in their lowercase form.
+Nonetheless, casing can be useful in node names. Since CoCoNut provides primitives types like *float*, you can not name your nodes *float*, but you
+can name them *Float*. This means that you need to reference *Float* as such and not as *float*. Otherwise, there is no distinction between
+the primitive type and the user defined type and it would be impossible to know when used as an attribute. Still, besides the conflicts with primitive types,
+it is not possible to define names that only differ in casing. So, a node named *Float* and one named *FLOAT* is not possible.
 
 Enum
 ================
@@ -10,7 +14,7 @@ An enum in the DSL maps to an enum in C, can be used to add extra type informati
 the prefix of another enum or a CoCoNut reserved prefix. (Link to reserved prefix).
 An enum exists out of a set of values, which are defined in the values block. These values map to the values in the C enum and the order
 used is kept. Every value will be prefixed with the prefix and to every enum a *NULL* value will be added. The *NULL* value becomes the first entry in the enum.
-Lastly, an enum has a name, which corresponds to the name in the generated C enum. All names in CoCoNut are case insensitive, therefore any names that only differ in their casing will create a collision and are not valid.
+Lastly, an enum has a name, which corresponds to the name in the generated C enum.
 
 An enum is defined as follows:
 

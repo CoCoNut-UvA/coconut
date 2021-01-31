@@ -28,7 +28,7 @@ node_st *DGCCinode(node_st *node)
 {
     fp = globals.fp;
     arg_num = 0;
-    OUT("struct ccn_node *new_node = AST%s(", ID_ORIG(INODE_NAME(node)));
+    OUT("struct ccn_node *new_node = AST%s(", ID_LWR(INODE_NAME(node)));
     TRAVopt(INODE_ICHILDREN(node));
     TRAVopt(INODE_IATTRIBUTES(node));
     OUT_NO_INDENT(");\n");

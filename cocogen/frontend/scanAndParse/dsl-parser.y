@@ -874,16 +874,16 @@ enum: T_ENUM id[name] '{' info[information] ',' prefix[identifier] ',' enumvalue
     }
     ;
 
-enumvalues: T_VALUES '=' '{' idlist '}'
+enumvalues: T_VALUES '{' idlist '}'
     {
-        $$ = $4;
+        $$ = $3;
     }
     ;
 
 
-travdata: T_TRAVDATA '=' '{' travdatalist '}'
+travdata: T_TRAVDATA '{' travdatalist '}'
     {
-        $$ = $4;
+        $$ = $3;
     }
     ;
 
