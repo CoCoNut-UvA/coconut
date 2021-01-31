@@ -1,4 +1,8 @@
-.PHONY: help debug release
+.PHONY: help debug release default
+
+default: release
+	make -C build/
+
 help:
 	@echo "Targets:"
 	@echo "  debug  : Generate build artifacts for a debug build in build-debug"
@@ -6,7 +10,7 @@ help:
 
 
 debug:
-	@cmake -DCMAKE_BUILD_TYPE=Debug -S ./ -B build-$@/
+	@cmake -DCMAKE_BUILD_TYPE=Debug -S ./ -B build/
 
 release:
-	@cmake -DCMAKE_BUILD_TYPE=Release -S ./ -B build-$@/
+	@cmake -DCMAKE_BUILD_TYPE=Release -S ./ -B build/

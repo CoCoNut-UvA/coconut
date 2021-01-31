@@ -4,6 +4,7 @@
 
 extern void DBUGprintAssert(int line, char *file, const char *func, char *msg, ...);
 
+#ifndef NDEBUG
 // Assert and print message on fail.
 #define DBUG_ASSERT(expr, msg) \
     do {                       \
@@ -33,3 +34,17 @@ extern void DBUGprintAssert(int line, char *file, const char *func, char *msg, .
         fprintf(stderr, "[%s] ", header); \
         fprintf(stderr, format, __VA_ARGS__);\
     } while (0)
+
+#else
+#define DBUG_ASSERT(expr, msg)
+
+
+// Assert with format string.
+#define DBUG_ASSERTF(expr, format, ...)
+
+// Debug message identified by header.
+#define DBUG(header, msg)
+
+// Formatted debug message identified by header.
+#define DBUGF(header, format, ...)
+#endif

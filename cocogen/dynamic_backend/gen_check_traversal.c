@@ -6,6 +6,7 @@
  */
 
 #include <assert.h>
+#include <ccngen/trav.h>
 #include <palm/memory.h>
 #include <stdio.h>
 
@@ -101,6 +102,7 @@ node_st *DGCHTinodeset(node_st *node)
     TRAVopt(INODESET_EXPR(node));
     OUT(");\n");
     OUT_END_FUNC();
+    TRAVnext(node);
     return node;
 }
 
@@ -177,6 +179,8 @@ node_st *DGCHTid(node_st *node)
 {
     return node;
 }
+
+// NOTE: Do not go deeper, needs a refactor. Is written with little sleep.
 
 static void LifetimeNodeDisallowed(node_st *lifetime_begin, node_st *lifetime_end, char *error)
 {
