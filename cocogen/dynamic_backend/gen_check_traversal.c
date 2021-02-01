@@ -24,6 +24,7 @@ static int indent = 0;
 static node_st *ast;
 static node_st *curr_node;
 static node_st *curr_child;
+static bool gen_type_names;
 
 void DGCHTinit() { return; }
 void DGCHTfini() { return; }
@@ -39,6 +40,17 @@ node_st *DGCHTast(node_st *node)
     OUT("#include \"ccngen/ast.h\"\n");
     OUT("#include \"palm/ctinfo.h\"\n");
     ast = node;
+    OUT_START_FUNC("char *nodetypeToName(node_st *node)");
+    OUT_BEGIN_SWITCH("NODE_TYPE(node)");
+    gen_type_names = true;
+    TRAVinodes(node);
+    OUT_BEGIN_DEFAULT_CASE();
+    OUT("return \"Unknown\";\n");
+    indent--;
+    OUT_END_SWITCH();
+    OUT_END_FUNC();
+    gen_type_names = false;
+
     TRAVopt(AST_INODESETS(node));
     TRAVopt(AST_INODES(node));
     fclose(fp);
@@ -75,6 +87,13 @@ node_st *DGCHTipass(node_st *node)
 
 node_st *DGCHTinode(node_st *node)
 {
+    if (gen_type_names) {
+        OUT_BEGIN_CASE("NT_%s", ID_UPR(INODE_NAME(node)));
+        OUT_STATEMENT("return \"%s\"", ID_ORIG(INODE_NAME(node)));
+        OUT_END_CASE();
+        TRAVnext(node);
+        return node;
+    }
     struct data_dgcht *data = DATA_DGCHT_GET();
     data->lifetime_target = LT_NODE;
     curr_node = node;
@@ -120,7 +139,7 @@ node_st *DGCHTchild(node_st *node)
             OUT_BEGIN_IF("!TypeIs%s(%s_%s(arg_node))", ID_LWR(CHILD_TYPE_REFERENCE(node)),
                          ID_UPR(INODE_NAME(curr_node)), ID_UPR(CHILD_NAME(node)));
         }
-        OUT_FIELD("CTI(CTI_ERROR, true, \"Inconsistent node found in AST. Child %s of node %s has disallowed type %%d \", NODE_TYPE(%s_%s(arg_node)))",
+        OUT_FIELD("CTI(CTI_ERROR, true, \"Inconsistent node found in AST. Child(%s) of node(%s) has disallowed type(%%s) \", nodetypeToName(%s_%s(arg_node)))",
             ID_ORIG(CHILD_NAME(node)), ID_ORIG(INODE_NAME(curr_node)), ID_UPR(INODE_NAME(curr_node)), ID_UPR(CHILD_NAME(node)));
         OUT_END_IF();
     }
