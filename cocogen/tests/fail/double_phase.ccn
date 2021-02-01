@@ -14,7 +14,7 @@ phase hello {
 
 root node ast {
     attributes {
-        ast next;
+        ast next
     }
 };
 

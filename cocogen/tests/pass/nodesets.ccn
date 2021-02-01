@@ -37,7 +37,7 @@ nodeset nnnn = x & m;
 traversal Letsgo {
     uid = go,
 
-    travdata = {
+    travdata {
         int val,
         ast ast
     }

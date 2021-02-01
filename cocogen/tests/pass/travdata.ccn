@@ -14,7 +14,7 @@ start phase begin {
 traversal Letsgo {
     uid = go,
 
-    travdata = {
+    travdata {
         int val,
         ast ast
     }

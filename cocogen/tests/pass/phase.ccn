@@ -37,7 +37,7 @@ traversal all {
 
     nodes = {newest},
     
-    travdata = {
+    travdata {
         int fill
     }
 };

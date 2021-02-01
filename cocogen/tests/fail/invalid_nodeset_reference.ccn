@@ -8,13 +8,13 @@ start phase hello {
 
 root node ast {
     children {
-        ast next;
+        ast next
     }
 };
 
 node tmp {
     children {
-        ast nextt;
+        ast nextt
     }
 };
 

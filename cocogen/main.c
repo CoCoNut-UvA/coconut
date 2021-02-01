@@ -50,8 +50,10 @@ int main(int argc, char *argv[])
     FSensureDirExists(global_command_line.gen_dir, 0755);
     FSensureDirExists(globals.gen_hdr_dir, 0755);
     FSensureDirExists(globals.gen_user_dir, 0755);
-
+    
+    printf("--------------- Generating ---------------\n");
     CCNrun(NULL);
+    printf("---------------    Done    ---------------\n");
 
     return 0;
 }
