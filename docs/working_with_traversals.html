@@ -1,0 +1,173 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Working With CoCoNut &#8212; CoCoNut  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Calculator Example" href="calculator.html" />
+    <link rel="prev" title="Codegen" href="codegen.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="working-with-coconut">
+<h1>Working With CoCoNut<a class="headerlink" href="#working-with-coconut" title="Permalink to this headline">¶</a></h1>
+<p>All <em>CCN</em> functions are found in the <em>ccn/ccn.h</em> header file.</p>
+<div class="section" id="traversals">
+<h2>Traversals<a class="headerlink" href="#traversals" title="Permalink to this headline">¶</a></h2>
+<p>Traversals require most interaction with CoCoNut, therefore, CoCoNut defines some helpers to make working
+with traversal smoother. CoCoNut also makes optimisations and only traverses sub-trees that can contain
+nodes the traversal targets.</p>
+<div class="section" id="reachability">
+<h3>Reachability<a class="headerlink" href="#reachability" title="Permalink to this headline">¶</a></h3>
+<p>Reachability is the concept that a node is reachable in a sub-tree for the current traversal.
+If you specify that a traversal only targets(via the nodes) the <em>BinOp</em> node, then CoCoNut only traverses the
+paths in the full AST that can reach a BinOp. This way, you only have to write functions for nodes you target.</p>
+</div>
+<div class="section" id="traversing">
+<h3>Traversing<a class="headerlink" href="#traversing" title="Permalink to this headline">¶</a></h3>
+<p>Traversing is done by using any of the <em>TRAV</em> functions. Currently, CoCoNut defines three such functions, namely:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">TRAVopt</span><span class="p">(</span><span class="n">node</span><span class="p">);</span>
+<span class="n">TRAVdo</span><span class="p">(</span><span class="n">node</span><span class="p">);</span>
+<span class="n">TRAVchildren</span><span class="p">(</span><span class="n">node</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The <em>opt</em> and <em>do</em> variant will traverse the given node, where the <em>do</em> variant requires that the node is not NULL.
+These variants return the result of the traversal. Therefore, if the traversal makes changes to a node, the result should be assigned to something or it is lost.
+For example, changing the left and right child of a binop is done as follows:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">BINOP_LEFT</span><span class="p">(</span><span class="n">binop</span><span class="p">)</span> <span class="o">=</span> <span class="n">TRAVopt</span><span class="p">(</span><span class="n">BINOP_LEFT</span><span class="p">(</span><span class="n">binop</span><span class="p">))</span>
+<span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">binop</span><span class="p">)</span> <span class="o">=</span> <span class="n">TRAVopt</span><span class="p">(</span><span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">binop</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The <em>children</em> variant takes a node and traverses all its children via a <em>TRAVopt</em>. The <em>children</em> variant does
+the assignment for you. So, the previous example becomes:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">TRAVchildren</span><span class="p">(</span><span class="n">binop</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>, and is expanded to:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">BINOP_LEFT</span><span class="p">(</span><span class="n">binop</span><span class="p">)</span> <span class="o">=</span> <span class="n">TRAVopt</span><span class="p">(</span><span class="n">BINOP_LEFT</span><span class="p">(</span><span class="n">binop</span><span class="p">))</span>
+<span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">binop</span><span class="p">)</span> <span class="o">=</span> <span class="n">TRAVopt</span><span class="p">(</span><span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">binop</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The <em>children</em> variant makes TRAVopt calls but if combined with consistency checking, errors are caught soon enough.</p>
+</div>
+</div>
+<div class="section" id="cycles">
+<h2>Cycles<a class="headerlink" href="#cycles" title="Permalink to this headline">¶</a></h2>
+<p>Cycles</p>
+<p>The maximum cycles has the default set to 100, however, that can be changed any time by calling the <em>CCNsetCycles(size_t cycle_count)</em> function.</p>
+</div>
+<div class="section" id="error-signals">
+<h2>Error signals<a class="headerlink" href="#error-signals" title="Permalink to this headline">¶</a></h2>
+<p>There are two ways to signal an error to CoCoNut: <em>CCNerrorPhase()</em> and <em>CCNerrorAction()</em>. The error phase function stops the compiler
+after the current phase and the error action function stops the compiler after the current action.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">CoCoNut</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dsl_syntax.html">DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codegen.html">Codegen</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Working With CoCoNut</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#traversals">Traversals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cycles">Cycles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#error-signals">Error signals</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="calculator.html">Calculator Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calculator.html#adding-a-binop-node">Adding a binop node</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calculator.html#adding-a-traversal">Adding a traversal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calculator.html#fully-using-coconut">Fully using CoCoNut</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="codegen.html" title="previous chapter">Codegen</a></li>
+      <li>Next: <a href="calculator.html" title="next chapter">Calculator Example</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Damian.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/working_with_traversals.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
