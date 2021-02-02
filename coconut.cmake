@@ -22,14 +22,11 @@ Maybe you forgot building the coconut project?")
 
     message(STATUS "Generating with cocogen
     ") # Forces newline
-    message("${COCOGEN_DIR}")
-    message("${CMAKE_BINARY_DIR}")
     execute_process(COMMAND "${COCOGEN_DIR}/cocogen" "--backend" "${BACKEND}" "${DSL_FILE}"
         RESULT_VARIABLE COCOGEN_RET
         WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
         INPUT_FILE "${DSL_FILE}"
     )
-    message("${COCOGEN_RET}")
     if(${COCOGEN_RET})
         message(FATAL_ERROR "cocogen generation failed, stopping CMake.")
     endif()
