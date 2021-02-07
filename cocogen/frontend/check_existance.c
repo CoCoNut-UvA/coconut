@@ -1,13 +1,18 @@
+/**
+ * Traversal that checks if referenced entities actually exist and are valid
+ * in the context they are defined.
+ */
+
 #include <stddef.h>
 #include "globals.h"
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
+#include "frontend/symboltable.h"
 
-extern node_st *lookupST(node_st*, node_st*);
 extern void id_to_info(node_st *ID, struct ctinfo *info);
-extern node_st *BSTaddToST(node_st *ste, node_st *key, node_st *val);
+
 static bool seen_root_node = false;
 static bool seen_start_phase = false;
 static node_st *ste = NULL;
@@ -17,7 +22,7 @@ static node_st *enum_prefix_ste = NULL;
 static node_st *trav_data_names = NULL;
 
 
-char *uid_reserved[] = {
+static char *uid_reserved[] = {
     "TRAV",
     "TRV",
     "CCN",
@@ -45,13 +50,15 @@ node_st *CEXast(node_st *node)
     ste = AST_STABLE(node);
     TRAVchildren(node);
     CTIabortOnError();
+    CCNfree(trav_data_names);
+    CCNfree(enum_prefix_ste);
     return node;
 }
 
 node_st *CEXiactions(node_st *node)
 {
     TRAVchildren(node);
-    node_st *ref = lookupST(ste, IACTIONS_REFERENCE(node));
+    node_st *ref = STlookup(ste, IACTIONS_REFERENCE(node));
     if (ref == NULL) {
         CTI(CTI_ERROR, true, "Could not find action: %s\n", ID_ORIG(IACTIONS_REFERENCE(node)));
     }
@@ -87,18 +94,18 @@ node_st *CEXitraversal(node_st *node)
 
 node_st  *CEXitravdata(node_st *node)
 {
-    node_st *poss_conflict = lookupST(trav_data_names, ITRAVDATA_NAME(node));
+    node_st *poss_conflict = STlookup(trav_data_names, ITRAVDATA_NAME(node));
     if (poss_conflict != NULL) {
         struct ctinfo info = {.filename = globals.filename, .first_line = ID_ROW(ITRAVDATA_NAME(node))};
         CTIobj(CTI_ERROR, false, info, "Name(%s) is used multiple times in travdata.", ID_ORIG(ITRAVDATA_NAME(node)));
         struct ctinfo conf_info = {.filename = globals.filename, .first_line = ID_ROW((poss_conflict))};
         CTIobj(CTI_NOTE, true, conf_info, "Used here as well.");
     } else {
-        trav_data_names = BSTaddToST(trav_data_names, ITRAVDATA_NAME(node), ITRAVDATA_NAME(node));
+        trav_data_names = STadd(trav_data_names, ITRAVDATA_NAME(node), ITRAVDATA_NAME(node));
     }
 
     if (ITRAVDATA_TYPE(node) == AT_link_or_enum) {
-        node_st *ste_entry = lookupST(ste, ITRAVDATA_TYPE_REFERENCE(node));
+        node_st *ste_entry = STlookup(ste, ITRAVDATA_TYPE_REFERENCE(node));
         if (ste_entry == NULL) {
             CTI(CTI_ERROR, true, "Could not find type reference for travdata entry.");
         } else {
@@ -126,7 +133,9 @@ node_st *CEXipass(node_st *node)
 node_st *CEXinode(node_st *node)
 {
     if (STReq(ID_LWR(INODE_NAME(node)), "node")) {
-        CTI(CTI_ERROR, true, "Can not call node 'node'.");
+        struct ctinfo info;
+        id_to_info(INODE_NAME(node), &info);
+        CTIobj(CTI_ERROR, true, info, "Can not call node 'node'.");
     }
     if (INODE_IS_ROOT(node)) {
         if (!seen_root_node) {
@@ -154,11 +163,12 @@ node_st *CEXinodeset(node_st *node)
 
 node_st *CEXchild(node_st *node)
 {
-    node_st *ref = lookupST(ste, CHILD_TYPE_REFERENCE(node));
+    node_st *ref = STlookup(ste, CHILD_TYPE_REFERENCE(node));
     if (!ref) {
         struct ctinfo info;
         id_to_info(CHILD_TYPE_REFERENCE(node), &info);
         CTIobj(CTI_ERROR, true, info, "Child type %s is not defined.", ID_ORIG(CHILD_TYPE_REFERENCE(node)));
+        return node;
     }
     if (NODE_TYPE(ref) == NT_INODESET) {
         CHILD_TYPE(node) = CT_inodeset;
@@ -169,8 +179,8 @@ node_st *CEXchild(node_st *node)
         id_to_info(CHILD_NAME(node), &info);
         CTIobj(CTI_ERROR, true, info, "Child is not a node or nodeset: %s\n", ID_ORIG(CHILD_NAME(node)));
     }
-    if (lookupST(node_ste, CHILD_NAME(node)) == NULL) {
-        node_ste = BSTaddToST(node_ste, CHILD_NAME(node), node);
+    if (STlookup(node_ste, CHILD_NAME(node)) == NULL) {
+        node_ste = STadd(node_ste, CHILD_NAME(node), node);
     } else {
         struct ctinfo info;
         id_to_info(CHILD_NAME(node), &info);
@@ -194,7 +204,7 @@ node_st *CEXsetoperation(node_st *node)
 
 node_st *CEXsetreference(node_st *node)
 {
-    node_st *ref_node = lookupST(ste, SETREFERENCE_REFERENCE(node));
+    node_st *ref_node = STlookup(ste, SETREFERENCE_REFERENCE(node));
     if (!ref_node) {
         CTI(CTI_ERROR, true, "Set reference is undefined: %s\n", ID_ORIG(SETREFERENCE_REFERENCE(node)));
     } else if (NODE_TYPE(ref_node) != NT_INODESET) {
@@ -206,8 +216,17 @@ node_st *CEXsetreference(node_st *node)
 
 node_st *CEXsetliteral(node_st *node)
 {
-    if (lookupST(ste, SETLITERAL_REFERENCE(node)) == NULL) {
-        CTI(CTI_ERROR, true, "Set member is undefined: %s\n", ID_ORIG(SETLITERAL_REFERENCE(node)));
+    node_st *entry = STlookup(ste, SETLITERAL_REFERENCE(node));
+    if (entry == NULL) {
+        struct ctinfo info;
+        id_to_info(SETLITERAL_REFERENCE(node), &info);
+        CTIobj(CTI_ERROR, true, info, "Set member is undefined: %s\n", ID_ORIG(SETLITERAL_REFERENCE(node)));
+    } else {
+        if (NODE_TYPE(entry) != NT_INODE) {
+            struct ctinfo info;
+            id_to_info(SETLITERAL_REFERENCE(node), &info);
+            CTIobj(CTI_ERROR, true, info, "Set member is not a valid node: %s\n", ID_ORIG(SETLITERAL_REFERENCE(node)));
+        }
     }
     TRAVchildren(node);
     return node;
@@ -215,14 +234,14 @@ node_st *CEXsetliteral(node_st *node)
 
 node_st *CEXattribute(node_st *node)
 {
-    if (lookupST(node_ste, ATTRIBUTE_NAME(node)) == NULL) {
-        node_ste = BSTaddToST(node_ste, ATTRIBUTE_NAME(node), node);
+    if (STlookup(node_ste, ATTRIBUTE_NAME(node)) == NULL) {
+        node_ste = STadd(node_ste, ATTRIBUTE_NAME(node), node);
     } else {
         CTI(CTI_ERROR, true, "Double declaration of attribute/child name: %s\n", ID_ORIG(ATTRIBUTE_NAME(node)));
     }
 
     if (ATTRIBUTE_TYPE(node) == AT_link_or_enum) {
-        node_st *ste_entry = lookupST(ste, ATTRIBUTE_TYPE_REFERENCE(node));
+        node_st *ste_entry = STlookup(ste, ATTRIBUTE_TYPE_REFERENCE(node));
         if (ste_entry == NULL) {
             struct ctinfo info;
             id_to_info(ATTRIBUTE_TYPE_REFERENCE(node), &info);
@@ -242,7 +261,7 @@ node_st *CEXattribute(node_st *node)
     return node;
 }
 
-char *preserved_enum_prefix[] = {
+static char *preserved_enum_prefix[] = {
     "NT",
     "NS",
     "TRAV",
@@ -257,10 +276,10 @@ node_st *CEXienum(node_st *node)
             CTI(CTI_ERROR, true, "Enum prefix %s is reversed.", preserved_enum_prefix[i]);
         }
     }
-    if (lookupST(enum_prefix_ste, IENUM_IPREFIX(node))) {
+    if (STlookup(enum_prefix_ste, IENUM_IPREFIX(node))) {
         CTI(CTI_ERROR, true, "Double declaration of enum prefix: %s\n", ID_ORIG(IENUM_IPREFIX(node)));
     } else {
-        enum_prefix_ste = BSTaddToST(enum_prefix_ste, IENUM_IPREFIX(node), node);
+        enum_prefix_ste = STadd(enum_prefix_ste, IENUM_IPREFIX(node), node);
     }
     TRAVchildren(node);
     return node;

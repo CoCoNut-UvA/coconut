@@ -1,6 +1,21 @@
 /**
  * Reachability is based on: https://github.com/MaicoTimmerman/CoCoNut/blob/e8b03f14a283372ec561b61a59a76ff2d7fdffc6/src/cocogen/gen-trav-functions.c
  * and is licensed under the MIT license.
+ *
+ *
+ * We create a 2D matrix with [traversals][nodes] and traverse trough all
+ * traversals and then per traversal we go trough the target nodes and
+ * denote them in the reachability matrix as targetted(HANDLED_BY_USER).
+ * Then we go trough all nodes and check if that nodes has a child or that
+ * the child of that node has a child, and so on, that is targetted by the
+ * current traversal. If so, we denote it in the reachability matrix as
+ * HANDLED_BY_TRAV, because the traversal needs to traverse further.
+ * If a node is not handler by a user or traversal, we can skip traversing it
+ * in the specific traversal.
+ *
+ * NOTE/TODO:
+ * This can probably be optimised with a bitvector for the nodes and children
+ * allowing instant lookup if a node has a certain child.
  */
 
 #include <stddef.h>
@@ -12,16 +27,16 @@
 #include "ccn/dynamic_core.h"
 
 #include "frontend/reachability.h"
+#include "frontend/symboltable.h"
 
 int **reachability_matrix = NULL;
 int *child_visited = NULL;
 
 static bool child_is_reachable = false;
 static bool is_traversal_nodes = false;
-node_st *lookupST(node_st *ste, node_st *node);
-node_st *ste;
+static node_st *ste;
 static int trav_index = 0;
-node_st *ast;
+static node_st *ast;
 
 node_st *RCBast(node_st *node)
 {
@@ -62,6 +77,7 @@ node_st *RCBinode(node_st *node)
 {
     if (!reachability_matrix[trav_index][INODE_INDEX(node)]) {
         child_is_reachable = false;
+        // To track if we visited children already to prevent infinite recursion.
         memset(child_visited, 0, sizeof(int) * AST_NUM_NODES(ast));
         TRAVopt(INODE_ICHILDREN(node));
         if (child_is_reachable) {
@@ -80,7 +96,7 @@ node_st *RCBinodeset(node_st *node)
 
 node_st *RCBchild(node_st *node)
 {
-    node_st *inode = lookupST(ste, CHILD_TYPE_REFERENCE(node));
+    node_st *inode = STlookup(ste, CHILD_TYPE_REFERENCE(node));
     assert(NODE_TYPE(inode) == NT_INODE || NODE_TYPE(inode) == NT_INODESET);
     if (NODE_TYPE(inode) == NT_INODESET) {
         TRAVdo(inode);
@@ -95,7 +111,7 @@ node_st *RCBchild(node_st *node)
             }
         }
     }
-
+    // Stop the search if we already found that a child is reachable.
     if (!child_is_reachable) {
         TRAVopt(CHILD_NEXT(node));
     }
@@ -104,7 +120,7 @@ node_st *RCBchild(node_st *node)
 
 node_st *RCBsetliteral(node_st *node)
 {
-    node_st *inode = lookupST(ste, SETLITERAL_REFERENCE(node));
+    node_st *inode = STlookup(ste, SETLITERAL_REFERENCE(node));
     assert(NODE_TYPE(inode) == NT_INODE);
     if (is_traversal_nodes) {
         reachability_matrix[trav_index][INODE_INDEX(inode)] = RCB_NODE_HANDLED_BY_USER;

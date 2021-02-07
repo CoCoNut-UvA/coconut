@@ -11,9 +11,9 @@
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
 #include "sets/set.h"
+#include "frontend/symboltable.h"
 
-node_st *lookupST(node_st *ste, node_st *node);
-node_st *ste;
+static node_st *ste;
 
 node_st *USEast(node_st *node)
 {
@@ -58,7 +58,7 @@ node_st *USEsetoperation(node_st *node)
 node_st *USEsetreference(node_st *node)
 {
     assert(node);
-    node_st *nodeset = lookupST(ste, SETREFERENCE_REFERENCE(node));
+    node_st *nodeset = STlookup(ste, SETREFERENCE_REFERENCE(node));
     assert(nodeset && NODE_TYPE(nodeset) == NT_INODESET);
     if (INODESET_EXPR(nodeset) && NODE_TYPE(INODESET_EXPR(nodeset)) != NT_SETLITERAL) {
         TRAVchildren(nodeset);

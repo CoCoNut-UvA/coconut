@@ -1,0 +1,26 @@
+
+start phase hello {
+    actions {
+        pass p;
+    }
+};
+
+traversal dom {
+    uid = dom
+};
+
+phase dodom {
+    actions {
+        dodom;
+    }
+};
+
+traversal dodom {
+    uid = dom
+};
+
+root node ast {
+    attributes {
+        int val
+    }
+};

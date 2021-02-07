@@ -9,6 +9,8 @@
 #include <ccn/ccn.h>
 #include <stddef.h>
 #include <stdio.h>
+#include "ccngen/action_handling.h"
+#include "ccn/action_types.h"
 
 struct globals globals;
 
@@ -32,8 +34,12 @@ void BreakpointHandler(node_st *node)
     TRAVstart(node, TRAV_PRT);
 }
 
+
+
 int main(int argc, char *argv[])
 {
+    //CCNsetBreakpointWithID(57);
+    //CCNsetVerbosity(3);
     CLprocessArgs(argc, argv);
     globals.filename = global_command_line.input_file;
     globals.line_map = HTnew_Int(25);

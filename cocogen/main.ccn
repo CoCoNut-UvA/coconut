@@ -4,7 +4,8 @@ start phase startPhase {
 
     actions {
         pass scanAndParse {
-            uid = SP
+            uid = SP,
+            func = doScanParse
         };
         semantic;
         unpackLifetimes;
@@ -45,7 +46,7 @@ phase unpackLifetimes {
     actions {
         traversal assignIdToAction {
             uid = AITA,
-            nodes = {ast, iactions }
+            nodes = {ast, iactions}
         };
 
         traversal mapIdToLifetime {

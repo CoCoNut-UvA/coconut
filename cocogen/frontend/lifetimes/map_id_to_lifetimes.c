@@ -9,8 +9,8 @@
 #include <palm/str.h>
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
+#include "frontend/symboltable.h"
 
-extern node_st *lookupST(node_st*, node_st*);
 extern void id_to_info(node_st *ID, struct ctinfo *info);
 static node_st *last_action = NULL;
 static node_st *last_node = NULL;
@@ -58,7 +58,7 @@ node_st *MITLinode(node_st *node)
 
 node_st *MITLiactions(node_st *node)
 {
-    node_st *action_lookup = lookupST(ste, IACTIONS_REFERENCE(node));
+    node_st *action_lookup = STlookup(ste, IACTIONS_REFERENCE(node));
     if (action_lookup == NULL) {
         CTI(CTI_ERROR, true, "Lifetime target(%s) does not reference a valid action.", ID_ORIG(IACTIONS_REFERENCE(node)));
     }
@@ -139,7 +139,7 @@ node_st *MITLid(node_st *node)
     if (last_action == NULL) {
         TRAVopt(IPHASE_IACTIONS(AST_START_PHASE(ast)));
     } else {
-        node_st *action = lookupST(ste, IACTIONS_REFERENCE(last_action));
+        node_st *action = STlookup(ste, IACTIONS_REFERENCE(last_action));
         if (!action || NODE_TYPE(action) != NT_IPHASE)  {
             struct ctinfo info;
             id_to_info(node, &info);

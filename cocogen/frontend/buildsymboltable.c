@@ -6,29 +6,19 @@
  */
 
 #include <stddef.h>
-#include <stdio.h>
 #include "palm/ctinfo.h"
 #include "palm/str.h"
-#include "palm/dbug.h"
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
 #include "globals.h"
 #include "palm/hash_table.h"
+#include "frontend/symboltable.h"
 
 
 static node_st *last_ste = NULL;
 static node_st *first_ste = NULL;
+static node_st *pass_ste = NULL;
 
-node_st *BSTaddToST(node_st *ste, node_st *key, node_st *val)
-{
-    node_st *new = ASTste();
-    STE_KEY(new) = key;
-    STE_VALUE(new) = val;
-    if (ste != NULL) {
-        STE_NEXT(new) = ste;
-    }
-    return new;
-}
 
 // Small helper that adds it to the global symbol table.
 static void addToST(node_st *key, node_st *val)
@@ -42,25 +32,8 @@ static void addToST(node_st *key, node_st *val)
     if (last_ste) {
         STE_NEXT(last_ste) = new_ste;
     }
-    DBUGF("BST", "add: %s\n", ID_ORIG(key));
     last_ste = new_ste;
 }
-
-node_st *lookupST(node_st *ste, node_st *node)
-{
-    if (node == NULL) {
-        return NULL;
-    }
-    node_st *curr = ste;
-    while (curr) {
-        if (STReq(ID_LWR(STE_KEY(curr)), ID_LWR(node))) {
-            return STE_VALUE(curr);
-        }
-        curr = STE_NEXT(curr);
-    }
-    return NULL;
-}
-
 
 node_st *BSTast(node_st *node)
 {
@@ -71,6 +44,7 @@ node_st *BSTast(node_st *node)
     TRAVchildren(node);
     AST_STABLE(node) = first_ste;
     CTIabortOnError();
+    CCNfree(pass_ste);
     return node;
 }
 
@@ -94,20 +68,22 @@ void id_to_info(node_st *ID, struct ctinfo *info)
 node_st *BSTiphase(node_st *node)
 {
     node_st *ID = IPHASE_NAME(node);
-    node_st *ste_value = lookupST(first_ste, IPHASE_NAME(node));
+    node_st *ste_value = STlookup(first_ste, IPHASE_NAME(node));
     if (ste_value) {
-        struct ctinfo info;
+        struct ctinfo info = {0};
         id_to_info(ID, &info);
         CTIobj(CTI_ERROR, true, info, "Duplicate name: %s\n", ID_ORIG(IPHASE_NAME(node)));
     } else {
         addToST(IPHASE_NAME(node), node);
     }
     if (IPHASE_IPREFIX(node)) {
-        ste_value = lookupST(first_ste, IPHASE_IPREFIX(node));
+        ste_value = STlookup(first_ste, IPHASE_IPREFIX(node));
         if (ste_value) {
             struct ctinfo info;
             id_to_info(IPHASE_IPREFIX(node), &info);
             CTIobj(CTI_ERROR, true, info, "Duplicate name: %s\n", ID_ORIG(IPHASE_IPREFIX(node)));
+        } else {
+            addToST(IPHASE_IPREFIX(node), node);
         }
     }
     TRAVchildren(node);
@@ -116,7 +92,7 @@ node_st *BSTiphase(node_st *node)
 
 node_st *BSTitraversal(node_st *node)
 {
-    if (lookupST(first_ste, ITRAVERSAL_NAME(node))) {
+    if (STlookup(first_ste, ITRAVERSAL_NAME(node))) {
         struct ctinfo info;
         id_to_info(ITRAVERSAL_NAME(node), &info);
         CTIobj(CTI_ERROR, true, info, "Duplicate name: %s\n", ID_ORIG(ITRAVERSAL_NAME(node)));
@@ -125,10 +101,12 @@ node_st *BSTitraversal(node_st *node)
     }
 
     if (ITRAVERSAL_IPREFIX(node)) {
-        if (lookupST(first_ste, ITRAVERSAL_IPREFIX(node))) {
+        if (STlookup(first_ste, ITRAVERSAL_IPREFIX(node))) {
             struct ctinfo info;
             id_to_info(ITRAVERSAL_IPREFIX(node), &info);
             CTIobj(CTI_ERROR, true, info, "Duplicate name: %s\n", ID_ORIG(ITRAVERSAL_IPREFIX(node)));
+        } else {
+            addToST(ITRAVERSAL_IPREFIX(node), node);
         }
     }
     TRAVchildren(node);
@@ -140,10 +118,9 @@ node_st  *BSTitravdata(node_st *node)
     return node;
 }
 
-// TODO: Check pass func duplicates.
 node_st *BSTipass(node_st *node)
 {
-    if (lookupST(first_ste, IPASS_NAME(node))) {
+    if (STlookup(first_ste, IPASS_NAME(node))) {
         struct ctinfo info;
         id_to_info(IPASS_NAME(node), &info);
         CTIobj(CTI_ERROR, true, info, "Duplicate name: %s\n", ID_ORIG(IPASS_NAME(node)));
@@ -152,19 +129,35 @@ node_st *BSTipass(node_st *node)
     }
 
     if (IPASS_IPREFIX(node)) {
-        if (lookupST(first_ste, IPASS_IPREFIX(node))) {
+        if (STlookup(first_ste, IPASS_IPREFIX(node))) {
             struct ctinfo info;
             id_to_info(IPASS_IPREFIX(node), &info);
             CTIobj(CTI_ERROR, true, info, "Duplicate name: %s\n", ID_ORIG(IPASS_IPREFIX(node)));
+        } else {
+            addToST(IPASS_IPREFIX(node), node);
         }
     }
+
+    if (IPASS_TARGET_FUNC(node)) {
+        node_st *existing_func = STlookup(pass_ste, IPASS_TARGET_FUNC(node));
+        if (existing_func != NULL) {
+            struct ctinfo info;
+            id_to_info(IPASS_TARGET_FUNC(node), &info);
+            CTIobj(CTI_ERROR, false, info, "Duplicate pass function: %s\n", IPASS_TARGET_FUNC(node));
+            id_to_info(IPASS_TARGET_FUNC(existing_func), &info);
+            CTIobj(CTI_NOTE, true, info, "Also defined here\n");
+        } else {
+            pass_ste = STadd(pass_ste, IPASS_TARGET_FUNC(node), node);
+        }
+    }
+
     TRAVchildren(node);
     return node;
 }
 
 node_st *BSTinode(node_st *node)
 {
-    if (lookupST(first_ste, INODE_NAME(node))) {
+    if (STlookup(first_ste, INODE_NAME(node))) {
         struct ctinfo info;
         id_to_info(INODE_NAME(node), &info);
         CTIobj(CTI_ERROR, true, info, "Duplicate name: %s\n", ID_ORIG(INODE_NAME(node)));
@@ -177,7 +170,7 @@ node_st *BSTinode(node_st *node)
 
 node_st *BSTinodeset(node_st *node)
 {
-    if (lookupST(first_ste, INODESET_NAME(node))) {
+    if (STlookup(first_ste, INODESET_NAME(node))) {
         struct ctinfo info;
         id_to_info(INODESET_NAME(node), &info);
         CTIobj(CTI_ERROR, true, info, "Duplicate name: %s\n", ID_ORIG(INODESET_NAME(node)));
@@ -227,7 +220,7 @@ node_st *BSTattribute(node_st *node)
 
 node_st *BSTienum(node_st *node)
 {
-    if (lookupST(first_ste, IENUM_NAME(node))) {
+    if (STlookup(first_ste, IENUM_NAME(node))) {
         struct ctinfo info;
         id_to_info(IENUM_NAME(node), &info);
         CTIobj(CTI_ERROR, true, info, "Duplicate name: %s\n", ID_ORIG(IENUM_NAME(node)));

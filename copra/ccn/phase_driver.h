@@ -17,6 +17,8 @@ size_t CCNgetCurrentActionId();
 void CCNerrorPhase();
 void CCNerrorAction();
 void CCNsetBreakpoint(char *breakpoint);
+void CCNsetBreakpointWithID(size_t id);
 void CCNsetCycles(size_t cycle_count);
 void CCNsetVerbosity(enum pd_verbosity type);
 void CCNsetTreeCheck(bool enable);
+void CCNshowTree();

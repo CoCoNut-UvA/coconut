@@ -19,6 +19,7 @@ struct phase_driver {
     size_t action_id;
     size_t cycle_iter;
     size_t max_cycles;
+    size_t breakpoint_id;
     enum pd_verbosity verbosity;
     bool fixed_point;
     bool action_error;
@@ -32,6 +33,7 @@ static struct phase_driver phase_driver = {
     .level = 0,
     .action_id = 0,
     .cycle_iter = 0,
+    .breakpoint_id = 0,
     .max_cycles = 100,
     .current_phase = NULL,
     .fixed_point = false,
@@ -60,7 +62,6 @@ extern void BreakpointHandler(node_st *node);
 struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype root_type, struct ccn_node *node,
                           bool is_root) {
     phase_driver.action_id++;
-
 
     if (action->type == CCN_ACTION_PHASE && phase_driver.verbosity > PD_V_QUIET) {
         fprintf(stderr, ">> %s\n", action->name);
@@ -103,6 +104,10 @@ struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype 
             exit(0);
         }
     }
+    if (phase_driver.breakpoint_id > 0 && phase_driver.breakpoint_id == phase_driver.action_id) {
+        BreakpointHandler(node);
+        exit(0);
+    }
     if (action->type == CCN_ACTION_PHASE && phase_driver.verbosity > PD_V_QUIET) {
         fprintf(stderr, "<< %s\n", action->name);
     }
@@ -118,6 +123,12 @@ static void SkipPhase(struct ccn_phase *phase) {
     enum ccn_action_id action_id = phase->action_table[action_counter];
     while (action_id != CCNAC_ID_NULL) {
         phase_driver.action_id++;
+        {
+            struct ccn_action *action = CCNgetActionFromID(action_id);
+            if (action->type == CCN_ACTION_PHASE) {
+                SkipPhase(&(action->phase));
+            }
+        }
         action_counter++;
         action_id = phase->action_table[action_counter];
     }
@@ -152,7 +163,7 @@ char *Checkbreakpoint(char *name)
 struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, struct ccn_node *node) {
     if (phase->gate_func && !phase->gate_func()) {
         if (phase_driver.verbosity >= PD_V_HIGH) {
-            fprintf(stderr, "[coconut] Skipping phase %s because gate function returned false.", phase_name);
+            fprintf(stderr, "[coconut] Skipping phase %s because gate function returned false.\n", phase_name);
         }
         SkipPhase(phase);
         return node;
@@ -248,6 +259,11 @@ void CCNsetBreakpoint(char *breakpoint)
     phase_driver.breakpoint = breakpoint;
 }
 
+void CCNsetBreakpointWithID(size_t id)
+{
+    phase_driver.breakpoint_id = id;
+}
+
 /**
  * Set the verbosity level of CoCoNut.
  * @param type the type of verbosity.
@@ -280,4 +296,35 @@ void CCNrun(struct ccn_node *node)
 size_t CCNgetCurrentActionId()
 {
     return phase_driver.action_id;
+}
+
+static
+size_t ShowTree(struct ccn_action *curr, size_t id, int indent)
+{
+    if (id > 1) {
+        for (int i = 0; i < indent; i++) {
+            printf("\t");
+        }
+        printf("%ld: %s\n", id, curr->name);
+    }
+    id++;
+    if (curr->type != CCN_ACTION_PHASE) {
+        return id;
+    }
+
+    size_t index = 0;
+    struct ccn_phase *phase = &curr->phase;
+    indent++;
+    while (phase->action_table[index] != CCNAC_ID_NULL) {
+        id = ShowTree(CCNgetActionFromID(phase->action_table[index]), id, indent);
+        index++;
+    }
+    printf("\n");
+    indent--;
+    return id;
+}
+
+void CCNshowTree()
+{
+    ShowTree(CCNgetActionFromID(CCN_ROOT_ACTION), 1, -1);
 }

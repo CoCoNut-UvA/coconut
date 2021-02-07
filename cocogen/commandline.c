@@ -53,6 +53,7 @@ void Usage(char *program) {
     printf("  --backend <backend name>     Selects generation backend, either "
            "typed or dynamic(default=dynamic).\n");
     printf("  --show-ast                   Pretty print the ast at end of compilation\n");
+    printf("  --show-structure             Pretty print the structure of the compiler.\n");
 }
 
 static
@@ -76,6 +77,7 @@ void CLprocessArgs(int argc, char *argv[]) {
         {"gen-dir", required_argument, 0, 31},
         {"show-ast", no_argument, 0, 32},
         {"breakpoint", required_argument, 0, 33},
+        {"show-structure", no_argument, 0, 34},
         {0, 0, 0, 0}};
 
     int option_index;
@@ -126,6 +128,9 @@ void CLprocessArgs(int argc, char *argv[]) {
         case 33:
             CCNsetBreakpoint(optarg);
             break;
+        case 34:
+            CCNshowTree();
+            exit(0);
         case 'h':
             Usage(argv[0]);
             exit(EXIT_SUCCESS);
