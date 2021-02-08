@@ -62,6 +62,8 @@ extern void BreakpointHandler(node_st *node);
 struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype root_type, struct ccn_node *node,
                           bool is_root) {
     phase_driver.action_id++;
+    // Needed to break after a phase with action ids.
+    size_t start_id = phase_driver.action_id;
 
     if (action->type == CCN_ACTION_PHASE && phase_driver.verbosity > PD_V_QUIET) {
         fprintf(stderr, ">> %s\n", action->name);
@@ -104,7 +106,7 @@ struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype 
             exit(0);
         }
     }
-    if (phase_driver.breakpoint_id > 0 && phase_driver.breakpoint_id == phase_driver.action_id) {
+    if (phase_driver.breakpoint_id > 0 && phase_driver.breakpoint_id == start_id) {
         BreakpointHandler(node);
         exit(0);
     }
