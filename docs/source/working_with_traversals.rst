@@ -37,7 +37,7 @@ For example, changing the left and right child of a binop is done as follows:
     BINOP_LEFT(binop) = TRAVopt(BINOP_LEFT(binop))
     BINOP_RIGHT(binop) = TRAVopt(BINOP_RIGHT(binop))
 
-The *children* variant takes a node and traverses all its children via a *TRAVopt*. The *children* variant does
+The *children* variant takes a node and traverses all its children, in top to bottom order of your definition, via a *TRAVopt*. The *children* variant does
 the assignment for you. So, the previous example becomes:
 
 .. code-block:: C
@@ -53,6 +53,17 @@ the assignment for you. So, the previous example becomes:
      BINOP_RIGHT(binop) = TRAVopt(BINOP_RIGHT(binop))
 
 The *children* variant makes TRAVopt calls but if combined with consistency checking, errors are caught soon enough.
+
+Besides these standard functions, *CoCoNut* also generates a TRAV<child> function, where the child is lower case form
+of a child name. Thus, the previous example can also be defined as follows:
+
+.. code-block:: C
+
+    TRAVleft(binop);
+    TRAVright(binop);
+
+since the binop has children named *left* and *right*, the functions will traverse the right child. This, again, does the
+assignment for you and uses *opt* calls. Hence, the patter of *target = TRAVopt(target)* can often be prevented.
 
 
 Cycles

@@ -19,6 +19,7 @@ CoCoNut from your compiler, and, finally, walk trough building a simple REPL cal
     dsl_syntax
     codegen
     working_with_traversals
+    primitive_types
     calculator
 
 

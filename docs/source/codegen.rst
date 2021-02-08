@@ -107,7 +107,7 @@ will generate the following C declaration:
 
 You then have to define it. If no func is specified, the pass name will be used, with the uid as a prefix, if no uid is specified only the pass name
 is used.
-Thus, the previous pass, without a func defined, would be declared as:
+Thus, the previous pass without a func defined would be declared as:
 
 .. code-block:: C
 
@@ -186,4 +186,6 @@ are in the directory used for generation under the "ccngen" directory. So, if th
 | nodes            | ast.h         |
 +------------------+---------------+
 | traversal data   | trav_data.h   |
++------------------+---------------+
+| Child traversals | trav.h        |
 +------------------+---------------+

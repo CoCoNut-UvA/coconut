@@ -8,6 +8,12 @@ can name them *Float*. This means that you need to reference *Float* as such and
 the primitive type and the user defined type and it would be impossible to know when used as an attribute. Still, besides the conflicts with primitive types,
 it is not possible to define names that only differ in casing. So, a node named *Float* and one named *FLOAT* is not possible.
 
+Types
+------
+When types are mentioned, either in the dsl, BNF or text, it refers to defined enums, defined nodes or primitive types which you
+can find under the *primitive types* header.
+In special cases, as will be mentioned, user defined types outside the earlier mentioned types are possible.
+
 Enum
 ================
 An enum in the DSL maps to an enum in C, can be used to add extra type information to a node and requires a unique prefix. A unique prefix can not collide with
@@ -219,8 +225,8 @@ An example of a pass looks as follows:
     };
 
 
-It is also possible to define a pass using a shorter notation. With the shorter notation the
-name of the pass will be the function name.
+It is also possible to define a pass using a shorter notation. With the shorter notation the generated C function is
+the name of the pass.
 
 .. code-block:: text
 
@@ -262,7 +268,7 @@ An example of a traversal is as follows:
 
 
 Some traversals need to traverse all nodes, in such cases, the *nodes* block can be left out.
-If the previous traversal targets all nodes it can be defined as follows:
+If the previous traversal targets all nodes, it can be defined as follows:
 
 .. code-block:: text
 
@@ -314,7 +320,6 @@ An example phase is as follows:
 
     phase ConstantFolding {
         uid = CF,
-        root = Fundef,
         gate = isConstantFoldingEnabled,
 
         actions {

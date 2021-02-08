@@ -63,7 +63,7 @@ For example, changing the left and right child of a binop is done as follows:</p
 <span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">binop</span><span class="p">)</span> <span class="o">=</span> <span class="n">TRAVopt</span><span class="p">(</span><span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">binop</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>The <em>children</em> variant takes a node and traverses all its children via a <em>TRAVopt</em>. The <em>children</em> variant does
+<p>The <em>children</em> variant takes a node and traverses all its children, in top to bottom order of your definition, via a <em>TRAVopt</em>. The <em>children</em> variant does
 the assignment for you. So, the previous example becomes:</p>
 <div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">TRAVchildren</span><span class="p">(</span><span class="n">binop</span><span class="p">)</span>
 </pre></div>
@@ -74,6 +74,14 @@ the assignment for you. So, the previous example becomes:</p>
 </pre></div>
 </div>
 <p>The <em>children</em> variant makes TRAVopt calls but if combined with consistency checking, errors are caught soon enough.</p>
+<p>Besides these standard functions, <em>CoCoNut</em> also generates a TRAV&lt;child&gt; function, where the child is lower case form
+of a child name. Thus, the previous example can also be defined as follows:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">TRAVleft</span><span class="p">(</span><span class="n">binop</span><span class="p">);</span>
+<span class="n">TRAVright</span><span class="p">(</span><span class="n">binop</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>since the binop has children named <em>left</em> and <em>right</em>, the functions will traverse the right child. This, again, does the
+assignment for you and uses <em>opt</em> calls. Hence, the patter of <em>target = TRAVopt(target)</em> can often be prevented.</p>
 </div>
 </div>
 <div class="section" id="cycles">
@@ -116,9 +124,6 @@ after the current phase and the error action function stops the compiler after t
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="calculator.html">Calculator Example</a></li>
-<li class="toctree-l1"><a class="reference internal" href="calculator.html#adding-a-binop-node">Adding a binop node</a></li>
-<li class="toctree-l1"><a class="reference internal" href="calculator.html#adding-a-traversal">Adding a traversal</a></li>
-<li class="toctree-l1"><a class="reference internal" href="calculator.html#fully-using-coconut">Fully using CoCoNut</a></li>
 </ul>
 
 <div class="relations">

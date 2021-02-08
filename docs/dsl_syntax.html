@@ -42,8 +42,13 @@ Nonetheless, casing can be useful in node names. Since CoCoNut provides primitiv
 can name them <em>Float</em>. This means that you need to reference <em>Float</em> as such and not as <em>float</em>. Otherwise, there is no distinction between
 the primitive type and the user defined type and it would be impossible to know when used as an attribute. Still, besides the conflicts with primitive types,
 it is not possible to define names that only differ in casing. So, a node named <em>Float</em> and one named <em>FLOAT</em> is not possible.</p>
+<div class="section" id="types">
+<h2>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h2>
+<p>When types are mentioned, either in the dsl, BNF or text, it refers to defined enums, defined nodes or primitive types which you
+can find under the <em>primitive types</em> header.
+In special cases, as will be mentioned, user defined types outside the earlier mentioned types are possible.</p>
 <div class="section" id="enum">
-<h2>Enum<a class="headerlink" href="#enum" title="Permalink to this headline">¶</a></h2>
+<h3>Enum<a class="headerlink" href="#enum" title="Permalink to this headline">¶</a></h3>
 <p>An enum in the DSL maps to an enum in C, can be used to add extra type information to a node and requires a unique prefix. A unique prefix can not collide with
 the prefix of another enum or a CoCoNut reserved prefix. (Link to reserved prefix).
 An enum exists out of a set of values, which are defined in the values block. These values map to the values in the C enum and the order
@@ -69,7 +74,7 @@ Lastly, an enum has a name, which corresponds to the name in the generated C enu
 </div>
 </div>
 <div class="section" id="node">
-<h2>Node<a class="headerlink" href="#node" title="Permalink to this headline">¶</a></h2>
+<h3>Node<a class="headerlink" href="#node" title="Permalink to this headline">¶</a></h3>
 <p>A node consists out of children, attributes and node lifetimes. Children link to other nodes, which provides the tree building.
 Attributes are information stored in the node, every attribute has a type and a name, which becomes a field in the C struct of the node.
 Node lifetimes allow specifying the stages in a compiler where the node is disallowed.
@@ -114,7 +119,7 @@ only if they have the ‘constructor’ specification.</p>
 <p>This will result in the constructor: ASTbinop(left, right, op);</p>
 </div>
 <div class="section" id="lifetimes">
-<h2>Lifetimes<a class="headerlink" href="#lifetimes" title="Permalink to this headline">¶</a></h2>
+<h3>Lifetimes<a class="headerlink" href="#lifetimes" title="Permalink to this headline">¶</a></h3>
 <p>Lifetimes allow you to describe the lifetime of a node or a child. When a lifetime is violated, the AST is incosistent and CoCoNut will error.
 Lifetimes are described in the following way:</p>
 <p>&lt;lifetime&gt; :: &lt;lifetime specifier&gt; &lt;lifetime range&gt;</p>
@@ -161,7 +166,7 @@ and ‘Stage2’ also has an ‘OTP’ then the ‘OTP’ from ‘Stage2’ woul
 for something like ‘Stage3’ is not required but is still allowed.</p>
 </div>
 <div class="section" id="nodeset">
-<h2>Nodeset<a class="headerlink" href="#nodeset" title="Permalink to this headline">¶</a></h2>
+<h3>Nodeset<a class="headerlink" href="#nodeset" title="Permalink to this headline">¶</a></h3>
 <p>Some nodes might have children that can be of multiple types. To enable this a nodeset can be created. The node then gets the nodeset
 as a child and all the types in the nodeset can be used as a child. A nodeset requires a name and a set of nodes.
 The nodes specifier in a nodeset uses a set expression, providing the option to compose nodesets to build a new nodeset.</p>
@@ -196,7 +201,7 @@ Expr nodeset as follows:</p>
 enclosed with {} it is seen as a reference to another nodeset. It is also possible to use () to group set expressions and define the evaluation order.</p>
 </div>
 <div class="section" id="pass">
-<h2>Pass<a class="headerlink" href="#pass" title="Permalink to this headline">¶</a></h2>
+<h3>Pass<a class="headerlink" href="#pass" title="Permalink to this headline">¶</a></h3>
 <p>Passes are the simplest form of an action that can be defined. A pass is simply a function that gets called.
 A pass needs a name and a function name. The function name will map to the function name generated in the C code.
 It is possible to define information in the info field and unique identifier available in lifetimes.</p>
@@ -215,8 +220,8 @@ It is possible to define information in the info field and unique identifier ava
 <span class="p">};</span>
 </pre></div>
 </div>
-<p>It is also possible to define a pass using a shorter notation. With the shorter notation the
-name of the pass will be the function name.</p>
+<p>It is also possible to define a pass using a shorter notation. With the shorter notation the generated C function is
+the name of the pass.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pass &lt;name&gt;;
 </pre></div>
 </div>
@@ -224,7 +229,7 @@ name of the pass will be the function name.</p>
 of the same type.</p>
 </div>
 <div class="section" id="traversal">
-<h2>Traversal<a class="headerlink" href="#traversal" title="Permalink to this headline">¶</a></h2>
+<h3>Traversal<a class="headerlink" href="#traversal" title="Permalink to this headline">¶</a></h3>
 <p>A traversal can defined a unique id, info string and the nodes to traverse.
 The nodes are in the form of a set expression and can use defined nodesets.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>traversal &lt;name&gt; {
@@ -248,7 +253,7 @@ The nodes are in the form of a set expression and can use defined nodesets.</p>
 </pre></div>
 </div>
 <p>Some traversals need to traverse all nodes, in such cases, the <em>nodes</em> block can be left out.
-If the previous traversal targets all nodes it can be defined as follows:</p>
+If the previous traversal targets all nodes, it can be defined as follows:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>traversal RenameFor {
     uid = RFOR
 };
@@ -258,7 +263,7 @@ If the previous traversal targets all nodes it can be defined as follows:</p>
 generated functions.</p>
 </div>
 <div class="section" id="traversal-data">
-<h2>Traversal Data<a class="headerlink" href="#traversal-data" title="Permalink to this headline">¶</a></h2>
+<h3>Traversal Data<a class="headerlink" href="#traversal-data" title="Permalink to this headline">¶</a></h3>
 <p>Some traversals need to pass around data between functions inside the traversal. To make this convenient, CoCoNut provides the option
 to denote traversal data in a traversal. Traversal data body is similar to that of attributes, with the extension of user types.
 User types are signalled with the ‘user’ keyword and requires the file “user_types.h” to be on the include path of your compiler.
@@ -266,7 +271,7 @@ CoCoNut automatically creates and destroys the structure of the traversal data. 
 therefore, you are required to malloc/free them yourself.</p>
 </div>
 <div class="section" id="phase">
-<h2>Phase<a class="headerlink" href="#phase" title="Permalink to this headline">¶</a></h2>
+<h3>Phase<a class="headerlink" href="#phase" title="Permalink to this headline">¶</a></h3>
 <p>Phases are used to group actions together. Phases contain an actions body, which contains a list of action statements. Action can be
 passes, traversals or other phases. Besides actions, phases can also define a gate function and a root. If the gate function is defined
 it will be called before the phase is started. If the gate function returns <em>false</em>, the phase is skipped. By specifying a root node the full AST will be divided into sub-trees, with the specified root node as the root of these trees.
@@ -290,7 +295,6 @@ During actions that target a sub-tree, the <em>next</em> child is set to <em>NUL
 <p>An example phase is as follows:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>phase ConstantFolding {
     uid = CF,
-    root = Fundef,
     gate = isConstantFoldingEnabled,
 
     actions {
@@ -301,7 +305,7 @@ During actions that target a sub-tree, the <em>next</em> child is set to <em>NUL
 </div>
 </div>
 <div class="section" id="cycles">
-<h2>Cycles<a class="headerlink" href="#cycles" title="Permalink to this headline">¶</a></h2>
+<h3>Cycles<a class="headerlink" href="#cycles" title="Permalink to this headline">¶</a></h3>
 <p>In some cases, actions in a phase need to be repeated until a fixed point is reached.
 A fixed point is a point where performing the actions does not alter the AST
 in any way. For these cases, cycles can be used. Cycles are phases except the actions
@@ -320,7 +324,7 @@ are repeated until a fixed point is reached or the maximum number of cycles is r
 </div>
 </div>
 <div class="section" id="fixed-point-detection">
-<h2>Fixed-point detection<a class="headerlink" href="#fixed-point-detection" title="Permalink to this headline">¶</a></h2>
+<h3>Fixed-point detection<a class="headerlink" href="#fixed-point-detection" title="Permalink to this headline">¶</a></h3>
 <p>The cycles use fixed-point detection to stop a cycle. Fixed point detection is done
 by calling the ‘CCNcycleNotify()’ function. This function notifies the phase driver
 that a change is made and a fixed point is not reached. So, the programmer is responsible
@@ -329,11 +333,12 @@ back to the original change, and so on. This way you have an ongoing effect and 
 is never reached. Therefore, a maximum cycle can be specified to prevent this from getting out of control.</p>
 </div>
 <div class="section" id="combining-primitives">
-<h2>Combining primitives<a class="headerlink" href="#combining-primitives" title="Permalink to this headline">¶</a></h2>
+<h3>Combining primitives<a class="headerlink" href="#combining-primitives" title="Permalink to this headline">¶</a></h3>
 <p>Now it is possible to define the common structure of your compiler using the defined primitives.
 A valid CoCoNut program is a combination of these primitives, with 1 root node, 1 start phase and all top-level
 primitives are ended by a ‘;’. There is no scope or namespace in CoCoNut and it is not required to define a primitive before
 referencing it.</p>
+</div>
 </div>
 </div>
 
@@ -357,17 +362,7 @@ referencing it.</p>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">DSL</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#enum">Enum</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#node">Node</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#lifetimes">Lifetimes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#nodeset">Nodeset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pass">Pass</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#traversal">Traversal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#traversal-data">Traversal Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#phase">Phase</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#cycles">Cycles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fixed-point-detection">Fixed-point detection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#combining-primitives">Combining primitives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#types">Types</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="codegen.html">Codegen</a></li>
