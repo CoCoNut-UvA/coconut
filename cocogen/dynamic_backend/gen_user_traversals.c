@@ -28,8 +28,8 @@ node_st *DUGTitraversal(node_st *node)
     OUT("/**\n");
     OUT(" * @file\n");
     OUT(" *\n");
-    OUT(" * This file contains the code for the %s traversal.\n", ID_ORIG(ITRAVERSAL_NAME(node)));
-    OUT(" * The traversal has the uid: %s\n", ID_UPR(ITRAVERSAL_IPREFIX(node)));
+    OUT(" * Traversal: %s\n", ID_ORIG(ITRAVDATA_NAME(node)));
+    OUT(" * UID      : %s\n", ID_UPR(ITRAVERSAL_IPREFIX(node)));
     OUT(" *\n");
     OUT(" *\n");
     if (ITRAVERSAL_IINFO(node)) {

@@ -4,8 +4,7 @@ start phase startPhase {
 
     actions {
         pass scanAndParse {
-            uid = SP,
-            func = doScanParse
+            uid = SP
         };
         semantic;
         unpackLifetimes;
