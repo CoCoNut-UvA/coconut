@@ -11,39 +11,36 @@ src/main.c. There is also the src/calc.ccn file, which defines the AST and three
 a scanParse pass and a print traversal. The code for the print traversal is found in src/print.c and the code for the
 scanParse pass is found in the src/scanParse/scanParse.c file.
 
-
+Run the *configure.sh* script to setup an environment. This downloads *CoCoNut* and builds it.
 For building, the example uses cmake and can be build by creating a *build* directory by running
 *cmake -B build -S ./* in the root of the project. After, you can build the calculator with *make -C build/*.
 
-Now, we will extend the example by adding support for add and substract operations and by evaluating the given
+We will extend the example by adding support for add and substract operations and by evaluating the given
 expression.
 
 
 Adding a binop node
 ===================
-First, to support binary operations, we will add a binary operation(binop) node. This node contains a left and right child
-and an operation type. The left and right child can be another binop or a number, therefore we have to define a nodeset.
-We define the nodeset by adding the following lines to the src/calc.ccn file:
+First, to support binary operations, we add a binary operation(Binop) node. This node contains a left and right child
+and an operation type. The left and right child can be another binop or a number, therefore we have to extend the nodeset.
+We extend the nodeset by changing the current *Expr* nodeset to the following(./src/calc.ccn):
 
 .. code-block:: text
 
-    nodeset expr = {num, binop};
+    nodeset Expr = {Binop} | Literals;
 
 
 Now, we can define the binop node by extending the src/calc.ccn file with the following lines:
 
 .. code-block:: text
 
-    root node binop {
+    node Binop {
         children {
-            expr left { constructor },
-            expr right { constructor }
+            Expr left { constructor },
+            Expr right { constructor }
         }
     };
 
-
-We make the binop the root node, therefore we have to remove 'root' before the num node. If you do not do this, the
-following error is displayed: *error: Double definition of root node*
 
 Because our print traversal targets all nodes, we need to add the function to handle a binop. Add the following lines
 to the src/print.c file:
@@ -63,7 +60,7 @@ binop node. Therefore, we add an enum to the specification by extending the src/
 
     enum binop_type {
         prefix = BT,
-        values = {
+        values {
             add, sub
         }
     };
@@ -73,10 +70,10 @@ and add that enum, as an attribute, to the binop the node. This is done by chang
 
 .. code-block:: text
 
-    root node binop {
+    node Binop {
         children {
-            expr left { constructor },
-            expr right { constructor }
+            Expr left { constructor },
+            Expr right { constructor }
         },
 
         attributes {
@@ -114,8 +111,24 @@ to print the binop:
         return node;
     }
 
-Now, the print traversal first traverses its left child, then prints the operator as a string, lastly it traverses the right child. This results in our repl printing
+You can uncomment the operatorToString function now, since we defined the enum.
+
+The print traversal first traverses its left child, then prints the operator as a string, lastly it traverses the right child. This results in our REPL printing
 the original expression. 
+
+*CoCoNut* also defines TRAV<child> function to traverse children in an easier manner. Therefore, the example of printing in the binop can be adapted to the following:
+
+.. code-block:: text
+
+    node_st *PRTbinop(node_st *node)
+    {
+        TRAVleft(node);
+        printf(" %s ", operatorToString(BINOP_TYPE(node)));
+        TRAVright(node);
+        return node;
+    }
+
+You do need to include the *ccngen/trav.h* file for these functions.
 
 Adding a traversal
 ==================
@@ -150,8 +163,7 @@ Add the ./src/eval.c to your build step(in the example the CMakeLists.txt and ad
 We added the traversal to the specification, but have not referenced it yet and thus will never be called. Reference it add by adding it as an action
 to the REPL phase, between the scanParse and print actions, in *src/calc.ccn*.
 
-We introduced and referenced a whole new traversal, lets implement the traversal now. The eval traversal executes evaluates the left and right
-child. Therefore, we first have to evaluate the left and right child. That can be done by adding a *TRAVchildren* call to the binop function:
+We introduced and referenced a whole new traversal, let's implement the traversal now. The eval traversal evaluates the left and right children and then performs the operation on them. Since left and right are our children, we can use *TRAVchildren*:
 
 .. code-block:: text
 
@@ -186,14 +198,14 @@ This results in a working REPL calculator for simple add and substract operation
 
 Fully using CoCoNut
 ===================
-Nonetheless, we do not take full advantage of CoCoNut features.
+However, we do not take full advantage of CoCoNut features.
 First of all, the eval traversal does nothing with the NUM node, so we can specify that the eval only targets the binop node:
 
 .. code-block:: text
 
     traversal eval {
         uid = EV,
-        nodes = {binop}
+        nodes = {Binop}
     };
 
 After, we can remove the EVnum function in *eval.c*. Another improvement we can make is denote that a binop should always have a left and right child by specifying
@@ -212,7 +224,7 @@ mandatory.
         }
     };
 
-If CoCoNut find a binop node in the AST with a left or right child being NULL an error is signalled.
+If CoCoNut finds a binop node in the AST with a left or right child being NULL an error is signalled.
 The binop node itself also has a lifetime, because after the eval traversal all binop nodes should be evaluated to a num node. This can be specified by a
 lifetime on the node:
 
