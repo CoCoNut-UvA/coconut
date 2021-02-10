@@ -1,18 +1,22 @@
+#include <assert.h>
 #include <stdio.h>
 
-#include "globals.h"
-#include "gen_helpers/out_macros.h"
 #include "ccn/dynamic_core.h"
-
+#include "frontend/symboltable.h"
+#include "gen_helpers/out_macros.h"
+#include "globals.h"
+#include "palm/ctinfo.h"
 
 static FILE *fp;
 static int indent = 0;
 static char *basic_node_type = "node_st";
 static int child_num = 0;
+static node_st *ste = NULL;
 
 node_st *DGNSast(node_st *node)
 {
     fp = globals.fp;
+    ste = AST_STABLE(node);
     TRAVchildren(node);
     return node;
 }
@@ -54,7 +58,11 @@ node_st *DGNSattribute(node_st *node)
     if (ATTRIBUTE_TYPE(node) == AT_link) {
         OUT_FIELD("%s *%s", basic_node_type, ID_LWR(ATTRIBUTE_NAME(node)));
     } else if (ATTRIBUTE_TYPE(node) == AT_link_or_enum) {
-        OUT_FIELD("enum %s %s", ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(node)), ID_LWR(ATTRIBUTE_NAME(node)));
+        node_st *ref = STlookup(ste, ATTRIBUTE_TYPE_REFERENCE(node));
+        // Should be handled by check_existence.
+        assert(ref);
+        assert(NODE_TYPE(ref) == NT_IENUM);
+        OUT_FIELD("enum %s %s", ID_ORIG(IENUM_NAME(ref)), ID_LWR(ATTRIBUTE_NAME(node)));
     } else {
         OUT_FIELD("%s %s", FMTattributeTypeToString(ATTRIBUTE_TYPE(node)), ID_LWR(ATTRIBUTE_NAME(node)));
     }

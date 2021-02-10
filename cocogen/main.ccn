@@ -434,7 +434,6 @@ traversal print {
     uid = PRT
 };
 
-
 root node ast {
     children {
         iphase iphases,
