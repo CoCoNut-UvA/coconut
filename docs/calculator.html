@@ -16,7 +16,7 @@
     <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Working With CoCoNut" href="working_with_traversals.html" />
+    <link rel="prev" title="Primitive types" href="primitive_types.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -42,29 +42,28 @@ exists out of one number. The parser and lexer are found in the src/scanParse di
 src/main.c. There is also the src/calc.ccn file, which defines the AST and three actions: A repl phase,
 a scanParse pass and a print traversal. The code for the print traversal is found in src/print.c and the code for the
 scanParse pass is found in the src/scanParse/scanParse.c file.</p>
-<p>For building, the example uses cmake and can be build by creating a <em>build</em> directory by running
+<p>Run the <em>configure.sh</em> script to setup an environment. This downloads <em>CoCoNut</em> and builds it.
+For building, the example uses cmake and can be build by creating a <em>build</em> directory by running
 <em>cmake -B build -S ./</em> in the root of the project. After, you can build the calculator with <em>make -C build/</em>.</p>
-<p>Now, we will extend the example by adding support for add and substract operations and by evaluating the given
+<p>We will extend the example by adding support for add and substract operations and by evaluating the given
 expression.</p>
 <div class="section" id="adding-a-binop-node">
 <h2>Adding a binop node<a class="headerlink" href="#adding-a-binop-node" title="Permalink to this headline">¶</a></h2>
-<p>First, to support binary operations, we will add a binary operation(binop) node. This node contains a left and right child
-and an operation type. The left and right child can be another binop or a number, therefore we have to define a nodeset.
-We define the nodeset by adding the following lines to the src/calc.ccn file:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>nodeset expr = {num, binop};
+<p>First, to support binary operations, we add a binary operation(Binop) node. This node contains a left and right child
+and an operation type. The left and right child can be another binop or a number, therefore we have to extend the nodeset.
+We extend the nodeset by changing the current <em>Expr</em> nodeset to the following(./src/calc.ccn):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>nodeset Expr = {Binop} | Literals;
 </pre></div>
 </div>
 <p>Now, we can define the binop node by extending the src/calc.ccn file with the following lines:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>root node binop {
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>node Binop {
     children {
-        expr left { constructor },
-        expr right { constructor }
+        Expr left { constructor },
+        Expr right { constructor }
     }
 };
 </pre></div>
 </div>
-<p>We make the binop the root node, therefore we have to remove ‘root’ before the num node. If you do not do this, the
-following error is displayed: <em>error: Double definition of root node</em></p>
 <p>Because our print traversal targets all nodes, we need to add the function to handle a binop. Add the following lines
 to the src/print.c file:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>node_st *PRTbinop(node_st *node)
@@ -77,17 +76,17 @@ to the src/print.c file:</p>
 binop node. Therefore, we add an enum to the specification by extending the src/calc.ccn file with the following lines:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>enum binop_type {
     prefix = BT,
-    values = {
+    values {
         add, sub
     }
 };
 </pre></div>
 </div>
 <p>and add that enum, as an attribute, to the binop the node. This is done by changing the binop definition to the following:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>root node binop {
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>node Binop {
     children {
-        expr left { constructor },
-        expr right { constructor }
+        Expr left { constructor },
+        Expr right { constructor }
     },
 
     attributes {
@@ -117,8 +116,20 @@ to print the binop:</p>
 }
 </pre></div>
 </div>
-<p>Now, the print traversal first traverses its left child, then prints the operator as a string, lastly it traverses the right child. This results in our repl printing
+<p>You can uncomment the operatorToString function now, since we defined the enum.</p>
+<p>The print traversal first traverses its left child, then prints the operator as a string, lastly it traverses the right child. This results in our REPL printing
 the original expression.</p>
+<p><em>CoCoNut</em> also defines TRAV&lt;child&gt; function to traverse children in an easier manner. Therefore, the example of printing in the binop can be adapted to the following:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>node_st *PRTbinop(node_st *node)
+{
+    TRAVleft(node);
+    printf(&quot; %s &quot;, operatorToString(BINOP_TYPE(node)));
+    TRAVright(node);
+    return node;
+}
+</pre></div>
+</div>
+<p>You do need to include the <em>ccngen/trav.h</em> file for these functions.</p>
 </div>
 <div class="section" id="adding-a-traversal">
 <h2>Adding a traversal<a class="headerlink" href="#adding-a-traversal" title="Permalink to this headline">¶</a></h2>
@@ -143,8 +154,7 @@ case we name it eval.c by executing the following command from the project root:
 <p>Add the ./src/eval.c to your build step(in the example the CMakeLists.txt and add it to add_executable) and the calculator can be compiled again, this time without errors.</p>
 <p>We added the traversal to the specification, but have not referenced it yet and thus will never be called. Reference it add by adding it as an action
 to the REPL phase, between the scanParse and print actions, in <em>src/calc.ccn</em>.</p>
-<p>We introduced and referenced a whole new traversal, lets implement the traversal now. The eval traversal executes evaluates the left and right
-child. Therefore, we first have to evaluate the left and right child. That can be done by adding a <em>TRAVchildren</em> call to the binop function:</p>
+<p>We introduced and referenced a whole new traversal, let’s implement the traversal now. The eval traversal evaluates the left and right children and then performs the operation on them. Since left and right are our children, we can use <em>TRAVchildren</em>:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>node_st *EVbinop(node_st *node)
 {
     TRAVchildren(node);
@@ -173,11 +183,11 @@ node:</p>
 </div>
 <div class="section" id="fully-using-coconut">
 <h2>Fully using CoCoNut<a class="headerlink" href="#fully-using-coconut" title="Permalink to this headline">¶</a></h2>
-<p>Nonetheless, we do not take full advantage of CoCoNut features.
+<p>However, we do not take full advantage of CoCoNut features.
 First of all, the eval traversal does nothing with the NUM node, so we can specify that the eval only targets the binop node:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>traversal eval {
     uid = EV,
-    nodes = {binop}
+    nodes = {Binop}
 };
 </pre></div>
 </div>
@@ -195,7 +205,7 @@ mandatory.</p>
 };
 </pre></div>
 </div>
-<p>If CoCoNut find a binop node in the AST with a left or right child being NULL an error is signalled.
+<p>If CoCoNut finds a binop node in the AST with a left or right child being NULL an error is signalled.
 The binop node itself also has a lifetime, because after the eval traversal all binop nodes should be evaluated to a num node. This can be specified by a
 lifetime on the node:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>root node binop {
@@ -242,6 +252,7 @@ You can try it out by returning the node in the eval traversal instead of evalua
 <li class="toctree-l1"><a class="reference internal" href="dsl_syntax.html">DSL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="codegen.html">Codegen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="working_with_traversals.html">Working With CoCoNut</a></li>
+<li class="toctree-l1"><a class="reference internal" href="primitive_types.html">Primitive types</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Calculator Example</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#adding-a-binop-node">Adding a binop node</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#adding-a-traversal">Adding a traversal</a></li>
@@ -254,7 +265,7 @@ You can try it out by returning the node in the eval traversal instead of evalua
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="working_with_traversals.html" title="previous chapter">Working With CoCoNut</a></li>
+      <li>Previous: <a href="primitive_types.html" title="previous chapter">Primitive types</a></li>
   </ul></li>
 </ul>
 </div>
