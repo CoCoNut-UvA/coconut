@@ -139,7 +139,8 @@ Add the following to the src/calc.ccn file:
 .. code-block:: text
 
     traversal eval {
-        uid = EV
+        uid = EV,
+        nodes = Expr
     };
 
 Now, run make and see the following errors:
@@ -213,10 +214,10 @@ mandatory.
 
 .. code-block:: text
 
-    root node binop {
+    node Binop {
         children {
-            expr left { constructor, mandatory },
-            expr right { constructor, mandatory }
+            Expr left { constructor, mandatory },
+            Expr right { constructor, mandatory }
         },
 
         attributes {
@@ -230,10 +231,10 @@ lifetime on the node:
 
 .. code-block:: text
 
-    root node binop {
+    node Binop {
         children {
-            expr left { constructor, mandatory },
-            expr right { constructor, mandatory }
+            Expr left { constructor, mandatory },
+            Expr right { constructor, mandatory }
         },
 
         attributes {

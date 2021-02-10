@@ -136,7 +136,8 @@ the original expression.</p>
 <p>Thus, we have a read and print part, but are still missing the evaluate part of the REPL. To add the evaluate we add a new traversal to coconut.
 Add the following to the src/calc.ccn file:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>traversal eval {
-    uid = EV
+    uid = EV,
+    nodes = Expr
 };
 </pre></div>
 </div>
@@ -193,10 +194,10 @@ First of all, the eval traversal does nothing with the NUM node, so we can speci
 </div>
 <p>After, we can remove the EVnum function in <em>eval.c</em>. Another improvement we can make is denote that a binop should always have a left and right child by specifying
 mandatory.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>root node binop {
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>node Binop {
     children {
-        expr left { constructor, mandatory },
-        expr right { constructor, mandatory }
+        Expr left { constructor, mandatory },
+        Expr right { constructor, mandatory }
     },
 
     attributes {
@@ -208,10 +209,10 @@ mandatory.</p>
 <p>If CoCoNut finds a binop node in the AST with a left or right child being NULL an error is signalled.
 The binop node itself also has a lifetime, because after the eval traversal all binop nodes should be evaluated to a num node. This can be specified by a
 lifetime on the node:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>root node binop {
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>node Binop {
     children {
-        expr left { constructor, mandatory },
-        expr right { constructor, mandatory }
+        Expr left { constructor, mandatory },
+        Expr right { constructor, mandatory }
     },
 
     attributes {
