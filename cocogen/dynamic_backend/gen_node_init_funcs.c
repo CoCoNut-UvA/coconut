@@ -7,6 +7,7 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "dynamic_backend/gen_helpers.h"
 
 bool dgif_print_semicolon = false;
 
@@ -66,11 +67,11 @@ node_st *DGIFattribute(node_st *node)
         }
         arg_num++;
         if (ATTRIBUTE_TYPE(node) == AT_link) {
-            OUT("%s *%s", basic_node_type, ID_LWR(ATTRIBUTE_NAME(node)));
+            OUT("%s *%s", basic_node_type, DGHattributeField(node));
         } else if (ATTRIBUTE_TYPE(node) == AT_link_or_enum) {
-            OUT("enum %s %s", ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(node)), ID_ORIG(ATTRIBUTE_NAME(node)));
+            OUT("enum %s %s", ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(node)), DGHattributeField(node));
         } else {
-            OUT("%s %s", FMTattributeTypeToString(ATTRIBUTE_TYPE(node)), ID_ORIG(ATTRIBUTE_NAME(node)));
+            OUT("%s %s", FMTattributeTypeToString(ATTRIBUTE_TYPE(node)), DGHattributeField(node));
         }
     }
     TRAVchildren(node);

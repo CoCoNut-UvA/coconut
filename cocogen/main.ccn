@@ -674,7 +674,7 @@ node attribute {
 
 node ienum {
     children {
-        id vals {constructor},
+        id Vals {constructor},
         id name {constructor},
         id iprefix {constructor},
         ienum next
@@ -693,7 +693,7 @@ node id {
     attributes {
         string orig { constructor },
         string lwr { constructor },
-        string upr { constructor },
+        string Upr { constructor },
         int row,
         int col_begin,
         int col_end

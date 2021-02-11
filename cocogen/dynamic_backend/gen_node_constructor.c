@@ -4,6 +4,7 @@
 
 #include "globals.h"
 #include "gen_helpers/out_macros.h"
+#include "dynamic_backend/gen_helpers.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
 
@@ -73,7 +74,7 @@ node_st *DGNCchild(node_st *node)
 node_st *DGNCattribute(node_st *node)
 {
     if (ATTRIBUTE_IN_CONSTRUCTOR(node)) {
-        OUT_FIELD("%s_%s(node) = %s", node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), ID_LWR(ATTRIBUTE_NAME(node)));
+        OUT_FIELD("%s_%s(node) = %s", node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), DGHattributeField(node));
     } else {
         OUT_FIELD("%s_%s(node) = %s", node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), FMTattributeDefaultVal(ATTRIBUTE_TYPE(node)));
     }

@@ -14,7 +14,7 @@ node_st *TRAVgate_func(node_st *node);
 node_st *TRAVend(node_st *node);
 node_st *TRAVunpacked(node_st *node);
 node_st *TRAVichildren(node_st *node);
-node_st *TRAVvals(node_st *node);
+node_st *TRAVVals(node_st *node);
 node_st *TRAVnext(node_st *node);
 node_st *TRAVname(node_st *node);
 node_st *TRAVleft(node_st *node);

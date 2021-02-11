@@ -12,14 +12,14 @@ node_st *NewNode() {
     return node;
 }
 
-node_st *ASTid(char * orig, char * lwr, char * upr) {
+node_st *ASTid(char * orig, char * lwr, char * Upr) {
     node_st *node = NewNode();
     node->data.N_id = MEMmalloc(sizeof(struct NODE_DATA_ID));
     NODE_TYPE(node) = NT_ID;
     ID_NEXT(node) = NULL;
     ID_ORIG(node) = orig;
     ID_LWR(node) = lwr;
-    ID_UPR(node) = upr;
+    ID_UPR(node) = Upr;
     ID_ROW(node) = 0;
     ID_COL_BEGIN(node) = 0;
     ID_COL_END(node) = 0;

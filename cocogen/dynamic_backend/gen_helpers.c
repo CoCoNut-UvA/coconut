@@ -14,3 +14,8 @@ char *DGHpassFuncName(node_st *pass)
 
     return STRcpy(ID_ORIG(IPASS_NAME(pass)));
 }
+
+char *DGHattributeField(node_st *attr)
+{
+    return ID_ORIG(ATTRIBUTE_NAME(attr));
+}

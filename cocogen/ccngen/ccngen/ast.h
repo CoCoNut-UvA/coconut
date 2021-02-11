@@ -373,7 +373,7 @@ struct NODE_DATA_AST {
 #define AST_ROOT_NODE(n) ((n)->data.N_ast->root_node)
 #define AST_START_PHASE(n) ((n)->data.N_ast->start_phase)
 #define AST_USES_UNSAFE(n) ((n)->data.N_ast->uses_unsafe)
-node_st *ASTid(char * orig, char * lwr, char * upr);
+node_st *ASTid(char * orig, char * lwr, char * Upr);
 node_st *ASTienum(node_st *vals, node_st *name, node_st *iprefix, char * iinfo);
 node_st *ASTattribute();
 node_st *ASTitravdata(node_st *name);
