@@ -14,7 +14,7 @@ add_subdirectory(${COCONUT_ROOT_DIR}/palm ${CMAKE_CURRENT_BINARY_DIR}/palm)
 
 function(cocogen_do_generate DSL_FILE BACKEND)
     set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${DSL_FILE}")
-    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_BINARY_DIR}/generated/src/action_handlers.c")
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_BINARY_DIR}/ccngen/")
     if (NOT EXISTS "${COCOGEN_DIR}/cocogen")
         message(FATAL_ERROR "Could not find the cocogen executable in path: ${COCOGEN_DIR}
 Maybe you forgot building the coconut project?")
