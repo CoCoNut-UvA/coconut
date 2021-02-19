@@ -34,6 +34,7 @@ endfunction()
 
 function(coconut_target_generate TARGET DSL_FILE BACKEND)
     cocogen_do_generate("${DSL_FILE}" "${BACKEND}")
+    set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${CMAKE_CURRENT_BINARY_DIR}/ccngen")
     file(GLOB COCONUT_SOURCES "${PROJECT_BINARY_DIR}/ccngen/*.c" "${COCONUT_ROOT_DIR}/copra/src/*.c")
     target_sources("${TARGET}" PRIVATE "${COCONUT_SOURCES}")
     target_include_directories("${TARGET}" PRIVATE "${PROJECT_BINARY_DIR}/ccngen/" "${COCONUT_ROOT_DIR}/copra/")
