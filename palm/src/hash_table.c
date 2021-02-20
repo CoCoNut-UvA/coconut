@@ -201,7 +201,16 @@ void HTmapWithKey(struct htable *table, mapk_ft fun)
     }
 }
 
-
+void HTmapWithDataAndKey(htable_st *table, void *data, mapdk_ft fun)
+{
+    for (size_t i = 0; i < table->size; i++) {
+        struct htable_entry *entry = table->entries[i];
+        while (entry) {
+            entry->value = fun(data, entry->key, entry->value);
+            entry = entry->next;
+        }
+    }
+}
 
 
 
