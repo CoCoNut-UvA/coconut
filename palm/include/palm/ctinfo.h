@@ -35,6 +35,7 @@ extern void CTIinstallInterruptHandlers(void);
 extern int CTIgetErrorMessageLineLength();
 extern int CTIgetWarnMessageLineLength(void);
 extern int CTIgetWarnings();
+extern int CTIgetErrors();
 extern void CTIabortCompilation();
 extern void CTIabortOnError();
 extern void CTIabortOutOfMemory(unsigned int request);

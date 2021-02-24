@@ -74,8 +74,11 @@ struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype 
     }
 
     if (phase_driver.tree_check) {
+        int curr_err = CTIgetErrors();
         node = TRAVstart(node, TRAV_check);
-        CTIabortOnError();
+        if (CTIgetErrors() != curr_err) {
+            CTIabortOnError();
+        }
     }
 
     bool phase_error = false;

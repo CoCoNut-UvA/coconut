@@ -431,6 +431,17 @@ void CTIabortOnError(void)
     }
 }
 
+/**
+ * @return The number of errors currently produced.
+ */
+int CTIgetErrors()
+{
+    return errors;
+}
+
+
+
+
 
 /** <!--********************************************************************-->
  *
