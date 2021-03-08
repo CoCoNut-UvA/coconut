@@ -30,6 +30,12 @@ node_st *DGCTast(node_st *node)
     OUT("#include <stddef.h>\n");
     OUT("#include \"palm/str.h\"\n");
     OUT("#include \"ccn/dynamic_core.h\"\n");
+    OUT_START_FUNC("void CopyBaseNode(node_st *target, node_st *source)");
+    OUT_STATEMENT("NODE_BCOL(target) = NODE_BCOL(source)");
+    OUT_STATEMENT("NODE_ECOL(target) = NODE_ECOL(source)");
+    OUT_STATEMENT("NODE_BLINE(target) = NODE_BLINE(source)");
+    OUT_STATEMENT("NODE_ELINE(target) = NODE_ELINE(source)");
+    OUT_END_FUNC();
     TRAVopt(AST_INODES(node));
     fclose(fp);
     globals.fp = 0;
@@ -68,6 +74,7 @@ node_st *DGCTinode(node_st *node)
     arg_num = 0;
     OUT_START_FUNC("struct ccn_node *CPY%s(struct ccn_node *arg_node)", ID_LWR(INODE_NAME(node)));
     TRAVstart(node, TRAV_DGCC);
+    OUT_STATEMENT("CopyBaseNode(new_node, arg_node)");
     TRAVopt(INODE_ICHILDREN(node));
     TRAVopt(INODE_IATTRIBUTES(node));
     OUT_FIELD("return new_node");
