@@ -133,7 +133,7 @@ struct ctinfo yy_ctinfo;
 %type<node> phase entry pass node traversal cycleheader phaseheader id action actionsbody traversalnodes prefix
     actions childrenbody attributebody attributes attribute children child setoperation setliterals func
     setexpr enum idlist enumvalues nodeset travdata travdatalist travdataitem nodelifetimes
-    lifetimes lifetime lifetime_range range_spec childlifetimes uid mandatory_uid gate
+    lifetimes lifetime lifetime_range range_spec childlifetimes uid mandatory_uid gate attributelifetimes
 %type<attr_type> attribute_primitive_type
 
 %left '&' '-' '|'
@@ -604,12 +604,27 @@ attributes: attribute ',' attributes
     }
     ;
 
-attribute: attribute_primitive_type[type] id[name] '{' is_constructor[constructor] '}'
+attribute: attribute_primitive_type[type] id[name] '{' is_constructor[constructor]  '}'
     {
         $$ = ASTattribute();
         ATTRIBUTE_NAME($$) = $name;
         ATTRIBUTE_TYPE($$) = $type;
         ATTRIBUTE_IN_CONSTRUCTOR($$) = $constructor;
+    }
+    | attribute_primitive_type[type] id[name] '{' attributelifetimes[lifetimes]  '}'
+    {
+        $$ = ASTattribute();
+        ATTRIBUTE_NAME($$) = $name;
+        ATTRIBUTE_TYPE($$) = $type;
+        ATTRIBUTE_LIFETIMES($$) = $lifetimes;
+    }
+    | attribute_primitive_type[type] id[name] '{' is_constructor[constructor] ',' attributelifetimes[lifetimes] '}'
+    {
+        $$ = ASTattribute();
+        ATTRIBUTE_NAME($$) = $name;
+        ATTRIBUTE_TYPE($$) = $type;
+        ATTRIBUTE_IN_CONSTRUCTOR($$) = $constructor;
+        ATTRIBUTE_LIFETIMES($$) = $lifetimes;
     }
     | attribute_primitive_type[type] id[name]
     {
@@ -630,6 +645,23 @@ attribute: attribute_primitive_type[type] id[name] '{' is_constructor[constructo
        ATTRIBUTE_TYPE_REFERENCE($$) = $type;
        ATTRIBUTE_TYPE($$) = AT_link_or_enum;
        ATTRIBUTE_IN_CONSTRUCTOR($$) = $constructor;
+    }
+    | id[type] id[name] '{' is_constructor[constructor] ',' attributelifetimes[lifetimes]'}'
+    {
+        $$ = ASTattribute();
+        ATTRIBUTE_NAME($$) = $name;
+        ATTRIBUTE_TYPE_REFERENCE($$) = $type;
+        ATTRIBUTE_TYPE($$) = AT_link_or_enum;
+        ATTRIBUTE_IN_CONSTRUCTOR($$) = $constructor;
+        ATTRIBUTE_LIFETIMES($$) = $lifetimes;
+    }
+    | id[type] id[name] '{' attributelifetimes[lifetimes] '}'
+    {
+        $$ = ASTattribute();
+        ATTRIBUTE_NAME($$) = $name;
+        ATTRIBUTE_TYPE_REFERENCE($$) = $type;
+        ATTRIBUTE_TYPE($$) = AT_link_or_enum;
+        ATTRIBUTE_LIFETIMES($$) = $lifetimes;
     }
     | id[type] id[name]
     {
@@ -741,6 +773,11 @@ nodelifetimes: %empty
     }
     ;
 
+attributelifetimes: lifetimes
+    {
+        $$ = $1;
+    }
+    ;
 
 lifetimes: lifetime ',' lifetimes
     {

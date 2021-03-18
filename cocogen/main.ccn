@@ -43,6 +43,11 @@ phase unpackLifetimes {
     uid = ULT,
 
     actions {
+        traversal checkLifetimes {
+            uid = CLT,
+            nodes = {ast, attribute}
+        };
+
         traversal assignIdToAction {
             uid = AITA,
             nodes = {ast, iactions}
@@ -595,7 +600,7 @@ node ste {
     },
     attributes {
         id key,
-        link value
+        link value { mandatory (buildSymbolTable -> )}
     }
 };
 
@@ -663,6 +668,7 @@ node attribute {
     children {
         id name {mandatory },
         id type_reference,
+        ilifetime lifetimes,
         attribute next
     },
 
@@ -691,9 +697,9 @@ node id {
     },
 
     attributes {
-        string orig { constructor },
-        string lwr { constructor },
-        string Upr { constructor },
+        string orig { constructor, mandatory },
+        string lwr { constructor, mandatory },
+        string Upr { constructor, mandatory },
         int row,
         int col_begin,
         int col_end

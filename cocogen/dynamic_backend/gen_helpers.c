@@ -19,3 +19,8 @@ char *DGHattributeField(node_st *attr)
 {
     return ID_ORIG(ATTRIBUTE_NAME(attr));
 }
+
+char *DGHattributeAccess(node_st *node, node_st *attr, char *arg)
+{
+    return STRcatn(6, ID_UPR(INODE_NAME(node)), "_", ID_UPR(ATTRIBUTE_NAME(attr)), "(", arg, ")");
+}

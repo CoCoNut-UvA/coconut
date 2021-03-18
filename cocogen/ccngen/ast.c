@@ -46,10 +46,11 @@ node_st *ASTattribute() {
     NODE_TYPE(node) = NT_ATTRIBUTE;
     ATTRIBUTE_NAME(node) = NULL;
     ATTRIBUTE_TYPE_REFERENCE(node) = NULL;
+    ATTRIBUTE_LIFETIMES(node) = NULL;
     ATTRIBUTE_NEXT(node) = NULL;
     ATTRIBUTE_TYPE(node) = 0;
     ATTRIBUTE_IN_CONSTRUCTOR(node) = 0;
-    NODE_NUMCHILDREN(node) = 3;
+    NODE_NUMCHILDREN(node) = 4;
     NODE_CHILDREN(node) = node->data.N_attribute->attribute_children.attribute_children_at;
     return node;}
 

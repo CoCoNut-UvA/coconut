@@ -10,6 +10,9 @@ node_st *TRAVlifetimes(node_st *node) {
     case NT_CHILD:
         CHILD_LIFETIMES(node) = TRAVopt(CHILD_LIFETIMES(node));
         break;
+    case NT_ATTRIBUTE:
+        ATTRIBUTE_LIFETIMES(node) = TRAVopt(ATTRIBUTE_LIFETIMES(node));
+        break;
     default:
         DBUG_ASSERT(false, "Current target has no child lifetimes");
         break;

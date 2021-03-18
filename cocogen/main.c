@@ -38,8 +38,6 @@ void BreakpointHandler(node_st *node)
 
 int main(int argc, char *argv[])
 {
-    //CCNsetBreakpointWithID(57);
-    //CCNsetVerbosity(3);
     CLprocessArgs(argc, argv);
     globals.filename = global_command_line.input_file;
     globals.line_map = HTnew_Int(25);

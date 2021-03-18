@@ -78,6 +78,7 @@ enum ccn_traversal_type {
     TRAV_SGNS,
     TRAV_MITL,
     TRAV_AITA,
+    TRAV_CLT,
     TRAV_free,
     TRAV_check,
     TRAV_cpy,

@@ -40,10 +40,11 @@ struct NODE_DATA_ATTRIBUTE {
         struct NODE_CHILDREN_ATTRIBUTE_STRUCT {
             node_st *name;
             node_st *type_reference;
+            node_st *lifetimes;
             node_st *next;
         } attribute_children_st;
 
-        node_st *attribute_children_at[3];
+        node_st *attribute_children_at[4];
     } attribute_children;
 
     enum attribute_type type;
@@ -292,6 +293,7 @@ struct NODE_DATA_AST {
 #define IENUM_IINFO(n) ((n)->data.N_ienum->iinfo)
 #define ATTRIBUTE_NAME(n) ((n)->data.N_attribute->attribute_children.attribute_children_st.name)
 #define ATTRIBUTE_TYPE_REFERENCE(n) ((n)->data.N_attribute->attribute_children.attribute_children_st.type_reference)
+#define ATTRIBUTE_LIFETIMES(n) ((n)->data.N_attribute->attribute_children.attribute_children_st.lifetimes)
 #define ATTRIBUTE_NEXT(n) ((n)->data.N_attribute->attribute_children.attribute_children_st.next)
 #define ATTRIBUTE_TYPE(n) ((n)->data.N_attribute->type)
 #define ATTRIBUTE_IN_CONSTRUCTOR(n) ((n)->data.N_attribute->in_constructor)

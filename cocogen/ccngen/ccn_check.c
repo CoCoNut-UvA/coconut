@@ -71,6 +71,18 @@ struct ccn_node *CHKid(struct ccn_node *arg_node) {
 
     }
 
+    if (ID_ORIG(arg_node) == NULL) {
+        CTI(CTI_ERROR, true, "Attribute(orig) in node(id) is missing, but specified as mandatory.\n");;
+    }
+
+    if (ID_LWR(arg_node) == NULL) {
+        CTI(CTI_ERROR, true, "Attribute(lwr) in node(id) is missing, but specified as mandatory.\n");;
+    }
+
+    if (ID_UPR(arg_node) == NULL) {
+        CTI(CTI_ERROR, true, "Attribute(Upr) in node(id) is missing, but specified as mandatory.\n");;
+    }
+
     TRAVchildren(arg_node);
     return arg_node;
 }
@@ -127,6 +139,13 @@ struct ccn_node *CHKattribute(struct ccn_node *arg_node) {
     if (ATTRIBUTE_TYPE_REFERENCE(arg_node)) {
         if (NODE_TYPE(ATTRIBUTE_TYPE_REFERENCE(arg_node)) != NT_ID) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(type_reference) of node(attribute) has disallowed type(%s) ", nodetypeToName(ATTRIBUTE_TYPE_REFERENCE(arg_node)));
+        }
+
+    }
+
+    if (ATTRIBUTE_LIFETIMES(arg_node)) {
+        if (NODE_TYPE(ATTRIBUTE_LIFETIMES(arg_node)) != NT_ILIFETIME) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(lifetimes) of node(attribute) has disallowed type(%s) ", nodetypeToName(ATTRIBUTE_LIFETIMES(arg_node)));
         }
 
     }
@@ -259,6 +278,13 @@ struct ccn_node *CHKste(struct ccn_node *arg_node) {
     if (STE_NEXT(arg_node)) {
         if (NODE_TYPE(STE_NEXT(arg_node)) != NT_STE) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(ste) has disallowed type(%s) ", nodetypeToName(STE_NEXT(arg_node)));
+        }
+
+    }
+
+    if (action_id >= 5 && true) {
+        if (STE_VALUE(arg_node) == NULL) {
+            CTI(CTI_ERROR, true, "Mandatory attribute(value) in node(ste) is missing.\n");;
         }
 
     }

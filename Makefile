@@ -5,8 +5,8 @@ default: release
 
 help:
 	@echo "Targets:"
-	@echo "  debug  : Generate build artifacts for a debug build in build-debug"
-	@echo "  release: Generate build artifacts for a release build in build-release"
+	@echo "  debug  : Generate build artifacts for a debug build in build/"
+	@echo "  release: Generate build artifacts for a release build in build/"
 
 
 # On older cmake -B does not create the directory.

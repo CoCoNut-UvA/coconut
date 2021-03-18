@@ -52,6 +52,7 @@ node_st *MITLinode(node_st *node)
     TRAVopt(INODE_LIFETIMES(node));
     in_node = false;
     TRAVopt(INODE_ICHILDREN(node));
+    TRAVopt(INODE_IATTRIBUTES(node));
     TRAVopt(INODE_NEXT(node));
     return node;
 }
