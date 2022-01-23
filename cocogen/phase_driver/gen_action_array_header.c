@@ -1,7 +1,8 @@
 
+#include "assert.h"
+#include <globals.h>
 #include <stddef.h>
 #include <stdio.h>
-#include "assert.h"
 
 #include "gen_helpers/out_macros.h"
 #include "palm/ctinfo.h"
@@ -10,8 +11,6 @@
 #include "filesystem/gen_files.h"
 
 
-static FILE *fp;
-static int indent = 0;
 static node_st *ast;
 static size_t size = 0;
 
@@ -21,7 +20,8 @@ static char *enum_action_name = "ccn_action_id";
 
 node_st *GAAHast(node_st *node)
 {
-    fp = FSgetIncludeFile("action_handling.h");
+    GeneratorContext *ctx = globals.gen_ctx;
+    GNopenIncludeFile(ctx, "action_handling.h");
     ast = node;
 
     OUT_ENUM("%s", enum_action_name);
@@ -47,12 +47,12 @@ node_st *GAAHast(node_st *node)
     OUT("#define CCN_ROOT_ACTION %s_%s\n", enum_action_pref, ID_UPR(IPHASE_NAME(AST_START_PHASE(node))));
     OUT("#endif\n\n");
 
-    fclose(fp);
     return node;
 }
 
 node_st *GAAHiphase(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     size++;
     OUT_ENUM_FIELD("%s_%s", enum_action_pref, ID_UPR(IPHASE_NAME(node)));
     TRAVopt(IPHASE_NEXT(node));
@@ -61,6 +61,7 @@ node_st *GAAHiphase(node_st *node)
 
 node_st *GAAHitraversal(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     size++;
     OUT_ENUM_FIELD("%s_%s", enum_action_pref, ID_UPR(ITRAVERSAL_NAME(node)));
     TRAVopt(ITRAVERSAL_NEXT(node));
@@ -69,6 +70,7 @@ node_st *GAAHitraversal(node_st *node)
 
 node_st *GAAHipass(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     size++;
     OUT_ENUM_FIELD("%s_%s", enum_action_pref, ID_UPR(IPASS_NAME(node)));
     TRAVopt(IPASS_NEXT(node));

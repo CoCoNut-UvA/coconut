@@ -15,10 +15,10 @@ void DGTDTfini()
 
 node_st *DGTDTast(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     struct data_dgtdt *data = DATA_DGTDT_GET();
     int indent = data->indent;
 
-    FILE *fp = globals.fp;
     OUT("const ccn_trav_data_ft trav_data_init_vtable[_TRAV_SIZE] = {TRAVdataNOP,");
     data->in_init_round = true;
     data->indent = indent;
@@ -40,9 +40,8 @@ node_st *DGTDTast(node_st *node)
 
 node_st *DGTDTitraversal(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     struct data_dgtdt *data = DATA_DGTDT_GET();
-    int indent = data->indent;
-    FILE *fp = globals.fp;
     if (ITRAVERSAL_DATA(node)) {
         if (data->in_init_round) {
             OUT("TRAVdataInit%s,", ID_ORIG(ITRAVERSAL_NAME(node)));

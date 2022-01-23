@@ -6,16 +6,14 @@
 #include "gen_helpers/out_macros.h"
 #include "globals.h"
 #include "palm/ctinfo.h"
+#include "generator/generator.h"
 
-static FILE *fp;
-static int indent = 0;
 static char *basic_node_type = "node_st";
 static int child_num = 0;
 static node_st *ste = NULL;
 
 node_st *DGNSast(node_st *node)
 {
-    fp = globals.fp;
     ste = AST_STABLE(node);
     TRAVchildren(node);
     return node;
@@ -25,6 +23,8 @@ node_st *DGNSinode(node_st *node)
 {
     char *name_upr = ID_UPR(INODE_NAME(node));
     char *name_lwr = ID_LWR(INODE_NAME(node));
+    GeneratorContext *ctx = globals.gen_ctx;
+
     OUT_STRUCT("NODE_DATA_%s", name_upr);
     {
         if (INODE_ICHILDREN(node)) {
@@ -47,6 +47,7 @@ node_st *DGNSinode(node_st *node)
 
 node_st *DGNSchild(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     child_num++;
     OUT_FIELD("%s *%s", basic_node_type, ID_LWR(CHILD_NAME(node)));
     TRAVchildren(node);
@@ -55,6 +56,7 @@ node_st *DGNSchild(node_st *node)
 
 node_st *DGNSattribute(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     if (ATTRIBUTE_TYPE(node) == AT_link) {
         OUT_FIELD("%s *%s", basic_node_type, ID_LWR(ATTRIBUTE_NAME(node)));
     } else if (ATTRIBUTE_TYPE(node) == AT_link_or_enum) {

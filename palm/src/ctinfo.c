@@ -75,7 +75,6 @@ static int warnings = 0;
 static void ProcessMessage(char *buffer, int line_length)
 {
     int index, column, last_space;
-
     index = 0;
     last_space = 0;
     column = 0;

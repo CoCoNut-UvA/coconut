@@ -9,6 +9,7 @@ ienum -> ienum[label="next"]
 attribute;
 attribute -> id[label="name"]
 attribute -> id[label="type_reference"]
+attribute -> ilifetime[label="lifetimes"]
 attribute -> attribute[label="next"]
 itravdata;
 itravdata -> id[label="name"]

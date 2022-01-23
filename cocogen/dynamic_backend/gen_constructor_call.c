@@ -10,12 +10,13 @@
 #include "gen_helpers/out_macros.h"
 #include "ccn/dynamic_core.h"
 #include "globals.h"
+#include "../gen_helpers.h"
+#include "dynamic_backend/gen_helpers.h"
 
 
-static FILE *fp;
-static int indent = 1;
 static int arg_num = 0;
 static node_st *ast;
+
 
 node_st *DGCCast(node_st *node)
 {
@@ -26,9 +27,9 @@ node_st *DGCCast(node_st *node)
 
 node_st *DGCCinode(node_st *node)
 {
-    fp = globals.fp;
+    GeneratorContext *ctx = globals.gen_ctx;
     arg_num = 0;
-    OUT("struct ccn_node *new_node = AST%s(", ID_LWR(INODE_NAME(node)));
+    OUT(GH_DEFAULT_NODE_TYPE() " *new_node =" DGH_NODE_CONSTR_CALL_SIG(), DGH_NODE_CONSTR_TARGET(node));
     TRAVopt(INODE_ICHILDREN(node));
     TRAVopt(INODE_IATTRIBUTES(node));
     OUT_NO_INDENT(");\n");
@@ -38,6 +39,7 @@ node_st *DGCCinode(node_st *node)
 
 node_st *DGCCchild(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     if (CHILD_IN_CONSTRUCTOR(node)) {
         if (arg_num) {
             OUT(", ");
@@ -51,6 +53,7 @@ node_st *DGCCchild(node_st *node)
 
 node_st *DGCCattribute(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     if (ATTRIBUTE_IN_CONSTRUCTOR(node)) {
         if (arg_num) {
             OUT(", ");

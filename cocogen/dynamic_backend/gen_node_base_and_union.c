@@ -11,14 +11,11 @@
 #include "globals.h"
 
 
-static FILE *fp;
-static int indent = 0;
 static char *basic_node_type = "node_st";
 
 node_st *dynamicGenBaseNodeInit(node_st *root)
 {
-    indent = 0;
-    fp = globals.fp;
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT_START_FUNC("%s *NewNode()", basic_node_type);
     OUT_FIELD("%s *node = MEMmalloc(sizeof(%s))", basic_node_type, basic_node_type);
     OUT_FIELD("NODE_TYPE(node) = NT_NULL");
@@ -37,8 +34,7 @@ node_st *dynamicGenBaseNodeInit(node_st *root)
 
 node_st *dynamicGenBaseNode(node_st *root)
 {
-    indent = 0;
-    fp = globals.fp;
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT("#define NODE_TYPE(n) ((n)->nodetype)\n");
     OUT("#define NODE_CHILDREN(n) ((n)->children)\n");
     OUT("#define NODE_NUMCHILDREN(n) ((n)->num_children)\n");
@@ -46,7 +42,7 @@ node_st *dynamicGenBaseNode(node_st *root)
     OUT("#define NODE_ELINE(n) ((n)->end_line)\n");
     OUT("#define NODE_BCOL(n) ((n)->begin_col)\n");
     OUT("#define NODE_ECOL(n) ((n)->end_col)\n");
-    OUT_STRUCT("ccn_node");
+    OUT_TYPEDEF_STRUCT("ccn_node");
     OUT_FIELD("enum ccn_nodetype nodetype");
     OUT_FIELD("union NODE_DATA data");
     OUT_FIELD("struct ccn_node **children");
@@ -55,15 +51,14 @@ node_st *dynamicGenBaseNode(node_st *root)
     OUT_FIELD("uint32_t end_line");
     OUT_FIELD("uint32_t begin_col");
     OUT_FIELD("uint32_t end_col");
-    OUT_STRUCT_END();
+    OUT_TYPEDEF_STRUCT_END("ccn_node");
 
     return root;
 }
 
 node_st *DGBUast(node_st *node)
 {
-    fp = globals.fp;
-    indent = 0;
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT_UNION("NODE_DATA");
     TRAVchildren(node);
     OUT_STRUCT_END();
@@ -73,6 +68,7 @@ node_st *DGBUast(node_st *node)
 
 node_st *DGBUinode(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     TRAVopt(INODE_NEXT(node));
     OUT_FIELD("struct NODE_DATA_%s *N_%s", ID_UPR((INODE_NAME(node))), ID_LWR(INODE_NAME(node)));
     return node;

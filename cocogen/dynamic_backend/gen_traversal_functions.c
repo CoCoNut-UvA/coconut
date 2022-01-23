@@ -9,21 +9,21 @@
 #include "ccn/ccn.h"
 #include "ccngen/ast.h"
 #include "ccngen/trav_data.h"
-#include "palm/hash_table.h"
 #include "filesystem/gen_files.h"
 #include "gen_helpers/out_macros.h"
-#include "palm/str.h"
+#include "palm/hash_table.h"
 #include "palm/memory.h"
+#include "palm/str.h"
+#include <globals.h>
 
 static htable_st *lookup;
-static FILE *fp;
-static int indent = 0;
 
 void DGT_Finit() { return; }
 void DGT_Ffini() { return; }
 
 static void *MapChildrenSource(void *key, void *ids)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     node_st *curr= (node_st*)ids;
     char *key_upr = STRupper((char*)key);
     OUT_START_FUNC("node_st *TRAV%s(node_st *node)", (char*)key);
@@ -35,10 +35,8 @@ static void *MapChildrenSource(void *key, void *ids)
         OUT_END_CASE();
         curr = ID_NEXT(curr);
     }
-    OUT("default:\n");
-    indent++;
+    OUT_BEGIN_DEFAULT_CASE();
     OUT_FIELD("DBUG_ASSERT(false, \"Current target has no child %s\")", (char*)key);
-    OUT_FIELD("break");
     OUT_END_CASE();
     OUT_END_SWITCH();
 
@@ -50,6 +48,7 @@ static void *MapChildrenSource(void *key, void *ids)
 
 static void *MapChildrenInclude(void *key, void *ids)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     ids = ids;
     OUT_FIELD("node_st *TRAV%s(node_st *node)", (char*)key);
 
@@ -61,20 +60,19 @@ static void *MapChildrenInclude(void *key, void *ids)
  */
 node_st *DGT_Fast(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     lookup = HTnew_String(AST_NUM_NODES(node));
     TRAVopt(AST_INODES(node));
-    fp = FSgetSourceFile("trav.c");
+    GNopenSourceFile(ctx, "trav.c");
     OUT("#include <stdbool.h>\n");
     OUT("#include \"palm/dbug.h\"\n");
     OUT("#include \"ccn/ccn.h\"\n");
     OUT("#include \"ccngen/ast.h\"\n");
     HTmapWithKey(lookup, MapChildrenSource);
-    fclose(fp);
 
-    fp = FSgetIncludeFile("trav.h");
+    GNopenIncludeFile(ctx, "trav.h");
     OUT("#include \"ast.h\"\n");
     HTmapWithKey(lookup, MapChildrenInclude);
-    fclose(fp);
     return node;
 }
 

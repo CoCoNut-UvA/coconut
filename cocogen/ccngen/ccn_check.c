@@ -5,45 +5,64 @@
 #include "palm/ctinfo.h"
 char *nodetypeToName(node_st *node) {
     switch (NODE_TYPE(node)) {
-    case NT_ID:
-        return "id";
-    case NT_IENUM:
-        return "ienum";
-    case NT_ATTRIBUTE:
-        return "attribute";
-    case NT_ITRAVDATA:
-        return "itravdata";
-    case NT_SETOPERATION:
-        return "setoperation";
-    case NT_SETLITERAL:
-        return "setliteral";
-    case NT_SETREFERENCE:
-        return "setreference";
-    case NT_STE:
-        return "ste";
-    case NT_CHILD:
-        return "child";
-    case NT_LIFETIME_RANGE:
-        return "lifetime_range";
-    case NT_ILIFETIME:
-        return "ilifetime";
-    case NT_INODESET:
-        return "inodeset";
-    case NT_INODE:
-        return "inode";
-    case NT_IPASS:
-        return "ipass";
-    case NT_ITRAVERSAL:
-        return "itraversal";
-    case NT_IPHASE:
-        return "iphase";
-    case NT_IACTIONS:
-        return "iactions";
-    case NT_AST:
-        return "ast";
-    default:
-        return "Unknown";
-    }
+        case NT_ID:
+            return "id";
+            break;
+        case NT_IENUM:
+            return "ienum";
+            break;
+        case NT_ATTRIBUTE:
+            return "attribute";
+            break;
+        case NT_ITRAVDATA:
+            return "itravdata";
+            break;
+        case NT_SETOPERATION:
+            return "setoperation";
+            break;
+        case NT_SETLITERAL:
+            return "setliteral";
+            break;
+        case NT_SETREFERENCE:
+            return "setreference";
+            break;
+        case NT_STE:
+            return "ste";
+            break;
+        case NT_CHILD:
+            return "child";
+            break;
+        case NT_LIFETIME_RANGE:
+            return "lifetime_range";
+            break;
+        case NT_ILIFETIME:
+            return "ilifetime";
+            break;
+        case NT_INODESET:
+            return "inodeset";
+            break;
+        case NT_INODE:
+            return "inode";
+            break;
+        case NT_IPASS:
+            return "ipass";
+            break;
+        case NT_ITRAVERSAL:
+            return "itraversal";
+            break;
+        case NT_IPHASE:
+            return "iphase";
+            break;
+        case NT_IACTIONS:
+            return "iactions";
+            break;
+        case NT_AST:
+            return "ast";
+            break;
+        default:
+            return "Unknown";
+                }
+
 }
 
 static bool TypeIssetexpr(node_st *arg_node) {

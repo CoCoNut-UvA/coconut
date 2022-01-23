@@ -3,13 +3,12 @@
 #include "gen_helpers/format.h"
 #include "globals.h"
 
-static int indent = 0;
 static bool has_user_type = false;
 static bool check_user_type = false;
 node_st *DGTDCitraversal(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     has_user_type = false;
-    FILE *fp = globals.fp;
     node_st *id = ITRAVERSAL_NAME(node);
     if (ITRAVERSAL_DATA(node)) {
         has_user_type = false;
@@ -39,6 +38,7 @@ node_st *DGTDCitraversal(node_st *node)
 
 node_st *DGTDCitravdata(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     if (check_user_type) {
         if (ITRAVDATA_TYPE(node) == AT_user) {
             has_user_type = true;
@@ -48,7 +48,6 @@ node_st *DGTDCitravdata(node_st *node)
         return node;
     }
 
-    FILE *fp = globals.fp;
     if (ITRAVDATA_TYPE(node) == AT_user) {
         // This might become a call to a function.
         OUT_FIELD("data->%s = 0", ID_ORIG(ITRAVDATA_NAME(node)));

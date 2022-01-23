@@ -421,7 +421,7 @@ union NODE_DATA {
 #define NODE_ELINE(n) ((n)->end_line)
 #define NODE_BCOL(n) ((n)->begin_col)
 #define NODE_ECOL(n) ((n)->end_col)
-struct ccn_node {
+typedef struct ccn_node {
     enum ccn_nodetype nodetype;
     union NODE_DATA data;
     struct ccn_node **children;
@@ -430,5 +430,5 @@ struct ccn_node {
     uint32_t end_line;
     uint32_t begin_col;
     uint32_t end_col;
-};
+} ccn_node;
 

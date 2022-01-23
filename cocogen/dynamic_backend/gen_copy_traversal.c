@@ -16,16 +16,15 @@
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
 #include "filesystem/gen_files.h"
+#include "dynamic_backend/gen_helpers.h"
 
-static FILE *fp;
-static int indent = 0;
 static int arg_num = 0;
 static node_st *curr_node;
 
 node_st *DGCTast(node_st *node)
 {
-    fp = FSgetSourceFile("ccn_copy.c");
-    globals.fp = fp;
+    GeneratorContext *ctx = globals.gen_ctx;
+    GNopenSourceFile(ctx, "ccn_copy.c");
     OUT("#include \"ccngen/ast.h\"\n");
     OUT("#include <stddef.h>\n");
     OUT("#include \"palm/str.h\"\n");
@@ -37,8 +36,6 @@ node_st *DGCTast(node_st *node)
     OUT_STATEMENT("NODE_ELINE(target) = NODE_ELINE(source)");
     OUT_END_FUNC();
     TRAVopt(AST_INODES(node));
-    fclose(fp);
-    globals.fp = 0;
     return node;
 }
 
@@ -70,14 +67,17 @@ node_st *DGCTipass(node_st *node)
 
 node_st *DGCTinode(node_st *node)
 {
+    const char *node_argument_name = "arg_node";
+    const char *new_node_name = "new_node";
+    GeneratorContext *ctx = globals.gen_ctx;
     curr_node = node;
     arg_num = 0;
-    OUT_START_FUNC("struct ccn_node *CPY%s(struct ccn_node *arg_node)", ID_LWR(INODE_NAME(node)));
+    OUT_START_FUNC(DGH_TRAV_FUNC_SIG(), "CPY", DGH_TRAVERSAL_TARGET_ID(INODE_NAME(node)), node_argument_name);
     TRAVstart(node, TRAV_DGCC);
-    OUT_STATEMENT("CopyBaseNode(new_node, arg_node)");
+    OUT_STATEMENT("CopyBaseNode(%s, %s)", new_node_name, node_argument_name);
     TRAVopt(INODE_ICHILDREN(node));
     TRAVopt(INODE_IATTRIBUTES(node));
-    OUT_FIELD("return new_node");
+    OUT_FIELD("return %s", new_node_name);
     OUT_END_FUNC();
     TRAVopt(INODE_NEXT(node));
     return node;
@@ -90,6 +90,7 @@ node_st *DGCTinodeset(node_st *node)
 
 node_st *DGCTchild(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     char *node_name = ID_UPR(INODE_NAME(curr_node));
     char *child_name = ID_UPR(CHILD_NAME(node));
     OUT_FIELD("%s_%s(new_node) = TRAVopt(%s_%s(arg_node))", node_name, child_name, node_name, child_name);
@@ -99,6 +100,7 @@ node_st *DGCTchild(node_st *node)
 
 node_st *DGCTattribute(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     char *node_name = ID_UPR(INODE_NAME(curr_node));
     char *attr_name = ID_UPR(ATTRIBUTE_NAME(node));
     if (ATTRIBUTE_TYPE(node) == AT_string) {

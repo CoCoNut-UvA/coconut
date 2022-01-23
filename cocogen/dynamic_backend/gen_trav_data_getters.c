@@ -5,9 +5,8 @@
 
 node_st *DGTDGitraversal(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     if (ITRAVERSAL_DATA(node)) {
-        FILE *fp = globals.fp;
-        int indent = 0;
         node_st *id =  ITRAVERSAL_IPREFIX(node);
 
         OUT("#define DATA_%s_GET() (TRAVgetCurrent()->trav_data.%s)\n",

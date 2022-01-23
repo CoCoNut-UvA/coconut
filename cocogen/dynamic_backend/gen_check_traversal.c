@@ -21,8 +21,6 @@
 #define LT_CHILD 2
 #define LT_ATTRIBUTE 3
 
-static FILE *fp;
-static int indent = 0;
 static node_st *ast;
 static node_st *curr_node;
 static node_st *curr_child;
@@ -35,8 +33,8 @@ void DGCHTfini() { return; }
 
 node_st *DGCHTast(node_st *node)
 {
-    fp = FSgetSourceFile("ccn_check.c");
-    globals.fp = fp;
+    GeneratorContext *ctx = globals.gen_ctx;
+    GNopenSourceFile(ctx, "ccn_check.c");
     OUT("#include <stdbool.h>\n");
     OUT("#include \"ccn/dynamic_core.h\"\n");
     OUT("#include \"ccn/phase_driver.h\"\n");
@@ -49,15 +47,13 @@ node_st *DGCHTast(node_st *node)
     TRAVinodes(node);
     OUT_BEGIN_DEFAULT_CASE();
     OUT("return \"Unknown\";\n");
-    indent--;
+    OUT_END_CASE_NO_BREAK();
     OUT_END_SWITCH();
     OUT_END_FUNC();
     gen_type_names = false;
 
     TRAVopt(AST_INODESETS(node));
     TRAVopt(AST_INODES(node));
-    fclose(fp);
-    globals.fp = 0;
     return node;
 }
 
@@ -90,6 +86,7 @@ node_st *DGCHTipass(node_st *node)
 
 node_st *DGCHTinode(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     if (gen_type_names) {
         OUT_BEGIN_CASE("NT_%s", ID_UPR(INODE_NAME(node)));
         OUT_STATEMENT("return \"%s\"", ID_ORIG(INODE_NAME(node)));
@@ -119,6 +116,7 @@ node_st *DGCHTinode(node_st *node)
 
 node_st *DGCHTinodeset(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT_START_FUNC("static bool TypeIs%s(node_st *arg_node)", ID_LWR(INODESET_NAME(node)));
     OUT_FIELD("enum ccn_nodetype node_type = NODE_TYPE(arg_node)");
     OUT("return (false");
@@ -131,6 +129,7 @@ node_st *DGCHTinodeset(node_st *node)
 
 node_st *DGCHTchild(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     struct data_dgcht *data = DATA_DGCHT_GET();
     data->lifetime_target = LT_CHILD;
     curr_child = node;
@@ -180,6 +179,7 @@ node_st *DGCHTsetoperation(node_st *node)
 
 node_st *DGCHTsetliteral(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     if (!node) {
         return node;
     }
@@ -212,6 +212,7 @@ node_st *DGCHTid(node_st *node)
 
 static void LifetimeNodeDisallowed(node_st *lifetime_begin, node_st *lifetime_end, char *error)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT("if (");
     if (lifetime_begin) {
         if (LIFETIME_RANGE_INCLUSIVE(lifetime_begin)) {
@@ -236,7 +237,7 @@ static void LifetimeNodeDisallowed(node_st *lifetime_begin, node_st *lifetime_en
         }
     }
     OUT_NO_INDENT("true) {\n");
-    indent++;
+    GNindentIncrease(ctx);
     OUT_FIELD("CTI(CTI_ERROR, true, \"%s\\n\")",
               error);
     OUT_END_IF();
@@ -244,6 +245,7 @@ static void LifetimeNodeDisallowed(node_st *lifetime_begin, node_st *lifetime_en
 
 static void LifetimeNodeAllowed(node_st *lifetime_begin, node_st *lifetime_end, char *error)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT("if (");
     if (lifetime_begin) {
         if (LIFETIME_RANGE_INCLUSIVE(lifetime_begin)) {
@@ -261,7 +263,7 @@ static void LifetimeNodeAllowed(node_st *lifetime_begin, node_st *lifetime_end, 
         }
     }
     OUT_NO_INDENT("false) {\n");
-    indent++;
+    GNindentIncrease(ctx);
     OUT_FIELD("CTI(CTI_ERROR, true, \"Found disallowed %s in tree.\\n\")",
               error);
     OUT_END_IF();
@@ -271,6 +273,7 @@ static void LifetimeNodeAllowed(node_st *lifetime_begin, node_st *lifetime_end, 
  */
 static void LifetimeNodeGen(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     assert(NODE_TYPE(node) == NT_ILIFETIME);
     // Nodes can only specify disallowed lifetimes.
     assert(ILIFETIME_TYPE(node) == LT_disallowed || ILIFETIME_TYPE(node) == LT_allowed);
@@ -291,6 +294,7 @@ static void LifetimeNodeGen(node_st *node)
 
 static void LifetimeChildDisallowed(node_st *lifetime_begin, node_st *lifetime_end)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT("if (");
     if (lifetime_begin) {
         if (LIFETIME_RANGE_INCLUSIVE(lifetime_begin)) {
@@ -315,21 +319,22 @@ static void LifetimeChildDisallowed(node_st *lifetime_begin, node_st *lifetime_e
         }
     }
     OUT_NO_INDENT("true) {\n");
-    indent++;
+    GNindentIncrease(ctx);
 
-    OUT_BEGIN_IF("%s_%s(arg_node) != NULL",
-                 ID_UPR(INODE_NAME(curr_node)),
-                 ID_UPR(CHILD_NAME(curr_child)));
-    OUT_FIELD(
-        "CTI(CTI_ERROR, true, \"Found disallowed child(%s) in node(%s).\\n\");",
-        ID_ORIG(CHILD_NAME(curr_child)),
-        ID_ORIG(INODE_NAME(curr_node)));
-    OUT_END_IF();
+    {
+        OUT_BEGIN_IF("%s_%s(arg_node) != NULL", ID_UPR(INODE_NAME(curr_node)),
+                     ID_UPR(CHILD_NAME(curr_child)));
+        OUT_FIELD("CTI(CTI_ERROR, true, \"Found disallowed child(%s) in node(%s).\\n\");",
+                  ID_ORIG(CHILD_NAME(curr_child)),
+                  ID_ORIG(INODE_NAME(curr_node)));
+        OUT_END_IF();
+    }
 
     OUT_END_IF();
 }
 static void LifetimeChildAllowed(node_st *lifetime_begin, node_st *lifetime_end)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT("if (");
     if (lifetime_begin) {
         if (LIFETIME_RANGE_INCLUSIVE(lifetime_begin)) {
@@ -347,7 +352,7 @@ static void LifetimeChildAllowed(node_st *lifetime_begin, node_st *lifetime_end)
         }
     }
     OUT_NO_INDENT("false) {\n");
-    indent++;
+    GNindentIncrease(ctx);
 
     OUT_BEGIN_IF("%s_%s(arg_node) != NULL",
                  ID_UPR(INODE_NAME(curr_node)),
@@ -363,6 +368,7 @@ static void LifetimeChildAllowed(node_st *lifetime_begin, node_st *lifetime_end)
 
 static void LifetimeChildMandatory(node_st *lifetime_begin, node_st *lifetime_end)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT("if (");
     if (lifetime_begin) {
         if (LIFETIME_RANGE_INCLUSIVE(lifetime_begin)) {
@@ -387,7 +393,7 @@ static void LifetimeChildMandatory(node_st *lifetime_begin, node_st *lifetime_en
         }
     }
     OUT_NO_INDENT("true) {\n");
-    indent++;
+    GNindentIncrease(ctx);
 
     OUT_BEGIN_IF("%s_%s(arg_node) == NULL",
                  ID_UPR(INODE_NAME(curr_node)),
@@ -403,6 +409,7 @@ static void LifetimeChildMandatory(node_st *lifetime_begin, node_st *lifetime_en
 
 static void LifetimeChildOptional(node_st *lifetime_begin, node_st *lifetime_end)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT("if (");
     if (lifetime_begin) {
         if (LIFETIME_RANGE_INCLUSIVE(lifetime_begin)) {
@@ -420,7 +427,7 @@ static void LifetimeChildOptional(node_st *lifetime_begin, node_st *lifetime_end
         }
     }
     OUT_NO_INDENT("false) {\n");
-    indent++;
+    GNindentIncrease(ctx);
 
     OUT_BEGIN_IF("%s_%s(arg_node) == NULL",
                  ID_UPR(INODE_NAME(curr_node)),
@@ -437,6 +444,7 @@ static void LifetimeChildOptional(node_st *lifetime_begin, node_st *lifetime_end
 /* The check is executed in the parent of this child. */
 static void LifetimeChildGen(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     assert(NODE_TYPE(node) == NT_ILIFETIME);
     if (!ILIFETIME_BEGIN(node) && !ILIFETIME_END(node)) {
         if (ILIFETIME_TYPE(node) == LT_disallowed) {
@@ -463,6 +471,7 @@ static void LifetimeChildGen(node_st *node)
 
 static void LifetimeAttributeDisallowed(node_st *lifetime_begin, node_st *lifetime_end, char *access)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT("if (");
     if (lifetime_begin) {
         if (LIFETIME_RANGE_INCLUSIVE(lifetime_begin)) {
@@ -487,7 +496,7 @@ static void LifetimeAttributeDisallowed(node_st *lifetime_begin, node_st *lifeti
         }
     }
     OUT_NO_INDENT("true) {\n");
-    indent++;
+    GNindentIncrease(ctx);
 
     OUT_BEGIN_IF("%s != NULL", access);
     OUT_FIELD(
@@ -500,6 +509,7 @@ static void LifetimeAttributeDisallowed(node_st *lifetime_begin, node_st *lifeti
 }
 static void LifetimeAttributeAllowed(node_st *lifetime_begin, node_st *lifetime_end, char *access)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT("if (");
     if (lifetime_begin) {
         if (LIFETIME_RANGE_INCLUSIVE(lifetime_begin)) {
@@ -517,7 +527,7 @@ static void LifetimeAttributeAllowed(node_st *lifetime_begin, node_st *lifetime_
         }
     }
     OUT_NO_INDENT("false) {\n");
-    indent++;
+    GNindentIncrease(ctx);
 
     OUT_BEGIN_IF("%s != NULL", access);
     OUT_FIELD(
@@ -531,6 +541,7 @@ static void LifetimeAttributeAllowed(node_st *lifetime_begin, node_st *lifetime_
 
 static void LifetimeAttributeMandatory(node_st *lifetime_begin, node_st *lifetime_end, char *access)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT("if (");
     if (lifetime_begin) {
         if (LIFETIME_RANGE_INCLUSIVE(lifetime_begin)) {
@@ -555,7 +566,7 @@ static void LifetimeAttributeMandatory(node_st *lifetime_begin, node_st *lifetim
         }
     }
     OUT_NO_INDENT("true) {\n");
-    indent++;
+    GNindentIncrease(ctx);
 
     OUT_BEGIN_IF("%s == NULL", access);
     OUT_FIELD(
@@ -569,6 +580,7 @@ static void LifetimeAttributeMandatory(node_st *lifetime_begin, node_st *lifetim
 
 static void LifetimeAttributeOptional(node_st *lifetime_begin, node_st *lifetime_end, char *access)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT("if (");
     if (lifetime_begin) {
         if (LIFETIME_RANGE_INCLUSIVE(lifetime_begin)) {
@@ -586,7 +598,7 @@ static void LifetimeAttributeOptional(node_st *lifetime_begin, node_st *lifetime
         }
     }
     OUT_NO_INDENT("false) {\n");
-    indent++;
+    GNindentIncrease(ctx);
 
     OUT_BEGIN_IF("%s == NULL", access);
     OUT_FIELD(
@@ -600,6 +612,7 @@ static void LifetimeAttributeOptional(node_st *lifetime_begin, node_st *lifetime
 
 static void LifetimeAttributeGen(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     assert(NODE_TYPE(node) == NT_ILIFETIME);
     assert(curr_attribute != NULL);
     char *access = DGHattributeAccess(curr_node, curr_attribute, "arg_node");

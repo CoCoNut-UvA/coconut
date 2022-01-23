@@ -27,7 +27,8 @@ add_executable(cocogen main.c commandline.c frontend/scanAndParse/scan_parse.c
         sets/literal_insert.c sets/set.h sets/set.c sets/literal_lookup.c sets/literal_intersect.c sets/literal_union.c sets/literal_difference.c phase_driver/gen_gate_header.c dynamic_backend/gate.c
         dynamic_backend/gen_user_passes.c dynamic_backend/gen_user_traversals.c
         static/gates.c static/gen_ast_structs.c dynamic_backend/gen_helpers.c dynamic_backend/gen_traversal_functions.c
-        frontend/symboltable.c frontend/symboltable.h frontend/lifetimes/check_lifetimes.c)
+        frontend/symboltable.c frontend/symboltable.h frontend/lifetimes/check_lifetimes.c generator/generator.c generator/generator.h
+        ${FILES} gen_helpers.h)
 
 target_compile_options(cocogen PRIVATE
         $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>

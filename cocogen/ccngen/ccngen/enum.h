@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 enum nodesettype {
     NS_NULL,
     NS_SETEXPR,

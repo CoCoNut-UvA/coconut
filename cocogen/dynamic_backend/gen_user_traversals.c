@@ -7,7 +7,6 @@
 #include <err.h>
 
 static char *curr_trav;
-static FILE *fp;
 static node_st *ast;
 
 node_st *DUGTast(node_st *node)
@@ -19,12 +18,13 @@ node_st *DUGTast(node_st *node)
 
 node_st *DUGTitraversal(node_st *node)
 {
-    char *filename = STRcatn(4, globals.gen_user_dir, "trav_", ID_LWR(ITRAVERSAL_NAME(node)), ".c");
-    fp = fopen(filename, "w");
-    if (!fp) {
-        err(EXIT_FAILURE, "Can not open user file: %s", filename);
+    GeneratorContext *ctx = globals.gen_ctx;
+    {
+        char *filename = STRcatn(3, "trav_", ID_LWR(ITRAVERSAL_NAME(node)), ".c");
+        GNopenUserFile(ctx, filename);
+        MEMfree(filename);
     }
-    int indent = 0;
+
     OUT("/**\n");
     OUT(" * @file\n");
     OUT(" *\n");
@@ -52,9 +52,6 @@ node_st *DUGTitraversal(node_st *node)
         TRAVdo(AST_INODES(ast));
     }
 
-    fclose(fp);
-    MEMfree(filename);
-
     TRAVopt(ITRAVERSAL_NEXT(node));
     return node;
 }
@@ -68,7 +65,7 @@ node_st *DUGTinode(node_st *node)
 
 node_st *DUGTid(node_st *node)
 {
-    int indent = 0;
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT("/**\n");
     OUT(" * @fn %s%s\n", curr_trav, ID_LWR(node));
     OUT(" */\n");

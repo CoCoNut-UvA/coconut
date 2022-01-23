@@ -20,8 +20,8 @@ struct globals globals;
  */
 node_st *genDefines(node_st *ast)
 {
-    int indent = 0;
-    FILE *fp = FSgetIncludeFile("ccn_defs.h");
+    GeneratorContext *ctx = globals.gen_ctx;
+    GNopenIncludeFile(ctx, "ccn_defs.h");
 
     if (AST_USES_UNSAFE(ast)) {
         OUT("#define CCN_USES_UNSAFE true\n");
@@ -45,6 +45,8 @@ int main(int argc, char *argv[])
     globals.gen_user_dir = STRcat(global_command_line.gen_dir, "user/");
     globals.gen_src_dir = global_command_line.gen_dir;
     globals.show_ast = global_command_line.show_ast;
+    globals.gen_ctx = GNnew();
+
     if (global_command_line.backend == NULL) {
         globals.backend = "dynamic";
     } else {

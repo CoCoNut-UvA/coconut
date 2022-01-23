@@ -4,162 +4,31 @@
 #pragma once
 
 #include <stdio.h>
-
+#include "generator/generator.h"
 #include "gen_helpers/format.h"
 
 
-#define OUT(...) FMTprintIndentLevel(fp, indent); fprintf(fp, __VA_ARGS__)
+#define OUT(fmt, ...) GNprint(ctx, GN_DEFAULT, fmt, ## __VA_ARGS__)
+#define OUT_NO_INDENT(fmt, ...) GNprint(ctx, GN_NO_WS, fmt, ## __VA_ARGS__)
+#define OUT_STRUCT(fmt, ...) GNprint(ctx, GN_INCREASE_WS_AFTER, "struct " fmt " {\n", ## __VA_ARGS__)
+#define OUT_TYPEDEF_STRUCT(fmt, ...) GNprint(ctx, GN_INCREASE_WS_AFTER, "typedef struct " fmt " {\n", ## __VA_ARGS__)
+#define OUT_UNION(fmt, ...) GNprint(ctx, GN_INCREASE_WS_AFTER, "union " fmt " {\n", ## __VA_ARGS__)
+#define OUT_FIELD(fmt, ...) GNprint(ctx, GN_DEFAULT, fmt ";\n", ## __VA_ARGS__)
+#define OUT_STRUCT_END() GNprint(ctx, GN_DECREASE_WS_BEFORE, "};\n\n")
+#define OUT_TYPEDEF_STRUCT_END(fmt, ...)  GNprint(ctx, GN_DECREASE_WS_BEFORE, "} " fmt ";\n\n", ##__VA_ARGS__)
+#define OUT_STATEMENT(fmt, ...) GNprint(ctx, GN_DEFAULT, fmt ";\n", ## __VA_ARGS__)
+#define OUT_START_FUNC(fmt, ...) GNprint(ctx, GN_INCREASE_WS_AFTER, fmt " {\n", ## __VA_ARGS__)
+#define OUT_END_FUNC() GNprint(ctx, GN_DECREASE_WS_BEFORE, "}\n\n")
+#define OUT_START_FUNC_FIELD() GNprint(ctx, GN_INCREASE_WS_AFTER, " {\n")
+#define OUT_BEGIN_IF(fmt, ...) GNprint(ctx, GN_INCREASE_WS_AFTER, "if ("fmt ") {\n", ## __VA_ARGS__)
+#define OUT_END_IF() GNprint(ctx, GN_DECREASE_WS_BEFORE, "}\n\n")
+#define OUT_ENUM_FIELD(fmt, ...)  GNprint(ctx, GN_DEFAULT, fmt ",\n", ## __VA_ARGS__)
+#define OUT_BEGIN_SWITCH(fmt, ...) GNprint(ctx, GN_INCREASE_WS_AFTER, "switch (" fmt ") {\n", ## __VA_ARGS__)
+#define OUT_BEGIN_CASE(fmt, ...) GNprint(ctx, GN_INCREASE_WS_AFTER, "case " fmt ":\n", ## __VA_ARGS__)
+#define OUT_END_CASE() GNprint(ctx, GN_DECREASE_WS_AFTER, "break;\n");
+#define OUT_END_CASE_NO_BREAK() GNprint(ctx, GN_DECREASE_WS_AFTER, "");
+#define OUT_BEGIN_DEFAULT_CASE() GNprint(ctx, GN_INCREASE_WS_AFTER, "default:\n")
+#define OUT_END_SWITCH() GNprint(ctx, GN_DECREASE_WS_BEFORE, "}\n\n")
+#define OUT_ENUM(fmt, ...) GNprint(ctx, GN_INCREASE_WS_AFTER, "enum " fmt " {\n", ##__VA_ARGS__)
+#define OUT_ENUM_END(...)  GNprint(ctx, GN_DECREASE_WS_BEFORE, "};\n\n")
 
-#define OUT_NO_INDENT(...) (fprintf(fp, __VA_ARGS__))
-
-#define OUT_STRUCT(...)                                                        \
-    FMTprintIndentLevel(fp, indent);                                            \
-    indent++;                                                                  \
-    fprintf(fp, "struct ");                                                    \
-    fprintf(fp, __VA_ARGS__);                                                  \
-    fprintf(fp, " {\n")
-
-#define OUT_TYPEDEF_STRUCT(...)                                                \
-    FMTprintIndentLevel(fp, indent);                                            \
-    indent++;                                                                  \
-    fprintf(fp, "typedef struct ");                                            \
-    fprintf(fp, __VA_ARGS__);                                                  \
-    fprintf(fp, " {\n")
-
-#define OUT_UNION(...)                                                         \
-    FMTprintIndentLevel(fp, indent);                                            \
-    indent++;                                                                  \
-    fprintf(fp, "union ");                                                     \
-    fprintf(fp, __VA_ARGS__);                                                  \
-    fprintf(fp, " {\n")
-
-#define OUT_FIELD(...)                                                         \
-    FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, __VA_ARGS__);                                                  \
-    fprintf(fp, ";\n")
-
-#define OUT_STRUCT_END()                                                       \
-    indent--;                                                                  \
-    FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, "};\n\n")
-
-#define OUT_TYPEDEF_STRUCT_END(...)                                            \
-    indent--;                                                                  \
-    FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, "} ");                                                         \
-    fprintf(fp, __VA_ARGS__);                                                  \
-    fprintf(fp, ";\n\n")
-
-#define OUT_STATEMENT(...)                                                     \
-    FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, __VA_ARGS__);                                                  \
-    fprintf(fp, ";\n")
-
-#define OUT_START_FUNC(...)                                                    \
-    FMTprintIndentLevel(fp, indent);                                            \
-    indent++;                                                                  \
-    fprintf(fp, __VA_ARGS__);                                                  \
-    fprintf(fp, " {\n")
-
-#define OUT_START_FUNC_FIELD()                                                 \
-    FMTprintIndentLevel(fp, indent);                                            \
-    indent++;                                                                  \
-    fprintf(fp, " {\n")
-
-#define OUT_END_FUNC()                                                         \
-    indent--;                                                                  \
-    FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, "}\n\n")
-
-#define OUT_BEGIN_IF(...)                                                      \
-    FMTprintIndentLevel(fp, indent);                                            \
-    indent++;                                                                  \
-    fprintf(fp, "if (");                                                       \
-    fprintf(fp, __VA_ARGS__);                                                  \
-    fprintf(fp, ") {\n")
-
-#define OUT_END_IF()                                                           \
-    indent--;                                                                  \
-    FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, "}\n\n");
-
-#define OUT_BEGIN_FOR(...)                                                     \
-    FMTprintIndentLevel(fp, indent);                                            \
-    indent++;                                                                  \
-    fprintf(fp, "for (");                                                      \
-    fprintf(fp, __VA_ARGS__);                                                  \
-    fprintf(fp, ") {\n");
-
-#define OUT_END_FOR()                                                          \
-    indent--;                                                                  \
-    FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, "}\n");
-
-#define OUT_BEGIN_WHILE(...)                                                   \
-    FMTprintIndentLevel(fp, indent);                                            \
-    indent++;                                                                  \
-    fprintf(fp, "while (");                                                    \
-    fprintf(fp, __VA_ARGS__);                                                  \
-    fprintf(fp, ") {\n");
-
-#define OUT_END_WHILE()                                                        \
-    indent--;                                                                  \
-    FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, "}\n");
-
-#define OUT_ENUM_FIELD(...)                                                    \
-    FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, __VA_ARGS__);                                                  \
-    fprintf(fp, ",\n");
-
-#define OUT_BEGIN_ELSE()                                                       \
-    FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, "else {\n");                                                   \
-    indent++;
-
-#define OUT_END_ELSE()                                                         \
-    indent--;                                                                  \
-    FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, "}\n\n");
-
-#define OUT_BEGIN_SWITCH(...)                                                  \
-    FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, "switch (");                                                   \
-    fprintf(fp, __VA_ARGS__);                                                  \
-    fprintf(fp, ") {\n");
-
-#define OUT_BEGIN_CASE(...)                                                    \
-    FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, "case ");                                                      \
-    fprintf(fp, __VA_ARGS__);                                                  \
-    fprintf(fp, ":\n");                                                        \
-    indent++;
-
-#define OUT_END_CASE() indent--;
-
-#define OUT_BEGIN_DEFAULT_CASE()                                               \
-    FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, "default:\n");                                                 \
-    indent++;
-
-#define OUT_END_SWITCH()                                                       \
-    FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, "}\n");
-
-#define OUT_COMMENT(...)                                                       \
-    FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, "// ");                                                        \
-    fprintf(fp, __VA_ARGS__);                                                  \
-    fprintf(fp, "\n");
-
-#define OUT_ENUM(...)                                                          \
-    FMTprintIndentLevel(fp, indent);                                            \
-    indent++;                                                                  \
-    fprintf(fp, "enum ");                                              \
-    fprintf(fp, __VA_ARGS__);                                                  \
-    fprintf(fp, " {\n")
-
-#define OUT_ENUM_END(...)                                                      \
-    indent--;                                                                  \
-    FMTprintIndentLevel(fp, indent);                                            \
-    fprintf(fp, "};\n\n");

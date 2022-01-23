@@ -1,6 +1,7 @@
+#include "assert.h"
+#include <globals.h>
 #include <stddef.h>
 #include <stdio.h>
-#include "assert.h"
 
 #include "gen_helpers/out_macros.h"
 #include "palm/ctinfo.h"
@@ -9,20 +10,18 @@
 #include "filesystem/gen_files.h"
 
 
-static FILE *fp;
-static int indent = 0;
 static node_st *ast;
 static node_st *curr_node;
 
 node_st *DGFTast(node_st *node)
 {
-    fp = FSgetSourceFile("ccn_free.c");
+    GeneratorContext *ctx = globals.gen_ctx;
+    GNopenSourceFile(ctx, "ccn_free.c");
     OUT("#include \"ccngen/ast.h\"\n");
     OUT("#include \"ccn/dynamic_core.h\"\n");
     OUT("#include \"palm/memory.h\"\n");
     ast = node;
     TRAVopt(AST_INODES(node));
-    fclose(fp);
     return node;
 }
 
@@ -54,6 +53,7 @@ node_st *DGFTipass(node_st *node)
 
 node_st *DGFTinode(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     curr_node = node;
     OUT_START_FUNC("struct ccn_node *DEL%s(struct ccn_node *arg_node)", ID_LWR(INODE_NAME(node)));
     if (INODE_ICHILDREN(node)) {
@@ -82,6 +82,7 @@ node_st *DGFTchild(node_st *node)
 
 node_st *DGFTattribute(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     if (ATTRIBUTE_TYPE(node) == AT_string) {
         OUT_FIELD("MEMfree(arg_node->data.N_%s->%s)", ID_LWR(INODE_NAME(curr_node)), ID_LWR(ATTRIBUTE_NAME(node)));
     }

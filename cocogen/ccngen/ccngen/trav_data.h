@@ -6,41 +6,41 @@
 #endif
 #include "ccngen/ast.h"
 struct data_slc {
-bool contains;
-node_st *lookup;
+    bool contains;
+    node_st *lookup;
 };
 
 struct data_sld {
-node_st *new;
-node_st *right;
+    node_st *new;
+    node_st *right;
 };
 
 struct data_slis {
-node_st *new;
-node_st *src;
+    node_st *new;
+    node_st *src;
 };
 
 struct data_slu {
-node_st *dst;
+    node_st *dst;
 };
 
 struct data_sli {
-bool inserted;
-node_st *value;
+    bool inserted;
+    node_st *value;
 };
 
 struct data_dgcht {
-int lifetime_target;
+    int lifetime_target;
 };
 
 struct data_dgt_f {
-node_st *curr_node;
+    node_st *curr_node;
 };
 
 struct data_dgtdt {
-uint64_t indent;
-int in_init_round;
-fileptr file;
+    uint64_t indent;
+    int in_init_round;
+    fileptr file;
 };
 
 union TRAV_DATA {

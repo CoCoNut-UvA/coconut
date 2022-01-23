@@ -3,10 +3,9 @@
 #include "gen_helpers/format.h"
 #include "globals.h"
 
-static int indent = 0;
 node_st *DGTDCHitraversal(node_st *node)
 {
-    FILE *fp = globals.fp;
+    GeneratorContext *ctx = globals.gen_ctx;
     node_st *id = ITRAVERSAL_NAME(node);
     if (ITRAVERSAL_DATA(node)) {
         OUT("void TRAVdataInit%s(struct ccn_trav *trav);\n", ID_ORIG(id));

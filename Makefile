@@ -18,3 +18,19 @@ release: builddir
 
 builddir:
 	mkdir -p build/
+
+
+test_gen: release 
+	make -C ./build
+	cd ./build/ && ./cocogen/cocogen ../cocogen/main.ccn
+	./scripts/test_new_gen.tcl ./build/ccngen ./
+
+
+test_gen_debug: debug
+	make -C ./build
+	cd ./build/ && ./cocogen/cocogen ../cocogen/main.ccn
+	./scripts/test_new_gen.tcl ./build/ccngen ./
+
+
+clean:
+	rm -rf build/

@@ -11,13 +11,11 @@
 #include "ccn/dynamic_core.h"
 #include "dynamic_backend/gen_helpers.h"
 
-static FILE *fp;
-static int indent = 0;
 static node_st *ast;
 
 node_st *DGPTast(node_st *node)
 {
-    fp = globals.fp;
+    GeneratorContext *ctx = globals.gen_ctx;
     ast = node;
     OUT("const ccn_pass_ft ccn_pass_vtable[_PASS_SIZE] = { &PASSerror, ");
     TRAVopt(AST_IPASSES(node));
@@ -28,6 +26,7 @@ node_st *DGPTast(node_st *node)
 
 node_st *DGPTipass(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     char *func = DGHpassFuncName(node);
     OUT("&%s, ", func);
     MEMfree(func);

@@ -10,9 +10,6 @@
 
 
 extern bool dgif_print_semicolon;
-
-static FILE *fp;
-static int indent = 0;
 static char *basic_node_type = "node_st";
 static long num_children = 0;
 static char *node_name_upr = NULL;
@@ -20,13 +17,13 @@ static char *node_name_upr = NULL;
 node_st *DGNCast(node_st *node)
 {
     dgif_print_semicolon = false;
-    fp = globals.fp;
     TRAVchildren(node);
     return node;
 }
 
 node_st *DGNCinode(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     num_children = 0;
     node_st *next = INODE_NEXT(node);
     // Set next to NULL to prevent init funcs generating others after this node.
@@ -61,6 +58,7 @@ node_st *DGNCinode(node_st *node)
 
 node_st *DGNCchild(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     num_children++;
     if (CHILD_IN_CONSTRUCTOR(node)) {
         OUT_FIELD("%s_%s(node) = %s", node_name_upr, ID_UPR(CHILD_NAME(node)), ID_LWR(CHILD_NAME(node)));
@@ -73,6 +71,7 @@ node_st *DGNCchild(node_st *node)
 
 node_st *DGNCattribute(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     if (ATTRIBUTE_IN_CONSTRUCTOR(node)) {
         OUT_FIELD("%s_%s(node) = %s", node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), DGHattributeField(node));
     } else {

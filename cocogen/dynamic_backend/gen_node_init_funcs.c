@@ -10,9 +10,6 @@
 #include "dynamic_backend/gen_helpers.h"
 
 bool dgif_print_semicolon = false;
-
-static FILE *fp;
-static int indent = 0;
 static char *basic_node_type = "node_st";
 static char *curr_node_name = NULL;
 static char *curr_node_name_upr = NULL;
@@ -21,14 +18,13 @@ static int arg_num = 0;
 node_st *DGIFast(node_st *node)
 {
     dgif_print_semicolon = true;
-    fp = globals.fp;
     TRAVchildren(node);
     return node;
 }
 
 node_st *DGIFinode(node_st *node)
 {
-    fp = globals.fp;
+    GeneratorContext *ctx = globals.gen_ctx;
     curr_node_name = ID_LWR(INODE_NAME(node));
     curr_node_name_upr = ID_UPR(INODE_NAME(node));
     OUT("%s *%s%s(", basic_node_type, "AST", ID_LWR(INODE_NAME(node)));
@@ -48,6 +44,7 @@ node_st *DGIFinode(node_st *node)
 
 node_st *DGIFchild(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     if (CHILD_IN_CONSTRUCTOR(node)) {
         if (arg_num > 0) {
             OUT(", ");
@@ -61,6 +58,7 @@ node_st *DGIFchild(node_st *node)
 
 node_st *DGIFattribute(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     if (ATTRIBUTE_IN_CONSTRUCTOR(node)) {
         if (arg_num > 0) {
             OUT(", ");

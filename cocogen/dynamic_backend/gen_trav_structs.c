@@ -18,8 +18,7 @@ node_st *DGTDSast(node_st *node)
 
 node_st *DGTDSitraversal(node_st *node)
 {
-    int indent = 0;
-    FILE *fp = globals.fp;
+    GeneratorContext *ctx = globals.gen_ctx;
     if (ITRAVERSAL_DATA(node)) {
         OUT_STRUCT("data_%s", ID_LWR(ITRAVERSAL_IPREFIX(node)));
         TRAVdo(ITRAVERSAL_DATA(node));
@@ -32,8 +31,7 @@ node_st *DGTDSitraversal(node_st *node)
 
 node_st *DGTDSitravdata(node_st *node)
 {
-    FILE *fp = globals.fp;
-    int indent = 0;
+    GeneratorContext *ctx = globals.gen_ctx;
     if (ITRAVDATA_TYPE(node) == AT_link) {
         OUT_FIELD("node_st *%s", ID_ORIG(ITRAVDATA_NAME(node)));
     } else if (ITRAVDATA_TYPE(node) == AT_link_or_enum) {

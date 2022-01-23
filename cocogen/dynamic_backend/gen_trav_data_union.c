@@ -3,10 +3,9 @@
 #include "gen_helpers/format.h"
 #include "globals.h"
 
-static int indent = 0;
 node_st *DGTDUast(node_st *node)
 {
-    FILE *fp = globals.fp;
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT_UNION("TRAV_DATA");
     TRAVopt(AST_ITRAVERSALS(node));
     OUT_STRUCT_END();
@@ -17,7 +16,7 @@ node_st *DGTDUast(node_st *node)
 
 node_st *DGTDUitraversal(node_st *node)
 {
-    FILE *fp = globals.fp;
+    GeneratorContext *ctx = globals.gen_ctx;
     node_st *id = ITRAVERSAL_NAME(node);
     if (ITRAVERSAL_DATA(node)) {
         OUT_FIELD("struct data_%s *%s", ID_LWR(ITRAVERSAL_IPREFIX(node)), ID_LWR(id));

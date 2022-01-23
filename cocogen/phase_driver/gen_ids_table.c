@@ -5,9 +5,6 @@
 #include "globals.h"
 #include "filesystem/gen_files.h"
 
-
-static FILE *fp;
-static int indent = 0;
 static node_st *ast;
 
 static char *enum_action_pref = "CCNAC_ID";
@@ -16,8 +13,8 @@ static char *enum_action_name = "ccn_action_id";
 
 node_st *GITast(node_st *node)
 {
-    fp = FSgetSourceFile("action_handling.c");
-    globals.fp = fp;
+    GeneratorContext *ctx = globals.gen_ctx;
+    GNopenSourceFile(ctx, "action_handling.c");
     OUT("#include <stddef.h>\n");
     OUT("#include \"ccn/action_types.h\"\n");
     OUT("#include \"ccngen/action_handling.h\"\n");
@@ -34,6 +31,7 @@ node_st *GITast(node_st *node)
 
 node_st *GITiactions(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT("%s_%s, ", enum_action_pref, ID_UPR(IACTIONS_REFERENCE(node)));
     TRAVopt(IACTIONS_NEXT(node));
     return node;
@@ -41,7 +39,9 @@ node_st *GITiactions(node_st *node)
 
 node_st *GITiphase(node_st *node)
 {
-    OUT("enum %s %s_ids_table[] = {\n", enum_action_name, ID_LWR(IPHASE_NAME(node)));
+    GeneratorContext *ctx = globals.gen_ctx;
+    OUT("enum %s %s_ids_table[] = {", enum_action_name, ID_LWR(IPHASE_NAME(node)));
+    GNindentIncrease(ctx);
     TRAVopt(IPHASE_IACTIONS(node));
     OUT("%s_NULL, ", enum_action_pref);
     OUT_ENUM_END();

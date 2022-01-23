@@ -10,8 +10,6 @@
 #include "ccn/dynamic_core.h"
 #include "filesystem/gen_files.h"
 
-static FILE *fp;
-static int indent = 0;
 static node_st *ast;
 
 static char *enum_action_pref = "CCNAC_ID";
@@ -20,7 +18,7 @@ static char *enum_action_name = "ccn_action_id";
 
 node_st *GAAast(node_st *node)
 {
-    fp = globals.fp;
+    GeneratorContext *ctx = globals.gen_ctx;
     ast = node;
 
     OUT("static struct ccn_action ccn_action_array[] = {\n");
@@ -41,13 +39,12 @@ node_st *GAAast(node_st *node)
     OUT_STATEMENT("return &ccn_action_array[action_id]");
     OUT_END_FUNC();
 
-    fclose(fp);
-
     return node;
 }
 
 node_st *GAAiphase(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     char *name_upr = ID_UPR(IPHASE_NAME(node));
     OUT("{CCN_ACTION_PHASE, %s_%s, \"%s\", .phase = {%s, NT_%s, "
         "%s_ids_table, %s, %s_%s,},},\n", enum_action_pref, name_upr, ID_ORIG(IPHASE_NAME(node)), IPHASE_GATE_FUNC(node) ? ID_ORIG(IPHASE_GATE_FUNC(node)) : "NULL",
@@ -60,6 +57,7 @@ node_st *GAAiphase(node_st *node)
 
 node_st *GAAitraversal(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     char *name_upr = ID_UPR(ITRAVERSAL_NAME(node));
     OUT("{CCN_ACTION_TRAVERSAL, %s_%s, \"%s\", .traversal = "
         "{TRAV_%s,},},\n", enum_action_pref, name_upr, ID_ORIG(ITRAVERSAL_NAME(node)), ID_UPR(ITRAVERSAL_IPREFIX(node)));
@@ -70,6 +68,7 @@ node_st *GAAitraversal(node_st *node)
 
 node_st *GAAipass(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     char *name_upr = ID_UPR(IPASS_NAME(node));
     OUT("{CCN_ACTION_PASS, %s_%s, \"%s\", .pass = {PASS_%s,},},\n",
         enum_action_pref, name_upr, ID_ORIG(IPASS_NAME(node)), name_upr);

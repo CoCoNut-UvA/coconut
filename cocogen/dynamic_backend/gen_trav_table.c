@@ -6,14 +6,12 @@
 #include "ccn/dynamic_core.h"
 
 
-static FILE *fp;
-static int indent = 0;
 
 static node_st *ast;
 
 node_st *DGTTast(node_st *node)
 {
-    fp = globals.fp;
+    GeneratorContext *ctx = globals.gen_ctx;
     ast = node;
     OUT("const ccn_trav_ft *ccn_trav_vtable[_TRAV_SIZE] = { ccn_error_vtable, ");
     TRAVopt(AST_ITRAVERSALS(node));
@@ -28,6 +26,7 @@ node_st *DGTTast(node_st *node)
 
 node_st *DGTTitraversal(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT("%s_vtable, ", ID_LWR(ITRAVERSAL_NAME(node)));
     TRAVopt(ITRAVERSAL_NEXT(node));
     return node;

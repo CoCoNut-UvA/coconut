@@ -4,12 +4,10 @@
 #include "ccn/dynamic_core.h"
 #include "globals.h"
 
-static FILE *fp;
-static int indent = 0;
-
 
 static void do_enum(char *name, node_st *node, char *prefix)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT_ENUM("%s", name);
     OUT_ENUM_FIELD("%sNULL", prefix);
     TRAVopt(node);
@@ -24,7 +22,6 @@ static void do_enum(char *name, node_st *node, char *prefix)
 
 node_st *DGEast(node_st *node)
 {
-    fp = globals.fp;
     do_enum("nodesettype", AST_INODESETS(node), "NS_");
     do_enum("ccn_nodetype", AST_INODES((node)), "NT_");
     do_enum("ccn_traversal_type", AST_ITRAVERSALS(node), "TRAV_");
@@ -36,6 +33,7 @@ node_st *DGEast(node_st *node)
 
 node_st *DGEitraversal(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT_ENUM_FIELD("TRAV_%s", ID_UPR(ITRAVERSAL_IPREFIX(node)));
     TRAVchildren(node);
     return node;
@@ -43,6 +41,7 @@ node_st *DGEitraversal(node_st *node)
 
 node_st *DGEipass(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT_ENUM_FIELD("PASS_%s", ID_UPR(IPASS_NAME(node)));
     TRAVchildren(node);
     return node;
@@ -50,6 +49,7 @@ node_st *DGEipass(node_st *node)
 
 node_st *DGEinode(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT_ENUM_FIELD("NT_%s", ID_UPR(INODE_NAME(node)));
     TRAVchildren(node);
     return node;
@@ -57,6 +57,7 @@ node_st *DGEinode(node_st *node)
 
 node_st *DGEinodeset(node_st *node)
 {
+    GeneratorContext *ctx = globals.gen_ctx;
     OUT_ENUM_FIELD("NS_%s", ID_UPR(INODESET_NAME(node)));
     TRAVchildren(node);
     return node;

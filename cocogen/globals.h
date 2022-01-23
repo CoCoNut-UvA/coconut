@@ -2,6 +2,7 @@
 
 #include "palm/hash_table.h"
 #include <stdio.h>
+#include "generator/generator.h"
 
 struct globals {
     char *filename;
@@ -11,7 +12,7 @@ struct globals {
     char *gen_user_dir;
     char *backend;
     bool show_ast;
-    FILE *fp;
+    GeneratorContext *gen_ctx;
 };
 
 extern struct globals globals;
