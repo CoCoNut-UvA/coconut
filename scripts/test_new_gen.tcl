@@ -4,40 +4,64 @@
 
 package require fileutil
 
+set coconut_dir [file normalize [lindex $argv 0]]
+set target [lindex $argv 1]
 
-set ccngen_dir [file normalize [lindex $argv 0]]
-set coconut_dir [file normalize [lindex $argv 1]]
 
-set tmp [ fileutil::tempdir ]
-set tmp_coconut $tmp/coconut-test/
+proc cleanup {tmp} {
+	puts "Cleaning up"
+	file delete -force $tmp
+}
 
-file delete -force $tmp_coconut
-file copy $coconut_dir $tmp/coconut-test
-file delete -force $tmp_coconut/cocogen/ccngen
-file copy $ccngen_dir $tmp_coconut/cocogen
-file delete -force $tmp_coconut/build
-puts "===================================RUNNING==============================="
-
-if {[ catch {
-	exec make -C $tmp_coconut
-   } err ]} { 
-	puts $err
-	puts "===================================FAILED==============================="
-	exit 1
-} 
-cd $tmp_coconut/build
-exec ./cocogen/cocogen $coconut_dir/cocogen/main.ccn
-file delete -force $tmp_coconut/cocogen/ccngen
-file copy $tmp_coconut/build/ccngen $tmp_coconut/cocogen
-
-if {[ catch {
-	exec make -C $tmp_coconut
-	cd $tmp_coconut/build
-	exec ctest -R "GoodDSLfiles"
-   } err ]} { 
-	puts $err
-	puts "===================================FAILED==============================="
-	exit 1
-} else {
+proc build {tmp} {
+	puts "===================================BUILDING==============================="
+	if {[ catch {
+		exec make -C $tmp/coconut/build
+	} err ]} {
+		puts $err
+		puts "===================================FAILED==============================="
+		cleanup $tmp
+		exit 1
+	}
 	puts "===================================SUCCESS==============================="
 }
+
+proc setup {coconut target} {
+	set tmp [ fileutil::maketempdir -prefix coconut ]
+	file copy $coconut $tmp
+	file delete -force $tmp/coconut/build
+	exec make -C $tmp/coconut $target
+	return $tmp
+}
+
+proc gen_and_replace {tmp} {
+	cd $tmp/coconut/build
+	exec ./cocogen/cocogen $tmp/coconut/cocogen/main.ccn
+	file delete -force $tmp/coconut/cocogen/ccngen
+	file copy $tmp/coconut/build/ccngen $tmp/coconut/cocogen
+}
+
+proc run_tests {tmp} {
+	if {[ catch {
+		cd $tmp/coconut/build
+		exec ctest -R "GoodDSLfiles"
+	} err ]} { 
+		puts $err
+		puts "===================================FAILED==============================="
+		cleanup $tmp
+		exit 1
+	}
+
+	puts "===================================SUCCESS==============================="
+}
+
+set tmp [setup $coconut_dir $target]
+for {set i 0} {$i < 4} {incr i} {
+	build $tmp
+	gen_and_replace $tmp
+}
+run_tests $tmp
+cleanup $tmp
+exit 0
+
+
