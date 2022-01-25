@@ -1,18 +1,16 @@
 =============
 DSL
 =============
-The DSL used by CoCoNut is mostly case-insensitive for names and other attributes. In some cases, the fully uppercase/lowercase version of a name is used.
-The CoCoNut compiler gives an error if you have two names that are equal in their lowercase form.
-Nonetheless, casing can be useful in node names. Since CoCoNut provides primitives types like *float*, you can not name your nodes *float*, but you
-can name them *Float*. This means that you need to reference *Float* as such and not as *float*. Otherwise, there is no distinction between
-the primitive type and the user defined type and it would be impossible to know when used as an attribute. Still, besides the conflicts with primitive types,
-it is not possible to define names that only differ in casing. So, a node named *Float* and one named *FLOAT* is not possible.
+Names in CoCoNut are case-insensitive, this means that a node name *Foo* and a node named *FOO*, describe the same
+node. This a consequence of the generation done by CoCoNut. Nonetheless, such casing does not hold for keywords.
+As a result, it is recommended to capitilize your types, which prevents conflicting with primitive attribute-types, like *float* and *int*.
+
 
 Types
 ------
-When types are mentioned, either in the dsl, BNF or text, it refers to defined enums, defined nodes or primitive types which you
-can find under the *primitive types* header.
-In special cases, as will be mentioned, user defined types outside the earlier mentioned types are possible.
+Types determine the structure of your abstract syntax tree (AST), and can be either enums, nodes or nodesets.
+Furthermore, CoCoNut defines some primitive attribute-types, which you can use as attributes in a node. The
+full set of primitive attribute-types can be found under the under the *primitive types* header.
 
 Enum
 ================
@@ -199,6 +197,8 @@ While in the longer form it looks as follows:
 The {Var, Cast} statement is an inline set definition and the *Constant* is a reference to another defined nodeset. So, when an identifier is not
 enclosed with {} it is seen as a reference to another nodeset. It is also possible to use () to group set expressions and define the evaluation order.
 
+Actions
+-------
 
 Pass
 ===============
