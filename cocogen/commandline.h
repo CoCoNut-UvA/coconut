@@ -12,6 +12,7 @@ struct command_line {
     bool serialise;
     bool gen_user_files;
     bool show_ast;
+    bool debug;
     char *backend;
     char *gen_dir;
 };

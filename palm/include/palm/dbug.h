@@ -4,6 +4,7 @@
 
 extern void DBUGprintAssert(int line, char *file, const char *func, char *msg, ...);
 extern void DBUGprint(char *header, char *msg, ...);
+extern void DBUGoff();
 
 #ifndef NDEBUG
 // Assert and print message on fail.

@@ -22,6 +22,7 @@ void InitGlobalOptions() {
     global_command_line.show_ast = false;
     global_command_line.backend = NULL;
     global_command_line.gen_dir = NULL;
+    global_command_line.debug = false;
 }
 
 static
@@ -78,6 +79,7 @@ void CLprocessArgs(int argc, char *argv[]) {
         {"show-ast", no_argument, 0, 32},
         {"breakpoint", required_argument, 0, 33},
         {"show-structure", no_argument, 0, 34},
+        {"debug", no_argument, 0, 35},
         {0, 0, 0, 0}};
 
     int option_index;
@@ -131,6 +133,9 @@ void CLprocessArgs(int argc, char *argv[]) {
         case 34:
             CCNshowTree();
             exit(0);
+        case 35:
+            global_command_line.debug = true;
+            break;
         case 'h':
             Usage(argv[0]);
             exit(EXIT_SUCCESS);
