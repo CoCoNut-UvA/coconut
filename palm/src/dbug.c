@@ -4,7 +4,8 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-void DBUGprintAssert(int line, char *file, const char *func, char *msg, ...) {
+void DBUGprintAssert(int line, char *file, const char *func, char *msg, ...)
+{
     va_list arg_p;
 
     va_start(arg_p, msg);
@@ -16,4 +17,18 @@ void DBUGprintAssert(int line, char *file, const char *func, char *msg, ...) {
     va_end(arg_p);
 
     abort();
+}
+
+void DBUGprint(char *header, char *msg, ...)
+{
+    va_list arg_p;
+
+    va_start(arg_p, msg);
+
+    if (header) {
+        printf("[%s] ", header);
+    }
+    vprintf(msg, arg_p);
+
+    va_end(arg_p);
 }

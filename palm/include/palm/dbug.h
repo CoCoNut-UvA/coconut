@@ -3,18 +3,25 @@
 #include <stdio.h>
 
 extern void DBUGprintAssert(int line, char *file, const char *func, char *msg, ...);
+extern void DBUGprint(char *header, char *msg, ...);
 
 #ifndef NDEBUG
 // Assert and print message on fail.
-#define DBUG_ASSERT(expr, msg) \
+#ifndef MODULE
+#define MODULE NULL
+#endif
+
+// If you do not need a message, just use assert.
+ #define DBUG_ASSERT(expr, msg, ...) \
     do {                       \
         if (!(expr)) {         \
-            DBUGprintAssert(__LINE__, __FILE__, __func__, msg);                \
+            DBUGprintAssert(__LINE__, __FILE__, __func__, msg, ##__VA_ARGS__);                \
         } \
     } while(0)
 
 
 // Assert with format string.
+// DEPRECATED (just use DBUG_ASSERT).
 #define DBUG_ASSERTF(expr, format, ...) \
     do {                       \
         if (!(expr)) {         \
@@ -23,12 +30,13 @@ extern void DBUGprintAssert(int line, char *file, const char *func, char *msg, .
     } while(0)
 
 // Debug message identified by header.
-#define DBUG(header, msg) \
+#define DBUG(msg, ...) \
     do { \
-        fprintf(stderr, "[%s] %s\n", header, msg); \
+        DBUGprint(MODULE, msg, ##__VA_ARGS__);\
     } while (0)
 
 // Formatted debug message identified by header.
+// DEPRECATED (just use DBUG)
 #define DBUGF(header, format, ...) \
     do {                           \
         fprintf(stderr, "[%s] ", header); \
