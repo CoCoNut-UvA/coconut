@@ -60,6 +60,7 @@ node_st *DGFTinode(node_st *node)
         OUT_FIELD("TRAVchildren(arg_node)");
     }
     TRAVopt(INODE_IATTRIBUTES(node));
+    OUT_FIELD("MEMfree(NODE_FILENAME(arg_node))");
     OUT_FIELD("MEMfree(arg_node->data.N_%s)", ID_LWR(INODE_NAME(node)));
     OUT_FIELD("MEMfree(arg_node)");
     OUT_FIELD("return NULL");

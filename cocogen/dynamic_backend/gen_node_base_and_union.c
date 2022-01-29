@@ -23,6 +23,7 @@ node_st *dynamicGenBaseNodeInit(node_st *root)
     OUT_FIELD("%s *node = MEMmalloc(sizeof(%s))", basic_node_type, basic_node_type);
     OUT_FIELD("NODE_TYPE(node) = NT_NULL");
     OUT_FIELD("NODE_CHILDREN(node) = NULL");
+    OUT_FIELD("NODE_FILENAME(node) = NULL");
     OUT_FIELD("NODE_NUMCHILDREN(node) = 0");
     OUT_FIELD("NODE_BLINE(node) = 0");
     OUT_FIELD("NODE_ELINE(node) = 0");
@@ -42,6 +43,7 @@ node_st *dynamicGenBaseNode(node_st *root)
     OUT("#define NODE_TYPE(n) ((n)->nodetype)\n");
     OUT("#define NODE_CHILDREN(n) ((n)->children)\n");
     OUT("#define NODE_NUMCHILDREN(n) ((n)->num_children)\n");
+    OUT("#define NODE_FILENAME(n) ((n)->filename)\n");
     OUT("#define NODE_BLINE(n) ((n)->begin_line)\n");
     OUT("#define NODE_ELINE(n) ((n)->end_line)\n");
     OUT("#define NODE_BCOL(n) ((n)->begin_col)\n");
@@ -50,6 +52,7 @@ node_st *dynamicGenBaseNode(node_st *root)
     OUT_FIELD("enum ccn_nodetype nodetype");
     OUT_FIELD("union NODE_DATA data");
     OUT_FIELD("struct ccn_node **children");
+    OUT_FIELD("char *filename");
     OUT_FIELD("long int num_children");
     OUT_FIELD("uint32_t begin_line");
     OUT_FIELD("uint32_t end_line");

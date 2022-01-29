@@ -35,6 +35,7 @@ node_st *DGCTast(node_st *node)
     OUT_STATEMENT("NODE_ECOL(target) = NODE_ECOL(source)");
     OUT_STATEMENT("NODE_BLINE(target) = NODE_BLINE(source)");
     OUT_STATEMENT("NODE_ELINE(target) = NODE_ELINE(source)");
+    OUT_STATEMENT("NODE_FILENAME(target) = STRcpy(NODE_FILENAME(source))");
     OUT_END_FUNC();
     TRAVopt(AST_INODES(node));
     fclose(fp);
