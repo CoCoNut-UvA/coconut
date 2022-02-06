@@ -13,10 +13,10 @@ extern void DBUGoff();
 #endif
 
 // If you do not need a message, just use assert.
- #define DBUG_ASSERT(expr, msg, ...) \
+ #define DBUG_ASSERT(expr, ...) \
     do {                       \
         if (!(expr)) {         \
-            DBUGprintAssert(__LINE__, __FILE__, __func__, msg, ##__VA_ARGS__);                \
+            DBUGprintAssert(__LINE__, __FILE__, __func__, __VA_ARGS__);                \
         } \
     } while(0)
 
@@ -31,9 +31,9 @@ extern void DBUGoff();
     } while(0)
 
 // Debug message identified by header.
-#define DBUG(msg, ...) \
+#define DBUG(...) \
     do { \
-        DBUGprint(MODULE, msg, ##__VA_ARGS__);\
+        DBUGprint(MODULE, __VA_ARGS__);\
     } while (0)
 
 // Formatted debug message identified by header.

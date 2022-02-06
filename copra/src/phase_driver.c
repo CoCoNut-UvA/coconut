@@ -117,8 +117,8 @@ struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype 
         fprintf(stderr, "<< %s\n", action->name);
     }
 
-    root_type = root_type;
-    is_root = is_root;
+    (void)root_type;
+    (void)is_root;
     return node;
 }
 
@@ -288,7 +288,7 @@ void CCNsetTreeCheck(bool enable)
 }
 
 /**
- * Perform a invocation of your compiler.
+ * Perform an invocation of your compiler.
  * @param node the root of the tree.
  */
 void CCNrun(struct ccn_node *node)
@@ -329,6 +329,9 @@ size_t ShowTree(struct ccn_action *curr, size_t id, int indent)
     return id;
 }
 
+/**
+ * Gives a structured representation of your compiler structure.
+ */
 void CCNshowTree()
 {
     ShowTree(CCNgetActionFromID(CCN_ROOT_ACTION), 1, -1);

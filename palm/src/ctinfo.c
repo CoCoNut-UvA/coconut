@@ -455,7 +455,7 @@ int CTIgetErrors()
 
 int CTIgetWarnMessageLineLength()
 {
-    message_line_length - strlen(warn_message_header);
+    return message_line_length - strlen(warn_message_header);
 }
 
 /**

@@ -41,7 +41,10 @@ void TRAVpop() {
 
 ccn_trav_st *TRAVgetCurrent(void) { return current_traversal; }
 
-/* Main traverse function, to be called by the user */
+/**
+ * Traverse the supplied node.
+ * This function requires that arg_node != NULL
+ * */
 struct ccn_node *TRAVdo(struct ccn_node *arg_node) {
     //assert(arg_node != NULL);
     ccn_trav_ft trav_func = ccn_trav_vtable[current_traversal->trav_type][NODE_TYPE(arg_node)];
@@ -56,8 +59,9 @@ struct ccn_node *TRAVstart(struct ccn_node *syntaxtree, enum ccn_traversal_type 
     return syntaxtree;
 }
 
-/* Optional traverse function, to be called by the user. Adds a null check to
- * signify optional child nodes */
+/** Optional traverse function.
+ * Adds a null check to signify optional child nodes
+ */
 struct ccn_node *TRAVopt(struct ccn_node *arg_node) {
     if (arg_node != NULL) {
         return TRAVdo(arg_node);
@@ -68,7 +72,11 @@ struct ccn_node *TRAVopt(struct ccn_node *arg_node) {
 /* Don't traverse through children and return */
 struct ccn_node *TRAVnop(struct ccn_node *arg_node) { return arg_node; }
 
-/* Traverse through each child node and return */
+/**
+ * Helper function that traverses all children in a node. 
+ * This function assigns the result of the traversals to it respective child.
+ * The order is determined by the order in the specification file.
+ */
 struct ccn_node *TRAVchildren(struct ccn_node *arg_node) {
     for (int i = 0; i < NODE_NUMCHILDREN(arg_node); i++) {
         NODE_CHILDREN(arg_node)[i] = TRAVopt(NODE_CHILDREN(arg_node)[i]);
@@ -89,12 +97,16 @@ struct ccn_node *PASSstart(struct ccn_node *syntaxtree, enum ccn_pass_type pass_
 }
 
 struct ccn_node *PASSerror(struct ccn_node *arg_node) {
-    arg_node = arg_node;
+    (void)arg_node;
     abort();
 }
 
-/* Make a deep copy of the given node. */
+/**
+ * Makes a deep copy of the given node.
+ */
 struct ccn_node *CCNcopy(struct ccn_node *arg_node) { return TRAVstart(arg_node, TRAV_cpy); }
 
-/* Free a node and all its children. */
+/**
+ * Free a node, all its children, and allocated attributes.
+ */
 struct ccn_node *CCNfree(struct ccn_node *arg_node) { return TRAVstart(arg_node, TRAV_free); }

@@ -629,8 +629,8 @@ char *STRlower(const char *str)
 
 /**
  *
- * @param str
- * @return Malloced string, which is the upper form of str.
+ * @param str The string to transform
+ * @return Allocated string, which is the upper form of str.
  */
 char *STRupper(const char *str)
 {
