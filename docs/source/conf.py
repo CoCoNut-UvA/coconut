@@ -20,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = u'CoCoNut'
-copyright = u'2020, Damian'
+copyright = u'2022, Damian'
 author = u'Damian'
 
 # The short X.Y version
@@ -40,6 +40,7 @@ release = u''
 # ones.
 extensions = [
     'sphinx.ext.githubpages',
+    'breathe',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -175,3 +176,6 @@ epub_exclude_files = ['search.html']
 
 
 # -- Extension configuration -------------------------------------------------
+
+breathe_projects = { "coconut": "../doxygen/xml" }
+breathe_default_project = "coconut"

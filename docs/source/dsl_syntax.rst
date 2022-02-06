@@ -1,23 +1,30 @@
 =============
-DSL
+CoCoNut DSL
 =============
-The DSL used by CoCoNut is mostly case-insensitive for names and other attributes. In some cases, the fully uppercase/lowercase version of a name is used.
-The CoCoNut compiler gives an error if you have two names that are equal in their lowercase form.
-Nonetheless, casing can be useful in node names. Since CoCoNut provides primitives types like *float*, you can not name your nodes *float*, but you
-can name them *Float*. This means that you need to reference *Float* as such and not as *float*. Otherwise, there is no distinction between
-the primitive type and the user defined type and it would be impossible to know when used as an attribute. Still, besides the conflicts with primitive types,
-it is not possible to define names that only differ in casing. So, a node named *Float* and one named *FLOAT* is not possible.
+The DSL used by CoCoNut is case-insensitive for names and other attributes.
+This means that there is no distinction between a node names *Num* and a node named *NUM*.
+This is the case, because CoCoNut uses several different representations for code generation, one 
+of those is the fully capitalized version of a name.
+Nonetheless, there is a distinction between keywords and names. Names can not collide with CoCoNut keywords(TODO: Ref to keywords doc) or C keywords.
+As a result, you can not name a node *float*, but you can name a node *Float*.
+As a result, it is a convention to start your node names capitalized.
+The CoCoNut compiler gives an error if you have two names that are equal in their uppercase form.
 
+The DSL is defined in two categories: Types and Actions. Types make up your Abstract Syntax Tree (AST) and actions make up the
+structure of your compiler.
+
+------
 Types
 ------
-When types are mentioned, either in the dsl, BNF or text, it refers to defined enums, defined nodes or primitive types which you
-can find under the *primitive types* header.
-In special cases, as will be mentioned, user defined types outside the earlier mentioned types are possible.
+There are four different kind of types: enums, nodes, nodesets, primitive types and user types.
+Nodes, enums, and nodesets can be defined by you, the compiler writer, as part of your compiler;
+Primitive types (REF) are types provided by CoCoNut; and user types will be discussed later.
 
 Enum
 ================
-An enum in the DSL maps to an enum in C, can be used to add extra type information to a node and requires a unique prefix. A unique prefix can not collide with
-the prefix of another enum or a CoCoNut reserved prefix. (Link to reserved prefix).
+An enum in the DSL maps to an enum in C and can be used to add extra type information to a node.
+Enums require a unique prefix to prevent collisions in the generated code.
+A unique prefix can not collide with the prefix of another enum or a CoCoNut reserved prefix. (Link to reserved prefix).
 An enum exists out of a set of values, which are defined in the values block. These values map to the values in the C enum and the order
 used is kept. Every value will be prefixed with the prefix and to every enum a *NULL* value will be added. The *NULL* value becomes the first entry in the enum.
 Lastly, an enum has a name, which corresponds to the name in the generated C enum.
@@ -47,9 +54,9 @@ An example enum definition looks as follows:
 
 Node
 ===============
-A node consists out of children, attributes and node lifetimes. Children link to other nodes, which provides the tree building.
+A node consists out of children, attributes and node lifetimes. Children link to other nodes, which provides tree building.
 Attributes are information stored in the node, every attribute has a type and a name, which becomes a field in the C struct of the node.
-Node lifetimes allow specifying the stages in a compiler where the node is disallowed.
+Node lifetimes enable the specification of stages in the compiler where the node is disallowed.
 In every 'program' there must be one *root* node present. The *root* node will be the root in your AST and the starting point of most of your actions.
 
 .. code-block:: text
@@ -102,17 +109,21 @@ Lifetimes
 Lifetimes allow you to describe the lifetime of a node or a child. When a lifetime is violated, the AST is incosistent and CoCoNut will error.
 Lifetimes are described in the following way:
 
-<lifetime> :: <lifetime specifier> <lifetime range>
+.. code-block:: text
 
-,where the lifetime range is: \
-<start range bracket> [ID.][ID] -> [ID.][ID] <end range bracket>
+    <lifetime> :: <lifetime specifier> <lifetime range>
+
+, where the lifetime range is:
+.. code-block:: text
+
+    <start range bracket> [ID.][ID] -> [ID.][ID] <end range bracket>
 
 with the start range bracket being: '(' or '[' and the end range bracket being: ')' or ']'.
 
 The brackets are the mathematical range, so '(' is exclusive and '[' is inclusive.
 The IDs are references to actions, which can be specified with namespaces using the '.'.
 If no ID is specified it means either the beginning or the end of the compilation.
-For example, if a node is disallowed for the whole compilation it can be described in the following way:
+For example, if a node is disallowed for the whole compilation, it can be described in the following way:
 disallowed (->)
 However, to make this shorter, it is also possible to omit the range and just specify 'disallowed'.
 
@@ -121,15 +132,13 @@ Disallowed means that the node is disallowed in the specified range. So if the n
 and CoCoNut will crash with an appropriate error.
 If the lifetime is 'allowed' the node is disallowed outside the given range.
 For example, if we have the following actions A -> B -> C -> D -> E
-and a node is disallowed from A->B and D->E, we can use allow to specify this by stating: allowed (B -> C]
+and a node is disallowed from A->B and D->E, we can use allow to specify this by stating *allowed (B -> C]*
 
-In children, the lifetime specifier can be 'disallowed' and 'allowed', but also 'mandatory' or 'optional'.
+In children, the lifetime specifier can be 'disallowed' or 'allowed', but also 'mandatory' or 'optional'.
 Mandatory means that the child must be present in the node, if not, the AST is inconsistent.
 Optional means that outside the given range the child is mandatory.
-Attributes and children can also apply the lifetime on a subset of its values by giving the lifetime
-a set to target. This is done by using the '=' sign and a set of values corresponding to the type.
 
-So, we can rewrite the previous node definition with lifetimes the following way:
+So, we can rewrite the previous node definition with lifetimes as follows:
 
 .. code-block:: text
 
@@ -146,12 +155,12 @@ So, we can rewrite the previous node definition with lifetimes the following way
         }
     };
 
-We state that the two children are mandatory in the BinOp node throughout the whole compilation. So if the phase driver finds a
+We state that the two children are mandatory in the BinOp node throughout the whole compilation. So if CoCoNut finds a
 BinOp node where a child is equal to NULL, the AST is inconsistent.
 Also, the node itself is disallowed after the 'TBO' action, located in the 'Stage1' phase and up to and including the 'OPT' action in the 'Stage3' phase.
 The 'TBO' and 'OPT' values are unique ids and not full names. This is especially useful when you want to target an action that is a couple of levels deep.
 
-When no specific location is specified, using the '.' operator, the first encounter of the action is used. Therefore, in the example, if we had 'OPT' instead of 'Stage3.OPT'
+When no specific location is specified using the '.' operator, the first encounter of the action is used. Therefore, in the example, if we had 'OPT' instead of 'Stage3.OPT'
 and 'Stage2' also has an 'OTP' then the 'OTP' from 'Stage2' would be seen as the end of the lifetime because it is the first encounter. If only one 'OPT' is present, the need
 for something like 'Stage3' is not required but is still allowed.
 
@@ -159,7 +168,7 @@ for something like 'Stage3' is not required but is still allowed.
 
 Nodeset
 ==================
-Some nodes might have children that can be of multiple types. To enable this a nodeset can be created. The node then gets the nodeset
+Some nodes might have children that can be of multiple types. To enable this, a nodeset can be created. The node then gets the nodeset
 as a child and all the types in the nodeset can be used as a child. A nodeset requires a name and a set of nodes.
 The nodes specifier in a nodeset uses a set expression, providing the option to compose nodesets to build a new nodeset.
 
@@ -197,14 +206,18 @@ While in the longer form it looks as follows:
     };
 
 The {Var, Cast} statement is an inline set definition and the *Constant* is a reference to another defined nodeset. So, when an identifier is not
-enclosed with {} it is seen as a reference to another nodeset. It is also possible to use () to group set expressions and define the evaluation order.
+enclosed with {}, it is seen as a reference to another nodeset. It is also possible to use () to group set expressions and define the evaluation order.
 
+-------
+Actions
+-------
+Actions determine the structure of your compiler. There are three types of actions: passes, traversals and phases.
 
 Pass
 ===============
 Passes are the simplest form of an action that can be defined. A pass is simply a function that gets called.
 A pass needs a name and a function name. The function name will map to the function name generated in the C code.
-It is possible to define information in the info field and unique identifier available in lifetimes.
+It is possible to define information in the info field and a unique identifier to be used in lifetimes.
 
 .. code-block:: text
 
@@ -240,7 +253,9 @@ of the same type.
 
 Traversal
 ====================
-A traversal can defined a unique id, info string and the nodes to traverse.
+A traversal is an action that traverses the tree and performs operations on some or all
+nodes in the tree. As a result, a traversal can be used to change the AST in a structured manner.
+A traversal has a name, a unique id, the nodes to traverse, and an optional info string and traversal data.
 The nodes are in the form of a set expression and can use defined nodesets.
 
 .. code-block:: text
@@ -277,28 +292,23 @@ If the previous traversal targets all nodes, it can be defined as follows:
     };
 
 
-The meta compiler will generate a function for every node in the traversal and you need to provide a definition for the
+The meta compiler will generate a function declaration for every node the traversal targets. You need to provide a definition for the
 generated functions.
 
 Traversal Data
 ==============
 Some traversals need to pass around data between functions inside the traversal. To make this convenient, CoCoNut provides the option
-to denote traversal data in a traversal. Traversal data body is similar to that of attributes, with the extension of user types.
+to denote traversal data in a traversal. The traversal data body is similar to that of attributes, with the extension of user types.
 User types are signalled with the 'user' keyword and requires the file "user_types.h" to be on the include path of your compiler. 
 CoCoNut automatically creates and destroys the structure of the traversal data. However, CoCoNut does not assume ownership of the members,
 therefore, you are required to malloc/free them yourself.
 
 Phase
 ================
-Phases are used to group actions together. Phases contain an actions body, which contains a list of action statements. Action can be
-passes, traversals or other phases. Besides actions, phases can also define a gate function and a root. If the gate function is defined
-it will be called before the phase is started. If the gate function returns *false*, the phase is skipped. By specifying a root node the full AST will be divided into sub-trees, with the specified root node as the root of these trees.
-The actions in the phase will then be executed on the sub-trees. This is useful in optimisations where optimisations can be run on functions in isolation.
-To create these sub-trees it is required that these nodes define a child named *next*. If no child named *next* is present, the node can not be a sub-root.
-During actions that target a sub-tree, the *next* child is set to *NULL*. It is important to not set a value to the *next* child in these actions because the assigned value will be overwritten with the original value that was pointed to.
-
-The phase also accepts the info string and a unique id.
-
+Phases are used to group actions together and determine the flow of actions in your compiler.
+Phases contain an actions body, which contains a list of action statements. Action can be
+passes, traversals or other phases. Besides actions, phases can also define a gate function.
+If the gate function is defined it will be called before the phase is started. If the gate function returns *false*, the phase is skipped.
 
 .. code-block:: text
 
@@ -331,7 +341,7 @@ Cycles
 ========
 In some cases, actions in a phase need to be repeated until a fixed point is reached.
 A fixed point is a point where performing the actions does not alter the AST
-in any way. For these cases, cycles can be used. Cycles are phases except the actions
+in any way. So action(AST) == AST. For these cases, cycles can be used. Cycles are phases except the actions
 are repeated until a fixed point is reached or the maximum number of cycles is reached.
 
 A cycle is defined as follows:
@@ -341,7 +351,6 @@ A cycle is defined as follows:
     cycle <name> {
         [info = <string>,]
         [uid = <identifier>,]
-        [gate [= <function name>],]
 
         actions {
             <action>;
@@ -350,7 +359,7 @@ A cycle is defined as follows:
 
 
 Fixed-point detection
-======================
+----------------------
 The cycles use fixed-point detection to stop a cycle. Fixed point detection is done
 by calling the 'CCNcycleNotify()' function. This function notifies the phase driver
 that a change is made and a fixed point is not reached. So, the programmer is responsible
@@ -363,6 +372,6 @@ Combining primitives
 ====================
 Now it is possible to define the common structure of your compiler using the defined primitives.
 A valid CoCoNut program is a combination of these primitives, with 1 root node, 1 start phase and all top-level
-primitives are ended by a ';'. There is no scope or namespace in CoCoNut and it is not required to define a primitive before
+primitives are ended by a ';'. There is no scope or namespace in CoCoNut and it is not required to define something before
 referencing it.
 
