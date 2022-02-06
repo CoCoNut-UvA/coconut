@@ -17,7 +17,7 @@ node_st *GGHast(node_st *node)
 node_st *GGHiphase(node_st *node)
 {
     if (IPHASE_GATE_FUNC(node)) {
-        OUT("bool %s();", ID_ORIG(IPHASE_GATE_FUNC(node)));
+        OUT("bool %s();\n", ID_ORIG(IPHASE_GATE_FUNC(node)));
     }
     TRAVopt(IPHASE_NEXT(node));
     return node;
