@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Copra &mdash; CoCoNut  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Palm" href="palm.html" />
+    <link rel="prev" title="Reserved" href="reserved.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> CoCoNut
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dsl_syntax.html">CoCoNut DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codegen.html">Codegen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="working_with_traversals.html">Working With CoCoNut</a></li>
+<li class="toctree-l1"><a class="reference internal" href="primitive_types.html">Primitive types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reserved.html">Reserved</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Copra</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#phase-driver-h">phase_driver.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dynamic-core-h">dynamic_core.h</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="palm.html">Palm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calculator.html">Calculator Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CoCoNut</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Copra</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/copra.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="copra">
+<h1>Copra<a class="headerlink" href="#copra" title="Permalink to this headline"></a></h1>
+<p>Copra is the fixed part of the CoCoNut framework and depends on the generated code.
+It provides functions to interact with the CoCoNut runtime.</p>
+<section id="phase-driver-h">
+<h2>phase_driver.h<a class="headerlink" href="#phase-driver-h" title="Permalink to this headline"></a></h2>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv412pd_verbosity">
+<span id="_CPPv312pd_verbosity"></span><span id="_CPPv212pd_verbosity"></span><span class="target" id="phase__driver_8h_1a99b9b8f414a9f618dfcf1e850089cff5"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pd_verbosity</span></span></span><a class="headerlink" href="#_CPPv412pd_verbosity" title="Permalink to this definition"></a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N12pd_verbosity10PD_V_QUIETE">
+<span id="_CPPv3N12pd_verbosity10PD_V_QUIETE"></span><span id="_CPPv2N12pd_verbosity10PD_V_QUIETE"></span><span class="target" id="phase__driver_8h_1a99b9b8f414a9f618dfcf1e850089cff5a1e2538388a66bead56b2d55877243a7d"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PD_V_QUIET</span></span></span><a class="headerlink" href="#_CPPv4N12pd_verbosity10PD_V_QUIETE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N12pd_verbosity10PD_V_SMALLE">
+<span id="_CPPv3N12pd_verbosity10PD_V_SMALLE"></span><span id="_CPPv2N12pd_verbosity10PD_V_SMALLE"></span><span class="target" id="phase__driver_8h_1a99b9b8f414a9f618dfcf1e850089cff5ac40f5e086a157afc7ea456164a623b95"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PD_V_SMALL</span></span></span><a class="headerlink" href="#_CPPv4N12pd_verbosity10PD_V_SMALLE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N12pd_verbosity11PD_V_MEDIUME">
+<span id="_CPPv3N12pd_verbosity11PD_V_MEDIUME"></span><span id="_CPPv2N12pd_verbosity11PD_V_MEDIUME"></span><span class="target" id="phase__driver_8h_1a99b9b8f414a9f618dfcf1e850089cff5ae3a8499ae5ada25d13f600056b93a813"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PD_V_MEDIUM</span></span></span><a class="headerlink" href="#_CPPv4N12pd_verbosity11PD_V_MEDIUME" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N12pd_verbosity9PD_V_HIGHE">
+<span id="_CPPv3N12pd_verbosity9PD_V_HIGHE"></span><span id="_CPPv2N12pd_verbosity9PD_V_HIGHE"></span><span class="target" id="phase__driver_8h_1a99b9b8f414a9f618dfcf1e850089cff5a7ef0901a6bcb5fe05faf109588c550af"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PD_V_HIGH</span></span></span><a class="headerlink" href="#_CPPv4N12pd_verbosity9PD_V_HIGHE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv46CCNrunP7node_st">
+<span id="_CPPv36CCNrunP7node_st"></span><span id="_CPPv26CCNrunP7node_st"></span><span id="CCNrun__node_stP"></span><span class="target" id="phase__driver_8h_1a1561ac5bb106ec3cfabf87c87d42aaa6"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CCNrun</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">node_st</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46CCNrunP7node_st" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414CCNcycleNotifyv">
+<span id="_CPPv314CCNcycleNotifyv"></span><span id="_CPPv214CCNcycleNotifyv"></span><span id="CCNcycleNotify"></span><span class="target" id="phase__driver_8h_1a2e0740a67bbb45d0045eeaf63859c168"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CCNcycleNotify</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414CCNcycleNotifyv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Notify CoCoNut that a fixed point is not reached in current cycle. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv421CCNgetCurrentActionIdv">
+<span id="_CPPv321CCNgetCurrentActionIdv"></span><span id="_CPPv221CCNgetCurrentActionIdv"></span><span id="CCNgetCurrentActionId"></span><span class="target" id="phase__driver_8h_1a62ff623496ff585750d19c16d27f8c31"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CCNgetCurrentActionId</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421CCNgetCurrentActionIdv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413CCNerrorPhasev">
+<span id="_CPPv313CCNerrorPhasev"></span><span id="_CPPv213CCNerrorPhasev"></span><span id="CCNerrorPhase"></span><span class="target" id="phase__driver_8h_1ad3c9f0f2a4c3f4cde51c134193dc1ed9"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CCNerrorPhase</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413CCNerrorPhasev" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Signal an phase error. As a result, CoCoNut will call CTIabortCompilation at the end of the phase this error was signalled in. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414CCNerrorActionv">
+<span id="_CPPv314CCNerrorActionv"></span><span id="_CPPv214CCNerrorActionv"></span><span id="CCNerrorAction"></span><span class="target" id="phase__driver_8h_1ada5943ada99935bafbdf3e2b020c5a5d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CCNerrorAction</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414CCNerrorActionv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Signal an action error. CoCoNut will call CTIabortCompilation after the action this error was signalled in. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416CCNsetBreakpointPc">
+<span id="_CPPv316CCNsetBreakpointPc"></span><span id="_CPPv216CCNsetBreakpointPc"></span><span id="CCNsetBreakpoint__cP"></span><span class="target" id="phase__driver_8h_1a9337228047dafffe2b623d1ee2b0a3cf"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CCNsetBreakpoint</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">breakpoint</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416CCNsetBreakpointPc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Set a breakpoint at which CoCoNut will stop and call the handler: <em>BreakpointHandler</em>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>breakpoint</strong> – The breakpoint in format: &lt;phase&gt;.&lt;phase&gt;.&lt;action&gt; </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv422CCNsetBreakpointWithID6size_t">
+<span id="_CPPv322CCNsetBreakpointWithID6size_t"></span><span id="_CPPv222CCNsetBreakpointWithID6size_t"></span><span id="CCNsetBreakpointWithID__s"></span><span class="target" id="phase__driver_8h_1a59b3a5ba794eb27db8ff7b1140c62d53"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CCNsetBreakpointWithID</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422CCNsetBreakpointWithID6size_t" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412CCNsetCycles6size_t">
+<span id="_CPPv312CCNsetCycles6size_t"></span><span id="_CPPv212CCNsetCycles6size_t"></span><span id="CCNsetCycles__s"></span><span class="target" id="phase__driver_8h_1ad587db9a8a7165ef78aefcdba31e6769"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CCNsetCycles</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">cycle_count</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412CCNsetCycles6size_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Set the maximum number of cycles for a cycle. Can be changed at runtime. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cycle_count</strong> – the maximum number of cycles. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415CCNsetVerbosity12pd_verbosity">
+<span id="_CPPv315CCNsetVerbosity12pd_verbosity"></span><span id="_CPPv215CCNsetVerbosity12pd_verbosity"></span><span id="CCNsetVerbosity__pd_verbosity"></span><span class="target" id="phase__driver_8h_1a3e8e72c9c7a9daf11d37d5587d67ec3f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CCNsetVerbosity</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv412pd_verbosity" title="pd_verbosity"><span class="n"><span class="pre">pd_verbosity</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415CCNsetVerbosity12pd_verbosity" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Set the verbosity level of CoCoNut. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>type</strong> – the type of verbosity. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415CCNsetTreeCheckb">
+<span id="_CPPv315CCNsetTreeCheckb"></span><span id="_CPPv215CCNsetTreeCheckb"></span><span id="CCNsetTreeCheck__b"></span><span class="target" id="phase__driver_8h_1a47d94570c7ad97308d1132d7f377cc94"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CCNsetTreeCheck</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">enable</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415CCNsetTreeCheckb" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Enable or disable consistency checking your tree. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>enable</strong> – when true, consistency checking is performed. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411CCNshowTreev">
+<span id="_CPPv311CCNshowTreev"></span><span id="_CPPv211CCNshowTreev"></span><span id="CCNshowTree"></span><span class="target" id="phase__driver_8h_1aa729e2151e8003e75053a8bd21c30194"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CCNshowTree</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411CCNshowTreev" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gives a structured representation of your compiler structure. </p>
+</dd></dl>
+
+</div>
+</section>
+<section id="dynamic-core-h">
+<h2>dynamic_core.h<a class="headerlink" href="#dynamic-core-h" title="Permalink to this headline"></a></h2>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv411ccn_trav_st">
+<span id="_CPPv311ccn_trav_st"></span><span id="_CPPv211ccn_trav_st"></span><span id="ccn_trav_st"></span><span class="target" id="dynamic__core_8h_1a1a60f0c9bcb8b3b05d1179dbdcce1537"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv48ccn_trav" title="ccn_trav"><span class="n"><span class="pre">ccn_trav</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccn_trav_st</span></span></span><a class="headerlink" href="#_CPPv411ccn_trav_st" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49TRAVerrorP8ccn_node">
+<span id="_CPPv39TRAVerrorP8ccn_node"></span><span id="_CPPv29TRAVerrorP8ccn_node"></span><span id="TRAVerror__ccn_nodeP"></span><span class="target" id="dynamic__core_8h_1a98aec42858f32c053bbf2fc37b66f159"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">TRAVerror</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">arg_node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49TRAVerrorP8ccn_node" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49PASSerrorP8ccn_node">
+<span id="_CPPv39PASSerrorP8ccn_node"></span><span id="_CPPv29PASSerrorP8ccn_node"></span><span id="PASSerror__ccn_nodeP"></span><span class="target" id="dynamic__core_8h_1a9692b37b56a32a1f4a058b55396f483b"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">PASSerror</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">arg_node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49PASSerrorP8ccn_node" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv47TRAVoptP8ccn_node">
+<span id="_CPPv37TRAVoptP8ccn_node"></span><span id="_CPPv27TRAVoptP8ccn_node"></span><span id="TRAVopt__ccn_nodeP"></span><span class="target" id="dynamic__core_8h_1abde404e77bcf77c5489711588c7322dc"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">TRAVopt</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">arg_node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47TRAVoptP8ccn_node" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Optional traverse function. Adds a null check to signify optional child nodes </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49TRAVstartP8ccn_node18ccn_traversal_type">
+<span id="_CPPv39TRAVstartP8ccn_node18ccn_traversal_type"></span><span id="_CPPv29TRAVstartP8ccn_node18ccn_traversal_type"></span><span id="TRAVstart__ccn_nodeP.ccn_traversal_type"></span><span class="target" id="dynamic__core_8h_1a49d59917ec3763b2626c25657b2704f6"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">TRAVstart</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">syntaxtree</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_traversal_type</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">trav_type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49TRAVstartP8ccn_node18ccn_traversal_type" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49PASSstartP8ccn_node13ccn_pass_type">
+<span id="_CPPv39PASSstartP8ccn_node13ccn_pass_type"></span><span id="_CPPv29PASSstartP8ccn_node13ccn_pass_type"></span><span id="PASSstart__ccn_nodeP.ccn_pass_type"></span><span class="target" id="dynamic__core_8h_1a2ef7ed87190d612ab1b0cb532a8a92d6"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">PASSstart</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">syntaxtree</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_pass_type</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">trav_type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49PASSstartP8ccn_node13ccn_pass_type" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv46TRAVdoP8ccn_node">
+<span id="_CPPv36TRAVdoP8ccn_node"></span><span id="_CPPv26TRAVdoP8ccn_node"></span><span id="TRAVdo__ccn_nodeP"></span><span class="target" id="dynamic__core_8h_1adac94e9ff0eca3e14611b536925e3c91"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">TRAVdo</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">arg_node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46TRAVdoP8ccn_node" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Traverse the supplied node. This function requires that arg_node != NULL </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv48TRAVpush18ccn_traversal_type">
+<span id="_CPPv38TRAVpush18ccn_traversal_type"></span><span id="_CPPv28TRAVpush18ccn_traversal_type"></span><span id="TRAVpush__ccn_traversal_type"></span><span class="target" id="dynamic__core_8h_1a41115fbf28a48fe11388275d1b405a4e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TRAVpush</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_traversal_type</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">trav_type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv48TRAVpush18ccn_traversal_type" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv47TRAVpopv">
+<span id="_CPPv37TRAVpopv"></span><span id="_CPPv27TRAVpopv"></span><span id="TRAVpop"></span><span class="target" id="dynamic__core_8h_1a473399fe6e83270fc67fed99baff7f20"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TRAVpop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47TRAVpopv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412TRAVchildrenP8ccn_node">
+<span id="_CPPv312TRAVchildrenP8ccn_node"></span><span id="_CPPv212TRAVchildrenP8ccn_node"></span><span id="TRAVchildren__ccn_nodeP"></span><span class="target" id="dynamic__core_8h_1a1e530d91d1c6a5e9b93ae19be09a8a01"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">TRAVchildren</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">arg_node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412TRAVchildrenP8ccn_node" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Helper function that traverses all children in a node. This function assigns the result of the traversals to it respective child. The order is determined by the order in the specification file. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv47TRAVnopP8ccn_node">
+<span id="_CPPv37TRAVnopP8ccn_node"></span><span id="_CPPv27TRAVnopP8ccn_node"></span><span id="TRAVnop__ccn_nodeP"></span><span class="target" id="dynamic__core_8h_1a22b6c1e8daf203d50631d5f0348c0b7e"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">TRAVnop</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">arg_node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47TRAVnopP8ccn_node" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411TRAVdataNOPP11ccn_trav_st">
+<span id="_CPPv311TRAVdataNOPP11ccn_trav_st"></span><span id="_CPPv211TRAVdataNOPP11ccn_trav_st"></span><span id="TRAVdataNOP__ccn_trav_stP"></span><span class="target" id="dynamic__core_8h_1af668dd0e6cd94191c041a6815ae93aac"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TRAVdataNOP</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv411ccn_trav_st" title="ccn_trav_st"><span class="n"><span class="pre">ccn_trav_st</span></span></a><span class="p"><span class="pre">*</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411TRAVdataNOPP11ccn_trav_st" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414TRAVgetCurrentv">
+<span id="_CPPv314TRAVgetCurrentv"></span><span id="_CPPv214TRAVgetCurrentv"></span><span id="TRAVgetCurrent__void"></span><span class="target" id="dynamic__core_8h_1ae715b8dc00a728c42101e3bf73dff286"></span><a class="reference internal" href="#_CPPv411ccn_trav_st" title="ccn_trav_st"><span class="n"><span class="pre">ccn_trav_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">TRAVgetCurrent</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414TRAVgetCurrentv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv47CCNcopyP8ccn_node">
+<span id="_CPPv37CCNcopyP8ccn_node"></span><span id="_CPPv27CCNcopyP8ccn_node"></span><span id="CCNcopy__ccn_nodeP"></span><span class="target" id="dynamic__core_8h_1a45ea9e7a90de7f22eadfce66ae7833c9"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">CCNcopy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">arg_node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47CCNcopyP8ccn_node" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Makes a deep copy of the given node. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv47CCNfreeP8ccn_node">
+<span id="_CPPv37CCNfreeP8ccn_node"></span><span id="_CPPv27CCNfreeP8ccn_node"></span><span id="CCNfree__ccn_nodeP"></span><span class="target" id="dynamic__core_8h_1a8903616833652cf48ea653b2a4857b05"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">CCNfree</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">arg_node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47CCNfreeP8ccn_node" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Free a node, all its children, and allocated attributes. </p>
+</dd></dl>
+
+</div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv48ccn_trav">
+<span id="_CPPv38ccn_trav"></span><span id="_CPPv28ccn_trav"></span><span id="ccn_trav"></span><span class="target" id="structccn__trav"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccn_trav</span></span></span><a class="headerlink" href="#_CPPv48ccn_trav" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8ccn_trav4prevE">
+<span id="_CPPv3N8ccn_trav4prevE"></span><span id="_CPPv2N8ccn_trav4prevE"></span><span id="ccn_trav::prev__ccn_travP"></span><span class="target" id="structccn__trav_1ab8b6da19330252cab8d46f4b2a83c2f3"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv48ccn_trav" title="ccn_trav"><span class="n"><span class="pre">ccn_trav</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">prev</span></span></span><a class="headerlink" href="#_CPPv4N8ccn_trav4prevE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8ccn_trav9trav_typeE">
+<span id="_CPPv3N8ccn_trav9trav_typeE"></span><span id="_CPPv2N8ccn_trav9trav_typeE"></span><span id="ccn_trav::trav_type__ccn_traversal_type"></span><span class="target" id="structccn__trav_1ad5e735b4ae4d1c113772d2644b902fe7"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="n"><span class="pre">ccn_traversal_type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">trav_type</span></span></span><a class="headerlink" href="#_CPPv4N8ccn_trav9trav_typeE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8ccn_trav9trav_dataE">
+<span id="_CPPv3N8ccn_trav9trav_dataE"></span><span id="_CPPv2N8ccn_trav9trav_dataE"></span><span id="ccn_trav::trav_data__TRAV_DATA"></span><span class="target" id="structccn__trav_1a83c7e90fe58e1d5698d18ce3a1b132f5"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><span class="n"><span class="pre">TRAV_DATA</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">trav_data</span></span></span><a class="headerlink" href="#_CPPv4N8ccn_trav9trav_dataE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="reserved.html" class="btn btn-neutral float-left" title="Reserved" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="palm.html" class="btn btn-neutral float-right" title="Palm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Damian.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

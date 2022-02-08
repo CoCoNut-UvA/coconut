@@ -20,10 +20,12 @@ communicate with the CoCoNut driver from within your compiler, and, finally, wal
     codegen
     working_with_traversals
     primitive_types
+    reserved
     copra
     palm
     calculator
     faq
+    bugs
 
 
 ==================

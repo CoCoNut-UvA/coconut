@@ -16,9 +16,9 @@ structure of your compiler.
 ------
 Types
 ------
-There are four different kind of types: enums, nodes, nodesets, primitive types and user types.
+There are five different kind of types: enums, nodes, nodesets, primitive types and user types.
 Nodes, enums, and nodesets can be defined by you, the compiler writer, as part of your compiler;
-Primitive types (REF) are types provided by CoCoNut; and user types will be discussed later.
+:doc:`primitive_types` are types provided by CoCoNut; and user types will be discussed later.
 
 Enum
 ================
@@ -79,9 +79,13 @@ In every 'program' there must be one *root* node present. The *root* node will b
         }]
     };
 
-Children and attributes, for a node, are defined in the following way, respectively:
-<child> :: <node type> <name> [ { [constructor], [<lifetimes>] } ]
-<attribute> :: <type> <name> [ { constructor } ]
+| Children and attributes, for a node, are defined in the following way, respectively:
+|   <child> :: <child type> <name> [ { [constructor], [<lifetimes>] } ]
+|   <attribute> :: <attribute type> <name> [ { [constructor], [<lifetimes> [#]_] } ]
+
+The type for children can be a defined node or a defined nodeset.
+The attribute types can be a defined enum, a defined node, a defined nodeset, or a :doc:`primitive_types`.
+
 
 The constructor specifier denotes that a child or attribute should be placed inside the node constructor.
 *cocogen* generates a constructor for every node and the order of the arguments to this constructor are children then attributes, but
@@ -114,13 +118,14 @@ Lifetimes are described in the following way:
     <lifetime> :: <lifetime specifier> <lifetime range>
 
 , where the lifetime range is:
+
 .. code-block:: text
 
     <start range bracket> [ID.][ID] -> [ID.][ID] <end range bracket>
 
-with the start range bracket being: '(' or '[' and the end range bracket being: ')' or ']'.
+, with the start range bracket being: '(' or '[' and the end range bracket being: ')' or ']'.
 
-The brackets are the mathematical range, so '(' is exclusive and '[' is inclusive.
+The brackets denote the mathematical range, so '(' is exclusive and '[' is inclusive.
 The IDs are references to actions, which can be specified with namespaces using the '.'.
 If no ID is specified it means either the beginning or the end of the compilation.
 For example, if a node is disallowed for the whole compilation, it can be described in the following way:
@@ -375,3 +380,7 @@ A valid CoCoNut program is a combination of these primitives, with 1 root node, 
 primitives are ended by a ';'. There is no scope or namespace in CoCoNut and it is not required to define something before
 referencing it.
 
+
+
+
+.. [#] Lifetimes for attributes are only possible for string attributes or node/nodeset attributes.

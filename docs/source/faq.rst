@@ -12,5 +12,5 @@ Do unreachable nodes need to be handled?
 ---------------------------------------------------
 Yes. If you specify a node as disallowed in a certain range, it
 still needs to be handled even if your action is only active in that 
-range. This is the case because you can always start the traversal
+range. This is the case, because you can always start the traversal
 at another point in your compiler via the *TRAV_START* function.

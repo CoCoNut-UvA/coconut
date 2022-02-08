@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Palm &mdash; CoCoNut  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Calculator Example" href="calculator.html" />
+    <link rel="prev" title="Copra" href="copra.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> CoCoNut
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dsl_syntax.html">CoCoNut DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codegen.html">Codegen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="working_with_traversals.html">Working With CoCoNut</a></li>
+<li class="toctree-l1"><a class="reference internal" href="primitive_types.html">Primitive types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reserved.html">Reserved</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copra.html">Copra</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Palm</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#str-h">str.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hash-table-h">hash_table.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dbug-h">dbug.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#memory-h">memory.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ctinfo-h">ctinfo.h</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="calculator.html">Calculator Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CoCoNut</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Palm</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/palm.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="palm">
+<h1>Palm<a class="headerlink" href="#palm" title="Permalink to this headline"></a></h1>
+<p>Palm is a small standard library provided and used by CoCoNut.</p>
+<section id="str-h">
+<h2>str.h<a class="headerlink" href="#str-h" title="Permalink to this headline"></a></h2>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.F_PTR">
+<span class="target" id="str_8h_1a233b4c8ad8b82db77be759bd5908bb4a"></span><span class="sig-name descname"><span class="n"><span class="pre">F_PTR</span></span></span><a class="headerlink" href="#c.F_PTR" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv46STRcpyPKc">
+<span id="_CPPv36STRcpyPKc"></span><span id="_CPPv26STRcpyPKc"></span><span id="STRcpy__cCP"></span><span class="target" id="str_8h_1a63e5fb952df354efbb68ff7a06e69007"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRcpy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">source</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46STRcpyPKc" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv47STRncpyPKci">
+<span id="_CPPv37STRncpyPKci"></span><span id="_CPPv27STRncpyPKci"></span><span id="STRncpy__cCP.i"></span><span class="target" id="str_8h_1aeca4db3be36890f7040d362d21ce2f7b"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRncpy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">source</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">maxlen</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47STRncpyPKci" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv46STRcatPKcPKc">
+<span id="_CPPv36STRcatPKcPKc"></span><span id="_CPPv26STRcatPKcPKc"></span><span id="STRcat__cCP.cCP"></span><span class="target" id="str_8h_1aafca7c08a76bd56058161edf8d645714"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRcat</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">first</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">second</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46STRcatPKcPKc" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv47STRcatniz">
+<span id="_CPPv37STRcatniz"></span><span id="_CPPv27STRcatniz"></span><span id="STRcatn__i.z"></span><span class="target" id="str_8h_1a6a5e8dbc070f4e442b9ce35043ea7a0e"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRcatn</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47STRcatniz" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv46STRtokPKcPKc">
+<span id="_CPPv36STRtokPKcPKc"></span><span id="_CPPv26STRtokPKcPKc"></span><span id="STRtok__cCP.cCP"></span><span class="target" id="str_8h_1a7a004705451281988f1c1b764a8860fe"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRtok</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">tok</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46STRtokPKcPKc" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv45STReqPKcPKc">
+<span id="_CPPv35STReqPKcPKc"></span><span id="_CPPv25STReqPKcPKc"></span><span id="STReq__cCP.cCP"></span><span class="target" id="str_8h_1a20259c1b33fe437989b0b7dd94847559"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STReq</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">first</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">second</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv45STReqPKcPKc" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv47STReqciPKcPKc">
+<span id="_CPPv37STReqciPKcPKc"></span><span id="_CPPv27STReqciPKcPKc"></span><span id="STReqci__cCP.cCP"></span><span class="target" id="str_8h_1a9c80afb5d5dc1aa4bff2e8091bf35dc6"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STReqci</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">first</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">second</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47STReqciPKcPKc" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49STRprefixPKcPKc">
+<span id="_CPPv39STRprefixPKcPKc"></span><span id="_CPPv29STRprefixPKcPKc"></span><span id="STRprefix__cCP.cCP"></span><span class="target" id="str_8h_1a41ec49f5a0da1c9fce6bad2483d480f6"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STRprefix</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">prefix</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49STRprefixPKcPKc" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49STRsuffixPKcPKc">
+<span id="_CPPv39STRsuffixPKcPKc"></span><span id="_CPPv29STRsuffixPKcPKc"></span><span id="STRsuffix__cCP.cCP"></span><span class="target" id="str_8h_1a8d4d1981a7e19b80a7c15cfce2cea7ed"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STRsuffix</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">suffix</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49STRsuffixPKcPKc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>return true if suffix is the end of str, else return false. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv46STReqnPKcPKci">
+<span id="_CPPv36STReqnPKcPKci"></span><span id="_CPPv26STReqnPKcPKci"></span><span id="STReqn__cCP.cCP.i"></span><span class="target" id="str_8h_1afa01b6bd726a8705b44eb112c6bfadee"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STReqn</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">first</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">second</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46STReqnPKcPKci" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv46STRsubPKcPKc">
+<span id="_CPPv36STRsubPKcPKc"></span><span id="_CPPv26STRsubPKcPKc"></span><span id="STRsub__cCP.cCP"></span><span class="target" id="str_8h_1a52048bc0adb3cd65d071e8b4f95a1f3a"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STRsub</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">sub</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46STRsubPKcPKc" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv46STRlenPKc">
+<span id="_CPPv36STRlenPKc"></span><span id="_CPPv26STRlenPKc"></span><span id="STRlen__cCP"></span><span class="target" id="str_8h_1a2882033863cb859aea86e1c383aaef65"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STRlen</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46STRlenPKc" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49STRonNullPcPc">
+<span id="_CPPv39STRonNullPcPc"></span><span id="_CPPv29STRonNullPcPc"></span><span id="STRonNull__cP.cP"></span><span class="target" id="str_8h_1a95445f0ae14906908b261382a4d228ac"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRonNull</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">alt</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49STRonNullPcPc" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49STRsubStrPKcii">
+<span id="_CPPv39STRsubStrPKcii"></span><span id="_CPPv29STRsubStrPKcii"></span><span id="STRsubStr__cCP.i.i"></span><span class="target" id="str_8h_1ab4cb4094e38d44562f02a21b3b434e67"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRsubStr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">string</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">start</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49STRsubStrPKcii" title="Permalink to this definition"></a><br /></dt>
+<dd><p>copy part of a string from start to start + len. if len is &lt;0 then len is relative to the length of the string. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv47STRnullv">
+<span id="_CPPv37STRnullv"></span><span id="_CPPv27STRnullv"></span><span id="STRnull"></span><span class="target" id="str_8h_1a64aff21acb09a824f58b3aee1c1ffa7a"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRnull</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47STRnullv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>return an allocated empty string </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv47STRitoai">
+<span id="_CPPv37STRitoai"></span><span id="_CPPv27STRitoai"></span><span id="STRitoa__i"></span><span class="target" id="str_8h_1a0ca8254b396fc98966cbd4f6e7e86933"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRitoa</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">number</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47STRitoai" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413STRsubstTokenPKcPKcPKc">
+<span id="_CPPv313STRsubstTokenPKcPKcPKc"></span><span id="_CPPv213STRsubstTokenPKcPKcPKc"></span><span id="STRsubstToken__cCP.cCP.cCP"></span><span class="target" id="str_8h_1a9b01446c1a45733808bab88f267ffef8"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRsubstToken</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">token</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">subst</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413STRsubstTokenPKcPKcPKc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Substitute all occurrences of token in str with subst. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>str</strong> – The string in which to make substitutions </p></li>
+<li><p><strong>token</strong> – a string to substitute occurrences of in str </p></li>
+<li><p><strong>subst</strong> – a string to substitute tokens with</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new String or NULL if str is NULL </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv410STRtoLowerPc">
+<span id="_CPPv310STRtoLowerPc"></span><span id="_CPPv210STRtoLowerPc"></span><span id="STRtoLower__cP"></span><span class="target" id="str_8h_1abad9bfcb2e33392ca1a5f22f90411244"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STRtoLower</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv410STRtoLowerPc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Convert string to lower string by consuming the string. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>str</strong> – the string to convert to lower form. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv410STRtoUpperPc">
+<span id="_CPPv310STRtoUpperPc"></span><span id="_CPPv210STRtoUpperPc"></span><span id="STRtoUpper__cP"></span><span class="target" id="str_8h_1a39343e151bd4ece2175a540e2c0abe86"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STRtoUpper</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv410STRtoUpperPc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Convert string to upper string by consuming the string. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>str</strong> – the string to convert to upper form. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv48STRlowerPKc">
+<span id="_CPPv38STRlowerPKc"></span><span id="_CPPv28STRlowerPKc"></span><span id="STRlower__cCP"></span><span class="target" id="str_8h_1afa69d4c4b694835202d1acc1f1f24ba1"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRlower</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv48STRlowerPKc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Convert a string to its lower form, but does not consume original string. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>str</strong> – The string to transform. </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Malloced string, which is the lower form of str. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv48STRupperPKc">
+<span id="_CPPv38STRupperPKc"></span><span id="_CPPv28STRupperPKc"></span><span id="STRupper__cCP"></span><span class="target" id="str_8h_1ac623c25fd94858c2b0368e2956cb8836"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRupper</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv48STRupperPKc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Convert a string to its upper form, but does not consume the original string. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>str</strong> – The string to transform </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Allocated string, which is the upper form of str. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</section>
+<section id="hash-table-h">
+<h2>hash_table.h<a class="headerlink" href="#hash-table-h" title="Permalink to this headline"></a></h2>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv49htable_st">
+<span id="_CPPv39htable_st"></span><span id="_CPPv29htable_st"></span><span id="htable_st"></span><span class="target" id="hash__table_8h_1a17cc7120b41bdec2aa8c54f8c61a9821"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">htable</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">htable_st</span></span></span><a class="headerlink" href="#_CPPv49htable_st" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv411hash_key_ft">
+<span id="_CPPv311hash_key_ft"></span><span id="_CPPv211hash_key_ft"></span><span id="hash_key_ft"></span><span class="target" id="hash__table_8h_1afd93b871b1b03dee8690995c00123e88"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">hash_key_ft</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv411hash_key_ft" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv411is_equal_ft">
+<span id="_CPPv311is_equal_ft"></span><span id="_CPPv211is_equal_ft"></span><span id="is_equal_ft"></span><span class="target" id="hash__table_8h_1a9a4fe13dfae09cec993979381655840f"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">is_equal_ft</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv411is_equal_ft" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv46map_ft">
+<span id="_CPPv36map_ft"></span><span id="_CPPv26map_ft"></span><span id="map_ft"></span><span class="target" id="hash__table_8h_1a32fd91c538063cdd0414843a2540d8a1"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">map_ft</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv46map_ft" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv47mapk_ft">
+<span id="_CPPv37mapk_ft"></span><span id="_CPPv27mapk_ft"></span><span id="mapk_ft"></span><span class="target" id="hash__table_8h_1a719b8c0b1a38b968ffe05a86fa5672a7"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">mapk_ft</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv47mapk_ft" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv48mapdk_ft">
+<span id="_CPPv38mapdk_ft"></span><span id="_CPPv28mapdk_ft"></span><span id="mapdk_ft"></span><span class="target" id="hash__table_8h_1ace8acc7ca22f6b5db0364ea65b8a874f"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">mapdk_ft</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv48mapdk_ft" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv47fold_ft">
+<span id="_CPPv37fold_ft"></span><span id="_CPPv27fold_ft"></span><span id="fold_ft"></span><span class="target" id="hash__table_8h_1a8a77656bbcaf4d9cf436929fa203a99e"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">fold_ft</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">acc</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv47fold_ft" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv45HTnew6size_t11hash_key_ft11is_equal_ft">
+<span id="_CPPv35HTnew6size_t11hash_key_ft11is_equal_ft"></span><span id="_CPPv25HTnew6size_t11hash_key_ft11is_equal_ft"></span><span id="HTnew__s.hash_key_ft.is_equal_ft"></span><span class="target" id="hash__table_8h_1a974ef1a311c6f8232abaa189d0f42760"></span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTnew</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <a class="reference internal" href="#_CPPv411hash_key_ft" title="hash_key_ft"><span class="n"><span class="pre">hash_key_ft</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">hash_func</span></span>, <a class="reference internal" href="#_CPPv411is_equal_ft" title="is_equal_ft"><span class="n"><span class="pre">is_equal_ft</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">is_equal_func</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv45HTnew6size_t11hash_key_ft11is_equal_ft" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Create a new hash table. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> – the number of buckets in a hash table. More buckets is more space, but les collisions. See pre-defined hash tables in the bottom of this file. </p></li>
+<li><p><strong>hash_func</strong> – the function used for hashing keys. </p></li>
+<li><p><strong>is_equal_func</strong> – the function to determine if two values are equal. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv48HTinsertP9htable_stPvPv">
+<span id="_CPPv38HTinsertP9htable_stPvPv"></span><span id="_CPPv28HTinsertP9htable_stPvPv"></span><span id="HTinsert__htable_stP.voidP.voidP"></span><span class="target" id="hash__table_8h_1a735a0fa8f2090fd1343a34bc27fbac3c"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HTinsert</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">key</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv48HTinsertP9htable_stPvPv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv48HTlookupP9htable_stPv">
+<span id="_CPPv38HTlookupP9htable_stPv"></span><span id="_CPPv28HTlookupP9htable_stPv"></span><span id="HTlookup__htable_stP.voidP"></span><span class="target" id="hash__table_8h_1a722eb57c733927e8ebcfaf21b596f620"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTlookup</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv48HTlookupP9htable_stPv" title="Permalink to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>value found or NULL if key is not present. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv48HTremoveP9htable_stPv">
+<span id="_CPPv38HTremoveP9htable_stPv"></span><span id="_CPPv28HTremoveP9htable_stPv"></span><span id="HTremove__htable_stP.voidP"></span><span class="target" id="hash__table_8h_1abedb00f5318742c36c90d96da64643c1"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTremove</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv48HTremoveP9htable_stPv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Remove the key, value pair from the table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the deleted value or NULL if key is not foound. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv47HTclearP6htable">
+<span id="_CPPv37HTclearP6htable"></span><span id="_CPPv27HTclearP6htable"></span><span id="HTclear__htableP"></span><span class="target" id="hash__table_8h_1ab8ffac630fdc084378ddbe985b2f8d1f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HTclear</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">htable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47HTclearP6htable" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Clears all entries in the hash table. Does not delete the table, so can be reused. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv48HTdeleteP9htable_st">
+<span id="_CPPv38HTdeleteP9htable_st"></span><span id="_CPPv28HTdeleteP9htable_st"></span><span id="HTdelete__htable_stP"></span><span class="target" id="hash__table_8h_1a49a897852566e73b763ad7ea658e7542"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HTdelete</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv48HTdeleteP9htable_st" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Delete all entries in the table and the table itself. Table is not usable after this operation. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv45HTmapP9htable_st6map_ft">
+<span id="_CPPv35HTmapP9htable_st6map_ft"></span><span id="_CPPv25HTmapP9htable_st6map_ft"></span><span id="HTmap__htable_stP.map_ft"></span><span class="target" id="hash__table_8h_1a4723bcd518a233d9e316399274a3b523"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HTmap</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span>, <a class="reference internal" href="#_CPPv46map_ft" title="map_ft"><span class="n"><span class="pre">map_ft</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">fun</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv45HTmapP9htable_st6map_ft" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412HTmapWithKeyP9htable_st7mapk_ft">
+<span id="_CPPv312HTmapWithKeyP9htable_st7mapk_ft"></span><span id="_CPPv212HTmapWithKeyP9htable_st7mapk_ft"></span><span id="HTmapWithKey__htable_stP.mapk_ft"></span><span class="target" id="hash__table_8h_1aebea2e4bba5ab14313350e38a3b6cbf4"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HTmapWithKey</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span>, <a class="reference internal" href="#_CPPv47mapk_ft" title="mapk_ft"><span class="n"><span class="pre">mapk_ft</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">fun</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412HTmapWithKeyP9htable_st7mapk_ft" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419HTmapWithDataAndKeyP9htable_stPv8mapdk_ft">
+<span id="_CPPv319HTmapWithDataAndKeyP9htable_stPv8mapdk_ft"></span><span id="_CPPv219HTmapWithDataAndKeyP9htable_stPv8mapdk_ft"></span><span id="HTmapWithDataAndKey__htable_stP.voidP.mapdk_ft"></span><span class="target" id="hash__table_8h_1ac335d7e21ee15dce82d9ed265c722982"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HTmapWithDataAndKey</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">data</span></span>, <a class="reference internal" href="#_CPPv48mapdk_ft" title="mapdk_ft"><span class="n"><span class="pre">mapdk_ft</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">fun</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419HTmapWithDataAndKeyP9htable_stPv8mapdk_ft" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Map function that passes an extra data parameter to the map function </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv46HTfoldP9htable_st7fold_ftPv">
+<span id="_CPPv36HTfoldP9htable_st7fold_ftPv"></span><span id="_CPPv26HTfoldP9htable_st7fold_ftPv"></span><span id="HTfold__htable_stP.fold_ft.voidP"></span><span class="target" id="hash__table_8h_1ac533d4403b98bb8fe92395b894f756db"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HTfold</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span>, <a class="reference internal" href="#_CPPv47fold_ft" title="fold_ft"><span class="n"><span class="pre">fold_ft</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">fun</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">init_acc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46HTfoldP9htable_st7fold_ftPv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414HTelementCountP9htable_st">
+<span id="_CPPv314HTelementCountP9htable_st"></span><span id="_CPPv214HTelementCountP9htable_st"></span><span id="HTelementCount__htable_stP"></span><span class="target" id="hash__table_8h_1aa6980add366f1e8cb0c4c99726a258bb"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HTelementCount</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414HTelementCountP9htable_st" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412HTnew_String6size_t">
+<span id="_CPPv312HTnew_String6size_t"></span><span id="_CPPv212HTnew_String6size_t"></span><span id="HTnew_String__s"></span><span class="target" id="hash__table_8h_1a6741920f6dd0c1a545c4f7bdad989b22"></span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTnew_String</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412HTnew_String6size_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Create a new hash table for strings. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>size</strong> – determines the number of buckets in the table. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49HTnew_Ptr6size_t">
+<span id="_CPPv39HTnew_Ptr6size_t"></span><span id="_CPPv29HTnew_Ptr6size_t"></span><span id="HTnew_Ptr__s"></span><span class="target" id="hash__table_8h_1add1729308c34470cadbb1a38953cc191"></span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTnew_Ptr</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49HTnew_Ptr6size_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Create a new hash table for pointers. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>size</strong> – determines the number of buckets in the table. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49HTnew_Int6size_t">
+<span id="_CPPv39HTnew_Int6size_t"></span><span id="_CPPv29HTnew_Int6size_t"></span><span id="HTnew_Int__s"></span><span class="target" id="hash__table_8h_1a3869f3591ffd236b109b1be990d5cc13"></span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTnew_Int</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49HTnew_Int6size_t" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</section>
+<section id="dbug-h">
+<h2>dbug.h<a class="headerlink" href="#dbug-h" title="Permalink to this headline"></a></h2>
+<p>This file provides a small debug library. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.MODULE">
+<span class="target" id="dbug_8h_1a2c63ae95fe7c6106ae1ec9c283afa486"></span><span class="sig-name descname"><span class="n"><span class="pre">MODULE</span></span></span><a class="headerlink" href="#c.MODULE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>When defined, will be used as a header before messages printed with DBUG calls. Need to be defined before including this header. DO NOT define MODULE inside a header file. </p>
+</dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.DBUG_ASSERT">
+<span class="target" id="dbug_8h_1a8acbda6ba511a7f7b57a6b47939f203c"></span><span class="sig-name descname"><span class="n"><span class="pre">DBUG_ASSERT</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">expr</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.DBUG_ASSERT" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Assert expression and print message when expressions fails. In most cases, a simple assert is good enough and you dont need this! </p>
+<p>Example usage:<ul class="simple">
+<li><p>DBUG_ASSERT(true, “Hello DBUG”);</p></li>
+<li><p>DBUG_ASSERT(2 &gt; 3, “%d is not bigger than %d”, 2, 3); </p></li>
+</ul>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>expr</strong> – the expr to test, must be testable in an if. </p></li>
+<li><p><strong>...</strong> – Variable args like printf, however, this contains the format string for portability. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.DBUG_ASSERTF">
+<span class="target" id="dbug_8h_1a15bd607a3800bb9b0cd1537239a256e5"></span><span class="sig-name descname"><span class="n"><span class="pre">DBUG_ASSERTF</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">expr</span></span>, <span class="n"><span class="pre">format</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.DBUG_ASSERTF" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Assert with format string. DEPRECATED (just use DBUG_ASSERT). </p>
+</dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.DBUG">
+<span class="target" id="dbug_8h_1a9d1c575cfb0a8cd96b84f99f63ddeab0"></span><span class="sig-name descname"><span class="n"><span class="pre">DBUG</span></span></span><span class="sig-paren">(</span><span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.DBUG" title="Permalink to this definition"></a><br /></dt>
+<dd><p>print a dbug message with the module, when defined, prepended. </p>
+<p>Example usage:<ul class="simple">
+<li><p>DBUG(“Starting with phase”);</p></li>
+<li><p>DBUG(“5+5=%d”, 5+5); </p></li>
+</ul>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>...</strong> – Variable arguments. First message must be a format string. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.DBUGF">
+<span class="target" id="dbug_8h_1a22d3b6eb8e27ab0d2b377edd366fec95"></span><span class="sig-name descname"><span class="n"><span class="pre">DBUGF</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">header</span></span>, <span class="n"><span class="pre">format</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.DBUGF" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Formatted debug message identified by header. DEPRECATED (just use DBUG) </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415DBUGprintAssertiPcPKcPcz">
+<span id="_CPPv315DBUGprintAssertiPcPKcPcz"></span><span id="_CPPv215DBUGprintAssertiPcPKcPcz"></span><span id="DBUGprintAssert__i.cP.cCP.cP.z"></span><span class="target" id="dbug_8h_1a25a43bb2d8e73654e006d64f639bdc36"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DBUGprintAssert</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">line</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">file</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">func</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">msg</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415DBUGprintAssertiPcPKcPcz" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49DBUGprintPcPcz">
+<span id="_CPPv39DBUGprintPcPcz"></span><span id="_CPPv29DBUGprintPcPcz"></span><span id="DBUGprint__cP.cP.z"></span><span class="target" id="dbug_8h_1afdd1aa0f528e00ce378479579e7d8e27"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DBUGprint</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">header</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">msg</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49DBUGprintPcPcz" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv47DBUGoffv">
+<span id="_CPPv37DBUGoffv"></span><span id="_CPPv27DBUGoffv"></span><span id="DBUGoff"></span><span class="target" id="dbug_8h_1acf1d33a08ecfde70a7888b5c6e1293dc"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DBUGoff</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47DBUGoffv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Turn off debugging. Doesn’t print anything! </p>
+</dd></dl>
+
+</div>
+</section>
+<section id="memory-h">
+<h2>memory.h<a class="headerlink" href="#memory-h" title="Permalink to this headline"></a></h2>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49MEMmalloc6size_t">
+<span id="_CPPv39MEMmalloc6size_t"></span><span id="_CPPv29MEMmalloc6size_t"></span><span id="MEMmalloc__s"></span><span class="target" id="memory_8h_1a155e66565e47d224d245dd874cb9947f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">MEMmalloc</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49MEMmalloc6size_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Allocate memory. If memory can not be allocated this function calls the CTIabortOufOfMemory function and exists. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>size</strong> – Amount to allocate. </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A pointer to an allocated structure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv47MEMfreePv">
+<span id="_CPPv37MEMfreePv"></span><span id="_CPPv27MEMfreePv"></span><span id="MEMfree__voidP"></span><span class="target" id="memory_8h_1a293d5ebb03106f2217f5763983386a00"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">MEMfree</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">address</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47MEMfreePv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Free memory. Returns NULL, but allows to do assignment to freed structure. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>address</strong> – address to free. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv47MEMcopy6size_tPv">
+<span id="_CPPv37MEMcopy6size_tPv"></span><span id="_CPPv27MEMcopy6size_tPv"></span><span id="MEMcopy__s.voidP"></span><span class="target" id="memory_8h_1abe69cc3ef2b0749dfa35cff87854b492"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">MEMcopy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">mem</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47MEMcopy6size_tPv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</section>
+<section id="ctinfo-h">
+<h2>ctinfo.h<a class="headerlink" href="#ctinfo-h" title="Permalink to this headline"></a></h2>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv48cti_type">
+<span id="_CPPv38cti_type"></span><span id="_CPPv28cti_type"></span><span class="target" id="ctinfo_8h_1a4a122686a4354e8a9c907fa2b2031b98"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cti_type</span></span></span><a class="headerlink" href="#_CPPv48cti_type" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Type of message for the CTI and CTIobj functions. Determines the header of the message. The error and warning messages have a counter counting the errors and warnings, which will be displayed on CTIabort functions. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N8cti_type9CTI_STATEE">
+<span id="_CPPv3N8cti_type9CTI_STATEE"></span><span id="_CPPv2N8cti_type9CTI_STATEE"></span><span class="target" id="ctinfo_8h_1a4a122686a4354e8a9c907fa2b2031b98a83b946ec91bb17e82f8382f0d07f1f21"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTI_STATE</span></span></span><a class="headerlink" href="#_CPPv4N8cti_type9CTI_STATEE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N8cti_type8CTI_NOTEE">
+<span id="_CPPv3N8cti_type8CTI_NOTEE"></span><span id="_CPPv2N8cti_type8CTI_NOTEE"></span><span class="target" id="ctinfo_8h_1a4a122686a4354e8a9c907fa2b2031b98a3975edb71bb0dca618ba76939e9c3f45"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTI_NOTE</span></span></span><a class="headerlink" href="#_CPPv4N8cti_type8CTI_NOTEE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N8cti_type8CTI_WARNE">
+<span id="_CPPv3N8cti_type8CTI_WARNE"></span><span id="_CPPv2N8cti_type8CTI_WARNE"></span><span class="target" id="ctinfo_8h_1a4a122686a4354e8a9c907fa2b2031b98a69854db4b1d3ceab90db39707548e106"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTI_WARN</span></span></span><a class="headerlink" href="#_CPPv4N8cti_type8CTI_WARNE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N8cti_type9CTI_ERRORE">
+<span id="_CPPv3N8cti_type9CTI_ERRORE"></span><span id="_CPPv2N8cti_type9CTI_ERRORE"></span><span class="target" id="ctinfo_8h_1a4a122686a4354e8a9c907fa2b2031b98ad4448d9055d0686414461326717d3684"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTI_ERROR</span></span></span><a class="headerlink" href="#_CPPv4N8cti_type9CTI_ERRORE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv427CTIinstallInterruptHandlersv">
+<span id="_CPPv327CTIinstallInterruptHandlersv"></span><span id="_CPPv227CTIinstallInterruptHandlersv"></span><span id="CTIinstallInterruptHandlers__void"></span><span class="target" id="ctinfo_8h_1ab00074bba79f9f8467b5df29db67b747"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTIinstallInterruptHandlers</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv427CTIinstallInterruptHandlersv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>installs interrupt handlers </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv428CTIgetErrorMessageLineLengthv">
+<span id="_CPPv328CTIgetErrorMessageLineLengthv"></span><span id="_CPPv228CTIgetErrorMessageLineLengthv"></span><span id="CTIgetErrorMessageLineLength"></span><span class="target" id="ctinfo_8h_1a22d326e684296fc1b32aa085771f7010"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTIgetErrorMessageLineLength</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv428CTIgetErrorMessageLineLengthv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>yields useful line length for error messages </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>line length </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv427CTIgetWarnMessageLineLengthv">
+<span id="_CPPv327CTIgetWarnMessageLineLengthv"></span><span id="_CPPv227CTIgetWarnMessageLineLengthv"></span><span id="CTIgetWarnMessageLineLength__void"></span><span class="target" id="ctinfo_8h_1a1c8a8f9c2371166787be4ec03b10a707"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTIgetWarnMessageLineLength</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv427CTIgetWarnMessageLineLengthv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>yields useful line length for warning messages </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>line length </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414CTIgetWarningsv">
+<span id="_CPPv314CTIgetWarningsv"></span><span id="_CPPv214CTIgetWarningsv"></span><span id="CTIgetWarnings"></span><span class="target" id="ctinfo_8h_1a17b9212065be26d6994fd4de77a4fb67"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTIgetWarnings</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414CTIgetWarningsv" title="Permalink to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The number of warnings currently produced. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412CTIgetErrorsv">
+<span id="_CPPv312CTIgetErrorsv"></span><span id="_CPPv212CTIgetErrorsv"></span><span id="CTIgetErrors"></span><span class="target" id="ctinfo_8h_1ad0396b9491a28d4fd700ebaf54a7f1aa"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTIgetErrors</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412CTIgetErrorsv" title="Permalink to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The number of errors currently produced. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419CTIabortCompilationv">
+<span id="_CPPv319CTIabortCompilationv"></span><span id="_CPPv219CTIabortCompilationv"></span><span id="CTIabortCompilation"></span><span class="target" id="ctinfo_8h_1a934270f920055e59a17088d60a514075"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTIabortCompilation</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419CTIabortCompilationv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415CTIabortOnErrorv">
+<span id="_CPPv315CTIabortOnErrorv"></span><span id="_CPPv215CTIabortOnErrorv"></span><span id="CTIabortOnError"></span><span class="target" id="ctinfo_8h_1a9efc8927a768a8329c46bd405d953132"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTIabortOnError</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415CTIabortOnErrorv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>terminates compilation process if errors have occurred. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419CTIabortOutOfMemoryj">
+<span id="_CPPv319CTIabortOutOfMemoryj"></span><span id="_CPPv219CTIabortOutOfMemoryj"></span><span id="CTIabortOutOfMemory__unsigned-i"></span><span class="target" id="ctinfo_8h_1a1c5f59a9f5681f4e901503d5f926f23e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTIabortOutOfMemory</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">request</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419CTIabortOutOfMemoryj" title="Permalink to this definition"></a><br /></dt>
+<dd><p>produces a specific “out of memory” error message without file name and line number and terminates the compilation process. </p>
+<p>This very special function is needed because the normal procedure of formatting a message may require further allocation of memory, which in this very case generates a vicious circle of error messages instead of terminating compilation properly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – size of requested memory </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv43CTI8cti_typebPKcz">
+<span id="_CPPv33CTI8cti_typebPKcz"></span><span id="_CPPv23CTI8cti_typebPKcz"></span><span id="CTI__cti_type.b.cCP.z"></span><span class="target" id="ctinfo_8h_1aaa7861d1ea932a44e76ea21ffd92b3d8"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTI</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv48cti_type" title="cti_type"><span class="n"><span class="pre">cti_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">type</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">newline</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">format</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv43CTI8cti_typebPKcz" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Prints a message to stderr with header according to the type. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – the type of message, see enum cti_type </p></li>
+<li><p><strong>newline</strong> – Whether to append a newline to the output or not. </p></li>
+<li><p><strong>format</strong> – printf style format string </p></li>
+<li><p><strong>...</strong> – variable args. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv46CTIobj8cti_typeb6ctinfoPKcz">
+<span id="_CPPv36CTIobj8cti_typeb6ctinfoPKcz"></span><span id="_CPPv26CTIobj8cti_typeb6ctinfoPKcz"></span><span id="CTIobj__cti_type.b.ctinfo.cCP.z"></span><span class="target" id="ctinfo_8h_1a6f8071e23cbf80df59ad3a45aec60a4c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTIobj</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv48cti_type" title="cti_type"><span class="n"><span class="pre">cti_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">type</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">newline</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv46ctinfo" title="ctinfo"><span class="n"><span class="pre">ctinfo</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">obj</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">format</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46CTIobj8cti_typeb6ctinfoPKcz" title="Permalink to this definition"></a><br /></dt>
+<dd><p>See &#64;CTI </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> – an object of type struct ctinfo with extra information. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv46ctinfo">
+<span id="_CPPv36ctinfo"></span><span id="_CPPv26ctinfo"></span><span id="ctinfo"></span><span class="target" id="structctinfo"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ctinfo</span></span></span><a class="headerlink" href="#_CPPv46ctinfo" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;ctinfo.h&gt;</em></div>
+<p>Object to describe location information of a compile time object. Pass this to CTIobj function.</p>
+<p>Values that are 0/NULL are not displayed, but are handled. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6ctinfo10first_lineE">
+<span id="_CPPv3N6ctinfo10first_lineE"></span><span id="_CPPv2N6ctinfo10first_lineE"></span><span id="ctinfo::first_line__i"></span><span class="target" id="structctinfo_1a257d1b5287d1a2c4b5a5728acd73182c"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">first_line</span></span></span><a class="headerlink" href="#_CPPv4N6ctinfo10first_lineE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6ctinfo12first_columnE">
+<span id="_CPPv3N6ctinfo12first_columnE"></span><span id="_CPPv2N6ctinfo12first_columnE"></span><span id="ctinfo::first_column__i"></span><span class="target" id="structctinfo_1ab977614e6f3c7d987664d0b4fa46c583"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">first_column</span></span></span><a class="headerlink" href="#_CPPv4N6ctinfo12first_columnE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6ctinfo9last_lineE">
+<span id="_CPPv3N6ctinfo9last_lineE"></span><span id="_CPPv2N6ctinfo9last_lineE"></span><span id="ctinfo::last_line__i"></span><span class="target" id="structctinfo_1af2aead72ccf57193facaf9c99b6192b6"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">last_line</span></span></span><a class="headerlink" href="#_CPPv4N6ctinfo9last_lineE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6ctinfo11last_columnE">
+<span id="_CPPv3N6ctinfo11last_columnE"></span><span id="_CPPv2N6ctinfo11last_columnE"></span><span id="ctinfo::last_column__i"></span><span class="target" id="structctinfo_1a1e4b869c74e45ffe05ce5bc31a2600b6"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">last_column</span></span></span><a class="headerlink" href="#_CPPv4N6ctinfo11last_columnE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6ctinfo8filenameE">
+<span id="_CPPv3N6ctinfo8filenameE"></span><span id="_CPPv2N6ctinfo8filenameE"></span><span id="ctinfo::filename__cP"></span><span class="target" id="structctinfo_1a82ba5fc4c93001a4008c1fbeb27702ce"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">filename</span></span></span><a class="headerlink" href="#_CPPv4N6ctinfo8filenameE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6ctinfo4lineE">
+<span id="_CPPv3N6ctinfo4lineE"></span><span id="_CPPv2N6ctinfo4lineE"></span><span id="ctinfo::line__cP"></span><span class="target" id="structctinfo_1aab0822cb4afc392eaf7c8c57babf34fc"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">line</span></span></span><a class="headerlink" href="#_CPPv4N6ctinfo4lineE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="copra.html" class="btn btn-neutral float-left" title="Copra" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="calculator.html" class="btn btn-neutral float-right" title="Calculator Example" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Damian.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

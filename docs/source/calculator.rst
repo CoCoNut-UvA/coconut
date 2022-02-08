@@ -5,7 +5,7 @@ Calculator Example
 In this tutorial, we will build a small calculator with a REPL where an expression is parsed and evaluated by
 CoCoNut. A skeleton structure can be found at https://github.com/CoCoNut-UvA/calculator-example
 
-The skeleton contains a basic RELP that parses a line into an AST and then prints the AST. Currently, the AST only
+The skeleton contains a basic REPL that parses a line into an AST and then prints the AST. Currently, the AST only
 exists out of one number. The parser and lexer are found in the src/scanParse directory and the REPL is present in
 src/main.c. There is also the src/calc.ccn file, which defines the AST and three actions: A repl phase,
 a scanParse pass and a print traversal. The code for the print traversal is found in src/print.c and the code for the
