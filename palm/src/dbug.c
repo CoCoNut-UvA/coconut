@@ -39,6 +39,9 @@ void DBUGprint(char *header, char *msg, ...)
     va_end(arg_p);
 }
 
+/**
+ * Turn off debugging. Doesn't print anything!
+ */
 extern void DBUGoff()
 {
     debug = false;

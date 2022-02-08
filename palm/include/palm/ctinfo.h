@@ -20,8 +20,8 @@ struct ctinfo {
 
 /**
  * Type of message for the CTI and CTIobj functions.
- * Determine header and the error and warning messages have a counter
- * counting the errors and warnings.
+ * Determines the header of the message. The error and warning messages have a counter
+ * counting the errors and warnings, which will be displayed on CTIabort functions.
  */
 enum cti_type {
     CTI_STATE,

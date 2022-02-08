@@ -280,7 +280,7 @@ void CCNsetVerbosity(enum pd_verbosity type)
 
 /**
  * Enable or disable consistency checking your tree.
- * @param enable
+ * @param enable when true, consistency checking is performed.
  */
 void CCNsetTreeCheck(bool enable)
 {
@@ -289,7 +289,7 @@ void CCNsetTreeCheck(bool enable)
 
 /**
  * Perform an invocation of your compiler.
- * @param node the root of the tree.
+ * @param node the root of the tree. Will call the free traversal at the end.
  */
 void CCNrun(struct ccn_node *node)
 {
