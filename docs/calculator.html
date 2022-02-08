@@ -1,43 +1,90 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Calculator Example &#8212; CoCoNut  documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculator Example &mdash; CoCoNut  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Primitive types" href="primitive_types.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="next" title="FAQ" href="faq.html" />
+    <link rel="prev" title="Palm" href="palm.html" /> 
+</head>
 
-  </head><body>
-  
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> CoCoNut
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dsl_syntax.html">CoCoNut DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codegen.html">Codegen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="working_with_traversals.html">Working With CoCoNut</a></li>
+<li class="toctree-l1"><a class="reference internal" href="primitive_types.html">Primitive types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reserved.html">Reserved</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copra.html">Copra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="palm.html">Palm</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Calculator Example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#adding-a-binop-node">Adding a binop node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-a-traversal">Adding a traversal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fully-using-coconut">Fully using CoCoNut</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a></li>
+</ul>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          
+        </div>
+      </div>
+    </nav>
 
-          <div class="body" role="main">
-            
-  <div class="section" id="calculator-example">
-<h1>Calculator Example<a class="headerlink" href="#calculator-example" title="Permalink to this headline">¶</a></h1>
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CoCoNut</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Calculator Example</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/calculator.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="calculator-example">
+<h1>Calculator Example<a class="headerlink" href="#calculator-example" title="Permalink to this headline"></a></h1>
 <p>In this tutorial, we will build a small calculator with a REPL where an expression is parsed and evaluated by
 CoCoNut. A skeleton structure can be found at <a class="reference external" href="https://github.com/CoCoNut-UvA/calculator-example">https://github.com/CoCoNut-UvA/calculator-example</a></p>
-<p>The skeleton contains a basic RELP that parses a line into an AST and then prints the AST. Currently, the AST only
+<p>The skeleton contains a basic REPL that parses a line into an AST and then prints the AST. Currently, the AST only
 exists out of one number. The parser and lexer are found in the src/scanParse directory and the REPL is present in
 src/main.c. There is also the src/calc.ccn file, which defines the AST and three actions: A repl phase,
 a scanParse pass and a print traversal. The code for the print traversal is found in src/print.c and the code for the
@@ -47,8 +94,8 @@ For building, the example uses cmake and can be build by creating a <em>build</e
 <em>cmake -B build -S ./</em> in the root of the project. After, you can build the calculator with <em>make -C build/</em>.</p>
 <p>We will extend the example by adding support for add and substract operations and by evaluating the given
 expression.</p>
-<div class="section" id="adding-a-binop-node">
-<h2>Adding a binop node<a class="headerlink" href="#adding-a-binop-node" title="Permalink to this headline">¶</a></h2>
+<section id="adding-a-binop-node">
+<h2>Adding a binop node<a class="headerlink" href="#adding-a-binop-node" title="Permalink to this headline"></a></h2>
 <p>First, to support binary operations, we add a binary operation(Binop) node. This node contains a left and right child
 and an operation type. The left and right child can be another binop or a number, therefore we have to extend the nodeset.
 We extend the nodeset by changing the current <em>Expr</em> nodeset to the following(./src/calc.ccn):</p>
@@ -130,9 +177,9 @@ the original expression.</p>
 </pre></div>
 </div>
 <p>You do need to include the <em>ccngen/trav.h</em> file for these functions.</p>
-</div>
-<div class="section" id="adding-a-traversal">
-<h2>Adding a traversal<a class="headerlink" href="#adding-a-traversal" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="adding-a-traversal">
+<h2>Adding a traversal<a class="headerlink" href="#adding-a-traversal" title="Permalink to this headline"></a></h2>
 <p>Thus, we have a read and print part, but are still missing the evaluate part of the REPL. To add the evaluate we add a new traversal to coconut.
 Add the following to the src/calc.ccn file:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>traversal eval {
@@ -181,9 +228,9 @@ node:</p>
 </div>
 <p>However, we now have a leak because the argument is not returned, so it needs to be freed. This can be done by calling <em>CCNfree(node)</em> before returning.</p>
 <p>This results in a working REPL calculator for simple add and substract operation.</p>
-</div>
-<div class="section" id="fully-using-coconut">
-<h2>Fully using CoCoNut<a class="headerlink" href="#fully-using-coconut" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="fully-using-coconut">
+<h2>Fully using CoCoNut<a class="headerlink" href="#fully-using-coconut" title="Permalink to this headline"></a></h2>
 <p>However, we do not take full advantage of CoCoNut features.
 First of all, the eval traversal does nothing with the NUM node, so we can specify that the eval only targets the binop node:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>traversal eval {
@@ -228,86 +275,38 @@ lifetime on the node:</p>
 <p>Here, we specify that the binop node is disallowed after the <em>eval</em> action, therefore, if CoCoNut finds a binop node after the eval traversal it will error.
 You can try it out by returning the node in the eval traversal instead of evaluating it. That will result in the following:
 <em>error: Found disallowed node(binop) in tree.</em></p>
-</div>
-</div>
+</section>
+</section>
 
 
+           </div>
           </div>
-          
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="palm.html" class="btn btn-neutral float-left" title="Palm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="faq.html" class="btn btn-neutral float-right" title="FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Damian.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">CoCoNut</a></h1>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="dsl_syntax.html">DSL</a></li>
-<li class="toctree-l1"><a class="reference internal" href="codegen.html">Codegen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="working_with_traversals.html">Working With CoCoNut</a></li>
-<li class="toctree-l1"><a class="reference internal" href="primitive_types.html">Primitive types</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Calculator Example</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#adding-a-binop-node">Adding a binop node</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#adding-a-traversal">Adding a traversal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fully-using-coconut">Fully using CoCoNut</a></li>
-</ul>
-</li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="primitive_types.html" title="previous chapter">Primitive types</a></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2020, Damian.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/calculator.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>
