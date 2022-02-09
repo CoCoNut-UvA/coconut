@@ -43,11 +43,7 @@
 <li class="toctree-l1"><a class="reference internal" href="codegen.html">Codegen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="working_with_traversals.html">Working With CoCoNut</a></li>
 <li class="toctree-l1"><a class="reference internal" href="primitive_types.html">Primitive types</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Reserved</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#words">Words</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#prefixes">Prefixes</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Reserved</a></li>
 <li class="toctree-l1"><a class="reference internal" href="copra.html">Copra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="palm.html">Palm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="calculator.html">Calculator Example</a></li>
@@ -81,13 +77,135 @@
              
   <section id="reserved">
 <h1>Reserved<a class="headerlink" href="#reserved" title="Permalink to this headline"></a></h1>
-<p>There are several words and prefixes reserved in the CoCoNut DSL.</p>
-<section id="words">
-<h2>Words<a class="headerlink" href="#words" title="Permalink to this headline"></a></h2>
-</section>
-<section id="prefixes">
-<h2>Prefixes<a class="headerlink" href="#prefixes" title="Permalink to this headline"></a></h2>
-</section>
+<p>There are several words and prefixes reserved in the CoCoNut DSL.
+Using these will either result in a CoCoNut compiler message (YAY) or a C/linking error.
+If the latter is the case, please make a GitHub issue.</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Reserved words</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>attributes</p></td>
+</tr>
+<tr class="row-even"><td><p>children</p></td>
+</tr>
+<tr class="row-odd"><td><p>constructor</p></td>
+</tr>
+<tr class="row-even"><td><p>cycle</p></td>
+</tr>
+<tr class="row-odd"><td><p>enum</p></td>
+</tr>
+<tr class="row-even"><td><p>mandatory</p></td>
+</tr>
+<tr class="row-odd"><td><p>node</p></td>
+</tr>
+<tr class="row-even"><td><p>nodeset</p></td>
+</tr>
+<tr class="row-odd"><td><p>nodes</p></td>
+</tr>
+<tr class="row-even"><td><p>pass</p></td>
+</tr>
+<tr class="row-odd"><td><p>passes</p></td>
+</tr>
+<tr class="row-even"><td><p>phase</p></td>
+</tr>
+<tr class="row-odd"><td><p>phases</p></td>
+</tr>
+<tr class="row-even"><td><p>actions</p></td>
+</tr>
+<tr class="row-odd"><td><p>prefix</p></td>
+</tr>
+<tr class="row-even"><td><p>subphases</p></td>
+</tr>
+<tr class="row-odd"><td><p>to</p></td>
+</tr>
+<tr class="row-even"><td><p>traversal</p></td>
+</tr>
+<tr class="row-odd"><td><p>travdata</p></td>
+</tr>
+<tr class="row-even"><td><p>values</p></td>
+</tr>
+<tr class="row-odd"><td><p>info</p></td>
+</tr>
+<tr class="row-even"><td><p>func</p></td>
+</tr>
+<tr class="row-odd"><td><p>root</p></td>
+</tr>
+<tr class="row-even"><td><p>start</p></td>
+</tr>
+<tr class="row-odd"><td><p>double</p></td>
+</tr>
+<tr class="row-even"><td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>int</p></td>
+</tr>
+<tr class="row-even"><td><p>uint</p></td>
+</tr>
+<tr class="row-odd"><td><p>int8</p></td>
+</tr>
+<tr class="row-even"><td><p>int16</p></td>
+</tr>
+<tr class="row-odd"><td><p>int32</p></td>
+</tr>
+<tr class="row-even"><td><p>int64</p></td>
+</tr>
+<tr class="row-odd"><td><p>uint8</p></td>
+</tr>
+<tr class="row-even"><td><p>uint16</p></td>
+</tr>
+<tr class="row-odd"><td><p>uint32</p></td>
+</tr>
+<tr class="row-even"><td><p>uint64</p></td>
+</tr>
+<tr class="row-odd"><td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>lifetime</p></td>
+</tr>
+<tr class="row-even"><td><p>disallowed</p></td>
+</tr>
+<tr class="row-odd"><td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p>allowed</p></td>
+</tr>
+<tr class="row-odd"><td><p>-&gt;</p></td>
+</tr>
+<tr class="row-even"><td><p>false</p></td>
+</tr>
+<tr class="row-odd"><td><p>true</p></td>
+</tr>
+<tr class="row-even"><td><p>gate</p></td>
+</tr>
+<tr class="row-odd"><td><p>user</p></td>
+</tr>
+<tr class="row-even"><td><p>uid</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Reserved prefixes</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>NT</p></td>
+</tr>
+<tr class="row-even"><td><p>CCN</p></td>
+</tr>
+<tr class="row-odd"><td><p>N</p></td>
+</tr>
+<tr class="row-even"><td><p>TRAV</p></td>
+</tr>
+<tr class="row-odd"><td><p>PASS</p></td>
+</tr>
+<tr class="row-even"><td><p>PHASE</p></td>
+</tr>
+<tr class="row-odd"><td><p>NODE</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 
 
