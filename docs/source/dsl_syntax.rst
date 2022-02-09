@@ -5,7 +5,7 @@ The DSL used by CoCoNut is case-insensitive for names and other attributes.
 This means that there is no distinction between a node names *Num* and a node named *NUM*.
 This is the case, because CoCoNut uses several different representations for code generation, one 
 of those is the fully capitalized version of a name.
-Nonetheless, there is a distinction between keywords and names. Names can not collide with CoCoNut keywords(TODO: Ref to keywords doc) or C keywords.
+Nonetheless, there is a distinction between keywords and names. Names can not collide with CoCoNut keywords, see :doc:`reserved`, or C keywords.
 As a result, you can not name a node *float*, but you can name a node *Float*.
 As a result, it is a convention to start your node names capitalized.
 The CoCoNut compiler gives an error if you have two names that are equal in their uppercase form.
