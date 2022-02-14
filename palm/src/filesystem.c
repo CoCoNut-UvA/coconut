@@ -10,7 +10,7 @@
  * @param dirname Directory to ensure.
  * @param mode Mode in which directory is to be created.
  */
-void FSensureDirExists(char *dirname, __mode_t mode)
+void FSensureDirExists(char *dirname, mode_t mode)
 {
     if (mkdir(dirname, mode) == 0) {
         return;

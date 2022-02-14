@@ -1,5 +1,6 @@
 #pragma once
 
+#include <sys/types.h>
 #include <dirent.h>
 
-void FSensureDirExists(char *dirname, __mode_t mode);
+void FSensureDirExists(char *dirname, mode_t mode);
