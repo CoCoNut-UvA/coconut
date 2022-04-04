@@ -15,7 +15,6 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
-#include "filesystem/gen_files.h"
 #include "dynamic_backend/gen_helpers.h"
 
 static int arg_num = 0;

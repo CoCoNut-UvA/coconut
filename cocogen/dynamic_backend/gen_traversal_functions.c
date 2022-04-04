@@ -9,7 +9,6 @@
 #include "ccn/ccn.h"
 #include "ccngen/ast.h"
 #include "ccngen/trav_data.h"
-#include "filesystem/gen_files.h"
 #include "gen_helpers/out_macros.h"
 #include "palm/hash_table.h"
 #include "palm/memory.h"

@@ -5,7 +5,6 @@
 
 #include "ccn/dynamic_core.h"
 #include "ccngen/ast.h"
-#include "filesystem/gen_files.h"
 #include "palm/hash_table.h"
 #include <gen_helpers/out_macros.h>
 #include <globals.h>

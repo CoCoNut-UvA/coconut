@@ -8,7 +8,6 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
-#include "filesystem/gen_files.h"
 
 
 static node_st *ast;

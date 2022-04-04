@@ -1,6 +1,5 @@
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
-#include "filesystem/gen_files.h"
 #include "gen_helpers/out_macros.h"
 #include <assert.h>
 #include "globals.h"

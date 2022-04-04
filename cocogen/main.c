@@ -1,7 +1,6 @@
 #include "ccn/phase_driver.h"
 #include "ccngen/ast.h"
 #include "commandline.h"
-#include "filesystem/gen_files.h"
 #include "gen_helpers/out_macros.h"
 #include "globals.h"
 #include "palm/filesystem.h"

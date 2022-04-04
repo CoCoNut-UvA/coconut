@@ -8,7 +8,6 @@
 #include "stdio.h"
 #include "gen_helpers/out_macros.h"
 #include "globals.h"
-#include "filesystem/gen_files.h"
 #include <stdio.h>
 
 node_st *dynamic_start_ast_header(node_st *root)

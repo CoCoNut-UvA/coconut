@@ -1,7 +1,6 @@
 #include <gen_helpers/out_macros.h>
 #include "ccngen/ast.h"
 #include "globals.h"
-#include "filesystem/gen_files.h"
 #include "ccn/dynamic_core.h"
 
 node_st *GGHast(node_st *node)

@@ -11,7 +11,6 @@
 #include <stdio.h>
 
 #include "ccn/dynamic_core.h"
-#include "filesystem/gen_files.h"
 #include "gen_helpers/out_macros.h"
 #include "globals.h"
 #include "palm/str.h"
