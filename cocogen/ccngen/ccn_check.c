@@ -82,7 +82,7 @@ static bool TypeIsaction(node_st *arg_node) {
 
 struct ccn_node *CHKid(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (ID_NEXT(arg_node)) {
         if (NODE_TYPE(ID_NEXT(arg_node)) != NT_ID) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(id) has disallowed type(%s) ", nodetypeToName(ID_NEXT(arg_node)));
@@ -108,7 +108,7 @@ struct ccn_node *CHKid(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKienum(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (IENUM_VALS(arg_node)) {
         if (NODE_TYPE(IENUM_VALS(arg_node)) != NT_ID) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(Vals) of node(ienum) has disallowed type(%s) ", nodetypeToName(IENUM_VALS(arg_node)));
@@ -143,7 +143,7 @@ struct ccn_node *CHKienum(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKattribute(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (ATTRIBUTE_NAME(arg_node)) {
         if (NODE_TYPE(ATTRIBUTE_NAME(arg_node)) != NT_ID) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(name) of node(attribute) has disallowed type(%s) ", nodetypeToName(ATTRIBUTE_NAME(arg_node)));
@@ -182,7 +182,7 @@ struct ccn_node *CHKattribute(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKitravdata(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (ITRAVDATA_NAME(arg_node)) {
         if (NODE_TYPE(ITRAVDATA_NAME(arg_node)) != NT_ID) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(name) of node(itravdata) has disallowed type(%s) ", nodetypeToName(ITRAVDATA_NAME(arg_node)));
@@ -214,7 +214,7 @@ struct ccn_node *CHKitravdata(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKsetoperation(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (SETOPERATION_LEFT(arg_node)) {
         if (!TypeIssetexpr(SETOPERATION_LEFT(arg_node))) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(left) of node(setoperation) has disallowed type(%s) ", nodetypeToName(SETOPERATION_LEFT(arg_node)));
@@ -247,7 +247,7 @@ struct ccn_node *CHKsetoperation(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKsetliteral(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (SETLITERAL_REFERENCE(arg_node)) {
         if (NODE_TYPE(SETLITERAL_REFERENCE(arg_node)) != NT_ID) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(reference) of node(setliteral) has disallowed type(%s) ", nodetypeToName(SETLITERAL_REFERENCE(arg_node)));
@@ -275,7 +275,7 @@ struct ccn_node *CHKsetliteral(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKsetreference(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (SETREFERENCE_REFERENCE(arg_node)) {
         if (NODE_TYPE(SETREFERENCE_REFERENCE(arg_node)) != NT_ID) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(reference) of node(setreference) has disallowed type(%s) ", nodetypeToName(SETREFERENCE_REFERENCE(arg_node)));
@@ -293,7 +293,7 @@ struct ccn_node *CHKsetreference(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKste(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (STE_NEXT(arg_node)) {
         if (NODE_TYPE(STE_NEXT(arg_node)) != NT_STE) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(ste) has disallowed type(%s) ", nodetypeToName(STE_NEXT(arg_node)));
@@ -314,7 +314,7 @@ struct ccn_node *CHKste(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKchild(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (CHILD_NAME(arg_node)) {
         if (NODE_TYPE(CHILD_NAME(arg_node)) != NT_ID) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(name) of node(child) has disallowed type(%s) ", nodetypeToName(CHILD_NAME(arg_node)));
@@ -353,7 +353,7 @@ struct ccn_node *CHKchild(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKlifetime_range(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (LIFETIME_RANGE_TARGET(arg_node)) {
         if (NODE_TYPE(LIFETIME_RANGE_TARGET(arg_node)) != NT_ID) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(target) of node(lifetime_range) has disallowed type(%s) ", nodetypeToName(LIFETIME_RANGE_TARGET(arg_node)));
@@ -367,7 +367,7 @@ struct ccn_node *CHKlifetime_range(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKilifetime(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (ILIFETIME_BEGIN(arg_node)) {
         if (NODE_TYPE(ILIFETIME_BEGIN(arg_node)) != NT_LIFETIME_RANGE) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(begin) of node(ilifetime) has disallowed type(%s) ", nodetypeToName(ILIFETIME_BEGIN(arg_node)));
@@ -395,7 +395,7 @@ struct ccn_node *CHKilifetime(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKinodeset(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (INODESET_NAME(arg_node)) {
         if (NODE_TYPE(INODESET_NAME(arg_node)) != NT_ID) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(name) of node(inodeset) has disallowed type(%s) ", nodetypeToName(INODESET_NAME(arg_node)));
@@ -430,7 +430,7 @@ struct ccn_node *CHKinodeset(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKinode(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (INODE_NAME(arg_node)) {
         if (NODE_TYPE(INODE_NAME(arg_node)) != NT_ID) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(name) of node(inode) has disallowed type(%s) ", nodetypeToName(INODE_NAME(arg_node)));
@@ -476,7 +476,7 @@ struct ccn_node *CHKinode(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKipass(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (IPASS_NAME(arg_node)) {
         if (NODE_TYPE(IPASS_NAME(arg_node)) != NT_ID) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(name) of node(ipass) has disallowed type(%s) ", nodetypeToName(IPASS_NAME(arg_node)));
@@ -511,7 +511,7 @@ struct ccn_node *CHKipass(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKitraversal(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (ITRAVERSAL_NAME(arg_node)) {
         if (NODE_TYPE(ITRAVERSAL_NAME(arg_node)) != NT_ID) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(name) of node(itraversal) has disallowed type(%s) ", nodetypeToName(ITRAVERSAL_NAME(arg_node)));
@@ -553,7 +553,7 @@ struct ccn_node *CHKitraversal(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKiphase(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (IPHASE_NAME(arg_node)) {
         if (NODE_TYPE(IPHASE_NAME(arg_node)) != NT_ID) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(name) of node(iphase) has disallowed type(%s) ", nodetypeToName(IPHASE_NAME(arg_node)));
@@ -599,7 +599,7 @@ struct ccn_node *CHKiphase(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKiactions(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (IACTIONS_REFERENCE(arg_node)) {
         if (NODE_TYPE(IACTIONS_REFERENCE(arg_node)) != NT_ID) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(reference) of node(iactions) has disallowed type(%s) ", nodetypeToName(IACTIONS_REFERENCE(arg_node)));
@@ -620,7 +620,7 @@ struct ccn_node *CHKiactions(struct ccn_node *arg_node) {
 
 struct ccn_node *CHKast(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
-    action_id = action_id;
+    (void)action_id;
     if (AST_IPHASES(arg_node)) {
         if (NODE_TYPE(AST_IPHASES(arg_node)) != NT_IPHASE) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(iphases) of node(ast) has disallowed type(%s) ", nodetypeToName(AST_IPHASES(arg_node)));

@@ -24,7 +24,14 @@ struct htable {
     size_t elements;
 };
 
-
+/**
+ * Create a new hash table.
+ * @param size the number of buckets in a hash table.
+ *  More buckets is more space, but les collisions.
+ *  See pre-defined hash tables in the bottom of this file.
+ * @param hash_func the function used for hashing keys.
+ * @param is_equal_func the function to determine if two values are equal.
+ */
 struct htable *HTnew(size_t size, hash_key_ft hash_func, is_equal_ft is_equal_func)
 {
     struct htable *table = MEMmalloc(sizeof(struct htable));
@@ -90,6 +97,11 @@ bool HTinsert(struct htable *table, void *key, void *value)
     return Insert(table, key, value);
 }
 
+/**
+ * Remove the key, value pair from the table.
+ * 
+ * @return the deleted value or NULL if key is not foound.
+ */
 void *HTremove(htable_st *table, void *key)
 {
     size_t index = table->hash_f(key) % table->size;
@@ -127,7 +139,9 @@ void *HTremove(htable_st *table, void *key)
     return NULL;
 }
 
-
+/**
+ * @return value found or NULL if key is not present.
+ */
 void *HTlookup(struct htable *table, void *key)
 {
     size_t index = table->hash_f(key) % table->size;
@@ -142,6 +156,10 @@ void *HTlookup(struct htable *table, void *key)
     return NULL;
 }
 
+/**
+ * Clears all entries in the hash table.
+ * Does not delete the table, so can be reused.
+ */
 void HTclear(struct htable *table)
 {
     for (size_t i = 0; i < table->size; i++) {
@@ -155,6 +173,10 @@ void HTclear(struct htable *table)
     }
 }
 
+/**
+ * Delete all entries in the table and the table itself.
+ * Table is not usable after this operation.
+ */
 void HTdelete(struct htable *table)
 {
     HTclear(table);
@@ -201,6 +223,10 @@ void HTmapWithKey(struct htable *table, mapk_ft fun)
     }
 }
 
+/**
+ * Map function that passes an extra data parameter to the 
+ * map function
+ */
 void HTmapWithDataAndKey(htable_st *table, void *data, mapdk_ft fun)
 {
     for (size_t i = 0; i < table->size; i++) {
@@ -233,6 +259,10 @@ size_t StringHash(char *key)
     return hash;
 }
 
+/**
+ * Create a new hash table for strings.
+ * @param size determines the number of buckets in the table.
+ */
 struct htable *HTnew_String(size_t size)
 {
     return HTnew(size, (hash_key_ft)StringHash, (is_equal_ft)STReq);
@@ -253,6 +283,10 @@ bool PtrEqual(void *ptr1, void *ptr2)
     return ptr1 == ptr2;
 }
 
+/**
+ * Create a new hash table for pointers.
+ * @param size determines the number of buckets in the table.
+ */
 struct htable *HTnew_Ptr(size_t size)
 {
     return HTnew(size, (hash_key_ft)PtrHash, (is_equal_ft)PtrEqual);

@@ -51,16 +51,14 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-# Build dir
-build/
+# Build dirs
+build*/
 
 # Bin dir
 bin/
 
-# Doxygen generated docs file
-
-.vscode
-.idea
-cmake-*
 build*/
+.vscode/
+.idea/
+cmake-*/
 __pycache__

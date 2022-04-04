@@ -1,46 +1,96 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Codegen &#8212; CoCoNut  documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Codegen &mdash; CoCoNut  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Working With CoCoNut" href="working_with_traversals.html" />
-    <link rel="prev" title="DSL" href="dsl_syntax.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="prev" title="CoCoNut DSL" href="dsl_syntax.html" /> 
+</head>
 
-  </head><body>
-  
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> CoCoNut
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dsl_syntax.html">CoCoNut DSL</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Codegen</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#enum">Enum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#nodes">Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#passes">Passes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#traversals">Traversals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#traversal-data">Traversal Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generated-skeleton">Generated Skeleton</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#files">Files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="working_with_traversals.html">Working With CoCoNut</a></li>
+<li class="toctree-l1"><a class="reference internal" href="primitive_types.html">Primitive types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reserved.html">Reserved</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copra.html">Copra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="palm.html">Palm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calculator.html">Calculator Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a></li>
+</ul>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          
+        </div>
+      </div>
+    </nav>
 
-          <div class="body" role="main">
-            
-  <div class="section" id="codegen">
-<h1>Codegen<a class="headerlink" href="#codegen" title="Permalink to this headline">¶</a></h1>
-<p>In this section, the code CoCoNut generates, based on the specification in the DSL, is described.
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CoCoNut</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Codegen</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/codegen.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="codegen">
+<h1>Codegen<a class="headerlink" href="#codegen" title="Permalink to this headline"></a></h1>
+<p>In this section, the code CoCoNut generates is described.
 This section also explains how to work with the opaque node structure used by CoCoNut and where to find generated
 declarations.</p>
-<div class="section" id="enum">
-<h2>Enum<a class="headerlink" href="#enum" title="Permalink to this headline">¶</a></h2>
+<section id="enum">
+<h2>Enum<a class="headerlink" href="#enum" title="Permalink to this headline"></a></h2>
 <p>Every enum is generated to a C enum, where the prefix of the enum becomes a prefix for every value in the enum and the type of the enum
 is the enum name in lowercase.
 So, the following enum definition</p>
@@ -53,7 +103,7 @@ So, the following enum definition</p>
 </pre></div>
 </div>
 <p>will result in the following code:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="n">binop</span> <span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="n">binop_type</span> <span class="p">{</span>
     <span class="n">BT_add</span><span class="p">,</span>
     <span class="n">BT_sub</span><span class="p">,</span>
     <span class="n">BT_mul</span><span class="p">,</span>
@@ -63,10 +113,10 @@ So, the following enum definition</p>
 </pre></div>
 </div>
 <p>The generated enums are found in the <em>ccngen/enum.h</em> file.</p>
-</div>
-<div class="section" id="nodes">
-<h2>Nodes<a class="headerlink" href="#nodes" title="Permalink to this headline">¶</a></h2>
-<p>Every defines node gets a constructor generator. A constructor will get the name <em>AST&lt;node name&gt;(&lt;constructor children&gt; ‘,’ … ‘,’ &lt;constructor attributes)</em>, where the node name is all lowercase.
+</section>
+<section id="nodes">
+<h2>Nodes<a class="headerlink" href="#nodes" title="Permalink to this headline"></a></h2>
+<p>Every defined node gets a constructor generated. A constructor will get the name <em>AST&lt;node name&gt;(&lt;constructor children…&gt;’,’ &lt;constructor attributes…&gt;)</em>, where the node name is all lowercase.
 The arguments to the C constructor are the children and attributes with the <em>constructor</em> specificier. The arguments are ordered with children first and then attributes.
 Hence, the following node:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>root node BinOp {
@@ -98,11 +148,51 @@ So, the BinOp node will get the following access macros:</p>
 </pre></div>
 </div>
 <p>Every node has a shared part, which can be accessed with macros of type <em>NODE_</em>.
-For now, only the type of a node can queried using the NODE_TYPE(node) macro. Node types are an enum in the form NT_&lt;node_name&gt;, where the node name is fully capitalized.
-So, the BinOp node would be of the type NT_BINOP.</p>
-</div>
-<div class="section" id="passes">
-<h2>Passes<a class="headerlink" href="#passes" title="Permalink to this headline">¶</a></h2>
+For now, this is a fixed structure that can be not changed and is mostly used to track source locations.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 19%" />
+<col style="width: 66%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field name</p></th>
+<th class="head"><p>Access macro</p></th>
+<th class="head"><p>Usage</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>type</p></td>
+<td><p>NODE_TYPE</p></td>
+<td><p>The type of the node</p></td>
+</tr>
+<tr class="row-odd"><td><p>bline</p></td>
+<td><p>NODE_BLINE</p></td>
+<td><p>The source line this node starts on</p></td>
+</tr>
+<tr class="row-even"><td><p>eline</p></td>
+<td><p>NODE_ELINE</p></td>
+<td><p>The source line this node ends on</p></td>
+</tr>
+<tr class="row-odd"><td><p>bcol</p></td>
+<td><p>NODE_BCOL</p></td>
+<td><p>The source column this node starts on</p></td>
+</tr>
+<tr class="row-even"><td><p>ecol</p></td>
+<td><p>NODE_ECOL</p></td>
+<td><p>The source column this node ends on</p></td>
+</tr>
+<tr class="row-odd"><td><p>filename</p></td>
+<td><p>NODE_FILENAME</p></td>
+<td><p>The source filename where this node is located in.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Every node has a unique type identified by the <em>NT_&lt;node_name&gt;</em> enum entries.
+For example, the binop node has type <em>NT_BINOP</em>. These types can be obtained using the <em>NODE_TYPE</em> macro on a node.</p>
+</section>
+<section id="passes">
+<h2>Passes<a class="headerlink" href="#passes" title="Permalink to this headline"></a></h2>
 <p>CoCoNut generates the declaration of the pass function and you are required to write the definition. The generated function declaration depends on
 the way the pass is specified in the DSL. If the pass has the function specified, CoCoNut will generate that as the function declaration.
 So, the following pass:</p>
@@ -120,13 +210,15 @@ So, the following pass:</p>
 <p>You then have to define it. If no func is specified, the pass name will be used, with the uid as a prefix, if no uid is specified only the pass name
 is used.
 Thus, the previous pass without a func defined would be declared as:</p>
-<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">node_st</span> <span class="o">*</span><span class="nf">SPscanParse</span><span class="p">(</span><span class="n">node_st</span> <span class="o">*</span><span class="n">node</span><span class="p">);</span><span class="o">*</span>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">node_st</span> <span class="o">*</span><span class="n">SPscanParse</span><span class="p">(</span><span class="n">node_st</span> <span class="o">*</span><span class="n">node</span><span class="p">);</span><span class="o">*</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="traversals">
-<h2>Traversals<a class="headerlink" href="#traversals" title="Permalink to this headline">¶</a></h2>
-<p>CoCoNut generates the declaration for every function the traversal targets(specified in nodes). To do this, the uid is used as the prefix, in all caps, and the node name, all lowercase, is appended to the uid. The following traversal specification</p>
+</section>
+<section id="traversals">
+<h2>Traversals<a class="headerlink" href="#traversals" title="Permalink to this headline"></a></h2>
+<p>CoCoNut generates the declaration for every function the traversal targets (specified in nodes).
+To do this, the uid is used, in all caps, as the prefix and the node name, all lowercase, is appended to the uid.
+Thus, the following traversal specification</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>traversal RenameFor {
     uid = RFOR,
     nodes = {For, VarLet, Var},
@@ -136,18 +228,18 @@ Thus, the previous pass without a func defined would be declared as:</p>
 }
 </pre></div>
 </div>
-<p>will get the following functions:</p>
+<p>, will get the following functions.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">node_st</span> <span class="o">*</span><span class="n">RFORfor</span><span class="p">(</span><span class="n">node_st</span> <span class="o">*</span><span class="p">)</span>
 <span class="n">node_st</span> <span class="o">*</span><span class="n">RFORvarlet</span><span class="p">(</span><span class="n">node_st</span> <span class="o">*</span><span class="p">)</span>
 <span class="n">node_st</span> <span class="o">*</span><span class="n">RFORvar</span><span class="p">(</span><span class="n">node_st</span> <span class="o">*</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="traversal-data">
-<h2>Traversal Data<a class="headerlink" href="#traversal-data" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="traversal-data">
+<h2>Traversal Data<a class="headerlink" href="#traversal-data" title="Permalink to this headline"></a></h2>
 <p>Traversal data defined in the DSL is mapped to a struct and can be queried with a macro. The struct is of the type <em>struct data_&lt;uid&gt;</em> and the macro is given by
-<em>DATA_&lt;UID&gt;_GET()</em>. So, the travdata for the previous traversal has the following struct and get macro:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">data_rfor</span><span class="p">;</span>
+<em>DATA_&lt;UID&gt;_GET()</em>. So, the travdata for the previous traversal has the following struct and get macro.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">data_rfor</span><span class="p">;</span>
 <span class="n">DATA_RFOR_GET</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -156,133 +248,83 @@ Thus, the previous pass without a func defined would be declared as:</p>
 <span class="kt">void</span> <span class="o">&lt;</span><span class="n">trav_uid</span><span class="o">&gt;</span><span class="n">fini</span><span class="p">();</span>
 </pre></div>
 </div>
-<p>so, for rfor, the following two functions:</p>
+<p>so, for rfor, the following two functions are required.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">RFORinit</span><span class="p">();</span>
 <span class="kt">void</span> <span class="nf">RFORfini</span><span class="p">();</span>
 </pre></div>
 </div>
 <p>Init is called after construction of the trav data struct, but before starting the traversal. The fini function is called after
 the traversal. Note: do not free the traversal data struct, as it is controlled by CoCoNut.</p>
-<p>If a user type is used, a header file, called <em>user_types.h</em> is required to be available on the include path of your compiler containing the user type. For example, if you need a FILE* in your travdata, you can define it as a typedef FILE* fileptr and then use the fileptr as a user type.</p>
-</div>
-<div class="section" id="generated-skeleton">
-<h2>Generated Skeleton<a class="headerlink" href="#generated-skeleton" title="Permalink to this headline">¶</a></h2>
-<p>For passes and traversels, CoCoNut generates a skeleton based on the specification in the DSL and can be found in the <em>&lt;gendir&gt;/user</em> folder. The passes are placed in the
-<em>passes.c</em> file and every traversal gets its own file with the following name: <em>trav_&lt;trav_name&gt;.c</em>, with the name being fully lowercase.</p>
-</div>
-<div class="section" id="files">
-<h2>Files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h2>
-<p>The generated code is distributed among several files, where the headers are sometimes required to operatore on generated data, like the nodes. All include files
-are in the directory used for generation under the “ccngen” directory. So, if the gen directory specified is “gen_files”, then all files are found under “gen_files/ccngen/”</p>
-<table border="1" class="docutils">
+<p>If a user type is used, a header file, called <em>user_types.h</em> is required to be available on the include path of your compiler containing the user type.
+For example, if you need a FILE* in your travdata, you can define it as a typedef FILE* fileptr and then use the fileptr as a user type.</p>
+</section>
+<section id="generated-skeleton">
+<h2>Generated Skeleton<a class="headerlink" href="#generated-skeleton" title="Permalink to this headline"></a></h2>
+<p>For passes and traversels, CoCoNut generates a skeleton based on the specification in the DSL, which can be found in the <em>&lt;gendir&gt;/user</em> folder.
+The passes are placed in the <em>passes.c</em> file and every traversal gets its own file with the following name: <em>trav_&lt;trav_name&gt;.c</em>, with the name being fully lowercase.</p>
+</section>
+<section id="files">
+<h2>Files<a class="headerlink" href="#files" title="Permalink to this headline"></a></h2>
+<p>The generated code is distributed among several files, where the headers are sometimes required to operate on generated data, like nodes.
+All include files are in the directory used for generation under the “ccngen” directory.
+So, if the gen directory specified is “ccngen”, then all files are found under “ccngen/ccngen/”</p>
+<table class="docutils align-default">
 <colgroup>
-<col width="55%" />
-<col width="45%" />
+<col style="width: 55%" />
+<col style="width: 45%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Primitive</th>
-<th class="head">Include file</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Primitive</p></th>
+<th class="head"><p>Include file</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>enums</td>
-<td>enum.h</td>
+<tbody>
+<tr class="row-even"><td><p>enums</p></td>
+<td><p>enum.h</p></td>
 </tr>
-<tr class="row-odd"><td>nodes</td>
-<td>ast.h</td>
+<tr class="row-odd"><td><p>nodes</p></td>
+<td><p>ast.h</p></td>
 </tr>
-<tr class="row-even"><td>traversal data</td>
-<td>trav_data.h</td>
+<tr class="row-even"><td><p>traversal data</p></td>
+<td><p>trav_data.h</p></td>
 </tr>
-<tr class="row-odd"><td>Child traversals</td>
-<td>trav.h</td>
+<tr class="row-odd"><td><p>Child traversals</p></td>
+<td><p>trav.h</p></td>
 </tr>
 </tbody>
 </table>
-</div>
-</div>
+</section>
+</section>
 
 
+           </div>
           </div>
-          
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="dsl_syntax.html" class="btn btn-neutral float-left" title="CoCoNut DSL" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="working_with_traversals.html" class="btn btn-neutral float-right" title="Working With CoCoNut" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Damian.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">CoCoNut</a></h1>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="dsl_syntax.html">DSL</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Codegen</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#enum">Enum</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#nodes">Nodes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#passes">Passes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#traversals">Traversals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#traversal-data">Traversal Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#generated-skeleton">Generated Skeleton</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#files">Files</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="working_with_traversals.html">Working With CoCoNut</a></li>
-<li class="toctree-l1"><a class="reference internal" href="calculator.html">Calculator Example</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="dsl_syntax.html" title="previous chapter">DSL</a></li>
-      <li>Next: <a href="working_with_traversals.html" title="next chapter">Working With CoCoNut</a></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2020, Damian.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/codegen.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>

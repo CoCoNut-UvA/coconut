@@ -7,6 +7,7 @@
 #include "palm/filesystem.h"
 #include "palm/str.h"
 #include <ccn/ccn.h>
+#include "palm/dbug.h"
 #include <stddef.h>
 #include <stdio.h>
 #include "ccngen/action_handling.h"
@@ -39,6 +40,10 @@ void BreakpointHandler(node_st *node)
 int main(int argc, char *argv[])
 {
     CLprocessArgs(argc, argv);
+    if (!global_command_line.debug) {
+        DBUGoff();
+    }
+
     globals.filename = global_command_line.input_file;
     globals.line_map = HTnew_Int(25);
     globals.gen_hdr_dir = STRcat(global_command_line.gen_dir, "ccngen/");
@@ -56,7 +61,7 @@ int main(int argc, char *argv[])
     FSensureDirExists(global_command_line.gen_dir, 0755);
     FSensureDirExists(globals.gen_hdr_dir, 0755);
     FSensureDirExists(globals.gen_user_dir, 0755);
-    
+
     printf("--------------- Generating ---------------\n");
     CCNrun(NULL);
     printf("---------------    Done    ---------------\n");

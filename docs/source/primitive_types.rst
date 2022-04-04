@@ -2,8 +2,8 @@
 Primitive types
 ===============
 
-*CoConut* provides some primitive types to be used in attributes and trav data. The table below shows the
-types in *CoCoNut* and their corresponding C type.
+CoConut provides some primitive types to be used in attributes and trav data.
+The table below shows the types in CoCoNut and their corresponding C type.
 
 +------------------+----------------+
 | CoCoNut type     |  C type        |

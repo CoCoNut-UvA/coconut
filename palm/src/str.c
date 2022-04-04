@@ -107,7 +107,7 @@ char *STRsubStr(const char *string, int start, int len)
  *
  * @fn char *STRnull( )
  *
- * @brief return an empty string
+ * @brief return an allocated empty string
  *
  *****************************************************************************/
 char *STRnull()
@@ -270,15 +270,13 @@ bool STReqci(const char *first, const char *second)
 
 /*******************************************************************************
  *
- * Description: Compare two strings.
+ * @brief Compare two strings up to a certain limit of characters.
  *
- * Parameters: - first, first string to compare
- *             - second, second string to compare
- *             - n, number of relevant characters
+ * @param first, first string to compare
+ * @param second, second string to compare
+ * @param n, number of relevant characters
  *
- * Return: - true, relevant prefixes of strings are equal
- *         - false, relevant prefixes of strings are not equal
- *
+ * @return: true when the relevant prefixes of strings are equal, false otherwise.
  *******************************************************************************/
 
 bool STReqn(const char *first, const char *second, int n)
@@ -302,10 +300,10 @@ bool STReqn(const char *first, const char *second, int n)
 
 /*******************************************************************************
  *
- * Description: Checks if prefix is prefix of str
+ * @brief Checks if prefix is prefix of str
  *
- * Parameters: - prefix, first string to compare
- *             - str, second string to compare
+ * @param prefix, first string to compare
+ * @param str, second string to compare
  *
  * Return: - true, prefix is prefix of str
  *         - false, otherwise
@@ -358,14 +356,12 @@ bool STRsuffix(const char *suffix, const char *str)
 
 /*******************************************************************************
  *
- * Description: Checks if prefix is prefix of str
+ * @brief Checks if sub is contained inside of str
  *
- * Parameters: - sub, first string to compare
- *             - str, second string to compare
+ * @param sub substring to find
+ * @param str string to search
  *
- * Return: - true, sub is substring of str
- *         - false, otherwise
- *
+ * @return true when sub is a substring of str, false otherwise
  *******************************************************************************/
 
 bool STRsub(const char *sub, const char *str)
@@ -387,7 +383,7 @@ bool STRsub(const char *sub, const char *str)
 
 /*******************************************************************************
  *
- * Description: Yield length of string
+ * @brief Yield length of string
  *
  *  Mostly to provide a complete interface and to avoid using standard
  *  string facilities throughout the compiler.
@@ -429,19 +425,17 @@ static bool CharInString(char c, const char *str)
 
 /*******************************************************************************
  *
- * Description: Tokenize string. On first call the str will be copied to internal
- *              static variable, next calls str should be NULL. With last call the
- *              allocated memory of the copy will be freed.
+ * @brief Tokenize string. On first call the str will be copied to internal
+ *        static variable, next calls str should be NULL. With last call the
+ *        allocated memory of the copy will be freed.
  *
  *              In contrast to strtok, STRtok leaves the argument string untouched
  *              and always allocates the tokens in fresh memory.
  *
- * Parameters: - str, string to tokenize
- *             - tok, tokenizer
+ * @param str string to tokenize
+ * @param tok tokenizer
  *
- * Return: - pointer to the next token
- *         - NULL, no more tokens
- *
+ * @return either a pointer to the next token or NULL when no more tokens.
  *******************************************************************************/
 char *STRtok(const char *first, const char *sep)
 {
@@ -481,8 +475,7 @@ char *STRtok(const char *first, const char *sep)
 
 /*******************************************************************************
  *
- * Description:
- *
+ * @brief
  *  yields either the argument string if it is not NULL or an empty constant
  *  string otherwise.
  *
@@ -508,9 +501,9 @@ char *STRonNull(char *alt, char *str)
  *
  * Description: Convert integer to string in decimal representation.
  *
- * Parameters: - number to convert
+ * @param number to convert
  *
- * Return: - new allocated string representation of number
+ * @return new allocated string representation of number
  *
  *******************************************************************************/
 
@@ -604,8 +597,8 @@ void STRtoUpper(char *str)
 }
 
 /**
- * Convert a string to its lower form but does not consume original string.
- * @param str
+ * Convert a string to its lower form, but does not consume original string.
+ * @param str The string to transform.
  * @return Malloced string, which is the lower form of str.
  */
 char *STRlower(const char *str)
@@ -628,9 +621,9 @@ char *STRlower(const char *str)
 }
 
 /**
- *
- * @param str
- * @return Malloced string, which is the upper form of str.
+ * @brief Convert a string to its upper form, but does not consume the original string.
+ * @param str The string to transform
+ * @return Allocated string, which is the upper form of str.
  */
 char *STRupper(const char *str)
 {

@@ -1,21 +1,16 @@
 =======================
 Working With CoCoNut
 =======================
+During the compilation process of your compiler, you need to interact with the CoCoNut runtime.
+For example, to specify new traversal directions, freeing nodes, and so on.
 
-All *CCN* functions are found in the *ccn/ccn.h* header file.
+When functions are prefixed with *CCN* they are found in the *ccn/ccn.h* header file.
+
 
 Traversals
 ===========
 Traversals require most interaction with CoCoNut, therefore, CoCoNut defines some helpers to make working
-with traversal smoother. CoCoNut also makes optimisations and only traverses sub-trees that can contain
-nodes the traversal targets.
-
-Reachability
-------------
-Reachability is the concept that a node is reachable in a sub-tree for the current traversal.
-If you specify that a traversal only targets(via the nodes) the *BinOp* node, then CoCoNut only traverses the
-paths in the full AST that can reach a BinOp. This way, you only have to write functions for nodes you target.
-
+with traversal smoother.
 
 Traversing
 ----------
@@ -45,7 +40,7 @@ the assignment for you. So, the previous example becomes:
     TRAVchildren(binop)
 
 
-, and is expanded to:
+, and is expanded to.
 
 .. code-block:: C
 
@@ -62,8 +57,8 @@ of a child name. Thus, the previous example can also be defined as follows:
     TRAVleft(binop);
     TRAVright(binop);
 
-since the binop has children named *left* and *right*, the functions will traverse the right child. This, again, does the
-assignment for you and uses *opt* calls. Hence, the patter of *target = TRAVopt(target)* can often be prevented.
+since the binop has children named *left* and *right*, the functions will traverse the left and right child of the binop.
+This, again, does the assignment for you and uses *opt* calls. Hence, the pattern of *target = TRAV<do/opt>(target)* can often be prevented.
 
 
 Cycles
@@ -71,6 +66,13 @@ Cycles
 Cycles
 
 The maximum cycles has the default set to 100, however, that can be changed any time by calling the *CCNsetCycles(size_t cycle_count)* function.
+
+Nodes
+=====
+CoCoNut provides copy and free functions for defined nodes in the form of *CCNcopy* and *CCNfree*.
+When a node is copied, all children are copied and all attributes except node attributes are deep-copied.
+When a node is freed, all children of the node are freed as well and all attributes except node attributes are cleaned up.
+Hence, node attributes can be used to link to other nodes without causing double free issues.
 
 Error signals
 =============

@@ -1,0 +1,7 @@
+
+
+all:
+	doxygen
+
+
+.PHONY: all

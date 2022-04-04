@@ -40,7 +40,6 @@ void *MEMmalloc(size_t size)
 /**
  * Free memory. Returns NULL, but allows to do assignment to freed structure.
  * @param address address to free.
- * @return
  */
 void *MEMfree(void *address)
 {

@@ -49,7 +49,7 @@ static void *MapChildrenSource(void *key, void *ids)
 static void *MapChildrenInclude(void *key, void *ids)
 {
     GeneratorContext *ctx = globals.gen_ctx;
-    ids = ids;
+    (void)ids;
     OUT_FIELD("node_st *TRAV%s(node_st *node)", (char*)key);
 
     return ids;

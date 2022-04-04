@@ -99,7 +99,7 @@ node_st *DGCHTinode(node_st *node)
     curr_node = node;
     OUT_START_FUNC("struct ccn_node *CHK%s(struct ccn_node *arg_node)", ID_LWR(INODE_NAME(node)));
     OUT_FIELD("size_t action_id = CCNgetCurrentActionId()");
-    OUT_FIELD("action_id = action_id"); // Prevents unused error.
+    OUT_FIELD("(void)action_id"); // Prevents unused error.
     TRAVopt(INODE_ICHILDREN(node));
     TRAVopt(INODE_IATTRIBUTES(node));
     // Child & attributes change the target, so change it back.

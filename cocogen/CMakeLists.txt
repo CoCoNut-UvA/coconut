@@ -32,7 +32,7 @@ add_executable(cocogen main.c commandline.c frontend/scanAndParse/scan_parse.c
 
 target_compile_options(cocogen PRIVATE
         $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
-        $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic -Wno-unused-function -Werror>
+        $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic -Wno-unused-function>
         )
 
 #add_subdirectory(../cunit/CUnit cunit)

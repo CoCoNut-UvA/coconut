@@ -2,7 +2,7 @@
  Codegen
 =========
 
-In this section, the code CoCoNut generates, based on the specification in the DSL, is described.
+In this section, the code CoCoNut generates is described.
 This section also explains how to work with the opaque node structure used by CoCoNut and where to find generated
 declarations.
 
@@ -25,7 +25,7 @@ will result in the following code:
 
 .. code-block:: c
 
-    enum binop {
+    enum binop_type {
         BT_add,
         BT_sub,
         BT_mul,
@@ -38,7 +38,7 @@ The generated enums are found in the *ccngen/enum.h* file.
 
 Nodes
 =====
-Every defines node gets a constructor generator. A constructor will get the name *AST<node name>(<constructor children> ',' ... ',' <constructor attributes)*, where the node name is all lowercase.
+Every defined node gets a constructor generated. A constructor will get the name *AST<node name>(<constructor children...>',' <constructor attributes...>)*, where the node name is all lowercase.
 The arguments to the C constructor are the children and attributes with the *constructor* specificier. The arguments are ordered with children first and then attributes.
 Hence, the following node:
 
@@ -80,8 +80,28 @@ These access macros can be used as an lvalue or rvalue. For example, changing th
 
 
 Every node has a shared part, which can be accessed with macros of type *NODE_*.
-For now, only the type of a node can queried using the NODE_TYPE(node) macro. Node types are an enum in the form NT_<node_name>, where the node name is fully capitalized.
-So, the BinOp node would be of the type NT_BINOP.
+For now, this is a fixed structure that can be not changed and is mostly used to track source locations.
+
+
+
++------------+---------------+----------------------------------------------------+
+| Field name | Access macro  | Usage                                              |
++============+===============+====================================================+
+| type       | NODE_TYPE     | The type of the node                               |
++------------+---------------+----------------------------------------------------+
+| bline      | NODE_BLINE    | The source line this node starts on                |
++------------+---------------+----------------------------------------------------+
+| eline      | NODE_ELINE    | The source line this node ends on                  |
++------------+---------------+----------------------------------------------------+
+| bcol       | NODE_BCOL     | The source column this node starts on              |
++------------+---------------+----------------------------------------------------+
+| ecol       | NODE_ECOL     | The source column this node ends on                |
++------------+---------------+----------------------------------------------------+
+| filename   | NODE_FILENAME | The source filename where this node is located in. |
++------------+---------------+----------------------------------------------------+
+
+Every node has a unique type identified by the *NT_<node_name>* enum entries.
+For example, the binop node has type *NT_BINOP*. These types can be obtained using the *NODE_TYPE* macro on a node.
 
 
 Passes
@@ -116,7 +136,9 @@ Thus, the previous pass without a func defined would be declared as:
 
 Traversals
 ==========
-CoCoNut generates the declaration for every function the traversal targets(specified in nodes). To do this, the uid is used as the prefix, in all caps, and the node name, all lowercase, is appended to the uid. The following traversal specification
+CoCoNut generates the declaration for every function the traversal targets (specified in nodes).
+To do this, the uid is used, in all caps, as the prefix and the node name, all lowercase, is appended to the uid.
+Thus, the following traversal specification
 
 .. code-block:: text
 
@@ -128,7 +150,7 @@ CoCoNut generates the declaration for every function the traversal targets(speci
         }
     }
 
-will get the following functions:
+, will get the following functions.
 
 .. code-block:: c
 
@@ -139,7 +161,7 @@ will get the following functions:
 Traversal Data
 ==============
 Traversal data defined in the DSL is mapped to a struct and can be queried with a macro. The struct is of the type *struct data_<uid>* and the macro is given by
-*DATA_<UID>_GET()*. So, the travdata for the previous traversal has the following struct and get macro:
+*DATA_<UID>_GET()*. So, the travdata for the previous traversal has the following struct and get macro.
 
 .. code-block:: c
 
@@ -153,7 +175,7 @@ Also, every traversal that uses travdata needs to define two functions:
     void <trav_uid>init();
     void <trav_uid>fini();
 
-so, for rfor, the following two functions:
+so, for rfor, the following two functions are required.
     
 .. code-block:: c
 
@@ -164,19 +186,21 @@ so, for rfor, the following two functions:
 Init is called after construction of the trav data struct, but before starting the traversal. The fini function is called after
 the traversal. Note: do not free the traversal data struct, as it is controlled by CoCoNut.
 
-If a user type is used, a header file, called *user_types.h* is required to be available on the include path of your compiler containing the user type. For example, if you need a FILE* in your travdata, you can define it as a typedef FILE* fileptr and then use the fileptr as a user type.
+If a user type is used, a header file, called *user_types.h* is required to be available on the include path of your compiler containing the user type.
+For example, if you need a FILE* in your travdata, you can define it as a typedef FILE* fileptr and then use the fileptr as a user type.
 
 
 Generated Skeleton
 ==================
-For passes and traversels, CoCoNut generates a skeleton based on the specification in the DSL and can be found in the *<gendir>/user* folder. The passes are placed in the
-*passes.c* file and every traversal gets its own file with the following name: *trav_<trav_name>.c*, with the name being fully lowercase.
+For passes and traversels, CoCoNut generates a skeleton based on the specification in the DSL, which can be found in the *<gendir>/user* folder.
+The passes are placed in the *passes.c* file and every traversal gets its own file with the following name: *trav_<trav_name>.c*, with the name being fully lowercase.
 
 
 Files
 =====
-The generated code is distributed among several files, where the headers are sometimes required to operatore on generated data, like the nodes. All include files
-are in the directory used for generation under the "ccngen" directory. So, if the gen directory specified is "gen_files", then all files are found under "gen_files/ccngen/"
+The generated code is distributed among several files, where the headers are sometimes required to operate on generated data, like nodes.
+All include files are in the directory used for generation under the "ccngen" directory.
+So, if the gen directory specified is "ccngen", then all files are found under "ccngen/ccngen/"
 
 +------------------+---------------+
 | Primitive        |  Include file |
