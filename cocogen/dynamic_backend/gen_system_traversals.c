@@ -15,7 +15,7 @@ static char *prefix = NULL;
 static node_st *ast;
 static char *system_trav_table_template = "const ccn_trav_ft ccn_%s_vtable[_NT_SIZE] = { &TRAVerror, ";
 
-static void GenSystemTraversal(node_st *node, char *pref, char *trav_name)
+static void GenSystemTraversalVtable(node_st *node, char *pref, char *trav_name)
 {
     GeneratorContext *ctx = globals.gen_ctx;
     OUT(system_trav_table_template, trav_name);
@@ -27,10 +27,10 @@ static void GenSystemTraversal(node_st *node, char *pref, char *trav_name)
 node_st *DGSTast(node_st *node)
 {
     ast = node;
-    GenSystemTraversal(node, "CPY", "copy");
-    GenSystemTraversal(node, "CHK", "check");
-    GenSystemTraversal(node, "DEL", "free");
-    GenSystemTraversal(node, "ERR", "error");
+    GenSystemTraversalVtable(node, "CPY", "copy");
+    GenSystemTraversalVtable(node, "CHK", "check");
+    GenSystemTraversalVtable(node, "DEL", "free");
+    GenSystemTraversalVtable(node, "ERR", "error");
 
     return node;
 }
