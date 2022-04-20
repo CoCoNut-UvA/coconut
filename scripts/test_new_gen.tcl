@@ -44,7 +44,7 @@ proc gen_and_replace {tmp} {
 proc run_tests {tmp} {
 	if {[ catch {
 		cd $tmp/coconut/build
-		exec ctest -R "GoodDSLfiles"
+		exec ctest -V
 	} err ]} { 
 		puts $err
 		puts "===================================FAILED==============================="
