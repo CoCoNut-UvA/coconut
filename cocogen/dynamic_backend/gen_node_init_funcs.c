@@ -33,6 +33,9 @@ node_st *DGIFinode(node_st *node)
     TRAVopt(INODE_IATTRIBUTES(node));
     curr_node_name_upr = NULL;
     curr_node_name = NULL;
+    if (arg_num == 0) {
+        OUT("void");
+    }
     OUT(")");
     if (dgif_print_semicolon) {
         OUT(";\n");
