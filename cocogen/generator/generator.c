@@ -6,7 +6,6 @@
 #include "palm/memory.h"
 #include "palm/str.h"
 #include <assert.h>
-#include <bits/types/FILE.h>
 #include <globals.h>
 #include <stdarg.h>
 #include <stdio.h>
