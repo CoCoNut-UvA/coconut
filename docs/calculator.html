@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Calculator Example &mdash; CoCoNut  documentation</title>
@@ -14,7 +14,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -69,8 +71,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Calculator Example</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Calculator Example</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/calculator.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -81,7 +83,7 @@
            <div itemprop="articleBody">
              
   <section id="calculator-example">
-<h1>Calculator Example<a class="headerlink" href="#calculator-example" title="Permalink to this headline"></a></h1>
+<h1>Calculator Example<a class="headerlink" href="#calculator-example" title="Permalink to this heading"></a></h1>
 <p>In this tutorial, we will build a small calculator with a REPL where an expression is parsed and evaluated by
 CoCoNut. A skeleton structure can be found at <a class="reference external" href="https://github.com/CoCoNut-UvA/calculator-example">https://github.com/CoCoNut-UvA/calculator-example</a></p>
 <p>The skeleton contains a basic REPL that parses a line into an AST and then prints the AST. Currently, the AST only
@@ -95,7 +97,7 @@ For building, the example uses cmake and can be build by creating a <em>build</e
 <p>We will extend the example by adding support for add and substract operations and by evaluating the given
 expression.</p>
 <section id="adding-a-binop-node">
-<h2>Adding a binop node<a class="headerlink" href="#adding-a-binop-node" title="Permalink to this headline"></a></h2>
+<h2>Adding a binop node<a class="headerlink" href="#adding-a-binop-node" title="Permalink to this heading"></a></h2>
 <p>First, to support binary operations, we add a binary operation(Binop) node. This node contains a left and right child
 and an operation type. The left and right child can be another binop or a number, therefore we have to extend the nodeset.
 We extend the nodeset by changing the current <em>Expr</em> nodeset to the following(./src/calc.ccn):</p>
@@ -179,7 +181,7 @@ the original expression.</p>
 <p>You do need to include the <em>ccngen/trav.h</em> file for these functions.</p>
 </section>
 <section id="adding-a-traversal">
-<h2>Adding a traversal<a class="headerlink" href="#adding-a-traversal" title="Permalink to this headline"></a></h2>
+<h2>Adding a traversal<a class="headerlink" href="#adding-a-traversal" title="Permalink to this heading"></a></h2>
 <p>Thus, we have a read and print part, but are still missing the evaluate part of the REPL. To add the evaluate we add a new traversal to coconut.
 Add the following to the src/calc.ccn file:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>traversal eval {
@@ -230,7 +232,7 @@ node:</p>
 <p>This results in a working REPL calculator for simple add and substract operation.</p>
 </section>
 <section id="fully-using-coconut">
-<h2>Fully using CoCoNut<a class="headerlink" href="#fully-using-coconut" title="Permalink to this headline"></a></h2>
+<h2>Fully using CoCoNut<a class="headerlink" href="#fully-using-coconut" title="Permalink to this heading"></a></h2>
 <p>However, we do not take full advantage of CoCoNut features.
 First of all, the eval traversal does nothing with the NUM node, so we can specify that the eval only targets the binop node:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>traversal eval {

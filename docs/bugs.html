@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bugs &mdash; CoCoNut  documentation</title>
@@ -14,7 +14,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -49,6 +51,7 @@
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Bugs</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#dot-does-not-handle-nodesets-well">Dot does not handle nodesets well</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#circular-phase-definitions">Circular phase definitions</a></li>
 </ul>
 </li>
 </ul>
@@ -66,8 +69,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Bugs</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Bugs</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/bugs.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -78,12 +81,17 @@
            <div itemprop="articleBody">
              
   <section id="bugs">
-<h1>Bugs<a class="headerlink" href="#bugs" title="Permalink to this headline"></a></h1>
+<h1>Bugs<a class="headerlink" href="#bugs" title="Permalink to this heading"></a></h1>
 <p>This document describes some known bugs that are not yet fixed due to various reasons.</p>
 <section id="dot-does-not-handle-nodesets-well">
-<h2>Dot does not handle nodesets well<a class="headerlink" href="#dot-does-not-handle-nodesets-well" title="Permalink to this headline"></a></h2>
+<h2>Dot does not handle nodesets well<a class="headerlink" href="#dot-does-not-handle-nodesets-well" title="Permalink to this heading"></a></h2>
 <p>Currently, the dot diagram creates a link to the members of a nodeset and not the actual
 nodeset. As a result, some nodesets appear to not have a parent in the dot diagram.</p>
+</section>
+<section id="circular-phase-definitions">
+<h2>Circular phase definitions<a class="headerlink" href="#circular-phase-definitions" title="Permalink to this heading"></a></h2>
+<p>When you have circular references in your phase definitions, a C compiler error is given.
+For example, referencing the phase being defined in the actions block of that phase.</p>
 </section>
 </section>
 

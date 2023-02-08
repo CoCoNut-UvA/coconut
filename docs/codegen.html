@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Codegen &mdash; CoCoNut  documentation</title>
@@ -14,7 +14,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -73,8 +75,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Codegen</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Codegen</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/codegen.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -85,12 +87,12 @@
            <div itemprop="articleBody">
              
   <section id="codegen">
-<h1>Codegen<a class="headerlink" href="#codegen" title="Permalink to this headline"></a></h1>
+<h1>Codegen<a class="headerlink" href="#codegen" title="Permalink to this heading"></a></h1>
 <p>In this section, the code CoCoNut generates is described.
 This section also explains how to work with the opaque node structure used by CoCoNut and where to find generated
 declarations.</p>
 <section id="enum">
-<h2>Enum<a class="headerlink" href="#enum" title="Permalink to this headline"></a></h2>
+<h2>Enum<a class="headerlink" href="#enum" title="Permalink to this heading"></a></h2>
 <p>Every enum is generated to a C enum, where the prefix of the enum becomes a prefix for every value in the enum and the type of the enum
 is the enum name in lowercase.
 So, the following enum definition</p>
@@ -103,35 +105,35 @@ So, the following enum definition</p>
 </pre></div>
 </div>
 <p>will result in the following code:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="n">binop_type</span> <span class="p">{</span>
-    <span class="n">BT_add</span><span class="p">,</span>
-    <span class="n">BT_sub</span><span class="p">,</span>
-    <span class="n">BT_mul</span><span class="p">,</span>
-    <span class="n">BT_div</span><span class="p">,</span>
-    <span class="n">BT_rem</span><span class="p">,</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span><span class="w"> </span><span class="n">binop_type</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">BT_add</span><span class="p">,</span>
+<span class="w">    </span><span class="n">BT_sub</span><span class="p">,</span>
+<span class="w">    </span><span class="n">BT_mul</span><span class="p">,</span>
+<span class="w">    </span><span class="n">BT_div</span><span class="p">,</span>
+<span class="w">    </span><span class="n">BT_rem</span><span class="p">,</span>
 <span class="p">};</span>
 </pre></div>
 </div>
 <p>The generated enums are found in the <em>ccngen/enum.h</em> file.</p>
 </section>
 <section id="nodes">
-<h2>Nodes<a class="headerlink" href="#nodes" title="Permalink to this headline"></a></h2>
+<h2>Nodes<a class="headerlink" href="#nodes" title="Permalink to this heading"></a></h2>
 <p>Every defined node gets a constructor generated. A constructor will get the name <em>AST&lt;node name&gt;(&lt;constructor children…&gt;’,’ &lt;constructor attributes…&gt;)</em>, where the node name is all lowercase.
 The arguments to the C constructor are the children and attributes with the <em>constructor</em> specificier. The arguments are ordered with children first and then attributes.
 Hence, the following node:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>root node BinOp {
     children {
-        Expr left { constructor};
-        Expr right { constructor};
+        Expr left { constructor},
+        Expr right { constructor}
     },
     attributes {
-        binop_type type { constructor };
+        binop_type type { constructor }
     }
 };
 </pre></div>
 </div>
 <p>will result in the constructor:</p>
-<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">node_st</span> <span class="o">*</span><span class="nf">ASTbinop</span><span class="p">(</span><span class="n">node_st</span> <span class="o">*</span><span class="n">left</span><span class="p">,</span> <span class="n">node_st</span> <span class="o">*</span><span class="n">right</span><span class="p">,</span> <span class="k">enum</span> <span class="n">binop_type</span> <span class="n">op</span><span class="p">);</span>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">node_st</span><span class="w"> </span><span class="o">*</span><span class="nf">ASTbinop</span><span class="p">(</span><span class="n">node_st</span><span class="w"> </span><span class="o">*</span><span class="n">left</span><span class="p">,</span><span class="w"> </span><span class="n">node_st</span><span class="w"> </span><span class="o">*</span><span class="n">right</span><span class="p">,</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="n">binop_type</span><span class="w"> </span><span class="n">op</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>the <em>node_st</em> type is an opaque structure type to represent nodes. It is not possible to directly access
@@ -144,17 +146,12 @@ So, the BinOp node will get the following access macros:</p>
 </pre></div>
 </div>
 <p>These access macros can be used as an lvalue or rvalue. For example, changing the type of a BinOp, when it is a mul, is done as follows</p>
-<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">BINOP_TYPE</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">=</span> <span class="n">BINOP_TYPE</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">==</span> <span class="n">BT_mul</span> <span class="o">?</span> <span class="nl">BT_add</span> <span class="p">:</span> <span class="n">BINOP_TYPE</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">BINOP_TYPE</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BINOP_TYPE</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">BT_mul</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">BT_add</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">BINOP_TYPE</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Every node has a shared part, which can be accessed with macros of type <em>NODE_</em>.
 For now, this is a fixed structure that can be not changed and is mostly used to track source locations.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 15%" />
-<col style="width: 19%" />
-<col style="width: 66%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Field name</p></th>
 <th class="head"><p>Access macro</p></th>
@@ -192,30 +189,30 @@ For now, this is a fixed structure that can be not changed and is mostly used to
 For example, the binop node has type <em>NT_BINOP</em>. These types can be obtained using the <em>NODE_TYPE</em> macro on a node.</p>
 </section>
 <section id="passes">
-<h2>Passes<a class="headerlink" href="#passes" title="Permalink to this headline"></a></h2>
+<h2>Passes<a class="headerlink" href="#passes" title="Permalink to this heading"></a></h2>
 <p>CoCoNut generates the declaration of the pass function and you are required to write the definition. The generated function declaration depends on
 the way the pass is specified in the DSL. If the pass has the function specified, CoCoNut will generate that as the function declaration.
 So, the following pass:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">pass</span> <span class="n">scanParse</span> <span class="p">{</span>
     <span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Scan and parse the source files and construct the AST.&quot;</span><span class="p">;</span>
     <span class="n">uid</span> <span class="o">=</span> <span class="n">SP</span><span class="p">,</span>
-    <span class="n">func</span> <span class="o">=</span> <span class="n">doScanParse</span><span class="p">,</span>
+    <span class="n">func</span> <span class="o">=</span> <span class="n">doScanParse</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>will generate the following C declaration:</p>
-<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">node_st</span> <span class="o">*</span><span class="nf">doScanParse</span><span class="p">(</span><span class="n">node_st</span> <span class="o">*</span><span class="n">node</span><span class="p">);</span>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">node_st</span><span class="w"> </span><span class="o">*</span><span class="nf">doScanParse</span><span class="p">(</span><span class="n">node_st</span><span class="w"> </span><span class="o">*</span><span class="n">node</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>You then have to define it. If no func is specified, the pass name will be used, with the uid as a prefix, if no uid is specified only the pass name
 is used.
 Thus, the previous pass without a func defined would be declared as:</p>
-<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">node_st</span> <span class="o">*</span><span class="n">SPscanParse</span><span class="p">(</span><span class="n">node_st</span> <span class="o">*</span><span class="n">node</span><span class="p">);</span><span class="o">*</span>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">node_st</span><span class="w"> </span><span class="o">*</span><span class="n">SPscanParse</span><span class="p">(</span><span class="n">node_st</span><span class="w"> </span><span class="o">*</span><span class="n">node</span><span class="p">);</span><span class="o">*</span>
 </pre></div>
 </div>
 </section>
 <section id="traversals">
-<h2>Traversals<a class="headerlink" href="#traversals" title="Permalink to this headline"></a></h2>
+<h2>Traversals<a class="headerlink" href="#traversals" title="Permalink to this heading"></a></h2>
 <p>CoCoNut generates the declaration for every function the traversal targets (specified in nodes).
 To do this, the uid is used, in all caps, as the prefix and the node name, all lowercase, is appended to the uid.
 Thus, the following traversal specification</p>
@@ -229,28 +226,28 @@ Thus, the following traversal specification</p>
 </pre></div>
 </div>
 <p>, will get the following functions.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">node_st</span> <span class="o">*</span><span class="n">RFORfor</span><span class="p">(</span><span class="n">node_st</span> <span class="o">*</span><span class="p">)</span>
-<span class="n">node_st</span> <span class="o">*</span><span class="n">RFORvarlet</span><span class="p">(</span><span class="n">node_st</span> <span class="o">*</span><span class="p">)</span>
-<span class="n">node_st</span> <span class="o">*</span><span class="n">RFORvar</span><span class="p">(</span><span class="n">node_st</span> <span class="o">*</span><span class="p">)</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">node_st</span><span class="w"> </span><span class="o">*</span><span class="n">RFORfor</span><span class="p">(</span><span class="n">node_st</span><span class="w"> </span><span class="o">*</span><span class="p">)</span>
+<span class="n">node_st</span><span class="w"> </span><span class="o">*</span><span class="n">RFORvarlet</span><span class="p">(</span><span class="n">node_st</span><span class="w"> </span><span class="o">*</span><span class="p">)</span>
+<span class="n">node_st</span><span class="w"> </span><span class="o">*</span><span class="n">RFORvar</span><span class="p">(</span><span class="n">node_st</span><span class="w"> </span><span class="o">*</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="traversal-data">
-<h2>Traversal Data<a class="headerlink" href="#traversal-data" title="Permalink to this headline"></a></h2>
+<h2>Traversal Data<a class="headerlink" href="#traversal-data" title="Permalink to this heading"></a></h2>
 <p>Traversal data defined in the DSL is mapped to a struct and can be queried with a macro. The struct is of the type <em>struct data_&lt;uid&gt;</em> and the macro is given by
 <em>DATA_&lt;UID&gt;_GET()</em>. So, the travdata for the previous traversal has the following struct and get macro.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">data_rfor</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">data_rfor</span><span class="p">;</span>
 <span class="n">DATA_RFOR_GET</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Also, every traversal that uses travdata needs to define two functions:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="o">&lt;</span><span class="n">trav_uid</span><span class="o">&gt;</span><span class="n">init</span><span class="p">();</span>
-<span class="kt">void</span> <span class="o">&lt;</span><span class="n">trav_uid</span><span class="o">&gt;</span><span class="n">fini</span><span class="p">();</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="o">&lt;</span><span class="n">trav_uid</span><span class="o">&gt;</span><span class="n">init</span><span class="p">();</span>
+<span class="kt">void</span><span class="w"> </span><span class="o">&lt;</span><span class="n">trav_uid</span><span class="o">&gt;</span><span class="n">fini</span><span class="p">();</span>
 </pre></div>
 </div>
 <p>so, for rfor, the following two functions are required.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">RFORinit</span><span class="p">();</span>
-<span class="kt">void</span> <span class="nf">RFORfini</span><span class="p">();</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">RFORinit</span><span class="p">();</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">RFORfini</span><span class="p">();</span>
 </pre></div>
 </div>
 <p>Init is called after construction of the trav data struct, but before starting the traversal. The fini function is called after
@@ -259,20 +256,16 @@ the traversal. Note: do not free the traversal data struct, as it is controlled 
 For example, if you need a FILE* in your travdata, you can define it as a typedef FILE* fileptr and then use the fileptr as a user type.</p>
 </section>
 <section id="generated-skeleton">
-<h2>Generated Skeleton<a class="headerlink" href="#generated-skeleton" title="Permalink to this headline"></a></h2>
+<h2>Generated Skeleton<a class="headerlink" href="#generated-skeleton" title="Permalink to this heading"></a></h2>
 <p>For passes and traversels, CoCoNut generates a skeleton based on the specification in the DSL, which can be found in the <em>&lt;gendir&gt;/user</em> folder.
 The passes are placed in the <em>passes.c</em> file and every traversal gets its own file with the following name: <em>trav_&lt;trav_name&gt;.c</em>, with the name being fully lowercase.</p>
 </section>
 <section id="files">
-<h2>Files<a class="headerlink" href="#files" title="Permalink to this headline"></a></h2>
+<h2>Files<a class="headerlink" href="#files" title="Permalink to this heading"></a></h2>
 <p>The generated code is distributed among several files, where the headers are sometimes required to operate on generated data, like nodes.
 All include files are in the directory used for generation under the “ccngen” directory.
 So, if the gen directory specified is “ccngen”, then all files are found under “ccngen/ccngen/”</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 55%" />
-<col style="width: 45%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Primitive</p></th>
 <th class="head"><p>Include file</p></th>

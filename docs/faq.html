@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FAQ &mdash; CoCoNut  documentation</title>
@@ -14,7 +14,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -70,8 +72,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>FAQ</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">FAQ</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/faq.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -82,27 +84,27 @@
            <div itemprop="articleBody">
              
   <section id="faq">
-<h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline"></a></h1>
+<h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this heading"></a></h1>
 <section id="can-cycles-have-a-gate">
-<h2>Can cycles have a gate?<a class="headerlink" href="#can-cycles-have-a-gate" title="Permalink to this headline"></a></h2>
+<h2>Can cycles have a gate?<a class="headerlink" href="#can-cycles-have-a-gate" title="Permalink to this heading"></a></h2>
 <p>No, at the moment not. You can implement it yourself by adding your root node as a target for the traversal
 and checking inside the root handler if the gate is met, if not, you can just do an early return.</p>
 </section>
 <section id="do-unreachable-nodes-need-to-be-handled">
-<h2>Do unreachable nodes need to be handled?<a class="headerlink" href="#do-unreachable-nodes-need-to-be-handled" title="Permalink to this headline"></a></h2>
+<h2>Do unreachable nodes need to be handled?<a class="headerlink" href="#do-unreachable-nodes-need-to-be-handled" title="Permalink to this heading"></a></h2>
 <p>Yes. If you specify a node as disallowed in a certain range, it
 still needs to be handled even if your action is only active in that
 range. This is the case, because you can always start the traversal
 at another point in your compiler via the <em>TRAV_START</em> function.</p>
 </section>
 <section id="how-do-i-create-a-png-of-my-ast">
-<h2>How do I create a png of my AST?<a class="headerlink" href="#how-do-i-create-a-png-of-my-ast" title="Permalink to this headline"></a></h2>
+<h2>How do I create a png of my AST?<a class="headerlink" href="#how-do-i-create-a-png-of-my-ast" title="Permalink to this heading"></a></h2>
 <p>In a build directory run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">&amp;&amp;</span> <span class="pre">make</span> <span class="pre">dot</span></code>.
 <code class="docutils literal notranslate"><span class="pre">make</span></code> runs CoCoNut which generates a dot file and <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">dot</span></code> turns your dot file into a png.
 However, there is a small bug with the generation of the dot file, see <a class="reference internal" href="bugs.html"><span class="doc">Bugs</span></a>.</p>
 </section>
 <section id="can-i-define-a-user-type-for-attributes">
-<h2>Can I define a user type for attributes?<a class="headerlink" href="#can-i-define-a-user-type-for-attributes" title="Permalink to this headline"></a></h2>
+<h2>Can I define a user type for attributes?<a class="headerlink" href="#can-i-define-a-user-type-for-attributes" title="Permalink to this heading"></a></h2>
 <p>No, at the moment you can not and you likely do not need it.
 If you have a usecase where you really need it, please let me know.</p>
 </section>

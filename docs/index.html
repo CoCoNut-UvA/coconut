@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Welcome to CoCoNut’s documentation! &mdash; CoCoNut  documentation</title>
@@ -14,7 +14,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -63,8 +65,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
-      <li>Welcome to CoCoNut’s documentation!</li>
+      <li><a href="#" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Welcome to CoCoNut’s documentation!</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -75,7 +77,7 @@
            <div itemprop="articleBody">
              
   <section id="welcome-to-coconut-s-documentation">
-<h1>Welcome to CoCoNut’s documentation!<a class="headerlink" href="#welcome-to-coconut-s-documentation" title="Permalink to this headline"></a></h1>
+<h1>Welcome to CoCoNut’s documentation!<a class="headerlink" href="#welcome-to-coconut-s-documentation" title="Permalink to this heading"></a></h1>
 <p>CoCoNut is a framework to ease the construction of a compiler by providing a DSL to define the common compiler structure.
 From this specification, CoCoNut generates the boilerplate to work with the defined structure. The structure is defined using several compiler primitives: enums, nodes, nodesets, passes, traversals and phases.
 This documentation starts with an explanation of the DSL, continues with the generated code from the structure, and then shows how to
@@ -135,12 +137,13 @@ communicate with the CoCoNut driver from within your compiler, and, finally, wal
 </li>
 <li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="bugs.html#dot-does-not-handle-nodesets-well">Dot does not handle nodesets well</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bugs.html#circular-phase-definitions">Circular phase definitions</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <section id="indices-and-tables">
-<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h2>
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>

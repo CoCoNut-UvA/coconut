@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Working With CoCoNut &mdash; CoCoNut  documentation</title>
@@ -14,7 +14,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -73,8 +75,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Working With CoCoNut</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Working With CoCoNut</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/working_with_traversals.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -85,16 +87,16 @@
            <div itemprop="articleBody">
              
   <section id="working-with-coconut">
-<h1>Working With CoCoNut<a class="headerlink" href="#working-with-coconut" title="Permalink to this headline"></a></h1>
+<h1>Working With CoCoNut<a class="headerlink" href="#working-with-coconut" title="Permalink to this heading"></a></h1>
 <p>During the compilation process of your compiler, you need to interact with the CoCoNut runtime.
 For example, to specify new traversal directions, freeing nodes, and so on.</p>
 <p>When functions are prefixed with <em>CCN</em> they are found in the <em>ccn/ccn.h</em> header file.</p>
 <section id="traversals">
-<h2>Traversals<a class="headerlink" href="#traversals" title="Permalink to this headline"></a></h2>
+<h2>Traversals<a class="headerlink" href="#traversals" title="Permalink to this heading"></a></h2>
 <p>Traversals require most interaction with CoCoNut, therefore, CoCoNut defines some helpers to make working
 with traversal smoother.</p>
 <section id="traversing">
-<h3>Traversing<a class="headerlink" href="#traversing" title="Permalink to this headline"></a></h3>
+<h3>Traversing<a class="headerlink" href="#traversing" title="Permalink to this heading"></a></h3>
 <p>Traversing is done by using any of the <em>TRAV</em> functions. Currently, CoCoNut defines three such functions, namely:</p>
 <div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">TRAVopt</span><span class="p">(</span><span class="n">node</span><span class="p">);</span>
 <span class="n">TRAVdo</span><span class="p">(</span><span class="n">node</span><span class="p">);</span>
@@ -104,8 +106,8 @@ with traversal smoother.</p>
 <p>The <em>opt</em> and <em>do</em> variant will traverse the given node, where the <em>do</em> variant requires that the node is not NULL.
 These variants return the result of the traversal. Therefore, if the traversal makes changes to a node, the result should be assigned to something or it is lost.
 For example, changing the left and right child of a binop is done as follows:</p>
-<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">BINOP_LEFT</span><span class="p">(</span><span class="n">binop</span><span class="p">)</span> <span class="o">=</span> <span class="n">TRAVopt</span><span class="p">(</span><span class="n">BINOP_LEFT</span><span class="p">(</span><span class="n">binop</span><span class="p">))</span>
-<span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">binop</span><span class="p">)</span> <span class="o">=</span> <span class="n">TRAVopt</span><span class="p">(</span><span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">binop</span><span class="p">))</span>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">BINOP_LEFT</span><span class="p">(</span><span class="n">binop</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TRAVopt</span><span class="p">(</span><span class="n">BINOP_LEFT</span><span class="p">(</span><span class="n">binop</span><span class="p">))</span>
+<span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">binop</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TRAVopt</span><span class="p">(</span><span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">binop</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>The <em>children</em> variant takes a node and traverses all its children, in top to bottom order of your definition, via a <em>TRAVopt</em>. The <em>children</em> variant does
@@ -114,8 +116,8 @@ the assignment for you. So, the previous example becomes:</p>
 </pre></div>
 </div>
 <p>, and is expanded to.</p>
-<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">BINOP_LEFT</span><span class="p">(</span><span class="n">binop</span><span class="p">)</span> <span class="o">=</span> <span class="n">TRAVopt</span><span class="p">(</span><span class="n">BINOP_LEFT</span><span class="p">(</span><span class="n">binop</span><span class="p">))</span>
-<span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">binop</span><span class="p">)</span> <span class="o">=</span> <span class="n">TRAVopt</span><span class="p">(</span><span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">binop</span><span class="p">))</span>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">BINOP_LEFT</span><span class="p">(</span><span class="n">binop</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TRAVopt</span><span class="p">(</span><span class="n">BINOP_LEFT</span><span class="p">(</span><span class="n">binop</span><span class="p">))</span>
+<span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">binop</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TRAVopt</span><span class="p">(</span><span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">binop</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>The <em>children</em> variant makes TRAVopt calls but if combined with consistency checking, errors are caught soon enough.</p>
@@ -130,19 +132,19 @@ This, again, does the assignment for you and uses <em>opt</em> calls. Hence, the
 </section>
 </section>
 <section id="cycles">
-<h2>Cycles<a class="headerlink" href="#cycles" title="Permalink to this headline"></a></h2>
+<h2>Cycles<a class="headerlink" href="#cycles" title="Permalink to this heading"></a></h2>
 <p>Cycles</p>
 <p>The maximum cycles has the default set to 100, however, that can be changed any time by calling the <em>CCNsetCycles(size_t cycle_count)</em> function.</p>
 </section>
 <section id="nodes">
-<h2>Nodes<a class="headerlink" href="#nodes" title="Permalink to this headline"></a></h2>
+<h2>Nodes<a class="headerlink" href="#nodes" title="Permalink to this heading"></a></h2>
 <p>CoCoNut provides copy and free functions for defined nodes in the form of <em>CCNcopy</em> and <em>CCNfree</em>.
 When a node is copied, all children are copied and all attributes except node attributes are deep-copied.
 When a node is freed, all children of the node are freed as well and all attributes except node attributes are cleaned up.
 Hence, node attributes can be used to link to other nodes without causing double free issues.</p>
 </section>
 <section id="error-signals">
-<h2>Error signals<a class="headerlink" href="#error-signals" title="Permalink to this headline"></a></h2>
+<h2>Error signals<a class="headerlink" href="#error-signals" title="Permalink to this heading"></a></h2>
 <p>There are two ways to signal an error to CoCoNut: <em>CCNerrorPhase()</em> and <em>CCNerrorAction()</em>. The error phase function stops the compiler
 after the current phase and the error action function stops the compiler after the current action.</p>
 </section>
