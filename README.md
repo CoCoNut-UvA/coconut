@@ -1,7 +1,7 @@
 # CoCoNut 
 
 Dependencies:
-- Bison
+- Bison. Bison requires a modern version (>=3). Default on macOS Monterey is too old.
 - Flex
 - Cmake (> 3.13)
 - GCC or Clang. Clang needs the `zero-variadic-macro-arguments` extension and you might need to supress warnings for functions with variadic arguments.
