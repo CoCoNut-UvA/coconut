@@ -158,9 +158,7 @@ char *Checkbreakpoint(char *name)
     }
     if (phase_driver.breakpoint[len] == '.') {
         if (phase_driver.breakpoint[len + 1] == '\0') {
-            if (phase_driver.verbosity > PD_V_QUIET) {
-                fprintf(stderr, "[coconut] breakpoint string is invalid.\n");
-            }
+            fprintf(stderr, "[coconut] breakpoint string is invalid.\n");
             return NULL;
         }
         return phase_driver.breakpoint + len + 1;
