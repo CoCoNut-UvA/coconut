@@ -99,7 +99,9 @@ struct ccn_node *CCNdispatchAction(struct ccn_action *action, enum ccn_nodetype 
         err(EXIT_FAILURE, "[coconut] error in phase driver.");
     }
     if (phase_driver.action_error) {
-        fprintf(stderr, "[coconut] Action error received. Stopping...\n");
+        if (phase_driver.verbosity > PD_V_QUIET) {
+            fprintf(stderr, "[coconut] Action error received. Stopping...\n");
+        }
         CTIabortCompilation();
     }
 
@@ -205,7 +207,9 @@ struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, struct cc
     } while(cycle && phase_driver.cycle_iter < phase_driver.max_cycles && !(phase_driver.fixed_point));
 
     if (phase_driver.phase_error) {
-        fprintf(stderr, "[coconut] Phase error received. Stopping...\n");
+        if (phase_driver.verbosity > PD_V_QUIET) {
+            fprintf(stderr, "[coconut] Phase error received. Stopping...\n");
+        }
         CTIabortCompilation();
     }
 
