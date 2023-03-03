@@ -16,3 +16,7 @@ A previous version was tested on WSL (Ubuntu 20). Latest not yet, but high chanc
 
 # Documentation
 Documentation can be found [here](https://coconut-uva.github.io/coconut/)
+
+# Editor support
+There is support for the CoCoNut DSL in VScode. See (https://marketplace.visualstudio.com/items?itemName=jeroen45.nutcracker) for more information.
+Updates regarding this plugin should go to the corresponding repository (https://github.com/Jeroen-45/nutcracker)
