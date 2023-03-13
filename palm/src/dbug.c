@@ -14,7 +14,9 @@ void DBUGprintAssert(int line, char *file, const char *func, char *msg, ...)
     va_start(arg_p, msg);
 
     fprintf(stderr, "ASSERTION FAILED: file %s, line %d in function: %s\n", file, line, func);
-    fprintf(stderr, "\t%s\n", msg);
+    fprintf(stderr, "\t");
+    vfprintf(stderr, msg, arg_p);
+    fprintf(stderr, "\n");
     fprintf(stderr, "ABORTING EXECUTION");
 
     va_end(arg_p);
