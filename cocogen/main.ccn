@@ -532,6 +532,7 @@ node inodeset {
     children {
         id name,
         setexpr expr,
+        attribute iattributes,
         id unpacked,
         inodeset next
     },
@@ -674,7 +675,31 @@ node attribute {
 
     attributes {
         attribute_type type,
-        int in_constructor
+        bool in_constructor,
+        bool inherited,
+        bool synthesized
+    }
+};
+
+node equation {
+    children {
+        attribute_reference rule,
+        equation_dependency args,
+        equation next
+    }
+};
+
+node equation_dependency {
+    children {
+        attribute_reference iattribute,
+        equation_dependency next
+    }
+};
+
+node attribute_reference {
+    children {
+        id inode,
+        id iattribute
     }
 };
 
