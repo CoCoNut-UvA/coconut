@@ -25,6 +25,59 @@ static int node_index = 0;
 
 //static struct ctinfo *NewLocation(struct ctinfo *info);
 
+enum bison_attribute_options_type {
+    BISON_BAO_constructor,
+    BISON_BAO_inherited,
+    BISON_BAO_synthesized,
+    BISON_BAO_lifetime
+};
+
+struct bison_attribute_options_temp {
+    node_st *lifetime;
+    enum bison_attribute_options_type value;
+    struct bison_attribute_options_temp *next;
+};
+
+struct bison_attribute_options {
+    node_st *lifetime;
+    bool constructor;
+    bool inherited;
+    bool synthesized;
+};
+
+struct bison_attribute_options *parse_attribute_options(struct bison_attribute_options_temp *start) {
+    struct bison_attribute_options_temp *cur, *prev;
+    struct bison_attribute_options *data = malloc(sizeof(struct bison_attribute_options));
+    data->lifetime = NULL;
+    data->constructor = false;
+    data->inherited = false;
+    data->synthesized = false;
+    node_st *current_lifetime = NULL;
+    prev = NULL;
+    for (cur = start; cur != NULL; cur = cur->next) {
+        if (cur->value == BISON_BAO_constructor) {
+            data->constructor = true;
+        } else if (cur->value == BISON_BAO_inherited) {
+            data->inherited = true;
+        } else if (cur->value == BISON_BAO_synthesized) {
+            data->synthesized = true;
+        } else {
+            if (current_lifetime == NULL) {
+                data->lifetime = cur->lifetime;
+                current_lifetime = cur->lifetime;
+            } else {
+                ILIFETIME_NEXT(current_lifetime) = cur->lifetime;
+                current_lifetime = cur->lifetime;
+            }
+        }
+        free(prev);
+        prev = cur;
+    }
+
+    return data;
+}
+
+
 
 void yyerror(const char* s);
 int yydebug = 1;
@@ -61,6 +114,7 @@ struct ctinfo yy_ctinfo;
     bool boolean;
     node_st* node;
     enum attribute_type attr_type;
+    struct bison_attribute_options_temp* attr_options;
 }
 
 %define parse.error verbose
@@ -90,11 +144,14 @@ struct ctinfo yy_ctinfo;
 %token T_TRUE "true"
 %token T_FALSE "false"
 
+%token T_ARGS "args"
 %token T_ATTRIBUTES "attributes"
 %token T_CHILDREN "children"
 %token T_CONSTRUCTOR "construct"
 %token T_CYCLE "cycle"
 %token T_ENUM "enum"
+%token T_EQUATIONS "equations"
+%token T_INHERITED "inherited"
 %token T_MANDATORY "mandatory"
 %token T_NODE "node"
 %token T_NODES "nodes"
@@ -110,6 +167,8 @@ struct ctinfo yy_ctinfo;
 %token T_ROOT "root"
 %token T_START "start"
 %token T_SUBPHASES "subphases"
+%token T_SYNTHESIZED "synthesized"
+%token T_THIS "this"
 %token T_TO "to"
 %token T_TRAVERSAL "traversal"
 %token T_TRAVDATA "travdata"
@@ -133,8 +192,9 @@ struct ctinfo yy_ctinfo;
 %type<node> phase entry pass node traversal cycleheader phaseheader id action actionsbody traversalnodes prefix
     actions childrenbody attributebody attributes attribute children child setoperation setliterals func
     setexpr enum idlist enumvalues nodeset travdata travdatalist travdataitem nodelifetimes
-    lifetimes lifetime lifetime_range range_spec childlifetimes uid mandatory_uid gate attributelifetimes
+    lifetimes lifetime lifetime_range range_spec childlifetimes uid mandatory_uid gate
 %type<attr_type> attribute_primitive_type
+%type<attr_options> attribute_optional_keywords attribute_optional_keyword
 
 %left '&' '-' '|'
 
@@ -604,27 +664,53 @@ attributes: attribute ',' attributes
     }
     ;
 
-attribute: attribute_primitive_type[type] id[name] '{' is_constructor[constructor]  '}'
+attribute_optional_keywords:
+    %empty
     {
-        $$ = ASTattribute();
-        ATTRIBUTE_NAME($$) = $name;
-        ATTRIBUTE_TYPE($$) = $type;
-        ATTRIBUTE_IN_CONSTRUCTOR($$) = $constructor;
+        $$ = NULL;
     }
-    | attribute_primitive_type[type] id[name] '{' attributelifetimes[lifetimes]  '}'
+    | attribute_optional_keyword[keyword] ',' attribute_optional_keywords[next]
     {
-        $$ = ASTattribute();
-        ATTRIBUTE_NAME($$) = $name;
-        ATTRIBUTE_TYPE($$) = $type;
-        ATTRIBUTE_LIFETIMES($$) = $lifetimes;
+        $$ = $keyword;
+        $$->next = $next;
     }
-    | attribute_primitive_type[type] id[name] '{' is_constructor[constructor] ',' attributelifetimes[lifetimes] '}'
+    ;
+
+attribute_optional_keyword: T_CONSTRUCTOR
+    {
+        $$ = malloc(sizeof(struct bison_attribute_options_temp));
+        $$->value = BISON_BAO_constructor;
+    }
+    | T_INHERITED
+    {
+        $$ = malloc(sizeof(struct bison_attribute_options_temp));
+        $$->value = BISON_BAO_inherited;
+    }
+    | T_SYNTHESIZED
+    {
+        $$ = malloc(sizeof(struct bison_attribute_options_temp));
+        $$->value = BISON_BAO_synthesized;
+    }
+    | lifetime
+    {
+        $$ = malloc(sizeof(struct bison_attribute_options_temp));
+        $$->value = BISON_BAO_lifetime;
+        $$->lifetime = $1;
+        ILIFETIME_NEXT($$->lifetime) = NULL;
+    }
+    ;
+
+attribute: attribute_primitive_type[type] id[name] '{' attribute_optional_keywords[keywords]  '}'
     {
         $$ = ASTattribute();
         ATTRIBUTE_NAME($$) = $name;
         ATTRIBUTE_TYPE($$) = $type;
-        ATTRIBUTE_IN_CONSTRUCTOR($$) = $constructor;
-        ATTRIBUTE_LIFETIMES($$) = $lifetimes;
+        struct bison_attribute_options *options = parse_attribute_options($keywords);
+        ATTRIBUTE_IN_CONSTRUCTOR($$) = options->constructor;
+        ATTRIBUTE_INHERITED($$) = options->inherited;
+        ATTRIBUTE_SYNTHESIZED($$) = options->synthesized;
+        ATTRIBUTE_LIFETIMES($$) = options->lifetime;
+        free(options);
     }
     | attribute_primitive_type[type] id[name]
     {
@@ -632,36 +718,18 @@ attribute: attribute_primitive_type[type] id[name] '{' is_constructor[constructo
           ATTRIBUTE_NAME($$) = $name;
           ATTRIBUTE_TYPE($$) = $type;
     }
-    | attribute_primitive_type[type] id[name] '{' '}'
-    {
-          $$ = ASTattribute();
-          ATTRIBUTE_NAME($$) = $name;
-          ATTRIBUTE_TYPE($$) = $type;
-    }
-    | id[type] id[name] '{' is_constructor[constructor] '}'
-    {
-        $$ = ASTattribute();
-       ATTRIBUTE_NAME($$) = $name;
-       ATTRIBUTE_TYPE_REFERENCE($$) = $type;
-       ATTRIBUTE_TYPE($$) = AT_link_or_enum;
-       ATTRIBUTE_IN_CONSTRUCTOR($$) = $constructor;
-    }
-    | id[type] id[name] '{' is_constructor[constructor] ',' attributelifetimes[lifetimes]'}'
+    | id[type] id[name] '{' attribute_optional_keywords[keywords] '}'
     {
         $$ = ASTattribute();
         ATTRIBUTE_NAME($$) = $name;
         ATTRIBUTE_TYPE_REFERENCE($$) = $type;
         ATTRIBUTE_TYPE($$) = AT_link_or_enum;
-        ATTRIBUTE_IN_CONSTRUCTOR($$) = $constructor;
-        ATTRIBUTE_LIFETIMES($$) = $lifetimes;
-    }
-    | id[type] id[name] '{' attributelifetimes[lifetimes] '}'
-    {
-        $$ = ASTattribute();
-        ATTRIBUTE_NAME($$) = $name;
-        ATTRIBUTE_TYPE_REFERENCE($$) = $type;
-        ATTRIBUTE_TYPE($$) = AT_link_or_enum;
-        ATTRIBUTE_LIFETIMES($$) = $lifetimes;
+        struct bison_attribute_options *options = parse_attribute_options($keywords);
+        ATTRIBUTE_IN_CONSTRUCTOR($$) = options->constructor;
+        ATTRIBUTE_INHERITED($$) = options->inherited;
+        ATTRIBUTE_SYNTHESIZED($$) = options->synthesized;
+        ATTRIBUTE_LIFETIMES($$) = options->lifetime;
+        free(options);
     }
     | id[type] id[name]
     {
@@ -773,12 +841,6 @@ nodelifetimes: %empty
     }
     ;
 
-attributelifetimes: lifetimes
-    {
-        $$ = $1;
-    }
-    ;
-
 lifetimes: lifetime ',' lifetimes
     {
         $$ = $1;
@@ -879,12 +941,27 @@ range_spec: id '.' range_spec
     }
     ;
 
-nodeset: T_NODESET id[name] '{' info[information] ',' T_NODES '=' setexpr[expr] '}'
+nodeset: T_NODESET id[name] '{' info[information] ',' T_NODES '=' setexpr[expr] ',' attributebody[attributes] '}'
         {
             $$ = ASTinodeset();
             INODESET_EXPR($$) = $expr;
             INODESET_NAME($$) = $name;
             INODESET_IINFO($$) = $information;
+            // INODESET_IATTRIBUTES($$) = $attributes;
+        }
+        | T_NODESET id[name] '{' info[information] ',' T_NODES '=' setexpr[expr] '}'
+        {
+            $$ = ASTinodeset();
+            INODESET_EXPR($$) = $expr;
+            INODESET_NAME($$) = $name;
+            INODESET_IINFO($$) = $information;
+        }
+        | T_NODESET id[name] '{' T_NODES '=' setexpr[expr] ',' attributebody[attributes] '}'
+        {
+            $$ = ASTinodeset();
+            INODESET_EXPR($$) = $expr;
+            INODESET_NAME($$) = $name;
+            // INODESET_IATTRIBUTES($$) = $attributes;
         }
         | T_NODESET id[name] '{' T_NODES '=' setexpr[expr] '}'
         {

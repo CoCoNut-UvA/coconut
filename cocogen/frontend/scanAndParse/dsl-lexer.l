@@ -107,11 +107,14 @@ static inline void check_c_keyword(const char *);
 "-" {return '-';}
 "." {return '.';}
 
+"args"          { LEX_KEYWORD(T_ARGS);}
 "attributes"    { LEX_KEYWORD(T_ATTRIBUTES);}
 "children"      { LEX_KEYWORD(T_CHILDREN);}
 "constructor"   { LEX_KEYWORD(T_CONSTRUCTOR);}
 "cycle"         { LEX_KEYWORD(T_CYCLE);}
 "enum"          { in_enum = true; LEX_KEYWORD(T_ENUM);}
+"equations"     { LEX_KEYWORD(T_EQUATIONS);}
+"inherited"     { LEX_KEYWORD(T_INHERITED);}
 "mandatory"     { LEX_KEYWORD(T_MANDATORY);}
 "node"          { LEX_KEYWORD(T_NODE);}
 "nodeset"       { LEX_KEYWORD(T_NODESET);}
@@ -123,14 +126,16 @@ static inline void check_c_keyword(const char *);
 "actions"       { LEX_KEYWORD(T_ACTIONS);}
 "prefix"        { LEX_KEYWORD(T_PREFIX);}
 "subphases"     { LEX_KEYWORD(T_SUBPHASES);}
+"synthesized"   { LEX_KEYWORD(T_SYNTHESIZED);}
+"this"          { LEX_KEYWORD(T_THIS);}
 "to"            { LEX_KEYWORD(T_TO);}
 "traversal"     { LEX_KEYWORD(T_TRAVERSAL);}
 "travdata"      { LEX_KEYWORD(T_TRAVDATA);}
-"values"        { if (in_enum) {in_enum_values = true;}LEX_KEYWORD(T_VALUES) ; }
-"info"          { LEX_KEYWORD(T_INFO) ; }
-"func"          { LEX_KEYWORD(T_FUNC) ; }
-"root"          { LEX_KEYWORD(T_ROOT) ; }
-"start"         { LEX_KEYWORD(T_START); }
+"values"        { if (in_enum) {in_enum_values = true;}LEX_KEYWORD(T_VALUES);}
+"info"          { LEX_KEYWORD(T_INFO);}
+"func"          { LEX_KEYWORD(T_FUNC);}
+"root"          { LEX_KEYWORD(T_ROOT);}
+"start"         { LEX_KEYWORD(T_START);}
 "double"        { LEX_KEYWORD(T_DOUBLE);}
 "float"         { LEX_KEYWORD(T_FLOAT);}
 "int"           { LEX_KEYWORD(T_INT);}
@@ -148,13 +153,13 @@ static inline void check_c_keyword(const char *);
 "lifetime"      { LEX_KEYWORD(T_LIFETIME);}
 "disallowed"    { LEX_KEYWORD(T_DISALLOWED);}
 "optional"      { LEX_KEYWORD(T_OPTIONAL);}
-"allowed"       { LEX_KEYWORD(T_ALLOWED); }
+"allowed"       { LEX_KEYWORD(T_ALLOWED);}
 "->"            { LEX_KEYWORD(T_ARROW);}
 "false"         { LEX_KEYWORD(T_FALSE);}
 "true"          { LEX_KEYWORD(T_TRUE);}
 "gate"          { LEX_KEYWORD(T_GATE);}
-"user"        { LEX_KEYWORD(T_UNSAFE);}
-"uid"            { LEX_KEYWORD(T_UID);}
+"user"          { LEX_KEYWORD(T_UNSAFE);}
+"uid"           { LEX_KEYWORD(T_UID);}
 "NULL"          { return T_NULL;}
 
 
