@@ -190,8 +190,9 @@ struct ctinfo yy_ctinfo;
 %type<string> info
 %type<boolean> is_start is_constructor is_root
 %type<node> phase entry pass node traversal cycleheader phaseheader id action actionsbody traversalnodes prefix
-    actions childrenbody attributebody attributes attribute children child setoperation setliterals func
-    setexpr enum idlist enumvalues nodeset travdata travdatalist travdataitem nodelifetimes
+    actions childrenbody attributebody attributes attribute equationbody equations equation equationprodblock
+    equationdependencybody equationdependencies equationdependency attribute_reference children child setoperation
+    setliterals func setexpr enum idlist enumvalues nodeset travdata travdatalist travdataitem nodelifetimes
     lifetimes lifetime lifetime_range range_spec childlifetimes uid mandatory_uid gate
 %type<attr_type> attribute_primitive_type
 %type<attr_options> attribute_optional_keywords attribute_optional_keyword
@@ -593,12 +594,29 @@ setliterals: setliterals ',' id
            }
 
 
-node: is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebody[attributes] ',' nodelifetimes[lifetimes] '}'
+node: is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebody[attributes] ',' equationbody[equations] ',' nodelifetimes[lifetimes] '}'
     {
         $$ = ASTinode($name, NULL);
         INODE_IS_ROOT($$) = $root;
         INODE_ICHILDREN($$) = $children;
         INODE_IATTRIBUTES($$) = $attributes;
+        INODE_IEQUATIONS($$) = $equations;
+        INODE_LIFETIMES($$) = $lifetimes;
+    }
+    | is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebody[attributes] ',' nodelifetimes[lifetimes] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_ICHILDREN($$) = $children;
+        INODE_IATTRIBUTES($$) = $attributes;
+        INODE_LIFETIMES($$) = $lifetimes;
+    }
+    | is_root[root] T_NODE id[name] '{' attributebody[attributes] ',' equationbody[equations] ',' nodelifetimes[lifetimes] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_IATTRIBUTES($$) = $attributes;
+        INODE_IEQUATIONS($$) = $equations;
         INODE_LIFETIMES($$) = $lifetimes;
     }
     | is_root[root] T_NODE id[name] '{' attributebody[attributes] ',' nodelifetimes[lifetimes] '}'
@@ -608,6 +626,14 @@ node: is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebod
         INODE_IATTRIBUTES($$) = $attributes;
         INODE_LIFETIMES($$) = $lifetimes;
     }
+    | is_root[root] T_NODE id[name] '{' childrenbody[children] ',' equationbody[equations] ',' nodelifetimes[lifetimes] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_ICHILDREN($$) = $children;
+        INODE_IEQUATIONS($$) = $equations;
+        INODE_LIFETIMES($$) = $lifetimes;
+    }
     | is_root[root] T_NODE id[name] '{' childrenbody[children] ',' nodelifetimes[lifetimes] '}'
     {
         $$ = ASTinode($name, NULL);
@@ -615,24 +641,57 @@ node: is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebod
         INODE_ICHILDREN($$) = $children;
         INODE_LIFETIMES($$) = $lifetimes;
     }
+    | is_root[root] T_NODE id[name] '{' attributebody[attributes] ',' equationbody[equations] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_IATTRIBUTES($$) = $attributes;
+        INODE_IEQUATIONS($$) = $equations;
+    }
     | is_root[root] T_NODE id[name] '{' attributebody[attributes]  '}'
     {
         $$ = ASTinode($name, NULL);
         INODE_IS_ROOT($$) = $root;
         INODE_IATTRIBUTES($$) = $attributes;
     }
-    | is_root[root] T_NODE id[name] '{'  childrenbody[children]  '}'
+    | is_root[root] T_NODE id[name] '{' childrenbody[children] ',' equationbody[equations] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_ICHILDREN($$) = $children;
+        INODE_IEQUATIONS($$) = $equations;
+    }
+    | is_root[root] T_NODE id[name] '{' childrenbody[children] '}'
     {
         $$ = ASTinode($name, NULL);
         INODE_IS_ROOT($$) = $root;
         INODE_ICHILDREN($$) = $children;
     }
-    | is_root[root] T_NODE id[name] '{'  childrenbody[children] ','  attributebody[attributes] '}'
+    | is_root[root] T_NODE id[name] '{' childrenbody[children] ',' attributebody[attributes] ',' equationbody[equations] '}'
     {
         $$ = ASTinode($name, NULL);
         INODE_IS_ROOT($$) = $root;
         INODE_ICHILDREN($$) = $children;
         INODE_IATTRIBUTES($$) = $attributes;
+        INODE_IEQUATIONS($$) = $equations;
+    }
+    | is_root[root] T_NODE id[name] '{' childrenbody[children] ',' attributebody[attributes] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_ICHILDREN($$) = $children;
+        INODE_IATTRIBUTES($$) = $attributes;
+    }
+    | is_root[root] T_NODE id[name] '{' equationbody[equations] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_IEQUATIONS($$) = $equations;
+    }
+    | is_root[root] T_NODE id[name] '{' '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
     }
     ;
 
@@ -768,6 +827,82 @@ attribute_primitive_type: T_BOOL
     { $$ = AT_int64; }
     ;
 
+equationbody: T_EQUATIONS '{' equations '}'
+    {
+        $$ = $3;
+    }
+    ;
+
+equations: equation ',' equations
+    {
+        EQUATION_NEXT($1) = $3;
+        $$ = $1;
+    }
+    | equation
+    {
+        $$ = $1;
+    }
+    ;
+
+equation: attribute_reference[attr] '=' equationprodblock[prod]
+    {
+        $$ = ASTequation();
+        EQUATION_RULE($$) = $attr;
+        EQUATION_ARGS($$) = $prod;
+    }
+    ;
+
+equationprodblock: '{' equationdependencybody[deps] '}'
+    {
+        $$ = $deps;
+    }
+    | '{' '}'
+    {
+        $$ = NULL;
+    }
+    ;
+
+equationdependencybody: T_ARGS '=' '{' equationdependencies[deps] '}'
+    {
+        $$ = $deps;
+    }
+    | T_ARGS '=' '{' '}'
+    {
+        $$ = NULL;
+    }
+    ;
+
+equationdependencies: equationdependency[dep] ',' equationdependencies[next]
+    {
+        EQUATION_DEPENDENCY_NEXT($dep) = $next;
+        $$ = $dep;
+    }
+    | equationdependency[dep]
+    {
+        $$ = $dep;
+    }
+    ;
+
+equationdependency: attribute_reference[dep]
+    {
+        $$ = ASTequation_dependency();
+        EQUATION_DEPENDENCY_IATTRIBUTE($$) = $dep;
+    }
+    ;
+
+attribute_reference: id[inode] '.' id[attr]
+    {
+        $$ = ASTattribute_reference();
+        ATTRIBUTE_REFERENCE_INODE($$) = $inode;
+        ATTRIBUTE_REFERENCE_IATTRIBUTE($$) = $attr;
+    }
+    | T_THIS '.' id[attr]
+    {
+        $$ = ASTattribute_reference();
+        ATTRIBUTE_REFERENCE_INODE($$) = NULL;
+        ATTRIBUTE_REFERENCE_IATTRIBUTE($$) = $attr;
+    }
+    ;
 
 is_constructor:
     T_CONSTRUCTOR
@@ -947,7 +1082,7 @@ nodeset: T_NODESET id[name] '{' info[information] ',' T_NODES '=' setexpr[expr] 
             INODESET_EXPR($$) = $expr;
             INODESET_NAME($$) = $name;
             INODESET_IINFO($$) = $information;
-            // INODESET_IATTRIBUTES($$) = $attributes;
+            INODESET_IATTRIBUTES($$) = $attributes;
         }
         | T_NODESET id[name] '{' info[information] ',' T_NODES '=' setexpr[expr] '}'
         {
@@ -961,7 +1096,7 @@ nodeset: T_NODESET id[name] '{' info[information] ',' T_NODES '=' setexpr[expr] 
             $$ = ASTinodeset();
             INODESET_EXPR($$) = $expr;
             INODESET_NAME($$) = $name;
-            // INODESET_IATTRIBUTES($$) = $attributes;
+            INODESET_IATTRIBUTES($$) = $attributes;
         }
         | T_NODESET id[name] '{' T_NODES '=' setexpr[expr] '}'
         {
