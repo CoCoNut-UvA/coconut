@@ -168,7 +168,7 @@ node_st *PRTequation(node_st *node)
     INDENT;
     PrintIndent();
     printf("args = {");
-    TRAVargs(node);
+    TRAViargs(node);
     printf("}\n");
     UNINDENT;
     PrintIndent();

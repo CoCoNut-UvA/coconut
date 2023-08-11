@@ -728,6 +728,11 @@ attribute_optional_keywords:
     {
         $$ = NULL;
     }
+    | attribute_optional_keyword[keyword]
+    {
+        $$ = $keyword;
+        $$->next = NULL;
+    }
     | attribute_optional_keyword[keyword] ',' attribute_optional_keywords[next]
     {
         $$ = $keyword;
@@ -766,8 +771,8 @@ attribute: attribute_primitive_type[type] id[name] '{' attribute_optional_keywor
         ATTRIBUTE_TYPE($$) = $type;
         struct bison_attribute_options *options = parse_attribute_options($keywords);
         ATTRIBUTE_IN_CONSTRUCTOR($$) = options->constructor;
-        ATTRIBUTE_INHERITED($$) = options->inherited;
-        ATTRIBUTE_SYNTHESIZED($$) = options->synthesized;
+        ATTRIBUTE_IS_INHERITED($$) = options->inherited;
+        ATTRIBUTE_IS_SYNTHESIZED($$) = options->synthesized;
         ATTRIBUTE_LIFETIMES($$) = options->lifetime;
         free(options);
     }
@@ -785,8 +790,8 @@ attribute: attribute_primitive_type[type] id[name] '{' attribute_optional_keywor
         ATTRIBUTE_TYPE($$) = AT_link_or_enum;
         struct bison_attribute_options *options = parse_attribute_options($keywords);
         ATTRIBUTE_IN_CONSTRUCTOR($$) = options->constructor;
-        ATTRIBUTE_INHERITED($$) = options->inherited;
-        ATTRIBUTE_SYNTHESIZED($$) = options->synthesized;
+        ATTRIBUTE_IS_INHERITED($$) = options->inherited;
+        ATTRIBUTE_IS_SYNTHESIZED($$) = options->synthesized;
         ATTRIBUTE_LIFETIMES($$) = options->lifetime;
         free(options);
     }
@@ -848,7 +853,7 @@ equation: attribute_reference[attr] '=' equationprodblock[prod]
     {
         $$ = ASTequation();
         EQUATION_RULE($$) = $attr;
-        EQUATION_ARGS($$) = $prod;
+        EQUATION_IARGS($$) = $prod;
     }
     ;
 

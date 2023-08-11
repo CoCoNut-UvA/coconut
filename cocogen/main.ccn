@@ -677,15 +677,15 @@ node attribute {
     attributes {
         attribute_type type,
         bool in_constructor,
-        bool inherited,
-        bool synthesized
+        bool is_inherited,
+        bool is_synthesized
     }
 };
 
 node equation {
     children {
         attribute_reference rule,
-        equation_dependency args,
+        equation_dependency iargs,
         equation next
     }
 };

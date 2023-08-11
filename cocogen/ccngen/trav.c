@@ -260,6 +260,20 @@ node_st *TRAVleft(node_st *node) {
     return node;
 }
 
+node_st *TRAViargs(node_st *node) {
+    switch (NODE_TYPE(node)) {
+        case NT_EQUATION:
+            EQUATION_IARGS(node) = TRAVopt(EQUATION_IARGS(node));
+            break;
+            break;
+        default:
+            DBUG_ASSERT(false, "Current target has no child iargs");
+            break;
+    }
+
+    return node;
+}
+
 node_st *TRAVtarget_func(node_st *node) {
     switch (NODE_TYPE(node)) {
         case NT_IPASS:
@@ -500,20 +514,6 @@ node_st *TRAVichildren(node_st *node) {
             break;
         default:
             DBUG_ASSERT(false, "Current target has no child ichildren");
-            break;
-    }
-
-    return node;
-}
-
-node_st *TRAVargs(node_st *node) {
-    switch (NODE_TYPE(node)) {
-        case NT_EQUATION:
-            EQUATION_ARGS(node) = TRAVopt(EQUATION_ARGS(node));
-            break;
-            break;
-        default:
-            DBUG_ASSERT(false, "Current target has no child args");
             break;
     }
 

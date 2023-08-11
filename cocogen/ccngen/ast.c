@@ -66,7 +66,7 @@ node_st *ASTequation(void) {
     node->data.N_equation = MEMmalloc(sizeof(struct NODE_DATA_EQUATION));
     NODE_TYPE(node) = NT_EQUATION;
     EQUATION_RULE(node) = NULL;
-    EQUATION_ARGS(node) = NULL;
+    EQUATION_IARGS(node) = NULL;
     EQUATION_NEXT(node) = NULL;
     NODE_NUMCHILDREN(node) = 3;
     NODE_CHILDREN(node) = node->data.N_equation->equation_children.equation_children_at;
@@ -82,8 +82,8 @@ node_st *ASTattribute(void) {
     ATTRIBUTE_NEXT(node) = NULL;
     ATTRIBUTE_TYPE(node) = 0;
     ATTRIBUTE_IN_CONSTRUCTOR(node) = false;
-    ATTRIBUTE_INHERITED(node) = false;
-    ATTRIBUTE_SYNTHESIZED(node) = false;
+    ATTRIBUTE_IS_INHERITED(node) = false;
+    ATTRIBUTE_IS_SYNTHESIZED(node) = false;
     NODE_NUMCHILDREN(node) = 4;
     NODE_CHILDREN(node) = node->data.N_attribute->attribute_children.attribute_children_at;
     return node;}

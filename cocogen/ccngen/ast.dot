@@ -14,7 +14,7 @@ equation_dependency -> attribute_reference[label="iattribute"]
 equation_dependency -> equation_dependency[label="next"]
 equation;
 equation -> attribute_reference[label="rule"]
-equation -> equation_dependency[label="args"]
+equation -> equation_dependency[label="iargs"]
 equation -> equation[label="next"]
 attribute;
 attribute -> id[label="name"]

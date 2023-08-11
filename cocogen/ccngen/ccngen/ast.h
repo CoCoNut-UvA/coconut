@@ -63,7 +63,7 @@ struct NODE_DATA_EQUATION {
     union NODE_CHILDREN_EQUATION {
         struct NODE_CHILDREN_EQUATION_STRUCT {
             node_st *rule;
-            node_st *args;
+            node_st *iargs;
             node_st *next;
         } equation_children_st;
 
@@ -86,8 +86,8 @@ struct NODE_DATA_ATTRIBUTE {
 
     enum attribute_type type;
     bool in_constructor;
-    bool inherited;
-    bool synthesized;
+    bool is_inherited;
+    bool is_synthesized;
 };
 
 struct NODE_DATA_ITRAVDATA {
@@ -337,7 +337,7 @@ struct NODE_DATA_AST {
 #define EQUATION_DEPENDENCY_IATTRIBUTE(n) ((n)->data.N_equation_dependency->equation_dependency_children.equation_dependency_children_st.iattribute)
 #define EQUATION_DEPENDENCY_NEXT(n) ((n)->data.N_equation_dependency->equation_dependency_children.equation_dependency_children_st.next)
 #define EQUATION_RULE(n) ((n)->data.N_equation->equation_children.equation_children_st.rule)
-#define EQUATION_ARGS(n) ((n)->data.N_equation->equation_children.equation_children_st.args)
+#define EQUATION_IARGS(n) ((n)->data.N_equation->equation_children.equation_children_st.iargs)
 #define EQUATION_NEXT(n) ((n)->data.N_equation->equation_children.equation_children_st.next)
 #define ATTRIBUTE_NAME(n) ((n)->data.N_attribute->attribute_children.attribute_children_st.name)
 #define ATTRIBUTE_TYPE_REFERENCE(n) ((n)->data.N_attribute->attribute_children.attribute_children_st.type_reference)
@@ -345,8 +345,8 @@ struct NODE_DATA_AST {
 #define ATTRIBUTE_NEXT(n) ((n)->data.N_attribute->attribute_children.attribute_children_st.next)
 #define ATTRIBUTE_TYPE(n) ((n)->data.N_attribute->type)
 #define ATTRIBUTE_IN_CONSTRUCTOR(n) ((n)->data.N_attribute->in_constructor)
-#define ATTRIBUTE_INHERITED(n) ((n)->data.N_attribute->inherited)
-#define ATTRIBUTE_SYNTHESIZED(n) ((n)->data.N_attribute->synthesized)
+#define ATTRIBUTE_IS_INHERITED(n) ((n)->data.N_attribute->is_inherited)
+#define ATTRIBUTE_IS_SYNTHESIZED(n) ((n)->data.N_attribute->is_synthesized)
 #define ITRAVDATA_NAME(n) ((n)->data.N_itravdata->itravdata_children.itravdata_children_st.name)
 #define ITRAVDATA_TYPE_REFERENCE(n) ((n)->data.N_itravdata->itravdata_children.itravdata_children_st.type_reference)
 #define ITRAVDATA_NEXT(n) ((n)->data.N_itravdata->itravdata_children.itravdata_children_st.next)

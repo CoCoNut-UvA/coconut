@@ -54,7 +54,7 @@ ccn_node *CPYequation(ccn_node *arg_node) {
     ccn_node *new_node =ASTequation();
     CopyBaseNode(new_node, arg_node);
     EQUATION_RULE(new_node) = TRAVopt(EQUATION_RULE(arg_node));
-    EQUATION_ARGS(new_node) = TRAVopt(EQUATION_ARGS(arg_node));
+    EQUATION_IARGS(new_node) = TRAVopt(EQUATION_IARGS(arg_node));
     EQUATION_NEXT(new_node) = TRAVopt(EQUATION_NEXT(arg_node));
     return new_node;
 }
@@ -68,8 +68,8 @@ ccn_node *CPYattribute(ccn_node *arg_node) {
     ATTRIBUTE_NEXT(new_node) = TRAVopt(ATTRIBUTE_NEXT(arg_node));
     ATTRIBUTE_TYPE(new_node) = ATTRIBUTE_TYPE(arg_node);
     ATTRIBUTE_IN_CONSTRUCTOR(new_node) = ATTRIBUTE_IN_CONSTRUCTOR(arg_node);
-    ATTRIBUTE_INHERITED(new_node) = ATTRIBUTE_INHERITED(arg_node);
-    ATTRIBUTE_SYNTHESIZED(new_node) = ATTRIBUTE_SYNTHESIZED(arg_node);
+    ATTRIBUTE_IS_INHERITED(new_node) = ATTRIBUTE_IS_INHERITED(arg_node);
+    ATTRIBUTE_IS_SYNTHESIZED(new_node) = ATTRIBUTE_IS_SYNTHESIZED(arg_node);
     return new_node;
 }
 

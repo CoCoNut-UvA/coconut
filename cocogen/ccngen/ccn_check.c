@@ -202,9 +202,9 @@ struct ccn_node *CHKequation(struct ccn_node *arg_node) {
 
     }
 
-    if (EQUATION_ARGS(arg_node)) {
-        if (NODE_TYPE(EQUATION_ARGS(arg_node)) != NT_EQUATION_DEPENDENCY) {
-            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(args) of node(equation) has disallowed type(%s) ", nodetypeToName(EQUATION_ARGS(arg_node)));
+    if (EQUATION_IARGS(arg_node)) {
+        if (NODE_TYPE(EQUATION_IARGS(arg_node)) != NT_EQUATION_DEPENDENCY) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(iargs) of node(equation) has disallowed type(%s) ", nodetypeToName(EQUATION_IARGS(arg_node)));
         }
 
     }
