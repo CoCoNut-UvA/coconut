@@ -11,6 +11,15 @@ char *nodetypeToName(node_st *node) {
         case NT_IENUM:
             return "ienum";
             break;
+        case NT_ATTRIBUTE_REFERENCE:
+            return "attribute_reference";
+            break;
+        case NT_EQUATION_DEPENDENCY:
+            return "equation_dependency";
+            break;
+        case NT_EQUATION:
+            return "equation";
+            break;
         case NT_ATTRIBUTE:
             return "attribute";
             break;
@@ -133,6 +142,76 @@ struct ccn_node *CHKienum(struct ccn_node *arg_node) {
     if (IENUM_NEXT(arg_node)) {
         if (NODE_TYPE(IENUM_NEXT(arg_node)) != NT_IENUM) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(ienum) has disallowed type(%s) ", nodetypeToName(IENUM_NEXT(arg_node)));
+        }
+
+    }
+
+    TRAVchildren(arg_node);
+    return arg_node;
+}
+
+struct ccn_node *CHKattribute_reference(struct ccn_node *arg_node) {
+    size_t action_id = CCNgetCurrentActionId();
+    (void)action_id;
+    if (ATTRIBUTE_REFERENCE_INODE(arg_node)) {
+        if (NODE_TYPE(ATTRIBUTE_REFERENCE_INODE(arg_node)) != NT_ID) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(inode) of node(attribute_reference) has disallowed type(%s) ", nodetypeToName(ATTRIBUTE_REFERENCE_INODE(arg_node)));
+        }
+
+    }
+
+    if (ATTRIBUTE_REFERENCE_IATTRIBUTE(arg_node)) {
+        if (NODE_TYPE(ATTRIBUTE_REFERENCE_IATTRIBUTE(arg_node)) != NT_ID) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(iattribute) of node(attribute_reference) has disallowed type(%s) ", nodetypeToName(ATTRIBUTE_REFERENCE_IATTRIBUTE(arg_node)));
+        }
+
+    }
+
+    TRAVchildren(arg_node);
+    return arg_node;
+}
+
+struct ccn_node *CHKequation_dependency(struct ccn_node *arg_node) {
+    size_t action_id = CCNgetCurrentActionId();
+    (void)action_id;
+    if (EQUATION_DEPENDENCY_IATTRIBUTE(arg_node)) {
+        if (NODE_TYPE(EQUATION_DEPENDENCY_IATTRIBUTE(arg_node)) != NT_ATTRIBUTE_REFERENCE) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(iattribute) of node(equation_dependency) has disallowed type(%s) ", nodetypeToName(EQUATION_DEPENDENCY_IATTRIBUTE(arg_node)));
+        }
+
+    }
+
+    if (EQUATION_DEPENDENCY_NEXT(arg_node)) {
+        if (NODE_TYPE(EQUATION_DEPENDENCY_NEXT(arg_node)) != NT_EQUATION_DEPENDENCY) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(equation_dependency) has disallowed type(%s) ", nodetypeToName(EQUATION_DEPENDENCY_NEXT(arg_node)));
+        }
+
+    }
+
+    TRAVchildren(arg_node);
+    return arg_node;
+}
+
+struct ccn_node *CHKequation(struct ccn_node *arg_node) {
+    size_t action_id = CCNgetCurrentActionId();
+    (void)action_id;
+    if (EQUATION_RULE(arg_node)) {
+        if (NODE_TYPE(EQUATION_RULE(arg_node)) != NT_ATTRIBUTE_REFERENCE) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(rule) of node(equation) has disallowed type(%s) ", nodetypeToName(EQUATION_RULE(arg_node)));
+        }
+
+    }
+
+    if (EQUATION_ARGS(arg_node)) {
+        if (NODE_TYPE(EQUATION_ARGS(arg_node)) != NT_EQUATION_DEPENDENCY) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(args) of node(equation) has disallowed type(%s) ", nodetypeToName(EQUATION_ARGS(arg_node)));
+        }
+
+    }
+
+    if (EQUATION_NEXT(arg_node)) {
+        if (NODE_TYPE(EQUATION_NEXT(arg_node)) != NT_EQUATION) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(equation) has disallowed type(%s) ", nodetypeToName(EQUATION_NEXT(arg_node)));
         }
 
     }
@@ -410,6 +489,13 @@ struct ccn_node *CHKinodeset(struct ccn_node *arg_node) {
 
     }
 
+    if (INODESET_IATTRIBUTES(arg_node)) {
+        if (NODE_TYPE(INODESET_IATTRIBUTES(arg_node)) != NT_ATTRIBUTE) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(iattributes) of node(inodeset) has disallowed type(%s) ", nodetypeToName(INODESET_IATTRIBUTES(arg_node)));
+        }
+
+    }
+
     if (INODESET_UNPACKED(arg_node)) {
         if (NODE_TYPE(INODESET_UNPACKED(arg_node)) != NT_ID) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(unpacked) of node(inodeset) has disallowed type(%s) ", nodetypeToName(INODESET_UNPACKED(arg_node)));
@@ -459,6 +545,13 @@ struct ccn_node *CHKinode(struct ccn_node *arg_node) {
     if (INODE_IATTRIBUTES(arg_node)) {
         if (NODE_TYPE(INODE_IATTRIBUTES(arg_node)) != NT_ATTRIBUTE) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(iattributes) of node(inode) has disallowed type(%s) ", nodetypeToName(INODE_IATTRIBUTES(arg_node)));
+        }
+
+    }
+
+    if (INODE_IEQUATIONS(arg_node)) {
+        if (NODE_TYPE(INODE_IEQUATIONS(arg_node)) != NT_EQUATION) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(iequations) of node(inode) has disallowed type(%s) ", nodetypeToName(INODE_IEQUATIONS(arg_node)));
         }
 
     }

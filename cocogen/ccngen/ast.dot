@@ -6,6 +6,16 @@ ienum -> id[label="Vals"]
 ienum -> id[label="name"]
 ienum -> id[label="iprefix"]
 ienum -> ienum[label="next"]
+attribute_reference;
+attribute_reference -> id[label="inode"]
+attribute_reference -> id[label="iattribute"]
+equation_dependency;
+equation_dependency -> attribute_reference[label="iattribute"]
+equation_dependency -> equation_dependency[label="next"]
+equation;
+equation -> attribute_reference[label="rule"]
+equation -> equation_dependency[label="args"]
+equation -> equation[label="next"]
 attribute;
 attribute -> id[label="name"]
 attribute -> id[label="type_reference"]
@@ -42,6 +52,7 @@ ilifetime -> ilifetime[label="next"]
 inodeset;
 inodeset -> id[label="name"]
 inodeset -> setexpr[label="expr"]
+inodeset -> attribute[label="iattributes"]
 inodeset -> id[label="unpacked"]
 inodeset -> inodeset[label="next"]
 inode;
@@ -49,6 +60,7 @@ inode -> id[label="name"]
 inode -> inode[label="next"]
 inode -> child[label="ichildren"]
 inode -> attribute[label="iattributes"]
+inode -> equation[label="iequations"]
 inode -> ilifetime[label="lifetimes"]
 ipass;
 ipass -> id[label="name"]

@@ -129,6 +129,13 @@ node_st *PRTinode(node_st *node)
     UNINDENT;
     PrintIndent();
     printf("}\n");
+    PrintIndent();
+    printf("Equations {\n");
+    INDENT;
+    TRAVopt(INODE_IEQUATIONS(node));
+    UNINDENT;
+    PrintIndent();
+    printf("}\n");
     UNINDENT;
     printf("}\n");
     TRAVopt(INODE_NEXT(node));
@@ -147,6 +154,53 @@ node_st *PRTattribute(node_st *node)
     PrintIndent();
     printf("%s\n", ID_ORIG(ATTRIBUTE_NAME(node)));
     TRAVopt(ATTRIBUTE_NEXT(node));
+    return node;
+}
+
+/**
+ * @fn PRTequation
+ */
+node_st *PRTequation(node_st *node)
+{
+    PrintIndent();
+    TRAVrule(node);
+    printf(" = {\n");
+    INDENT;
+    PrintIndent();
+    printf("args = {");
+    TRAVargs(node);
+    printf("}\n");
+    UNINDENT;
+    PrintIndent();
+    printf("}\n");
+    TRAVopt(EQUATION_NEXT(node));
+    return node;
+}
+
+/**
+ * @fn PRTequation_dependency
+ */
+node_st *PRTequation_dependency(node_st *node)
+{
+    TRAViattribute(node);
+    if (EQUATION_DEPENDENCY_NEXT(node)) {
+        printf(", ");
+        TRAVnext(node);
+    }
+    return node;
+}
+
+/**
+ * @fn PRTattribute_reference
+ */
+node_st *PRTattribute_reference(node_st *node)
+{
+    if (!ATTRIBUTE_REFERENCE_INODE(node)) {
+        printf("<this>");
+    } else {
+        printf("%s", ID_ORIG(ATTRIBUTE_REFERENCE_INODE(node)));
+    }
+    printf(".%s", ID_ORIG(ATTRIBUTE_REFERENCE_IATTRIBUTE(node)));
     return node;
 }
 

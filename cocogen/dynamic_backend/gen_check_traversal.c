@@ -13,6 +13,7 @@
 #include "ccn/dynamic_core.h"
 #include "gen_helpers/out_macros.h"
 #include "globals.h"
+#include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "gen_helpers.h"
 
@@ -159,6 +160,36 @@ node_st *DGCHTattribute(node_st *node)
     curr_attribute = node;
     TRAVlifetimes(node);
     TRAVnext(node);
+    return node;
+}
+
+/**
+ * @fn DGCHTequation
+ */
+node_st *DGCHTequation(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGCHTequation");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGCHTequation_dependency
+ */
+node_st *DGCHTequation_dependency(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGCHTequation_dependency");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGCHTattribute_reference
+ */
+node_st *DGCHTattribute_reference(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGCHTattribute_reference");
+    TRAVchildren(node);
     return node;
 }
 

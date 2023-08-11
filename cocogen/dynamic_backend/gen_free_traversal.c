@@ -90,6 +90,36 @@ node_st *DGFTattribute(node_st *node)
     return node;
 }
 
+/**
+ * @fn DGFTequation
+ */
+node_st *DGFTequation(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGFTequation");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGFTequation_dependency
+ */
+node_st *DGFTequation_dependency(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGFTequation_dependency");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGFTattribute_reference
+ */
+node_st *DGFTattribute_reference(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGFTattribute_reference");
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *DGFTste(node_st *node)
 {
 

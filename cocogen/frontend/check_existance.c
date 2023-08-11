@@ -261,6 +261,28 @@ node_st *CEXattribute(node_st *node)
     return node;
 }
 
+node_st *CEXequation(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented CEXequation");
+    TRAVchildren(node);
+    return node;
+}
+
+
+node_st *CEXequation_dependency(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented CEXequation_dependency");
+    TRAVchildren(node);
+    return node;
+}
+
+node_st *CEXattribute_reference(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented CEXattribute_reference");
+    TRAVchildren(node);
+    return node;
+}
+
 static char *preserved_enum_prefix[] = {
     "NT",
     "NS",

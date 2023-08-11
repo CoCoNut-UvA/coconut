@@ -35,6 +35,43 @@ struct NODE_DATA_IENUM {
     char * iinfo;
 };
 
+struct NODE_DATA_ATTRIBUTE_REFERENCE {
+    union NODE_CHILDREN_ATTRIBUTE_REFERENCE {
+        struct NODE_CHILDREN_ATTRIBUTE_REFERENCE_STRUCT {
+            node_st *inode;
+            node_st *iattribute;
+        } attribute_reference_children_st;
+
+        node_st *attribute_reference_children_at[2];
+    } attribute_reference_children;
+
+};
+
+struct NODE_DATA_EQUATION_DEPENDENCY {
+    union NODE_CHILDREN_EQUATION_DEPENDENCY {
+        struct NODE_CHILDREN_EQUATION_DEPENDENCY_STRUCT {
+            node_st *iattribute;
+            node_st *next;
+        } equation_dependency_children_st;
+
+        node_st *equation_dependency_children_at[2];
+    } equation_dependency_children;
+
+};
+
+struct NODE_DATA_EQUATION {
+    union NODE_CHILDREN_EQUATION {
+        struct NODE_CHILDREN_EQUATION_STRUCT {
+            node_st *rule;
+            node_st *args;
+            node_st *next;
+        } equation_children_st;
+
+        node_st *equation_children_at[3];
+    } equation_children;
+
+};
+
 struct NODE_DATA_ATTRIBUTE {
     union NODE_CHILDREN_ATTRIBUTE {
         struct NODE_CHILDREN_ATTRIBUTE_STRUCT {
@@ -48,7 +85,9 @@ struct NODE_DATA_ATTRIBUTE {
     } attribute_children;
 
     enum attribute_type type;
-    int in_constructor;
+    bool in_constructor;
+    bool inherited;
+    bool synthesized;
 };
 
 struct NODE_DATA_ITRAVDATA {
@@ -166,11 +205,12 @@ struct NODE_DATA_INODESET {
         struct NODE_CHILDREN_INODESET_STRUCT {
             node_st *name;
             node_st *expr;
+            node_st *iattributes;
             node_st *unpacked;
             node_st *next;
         } inodeset_children_st;
 
-        node_st *inodeset_children_at[4];
+        node_st *inodeset_children_at[5];
     } inodeset_children;
 
     char * iinfo;
@@ -183,10 +223,11 @@ struct NODE_DATA_INODE {
             node_st *next;
             node_st *ichildren;
             node_st *iattributes;
+            node_st *iequations;
             node_st *lifetimes;
         } inode_children_st;
 
-        node_st *inode_children_at[5];
+        node_st *inode_children_at[6];
     } inode_children;
 
     char * iifno;
@@ -291,12 +332,21 @@ struct NODE_DATA_AST {
 #define IENUM_IPREFIX(n) ((n)->data.N_ienum->ienum_children.ienum_children_st.iprefix)
 #define IENUM_NEXT(n) ((n)->data.N_ienum->ienum_children.ienum_children_st.next)
 #define IENUM_IINFO(n) ((n)->data.N_ienum->iinfo)
+#define ATTRIBUTE_REFERENCE_INODE(n) ((n)->data.N_attribute_reference->attribute_reference_children.attribute_reference_children_st.inode)
+#define ATTRIBUTE_REFERENCE_IATTRIBUTE(n) ((n)->data.N_attribute_reference->attribute_reference_children.attribute_reference_children_st.iattribute)
+#define EQUATION_DEPENDENCY_IATTRIBUTE(n) ((n)->data.N_equation_dependency->equation_dependency_children.equation_dependency_children_st.iattribute)
+#define EQUATION_DEPENDENCY_NEXT(n) ((n)->data.N_equation_dependency->equation_dependency_children.equation_dependency_children_st.next)
+#define EQUATION_RULE(n) ((n)->data.N_equation->equation_children.equation_children_st.rule)
+#define EQUATION_ARGS(n) ((n)->data.N_equation->equation_children.equation_children_st.args)
+#define EQUATION_NEXT(n) ((n)->data.N_equation->equation_children.equation_children_st.next)
 #define ATTRIBUTE_NAME(n) ((n)->data.N_attribute->attribute_children.attribute_children_st.name)
 #define ATTRIBUTE_TYPE_REFERENCE(n) ((n)->data.N_attribute->attribute_children.attribute_children_st.type_reference)
 #define ATTRIBUTE_LIFETIMES(n) ((n)->data.N_attribute->attribute_children.attribute_children_st.lifetimes)
 #define ATTRIBUTE_NEXT(n) ((n)->data.N_attribute->attribute_children.attribute_children_st.next)
 #define ATTRIBUTE_TYPE(n) ((n)->data.N_attribute->type)
 #define ATTRIBUTE_IN_CONSTRUCTOR(n) ((n)->data.N_attribute->in_constructor)
+#define ATTRIBUTE_INHERITED(n) ((n)->data.N_attribute->inherited)
+#define ATTRIBUTE_SYNTHESIZED(n) ((n)->data.N_attribute->synthesized)
 #define ITRAVDATA_NAME(n) ((n)->data.N_itravdata->itravdata_children.itravdata_children_st.name)
 #define ITRAVDATA_TYPE_REFERENCE(n) ((n)->data.N_itravdata->itravdata_children.itravdata_children_st.type_reference)
 #define ITRAVDATA_NEXT(n) ((n)->data.N_itravdata->itravdata_children.itravdata_children_st.next)
@@ -329,6 +379,7 @@ struct NODE_DATA_AST {
 #define ILIFETIME_TYPE(n) ((n)->data.N_ilifetime->type)
 #define INODESET_NAME(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.name)
 #define INODESET_EXPR(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.expr)
+#define INODESET_IATTRIBUTES(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.iattributes)
 #define INODESET_UNPACKED(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.unpacked)
 #define INODESET_NEXT(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.next)
 #define INODESET_IINFO(n) ((n)->data.N_inodeset->iinfo)
@@ -336,6 +387,7 @@ struct NODE_DATA_AST {
 #define INODE_NEXT(n) ((n)->data.N_inode->inode_children.inode_children_st.next)
 #define INODE_ICHILDREN(n) ((n)->data.N_inode->inode_children.inode_children_st.ichildren)
 #define INODE_IATTRIBUTES(n) ((n)->data.N_inode->inode_children.inode_children_st.iattributes)
+#define INODE_IEQUATIONS(n) ((n)->data.N_inode->inode_children.inode_children_st.iequations)
 #define INODE_LIFETIMES(n) ((n)->data.N_inode->inode_children.inode_children_st.lifetimes)
 #define INODE_IIFNO(n) ((n)->data.N_inode->iifno)
 #define INODE_IS_ROOT(n) ((n)->data.N_inode->is_root)
@@ -377,22 +429,25 @@ struct NODE_DATA_AST {
 #define AST_USES_UNSAFE(n) ((n)->data.N_ast->uses_unsafe)
 node_st *ASTid(char * orig, char * lwr, char * Upr);
 node_st *ASTienum(node_st *vals, node_st *name, node_st *iprefix, char * iinfo);
-node_st *ASTattribute();
+node_st *ASTattribute_reference(void);
+node_st *ASTequation_dependency(void);
+node_st *ASTequation(void);
+node_st *ASTattribute(void);
 node_st *ASTitravdata(node_st *name);
 node_st *ASTsetoperation(node_st *left, node_st *right, enum setoperation_type type);
 node_st *ASTsetliteral(node_st *reference);
-node_st *ASTsetreference();
-node_st *ASTste();
+node_st *ASTsetreference(void);
+node_st *ASTste(void);
 node_st *ASTchild(node_st *name);
-node_st *ASTlifetime_range();
-node_st *ASTilifetime();
-node_st *ASTinodeset();
+node_st *ASTlifetime_range(void);
+node_st *ASTilifetime(void);
+node_st *ASTinodeset(void);
 node_st *ASTinode(node_st *name, char * iifno);
 node_st *ASTipass(node_st *name, char * iifno);
 node_st *ASTitraversal(node_st *name);
 node_st *ASTiphase(node_st *name, int is_start);
-node_st *ASTiactions();
-node_st *ASTast();
+node_st *ASTiactions(void);
+node_st *ASTast(void);
 union NODE_DATA {
     struct NODE_DATA_AST *N_ast;
     struct NODE_DATA_IACTIONS *N_iactions;
@@ -410,6 +465,9 @@ union NODE_DATA {
     struct NODE_DATA_SETOPERATION *N_setoperation;
     struct NODE_DATA_ITRAVDATA *N_itravdata;
     struct NODE_DATA_ATTRIBUTE *N_attribute;
+    struct NODE_DATA_EQUATION *N_equation;
+    struct NODE_DATA_EQUATION_DEPENDENCY *N_equation_dependency;
+    struct NODE_DATA_ATTRIBUTE_REFERENCE *N_attribute_reference;
     struct NODE_DATA_IENUM *N_ienum;
     struct NODE_DATA_ID *N_id;
 };
@@ -417,6 +475,7 @@ union NODE_DATA {
 #define NODE_TYPE(n) ((n)->nodetype)
 #define NODE_CHILDREN(n) ((n)->children)
 #define NODE_NUMCHILDREN(n) ((n)->num_children)
+#define NODE_FILENAME(n) ((n)->filename)
 #define NODE_BLINE(n) ((n)->begin_line)
 #define NODE_ELINE(n) ((n)->end_line)
 #define NODE_BCOL(n) ((n)->begin_col)
@@ -425,6 +484,7 @@ typedef struct ccn_node {
     enum ccn_nodetype nodetype;
     union NODE_DATA data;
     struct ccn_node **children;
+    char *filename;
     long int num_children;
     uint32_t begin_line;
     uint32_t end_line;

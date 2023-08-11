@@ -112,6 +112,36 @@ node_st *DGCTattribute(node_st *node)
     return node;
 }
 
+/**
+ * @fn DGCTequation
+ */
+node_st *DGCTequation(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGCTequation");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGCTequation_dependency
+ */
+node_st *DGCTequation_dependency(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGCTequation_dependency");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGCTattribute_reference
+ */
+node_st *DGCTattribute_reference(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGCTattribute_reference");
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *DGCTste(node_st *node)
 {
 

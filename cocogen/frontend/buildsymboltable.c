@@ -214,6 +214,37 @@ node_st *BSTsetreference(node_st *node)
 
 node_st *BSTattribute(node_st *node)
 {
+    CTI(CTI_WARN, true, "Not implemented BSTattribute");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn BSTequation
+ */
+node_st *BSTequation(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented BSTequation");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn BSTequation_dependency
+ */
+node_st *BSTequation_dependency(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented BSTequation_dependency");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn BSTattribute_reference
+ */
+node_st *BSTattribute_reference(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented BSTattribute_reference");
     TRAVchildren(node);
     return node;
 }
