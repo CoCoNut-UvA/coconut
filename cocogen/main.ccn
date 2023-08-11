@@ -518,6 +518,7 @@ node inode {
         inode next,
         child ichildren,
         attribute iattributes,
+        equation iequations,
         ilifetime lifetimes
     },
 
