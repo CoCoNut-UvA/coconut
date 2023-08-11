@@ -149,10 +149,98 @@ node_st *PRTchild(node_st *node)
     return node;
 }
 
+void print_attribute_type(enum attribute_type type, node_st *type_reference) {
+    switch (type)
+    {
+        case AT_user:
+        case AT_link:
+        case AT_link_or_enum:
+            printf("%s", ID_ORIG(type_reference));
+            break;
+        case AT_int:
+        printf("int");
+        break;
+        case AT_string:
+        printf("string");
+        break;
+        case AT_bool:
+        printf("bool");
+        break;
+        case AT_int8:
+        printf("int8");
+        break;
+        case AT_int16:
+        printf("int16");
+        break;
+        case AT_int32:
+        printf("int32");
+        break;
+        case AT_int64:
+        printf("int64");
+        break;
+        case AT_float:
+        printf("float");
+        break;
+        case AT_double:
+        printf("double");
+        break;
+        case AT_uint:
+        printf("uint");
+        break;
+        case AT_uint8:
+        printf("uint8");
+        break;
+        case AT_uint16:
+        printf("uint16");
+        break;
+        case AT_uint32:
+        printf("uint32");
+        break;
+        case AT_uint64:
+        printf("uint64");
+        break;
+    default:
+        printf("<unknown type>");
+        break;
+    }
+}
+
 node_st *PRTattribute(node_st *node)
 {
+    bool prev = false;
     PrintIndent();
-    printf("%s\n", ID_ORIG(ATTRIBUTE_NAME(node)));
+    print_attribute_type(ATTRIBUTE_TYPE(node), ATTRIBUTE_TYPE_REFERENCE(node));
+    printf(" %s {", ID_ORIG(ATTRIBUTE_NAME(node)));
+    if (ATTRIBUTE_IN_CONSTRUCTOR(node)) {
+        printf("constructor");
+        prev = true;
+    }
+    if (ATTRIBUTE_IS_SYNTHESIZED(node)) {
+        if (prev) {
+            printf(", ");
+        }
+        printf("synthesized");
+        prev = true;
+    }
+    if (ATTRIBUTE_IS_INHERITED(node)) {
+        if (prev) {
+            printf(", ");
+        }
+        printf("inherited");
+        prev = true;
+    }
+    if (ATTRIBUTE_LIFETIMES(node)) {
+        if (prev) {
+            printf(", ");
+        }
+        printf("lifetimes {\n");
+        INDENT;
+        TRAVlifetimes(node);
+        UNINDENT;
+        PrintIndent();
+        printf("}");
+    }
+    printf("}\n");
     TRAVopt(ATTRIBUTE_NEXT(node));
     return node;
 }
@@ -225,6 +313,13 @@ node_st *PRTinodeset(node_st *node)
     printf("nodeset %s {\n", ID_ORIG(INODESET_NAME(node)));
     INDENT;
     TRAVopt(INODESET_EXPR(node));
+    PrintIndent();
+    printf("Attributes {\n");
+    INDENT;
+    TRAVopt(INODESET_IATTRIBUTES(node));
+    UNINDENT;
+    PrintIndent();
+    printf("}\n");
     UNINDENT;
     PrintIndent();
     printf("}\n");
