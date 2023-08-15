@@ -294,6 +294,8 @@ node_st *PRTattribute_reference(node_st *node)
 
 node_st *PRTsetreference(node_st *node)
 {
+    PrintIndent();
+    printf("(ref) %s\n", ID_ORIG(SETREFERENCE_REFERENCE(node)));
     return node;
 }
 
@@ -305,6 +307,37 @@ node_st *PRTsetliteral(node_st *node)
     }
     TRAVopt(SETLITERAL_LEFT(node));
     TRAVopt(SETLITERAL_RIGHT(node));
+    return node;
+}
+
+node_st *PRTsetoperation(node_st *node)
+{
+    PrintIndent();
+    printf("(\n");
+    INDENT;
+    TRAVleft(node);
+    UNINDENT;
+    PrintIndent();
+    switch (SETOPERATION_TYPE(node)) {
+        case SO_difference:
+            printf("-");
+            break;
+        case SO_intersect:
+            printf("&");
+            break;
+        case SO_iunion:
+            printf("|");
+            break;
+        default:
+            printf("<unknown operator>");
+            break;
+    }
+    printf("\n");
+    INDENT;
+    TRAVright(node);
+    UNINDENT;
+    PrintIndent();
+    printf(")\n");
     return node;
 }
 
@@ -334,11 +367,6 @@ node_st *PRTid(node_st *node)
     return node;
 }
 
-node_st *PRTsetoperation(node_st *node)
-{
-    return node;
-}
-
 node_st *PRTienum(node_st *node)
 {
     return node;
@@ -353,6 +381,7 @@ node_st *PRTste(node_st *node)
 
 node_st *PRTilifetime(node_st *node)
 {
+    PrintIndent();
     if (ILIFETIME_TYPE(node) == LT_mandatory) {
         printf("mandatory");
     } else {
