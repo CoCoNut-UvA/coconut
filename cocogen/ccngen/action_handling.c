@@ -22,7 +22,7 @@ enum ccn_action_id phasedriver_ids_table[] = {    CCNAC_ID_GENACTIONARRAYHEADER,
 
 enum ccn_action_id unpacklifetimes_ids_table[] = {    CCNAC_ID_CHECKLIFETIMES,     CCNAC_ID_ASSIGNIDTOACTION,     CCNAC_ID_MAPIDTOLIFETIME,     CCNAC_ID_NULL, };
 
-enum ccn_action_id semantic_ids_table[] = {    CCNAC_ID_BUILDSYMBOLTABLE,     CCNAC_ID_CHECKEXISTANCE,     CCNAC_ID_UNWRAPSETEXPR,     CCNAC_ID_REACHABILITY,     CCNAC_ID_NULL, };
+enum ccn_action_id semantic_ids_table[] = {    CCNAC_ID_BUILDSYMBOLTABLE,     CCNAC_ID_CHECKEXISTANCE,     CCNAC_ID_NODESETCHILDTABLE,     CCNAC_ID_UNWRAPSETEXPR,     CCNAC_ID_REACHABILITY,     CCNAC_ID_NULL, };
 
 enum ccn_action_id opts_ids_table[] = {    CCNAC_ID_DOOPTS,     CCNAC_ID_NULL, };
 
@@ -48,6 +48,7 @@ static struct ccn_action ccn_action_array[] = {
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_SETLITERALINSERT, "setliteralInsert", .traversal = {TRAV_SLI,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_REACHABILITY, "reachability", .traversal = {TRAV_RCB,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_UNWRAPSETEXPR, "unwrapSetExpr", .traversal = {TRAV_USE,},},
+{CCN_ACTION_TRAVERSAL, CCNAC_ID_NODESETCHILDTABLE, "nodesetChildTable", .traversal = {TRAV_NCT,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_BUILDSYMBOLTABLE, "buildSymbolTable", .traversal = {TRAV_BST,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_CHECKEXISTANCE, "checkExistance", .traversal = {TRAV_CEX,},},
 {CCN_ACTION_TRAVERSAL, CCNAC_ID_DYNAMICGENNODEMACROS, "dynamicGenNodeMacros", .traversal = {TRAV_DGNM,},},

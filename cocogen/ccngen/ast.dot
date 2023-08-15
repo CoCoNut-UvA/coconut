@@ -49,12 +49,16 @@ ilifetime;
 ilifetime -> lifetime_range[label="begin"]
 ilifetime -> lifetime_range[label="end"]
 ilifetime -> ilifetime[label="next"]
+nodeset_child_entry;
+nodeset_child_entry -> nodeset_child_entry[label="next"]
+nodeset_child_entry -> inodeset[color=red, label="reference"]
 inodeset;
 inodeset -> id[label="name"]
 inodeset -> setexpr[label="expr"]
 inodeset -> attribute[label="iattributes"]
 inodeset -> id[label="unpacked"]
 inodeset -> inodeset[label="next"]
+inodeset -> nodeset_child_entry[label="children_table"]
 inode;
 inode -> id[label="name"]
 inode -> inode[label="next"]

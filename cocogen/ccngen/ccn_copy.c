@@ -151,6 +151,14 @@ ccn_node *CPYilifetime(ccn_node *arg_node) {
     return new_node;
 }
 
+ccn_node *CPYnodeset_child_entry(ccn_node *arg_node) {
+    ccn_node *new_node =ASTnodeset_child_entry(    NULL);
+    CopyBaseNode(new_node, arg_node);
+    NODESET_CHILD_ENTRY_NEXT(new_node) = TRAVopt(NODESET_CHILD_ENTRY_NEXT(arg_node));
+    NODESET_CHILD_ENTRY_REFERENCE(new_node) = NODESET_CHILD_ENTRY_REFERENCE(arg_node);
+    return new_node;
+}
+
 ccn_node *CPYinodeset(ccn_node *arg_node) {
     ccn_node *new_node =ASTinodeset();
     CopyBaseNode(new_node, arg_node);
@@ -159,7 +167,9 @@ ccn_node *CPYinodeset(ccn_node *arg_node) {
     INODESET_IATTRIBUTES(new_node) = TRAVopt(INODESET_IATTRIBUTES(arg_node));
     INODESET_UNPACKED(new_node) = TRAVopt(INODESET_UNPACKED(arg_node));
     INODESET_NEXT(new_node) = TRAVopt(INODESET_NEXT(arg_node));
+    INODESET_CHILDREN_TABLE(new_node) = TRAVopt(INODESET_CHILDREN_TABLE(arg_node));
     INODESET_IINFO(new_node) = STRcpy(INODESET_IINFO(arg_node));
+    INODESET_ILLEGAL_SETEXPR_ATTR(new_node) = INODESET_ILLEGAL_SETEXPR_ATTR(arg_node);
     return new_node;
 }
 

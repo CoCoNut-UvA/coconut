@@ -88,6 +88,12 @@ node_st *DGCTinodeset(node_st *node)
     return node;
 }
 
+node_st *DGCTnodeset_child_entry(node_st *node)
+{
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *DGCTchild(node_st *node)
 {
     GeneratorContext *ctx = globals.gen_ctx;

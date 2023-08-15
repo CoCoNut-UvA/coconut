@@ -200,6 +200,18 @@ struct NODE_DATA_ILIFETIME {
     enum lifetime_type type;
 };
 
+struct NODE_DATA_NODESET_CHILD_ENTRY {
+    union NODE_CHILDREN_NODESET_CHILD_ENTRY {
+        struct NODE_CHILDREN_NODESET_CHILD_ENTRY_STRUCT {
+            node_st *next;
+        } nodeset_child_entry_children_st;
+
+        node_st *nodeset_child_entry_children_at[1];
+    } nodeset_child_entry_children;
+
+    node_st *reference;
+};
+
 struct NODE_DATA_INODESET {
     union NODE_CHILDREN_INODESET {
         struct NODE_CHILDREN_INODESET_STRUCT {
@@ -208,12 +220,14 @@ struct NODE_DATA_INODESET {
             node_st *iattributes;
             node_st *unpacked;
             node_st *next;
+            node_st *children_table;
         } inodeset_children_st;
 
-        node_st *inodeset_children_at[5];
+        node_st *inodeset_children_at[6];
     } inodeset_children;
 
     char * iinfo;
+    bool illegal_setexpr_attr;
 };
 
 struct NODE_DATA_INODE {
@@ -377,12 +391,16 @@ struct NODE_DATA_AST {
 #define ILIFETIME_END(n) ((n)->data.N_ilifetime->ilifetime_children.ilifetime_children_st.end)
 #define ILIFETIME_NEXT(n) ((n)->data.N_ilifetime->ilifetime_children.ilifetime_children_st.next)
 #define ILIFETIME_TYPE(n) ((n)->data.N_ilifetime->type)
+#define NODESET_CHILD_ENTRY_NEXT(n) ((n)->data.N_nodeset_child_entry->nodeset_child_entry_children.nodeset_child_entry_children_st.next)
+#define NODESET_CHILD_ENTRY_REFERENCE(n) ((n)->data.N_nodeset_child_entry->reference)
 #define INODESET_NAME(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.name)
 #define INODESET_EXPR(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.expr)
 #define INODESET_IATTRIBUTES(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.iattributes)
 #define INODESET_UNPACKED(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.unpacked)
 #define INODESET_NEXT(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.next)
+#define INODESET_CHILDREN_TABLE(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.children_table)
 #define INODESET_IINFO(n) ((n)->data.N_inodeset->iinfo)
+#define INODESET_ILLEGAL_SETEXPR_ATTR(n) ((n)->data.N_inodeset->illegal_setexpr_attr)
 #define INODE_NAME(n) ((n)->data.N_inode->inode_children.inode_children_st.name)
 #define INODE_NEXT(n) ((n)->data.N_inode->inode_children.inode_children_st.next)
 #define INODE_ICHILDREN(n) ((n)->data.N_inode->inode_children.inode_children_st.ichildren)
@@ -441,6 +459,7 @@ node_st *ASTste(void);
 node_st *ASTchild(node_st *name);
 node_st *ASTlifetime_range(void);
 node_st *ASTilifetime(void);
+node_st *ASTnodeset_child_entry(node_st *reference);
 node_st *ASTinodeset(void);
 node_st *ASTinode(node_st *name, char * iifno);
 node_st *ASTipass(node_st *name, char * iifno);
@@ -456,6 +475,7 @@ union NODE_DATA {
     struct NODE_DATA_IPASS *N_ipass;
     struct NODE_DATA_INODE *N_inode;
     struct NODE_DATA_INODESET *N_inodeset;
+    struct NODE_DATA_NODESET_CHILD_ENTRY *N_nodeset_child_entry;
     struct NODE_DATA_ILIFETIME *N_ilifetime;
     struct NODE_DATA_LIFETIME_RANGE *N_lifetime_range;
     struct NODE_DATA_CHILD *N_child;

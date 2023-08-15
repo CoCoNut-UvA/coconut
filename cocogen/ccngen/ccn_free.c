@@ -118,6 +118,14 @@ struct ccn_node *DELilifetime(struct ccn_node *arg_node) {
     return NULL;
 }
 
+struct ccn_node *DELnodeset_child_entry(struct ccn_node *arg_node) {
+    TRAVchildren(arg_node);
+    MEMfree(NODE_FILENAME(arg_node));
+    MEMfree(arg_node->data.N_nodeset_child_entry);
+    MEMfree(arg_node);
+    return NULL;
+}
+
 struct ccn_node *DELinodeset(struct ccn_node *arg_node) {
     TRAVchildren(arg_node);
     MEMfree(arg_node->data.N_inodeset->iinfo);

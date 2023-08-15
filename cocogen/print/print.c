@@ -343,9 +343,22 @@ node_st *PRTsetoperation(node_st *node)
 
 node_st *PRTinodeset(node_st *node)
 {
-    printf("nodeset %s {\n", ID_ORIG(INODESET_NAME(node)));
+    printf("nodeset %s ", ID_ORIG(INODESET_NAME(node)));
+    if (INODESET_ILLEGAL_SETEXPR_ATTR(node)) {
+        printf("(illegal attr setexpr) ");
+    }
+    printf("{\n");
     INDENT;
     TRAVopt(INODESET_EXPR(node));
+
+    PrintIndent();
+    printf("Child nodesets {\n");
+    INDENT;
+    TRAVopt(INODESET_CHILDREN_TABLE(node));
+    UNINDENT;
+    PrintIndent();
+    printf("}\n");
+
     PrintIndent();
     printf("Attributes {\n");
     INDENT;
@@ -353,10 +366,19 @@ node_st *PRTinodeset(node_st *node)
     UNINDENT;
     PrintIndent();
     printf("}\n");
+
     UNINDENT;
     PrintIndent();
     printf("}\n");
+
     TRAVopt(INODESET_NEXT(node));
+    return node;
+}
+
+node_st *PRTnodeset_child_entry(node_st *node) {
+    PrintIndent();
+    printf("%s\n", ID_ORIG(INODESET_NAME(NODESET_CHILD_ENTRY_REFERENCE(node))));
+    TRAVopt(NODESET_CHILD_ENTRY_NEXT(node));
     return node;
 }
 

@@ -47,6 +47,9 @@ char *nodetypeToName(node_st *node) {
         case NT_ILIFETIME:
             return "ilifetime";
             break;
+        case NT_NODESET_CHILD_ENTRY:
+            return "nodeset_child_entry";
+            break;
         case NT_INODESET:
             return "inodeset";
             break;
@@ -316,7 +319,7 @@ struct ccn_node *CHKsetoperation(struct ccn_node *arg_node) {
         CTI(CTI_ERROR, true, "Child(right) in node(setoperation) is missing, but specified as mandatory.\n");;
     }
 
-    if (action_id >= 8 && true) {
+    if (action_id >= 9 && true) {
         CTI(CTI_ERROR, true, "Found disallowed node(setoperation) in tree.\n");
     }
 
@@ -362,7 +365,7 @@ struct ccn_node *CHKsetreference(struct ccn_node *arg_node) {
 
     }
 
-    if (action_id >= 8 || false) {
+    if (action_id >= 9 || false) {
         CTI(CTI_ERROR, true, "Found disallowed Found disallowed node(setreference) in tree. in tree.\n");
     }
 
@@ -472,6 +475,24 @@ struct ccn_node *CHKilifetime(struct ccn_node *arg_node) {
     return arg_node;
 }
 
+struct ccn_node *CHKnodeset_child_entry(struct ccn_node *arg_node) {
+    size_t action_id = CCNgetCurrentActionId();
+    (void)action_id;
+    if (NODESET_CHILD_ENTRY_NEXT(arg_node)) {
+        if (NODE_TYPE(NODESET_CHILD_ENTRY_NEXT(arg_node)) != NT_NODESET_CHILD_ENTRY) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(nodeset_child_entry) has disallowed type(%s) ", nodetypeToName(NODESET_CHILD_ENTRY_NEXT(arg_node)));
+        }
+
+    }
+
+    if (NODESET_CHILD_ENTRY_REFERENCE(arg_node) == NULL) {
+        CTI(CTI_ERROR, true, "Attribute(reference) in node(nodeset_child_entry) is missing, but specified as mandatory.\n");;
+    }
+
+    TRAVchildren(arg_node);
+    return arg_node;
+}
+
 struct ccn_node *CHKinodeset(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
     (void)action_id;
@@ -506,6 +527,13 @@ struct ccn_node *CHKinodeset(struct ccn_node *arg_node) {
     if (INODESET_NEXT(arg_node)) {
         if (NODE_TYPE(INODESET_NEXT(arg_node)) != NT_INODESET) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(inodeset) has disallowed type(%s) ", nodetypeToName(INODESET_NEXT(arg_node)));
+        }
+
+    }
+
+    if (INODESET_CHILDREN_TABLE(arg_node)) {
+        if (NODE_TYPE(INODESET_CHILDREN_TABLE(arg_node)) != NT_NODESET_CHILD_ENTRY) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(children_table) of node(inodeset) has disallowed type(%s) ", nodetypeToName(INODESET_CHILDREN_TABLE(arg_node)));
         }
 
     }

@@ -33,6 +33,7 @@ phase semantic {
     actions {
         buildSymbolTable;
         checkExistance;
+        nodesetChildTable;
         unwrapSetExpr;
         reachability;
     }
@@ -364,6 +365,20 @@ traversal buildSymbolTable {
     uid = BST
 };
 
+traversal nodesetChildTable {
+    uid = NCT,
+
+    nodes = setexpr | {inodeset, ast},
+
+    travdata {
+        ste symboltable,
+        inodeset curr_set,
+        nodeset_child_entry last_entry,
+        user htable_stptr added_refs,
+        user htable_stptr built_tables
+    }
+};
+
 traversal unwrapSetExpr {
     uid = USE,
     nodes = setexpr | {ast}
@@ -535,11 +550,23 @@ node inodeset {
         setexpr expr,
         attribute iattributes,
         id unpacked,
-        inodeset next
+        inodeset next,
+        nodeset_child_entry children_table
     },
 
     attributes {
-        string iinfo
+        string iinfo,
+        bool illegal_setexpr_attr
+    }
+};
+
+node nodeset_child_entry {
+    children {
+        nodeset_child_entry next
+    },
+
+    attributes {
+        inodeset reference { constructor, mandatory }
     }
 };
 

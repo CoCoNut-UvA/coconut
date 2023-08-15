@@ -76,6 +76,24 @@ void TRAVdataFreesetliteralInsert(ccn_trav_st *trav) {
     MEMfree(trav->trav_data.setliteralinsert);
 }
 
+extern void NCTinit();
+extern void NCTfini();
+void TRAVdataInitnodesetChildTable(ccn_trav_st *trav) {
+    trav->trav_data.nodesetchildtable = MEMmalloc(sizeof(struct data_nct));
+    struct data_nct *data = trav->trav_data.nodesetchildtable;
+    data->built_tables = 0;
+    data->added_refs = 0;
+    data->last_entry = NULL;
+    data->curr_set = NULL;
+    data->symboltable = NULL;
+    NCTinit();
+}
+
+void TRAVdataFreenodesetChildTable(ccn_trav_st *trav) {
+    NCTfini();
+    MEMfree(trav->trav_data.nodesetchildtable);
+}
+
 extern void DGCHTinit();
 extern void DGCHTfini();
 void TRAVdataInitdynamicGenCheckTraversal(ccn_trav_st *trav) {

@@ -161,6 +161,12 @@ node_st *CEXinodeset(node_st *node)
     return node;
 }
 
+node_st *CEXnodeset_child_entry(node_st *node)
+{
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *CEXchild(node_st *node)
 {
     node_st *ref = STlookup(ste, CHILD_TYPE_REFERENCE(node));

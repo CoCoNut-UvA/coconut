@@ -182,6 +182,16 @@ node_st *ASTilifetime(void) {
     NODE_CHILDREN(node) = node->data.N_ilifetime->ilifetime_children.ilifetime_children_at;
     return node;}
 
+node_st *ASTnodeset_child_entry(node_st *reference) {
+    node_st *node = NewNode();
+    node->data.N_nodeset_child_entry = MEMmalloc(sizeof(struct NODE_DATA_NODESET_CHILD_ENTRY));
+    NODE_TYPE(node) = NT_NODESET_CHILD_ENTRY;
+    NODESET_CHILD_ENTRY_NEXT(node) = NULL;
+    NODESET_CHILD_ENTRY_REFERENCE(node) = reference;
+    NODE_NUMCHILDREN(node) = 1;
+    NODE_CHILDREN(node) = node->data.N_nodeset_child_entry->nodeset_child_entry_children.nodeset_child_entry_children_at;
+    return node;}
+
 node_st *ASTinodeset(void) {
     node_st *node = NewNode();
     node->data.N_inodeset = MEMmalloc(sizeof(struct NODE_DATA_INODESET));
@@ -191,8 +201,10 @@ node_st *ASTinodeset(void) {
     INODESET_IATTRIBUTES(node) = NULL;
     INODESET_UNPACKED(node) = NULL;
     INODESET_NEXT(node) = NULL;
+    INODESET_CHILDREN_TABLE(node) = NULL;
     INODESET_IINFO(node) = NULL;
-    NODE_NUMCHILDREN(node) = 5;
+    INODESET_ILLEGAL_SETEXPR_ATTR(node) = false;
+    NODE_NUMCHILDREN(node) = 6;
     NODE_CHILDREN(node) = node->data.N_inodeset->inodeset_children.inodeset_children_at;
     return node;}
 

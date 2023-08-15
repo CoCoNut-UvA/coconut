@@ -74,6 +74,12 @@ node_st *DGFTinodeset(node_st *node)
     return node;
 }
 
+node_st *DGFTnodeset_child_entry(node_st *node)
+{
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *DGFTchild(node_st *node)
 {
 

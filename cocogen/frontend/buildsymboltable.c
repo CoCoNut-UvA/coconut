@@ -181,6 +181,12 @@ node_st *BSTinodeset(node_st *node)
     return node;
 }
 
+node_st *BSTnodeset_child_entry(node_st *node)
+{
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *BSTchild(node_st *node)
 {
     TRAVchildren(node);
@@ -214,7 +220,6 @@ node_st *BSTsetreference(node_st *node)
 
 node_st *BSTattribute(node_st *node)
 {
-    CTI(CTI_WARN, true, "Not implemented BSTattribute");
     TRAVchildren(node);
     return node;
 }
@@ -224,7 +229,6 @@ node_st *BSTattribute(node_st *node)
  */
 node_st *BSTequation(node_st *node)
 {
-    CTI(CTI_WARN, true, "Not implemented BSTequation");
     TRAVchildren(node);
     return node;
 }
@@ -234,7 +238,6 @@ node_st *BSTequation(node_st *node)
  */
 node_st *BSTequation_dependency(node_st *node)
 {
-    CTI(CTI_WARN, true, "Not implemented BSTequation_dependency");
     TRAVchildren(node);
     return node;
 }
