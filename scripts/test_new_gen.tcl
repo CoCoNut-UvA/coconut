@@ -6,6 +6,7 @@ package require fileutil
 
 set coconut_dir [file normalize [lindex $argv 0]]
 set target [lindex $argv 1]
+set ::env(ASAN_OPTIONS) detect_leaks=0
 
 
 proc cleanup {tmp} {
@@ -45,7 +46,7 @@ proc run_tests {tmp} {
 	if {[ catch {
 		cd $tmp/coconut/build
 		exec ctest -V
-	} err ]} { 
+	} err ]} {
 		puts $err
 		puts "===================================FAILED==============================="
 		cleanup $tmp

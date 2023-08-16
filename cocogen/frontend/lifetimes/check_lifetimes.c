@@ -10,8 +10,7 @@
 #include "ccngen/ast.h"
 #include "ccngen/trav.h"
 #include "palm/ctinfo.h"
-
-extern void id_to_info(node_st *ID, struct ctinfo *info);
+#include "frontend/ctihelp.h"
 
 /**
  * @fn CLTast

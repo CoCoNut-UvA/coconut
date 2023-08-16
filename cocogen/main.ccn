@@ -35,6 +35,7 @@ phase semantic {
         checkExistance;
         nodesetChildTable;
         unwrapSetExpr;
+        propagateAttributes;
         reachability;
     }
 };
@@ -382,6 +383,17 @@ traversal nodesetChildTable {
 traversal unwrapSetExpr {
     uid = USE,
     nodes = setexpr | {ast}
+};
+
+traversal propagateAttributes {
+    uid = PRA,
+    nodes = {ast, inodeset, nodeset_child_entry, setliteral},
+
+    travdata {
+        ste symboltable,
+        user htable_stptr propagated,
+        inodeset curr_nodeset
+    }
 };
 
 traversal reachability {

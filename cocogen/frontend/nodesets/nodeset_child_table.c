@@ -1,7 +1,7 @@
 /**
  * @file
  *
- * Traversal: nodesetInheritanceTable
+ * Traversal: nodesetChildTable
  * UID      : NCT
  *
  *
@@ -13,9 +13,8 @@
 #include "ccngen/trav.h"
 #include "palm/hash_table.h"
 #include "palm/ctinfo.h"
-#include "symboltable.h"
-
-extern void id_to_info(node_st *ID, struct ctinfo *info);
+#include "frontend/symboltable.h"
+#include "frontend/ctihelp.h"
 
 static const int htable_size = 100;
 

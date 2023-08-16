@@ -29,6 +29,12 @@ struct data_sli {
     node_st *value;
 };
 
+struct data_pra {
+    node_st *curr_nodeset;
+    htable_stptr propagated;
+    node_st *symboltable;
+};
+
 struct data_nct {
     htable_stptr built_tables;
     htable_stptr added_refs;
@@ -57,6 +63,7 @@ union TRAV_DATA {
     struct data_slis *setliteralintersect;
     struct data_slu *setliteralunion;
     struct data_sli *setliteralinsert;
+    struct data_pra *propagateattributes;
     struct data_nct *nodesetchildtable;
     struct data_dgcht *dynamicgenchecktraversal;
     struct data_dgt_f *dynamicgentravfunctions;
@@ -68,6 +75,7 @@ union TRAV_DATA {
 #define DATA_SLIS_GET() (TRAVgetCurrent()->trav_data.setliteralintersect)
 #define DATA_SLU_GET() (TRAVgetCurrent()->trav_data.setliteralunion)
 #define DATA_SLI_GET() (TRAVgetCurrent()->trav_data.setliteralinsert)
+#define DATA_PRA_GET() (TRAVgetCurrent()->trav_data.propagateattributes)
 #define DATA_NCT_GET() (TRAVgetCurrent()->trav_data.nodesetchildtable)
 #define DATA_DGCHT_GET() (TRAVgetCurrent()->trav_data.dynamicgenchecktraversal)
 #define DATA_DGT_F_GET() (TRAVgetCurrent()->trav_data.dynamicgentravfunctions)
@@ -82,6 +90,8 @@ void TRAVdataInitsetliteralUnion(struct ccn_trav *trav);
 void TRAVdataFreesetliteralUnion(struct ccn_trav *trav);
 void TRAVdataInitsetliteralInsert(struct ccn_trav *trav);
 void TRAVdataFreesetliteralInsert(struct ccn_trav *trav);
+void TRAVdataInitpropagateAttributes(struct ccn_trav *trav);
+void TRAVdataFreepropagateAttributes(struct ccn_trav *trav);
 void TRAVdataInitnodesetChildTable(struct ccn_trav *trav);
 void TRAVdataFreenodesetChildTable(struct ccn_trav *trav);
 void TRAVdataInitdynamicGenCheckTraversal(struct ccn_trav *trav);

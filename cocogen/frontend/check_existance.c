@@ -9,9 +9,8 @@
 #include "palm/str.h"
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
+#include "frontend/ctihelp.h"
 #include "frontend/symboltable.h"
-
-extern void id_to_info(node_st *ID, struct ctinfo *info);
 
 static bool seen_root_node = false;
 static bool seen_start_phase = false;
@@ -157,7 +156,12 @@ node_st *CEXinode(node_st *node)
 
 node_st *CEXinodeset(node_st *node)
 {
-    TRAVchildren(node);
+    TRAVopt(INODESET_IATTRIBUTES(node));
+    if (node_ste != NULL) {
+        TRAVstart(node_ste, TRAV_free);
+        node_ste = NULL;
+    }
+    TRAVopt(INODESET_NEXT(node));
     return node;
 }
 
