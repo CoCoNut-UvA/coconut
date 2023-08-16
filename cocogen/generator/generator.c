@@ -23,6 +23,7 @@ GeneratorContext *GNnew()
     GeneratorContext *ctx = MEMmalloc(sizeof(GeneratorContext));
     ctx->indent_size = 4;
     ctx->indent_level = 0;
+    ctx->fp = NULL;
     return ctx;
 }
 
