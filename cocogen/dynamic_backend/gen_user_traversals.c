@@ -38,6 +38,7 @@ node_st *DUGTitraversal(node_st *node)
     OUT(" */\n\n");
     OUT("#include \"ccn/ccn.h\"\n");
     OUT("#include \"ccngen/ast.h\"\n");
+    OUT("#include \"ccngen/trav.h\"\n");
     OUT("\n");
 
     curr_trav = ID_UPR(ITRAVERSAL_IPREFIX(node));
@@ -69,7 +70,7 @@ node_st *DUGTid(node_st *node)
     OUT("/**\n");
     OUT(" * @fn %s%s\n", curr_trav, ID_LWR(node));
     OUT(" */\n");
-    OUT("node_st *%s%s(node_st *node)\n{\n    return node;\n}\n\n", curr_trav, ID_LWR(node));
+    OUT("node_st *%s%s(node_st *node)\n{\n    TRAVchildren(node)\n    return node;\n}\n\n", curr_trav, ID_LWR(node));
     TRAVopt(ID_NEXT(node));
     return node;
 }

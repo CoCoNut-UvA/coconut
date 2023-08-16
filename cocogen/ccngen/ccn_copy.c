@@ -70,6 +70,7 @@ ccn_node *CPYattribute(ccn_node *arg_node) {
     ATTRIBUTE_IN_CONSTRUCTOR(new_node) = ATTRIBUTE_IN_CONSTRUCTOR(arg_node);
     ATTRIBUTE_IS_INHERITED(new_node) = ATTRIBUTE_IS_INHERITED(arg_node);
     ATTRIBUTE_IS_SYNTHESIZED(new_node) = ATTRIBUTE_IS_SYNTHESIZED(arg_node);
+    ATTRIBUTE_IS_PROPAGATED(new_node) = ATTRIBUTE_IS_PROPAGATED(arg_node);
     return new_node;
 }
 

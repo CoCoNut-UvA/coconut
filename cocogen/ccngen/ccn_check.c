@@ -319,7 +319,7 @@ struct ccn_node *CHKsetoperation(struct ccn_node *arg_node) {
         CTI(CTI_ERROR, true, "Child(right) in node(setoperation) is missing, but specified as mandatory.\n");;
     }
 
-    if (action_id >= 10 && true) {
+    if (action_id >= 12 && true) {
         CTI(CTI_ERROR, true, "Found disallowed node(setoperation) in tree.\n");
     }
 
@@ -365,7 +365,7 @@ struct ccn_node *CHKsetreference(struct ccn_node *arg_node) {
 
     }
 
-    if (action_id >= 10 || false) {
+    if (action_id >= 12 || false) {
         CTI(CTI_ERROR, true, "Found disallowed Found disallowed node(setreference) in tree. in tree.\n");
     }
 

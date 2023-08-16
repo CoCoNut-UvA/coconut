@@ -76,13 +76,42 @@ void TRAVdataFreesetliteralInsert(ccn_trav_st *trav) {
     MEMfree(trav->trav_data.setliteralinsert);
 }
 
+extern void CPRinit();
+extern void CPRfini();
+void TRAVdataInitcheckProductRules(ccn_trav_st *trav) {
+    trav->trav_data.checkproductrules = MEMmalloc(sizeof(struct data_cpr));
+    struct data_cpr *data = trav->trav_data.checkproductrules;
+    data->found_children = 0;
+    data->curr_node = NULL;
+    data->symboltable = NULL;
+    CPRinit();
+}
+
+void TRAVdataFreecheckProductRules(ccn_trav_st *trav) {
+    CPRfini();
+    MEMfree(trav->trav_data.checkproductrules);
+}
+
+extern void CHAinit();
+extern void CHAfini();
+void TRAVdataInitcheckAttributes(ccn_trav_st *trav) {
+    trav->trav_data.checkattributes = MEMmalloc(sizeof(struct data_cha));
+    struct data_cha *data = trav->trav_data.checkattributes;
+    data->in_nodeset = false;
+    CHAinit();
+}
+
+void TRAVdataFreecheckAttributes(ccn_trav_st *trav) {
+    CHAfini();
+    MEMfree(trav->trav_data.checkattributes);
+}
+
 extern void PRAinit();
 extern void PRAfini();
 void TRAVdataInitpropagateAttributes(ccn_trav_st *trav) {
     trav->trav_data.propagateattributes = MEMmalloc(sizeof(struct data_pra));
     struct data_pra *data = trav->trav_data.propagateattributes;
     data->curr_nodeset = NULL;
-    data->propagated = 0;
     data->symboltable = NULL;
     PRAinit();
 }

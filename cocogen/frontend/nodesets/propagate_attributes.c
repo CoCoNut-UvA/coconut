@@ -17,38 +17,9 @@
 #include "frontend/ctihelp.h"
 #include "frontend/symboltable.h"
 
-static const int htable_size = 100;
+void PRAinit() { return; }
 
-void PRAinit() { DATA_PRA_GET()->propagated = HTnew_Ptr(htable_size); }
-
-static void *delete_subtables(void *htable) {
-    HTdelete((htable_st *)htable);
-    return NULL;
-}
-
-void PRAfini() {
-    HTmap(DATA_PRA_GET()->propagated, delete_subtables);
-    HTdelete(DATA_PRA_GET()->propagated);
-}
-
-static void HTinsert_attribute(node_st *node, node_st *attribute) {
-    htable_st *subtable = HTlookup(DATA_PRA_GET()->propagated, node);
-    if (subtable == NULL) {
-        subtable = HTnew_Ptr(htable_size);
-        HTinsert(DATA_PRA_GET()->propagated, node, subtable);
-    }
-
-    HTinsert(subtable, attribute, (void *)1);
-}
-
-static bool HTlookup_attribute(node_st *node, node_st *attribute) {
-    htable_st *subtable = HTlookup(DATA_PRA_GET()->propagated, node);
-    if (subtable == NULL) {
-        return false;
-    }
-
-    return HTlookup(subtable, attribute) != NULL;
-}
+void PRAfini() { return; }
 
 /* Classic attributes can be redeclared in a node to add the constructor
    keyword. */
@@ -157,10 +128,9 @@ static void propagate_attribute(node_st *node, node_st *attribute) {
 
     // Prepend new attribute to attribute list
     node_st *new_attribute = CCNcopy(attribute);
+    ATTRIBUTE_IS_PROPAGATED(new_attribute) = true;
     ATTRIBUTE_NEXT(new_attribute) = *attribute_list;
     *attribute_list = new_attribute;
-
-    HTinsert_attribute(node, attribute);
 }
 
 static void propagate_attributes(node_st *node) {
@@ -168,7 +138,7 @@ static void propagate_attributes(node_st *node) {
              INODESET_IATTRIBUTES(DATA_PRA_GET()->curr_nodeset);
          attribute != NULL; attribute = ATTRIBUTE_NEXT(attribute)) {
         // Skip propagated attributes
-        if (HTlookup_attribute(DATA_PRA_GET()->curr_nodeset, attribute)) {
+        if (ATTRIBUTE_IS_PROPAGATED(attribute)) {
             continue;
         }
         propagate_attribute(node, attribute);

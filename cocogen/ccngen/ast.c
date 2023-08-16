@@ -84,6 +84,7 @@ node_st *ASTattribute(void) {
     ATTRIBUTE_IN_CONSTRUCTOR(node) = false;
     ATTRIBUTE_IS_INHERITED(node) = false;
     ATTRIBUTE_IS_SYNTHESIZED(node) = false;
+    ATTRIBUTE_IS_PROPAGATED(node) = false;
     NODE_NUMCHILDREN(node) = 4;
     NODE_CHILDREN(node) = node->data.N_attribute->attribute_children.attribute_children_at;
     return node;}

@@ -43,6 +43,8 @@ enum ccn_traversal_type {
     TRAV_SLU,
     TRAV_SLI,
     TRAV_RCB,
+    TRAV_CPR,
+    TRAV_CHA,
     TRAV_PRA,
     TRAV_USE,
     TRAV_NCT,

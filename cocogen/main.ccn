@@ -36,6 +36,8 @@ phase semantic {
         nodesetChildTable;
         unwrapSetExpr;
         propagateAttributes;
+        checkAttributes;
+        checkProductRules;
         reachability;
     }
 };
@@ -357,7 +359,6 @@ traversal dynamicGenNodeMacros {
     nodes = {ast, inode, child, attribute}
 };
 
-
 traversal checkExistance {
     uid = CEX
 };
@@ -391,8 +392,25 @@ traversal propagateAttributes {
 
     travdata {
         ste symboltable,
-        user htable_stptr propagated,
         inodeset curr_nodeset
+    }
+};
+
+traversal checkAttributes {
+    uid = CHA,
+    nodes = {inodeset, inode, attribute},
+    travdata {
+        bool in_nodeset
+    }
+};
+
+traversal checkProductRules {
+    uid = CPR,
+    nodes = {ast, inode, equation, attribute, child},
+    travdata {
+        ste symboltable,
+        inode curr_node,
+        user htable_stptr found_children
     }
 };
 
@@ -717,7 +735,8 @@ node attribute {
         attribute_type type,
         bool in_constructor,
         bool is_inherited,
-        bool is_synthesized
+        bool is_synthesized,
+        bool is_propagated
     }
 };
 

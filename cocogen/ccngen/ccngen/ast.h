@@ -88,6 +88,7 @@ struct NODE_DATA_ATTRIBUTE {
     bool in_constructor;
     bool is_inherited;
     bool is_synthesized;
+    bool is_propagated;
 };
 
 struct NODE_DATA_ITRAVDATA {
@@ -361,6 +362,7 @@ struct NODE_DATA_AST {
 #define ATTRIBUTE_IN_CONSTRUCTOR(n) ((n)->data.N_attribute->in_constructor)
 #define ATTRIBUTE_IS_INHERITED(n) ((n)->data.N_attribute->is_inherited)
 #define ATTRIBUTE_IS_SYNTHESIZED(n) ((n)->data.N_attribute->is_synthesized)
+#define ATTRIBUTE_IS_PROPAGATED(n) ((n)->data.N_attribute->is_propagated)
 #define ITRAVDATA_NAME(n) ((n)->data.N_itravdata->itravdata_children.itravdata_children_st.name)
 #define ITRAVDATA_TYPE_REFERENCE(n) ((n)->data.N_itravdata->itravdata_children.itravdata_children_st.type_reference)
 #define ITRAVDATA_NEXT(n) ((n)->data.N_itravdata->itravdata_children.itravdata_children_st.next)
