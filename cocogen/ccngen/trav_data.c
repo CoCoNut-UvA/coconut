@@ -81,6 +81,7 @@ extern void CPRfini();
 void TRAVdataInitcheckProductRules(ccn_trav_st *trav) {
     trav->trav_data.checkproductrules = MEMmalloc(sizeof(struct data_cpr));
     struct data_cpr *data = trav->trav_data.checkproductrules;
+    data->found_attributes = 0;
     data->found_children = 0;
     data->curr_node = NULL;
     data->symboltable = NULL;

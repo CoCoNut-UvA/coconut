@@ -406,11 +406,12 @@ traversal checkAttributes {
 
 traversal checkProductRules {
     uid = CPR,
-    nodes = {ast, inode, equation, attribute, child},
+    nodes = {ast, inode, equation, equation_dependency, attribute, child},
     travdata {
         ste symboltable,
         inode curr_node,
-        user htable_stptr found_children
+        user htable_stptr found_children,
+        user htable_stptr found_attributes
     }
 };
 
@@ -504,7 +505,7 @@ root node ast {
 };
 
 nodeset action = { iphase, itraversal, ipass};
-nodeset link = action | {inode, id};
+nodeset link = action | {inode, inodeset, id};
 
 node iactions {
     children {
@@ -759,6 +760,11 @@ node attribute_reference {
     children {
         id inode,
         id iattribute
+    },
+
+    attributes {
+        id node_type,
+        attribute reference
     }
 };
 

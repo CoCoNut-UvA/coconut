@@ -54,6 +54,8 @@ ccn_node *CPRattribute(ccn_node *);
 ccn_node *CPRattribute(ccn_node *);
 ccn_node *CPRchild(ccn_node *);
 ccn_node *CPRchild(ccn_node *);
+ccn_node *CPRequation_dependency(ccn_node *);
+ccn_node *CPRequation_dependency(ccn_node *);
 ccn_node *CHAinodeset(ccn_node *);
 ccn_node *CHAinodeset(ccn_node *);
 ccn_node *CHAinode(ccn_node *);

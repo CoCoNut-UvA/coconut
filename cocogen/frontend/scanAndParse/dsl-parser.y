@@ -73,6 +73,7 @@ struct bison_attribute_options *parse_attribute_options(struct bison_attribute_o
         free(prev);
         prev = cur;
     }
+    free(prev);
 
     return data;
 }

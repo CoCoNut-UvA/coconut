@@ -47,6 +47,8 @@ node_st *ASTattribute_reference(void) {
     NODE_TYPE(node) = NT_ATTRIBUTE_REFERENCE;
     ATTRIBUTE_REFERENCE_INODE(node) = NULL;
     ATTRIBUTE_REFERENCE_IATTRIBUTE(node) = NULL;
+    ATTRIBUTE_REFERENCE_NODE_TYPE(node) = NULL;
+    ATTRIBUTE_REFERENCE_REFERENCE(node) = NULL;
     NODE_NUMCHILDREN(node) = 2;
     NODE_CHILDREN(node) = node->data.N_attribute_reference->attribute_reference_children.attribute_reference_children_at;
     return node;}

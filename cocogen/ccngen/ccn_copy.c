@@ -39,6 +39,8 @@ ccn_node *CPYattribute_reference(ccn_node *arg_node) {
     CopyBaseNode(new_node, arg_node);
     ATTRIBUTE_REFERENCE_INODE(new_node) = TRAVopt(ATTRIBUTE_REFERENCE_INODE(arg_node));
     ATTRIBUTE_REFERENCE_IATTRIBUTE(new_node) = TRAVopt(ATTRIBUTE_REFERENCE_IATTRIBUTE(arg_node));
+    ATTRIBUTE_REFERENCE_NODE_TYPE(new_node) = ATTRIBUTE_REFERENCE_NODE_TYPE(arg_node);
+    ATTRIBUTE_REFERENCE_REFERENCE(new_node) = ATTRIBUTE_REFERENCE_REFERENCE(arg_node);
     return new_node;
 }
 

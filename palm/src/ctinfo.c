@@ -45,7 +45,7 @@
 
 static char *message_buffer = NULL;
 static int message_buffer_size = 0;
-static int message_line_length = 76;
+static int message_line_length = 116;
 
 static char *abort_message_header = "abort: ";
 static char *error_message_header = "error: ";

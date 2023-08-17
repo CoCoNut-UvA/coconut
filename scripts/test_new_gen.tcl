@@ -6,7 +6,6 @@ package require fileutil
 
 set coconut_dir [file normalize [lindex $argv 0]]
 set target [lindex $argv 1]
-set ::env(ASAN_OPTIONS) detect_leaks=0
 
 
 proc cleanup {tmp} {
@@ -64,5 +63,3 @@ for {set i 0} {$i < 4} {incr i} {
 run_tests $tmp
 cleanup $tmp
 exit 0
-
-

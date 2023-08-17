@@ -9,6 +9,8 @@ ienum -> ienum[label="next"]
 attribute_reference;
 attribute_reference -> id[label="inode"]
 attribute_reference -> id[label="iattribute"]
+attribute_reference -> id[color=red, label="node_type"]
+attribute_reference -> attribute[color=red, label="reference"]
 equation_dependency;
 equation_dependency -> attribute_reference[label="iattribute"]
 equation_dependency -> equation_dependency[label="next"]
@@ -105,6 +107,7 @@ link -> iphase [color=blue]
 link -> itraversal [color=blue]
 link -> ipass [color=blue]
 link -> inode [color=blue]
+link -> inodeset [color=blue]
 link -> id [color=blue]
 action;
 action -> iphase [color=blue]

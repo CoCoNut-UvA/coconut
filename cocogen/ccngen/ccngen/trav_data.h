@@ -30,6 +30,7 @@ struct data_sli {
 };
 
 struct data_cpr {
+    htable_stptr found_attributes;
     htable_stptr found_children;
     node_st *curr_node;
     node_st *symboltable;

@@ -14,6 +14,10 @@
 
 struct globals globals;
 
+/* Do not detect memory leaks when using AddressSanitizer. */
+const char *__asan_default_options() {
+  return "detect_leaks=0";
+}
 
 /* Last pass to run before printing. Outputs a file with #define statement
  * to enable/disable certain parts of CoCoNut.

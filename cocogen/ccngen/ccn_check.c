@@ -84,7 +84,7 @@ static bool TypeIssetexpr(node_st *arg_node) {
 
 static bool TypeIslink(node_st *arg_node) {
     enum ccn_nodetype node_type = NODE_TYPE(arg_node);
-    return (false || node_type == NT_IPHASE || node_type == NT_IPASS || node_type == NT_INODE || node_type == NT_ID || node_type == NT_ITRAVERSAL    );
+    return (false || node_type == NT_IPHASE || node_type == NT_IPASS || node_type == NT_INODE || node_type == NT_ID || node_type == NT_INODESET || node_type == NT_ITRAVERSAL    );
 }
 
 static bool TypeIsaction(node_st *arg_node) {
