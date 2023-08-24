@@ -29,6 +29,12 @@ struct data_sli {
     node_st *value;
 };
 
+struct data_sav {
+    int errors;
+    htable_stptr graph_nodes;
+    node_st *symboltable;
+};
+
 struct data_cpr {
     htable_stptr found_attributes;
     htable_stptr found_children;
@@ -73,6 +79,7 @@ union TRAV_DATA {
     struct data_slis *setliteralintersect;
     struct data_slu *setliteralunion;
     struct data_sli *setliteralinsert;
+    struct data_sav *scheduleattributevisits;
     struct data_cpr *checkproductrules;
     struct data_cha *checkattributes;
     struct data_pra *propagateattributes;
@@ -87,6 +94,7 @@ union TRAV_DATA {
 #define DATA_SLIS_GET() (TRAVgetCurrent()->trav_data.setliteralintersect)
 #define DATA_SLU_GET() (TRAVgetCurrent()->trav_data.setliteralunion)
 #define DATA_SLI_GET() (TRAVgetCurrent()->trav_data.setliteralinsert)
+#define DATA_SAV_GET() (TRAVgetCurrent()->trav_data.scheduleattributevisits)
 #define DATA_CPR_GET() (TRAVgetCurrent()->trav_data.checkproductrules)
 #define DATA_CHA_GET() (TRAVgetCurrent()->trav_data.checkattributes)
 #define DATA_PRA_GET() (TRAVgetCurrent()->trav_data.propagateattributes)
@@ -104,6 +112,8 @@ void TRAVdataInitsetliteralUnion(struct ccn_trav *trav);
 void TRAVdataFreesetliteralUnion(struct ccn_trav *trav);
 void TRAVdataInitsetliteralInsert(struct ccn_trav *trav);
 void TRAVdataFreesetliteralInsert(struct ccn_trav *trav);
+void TRAVdataInitscheduleAttributeVisits(struct ccn_trav *trav);
+void TRAVdataFreescheduleAttributeVisits(struct ccn_trav *trav);
 void TRAVdataInitcheckProductRules(struct ccn_trav *trav);
 void TRAVdataFreecheckProductRules(struct ccn_trav *trav);
 void TRAVdataInitcheckAttributes(struct ccn_trav *trav);

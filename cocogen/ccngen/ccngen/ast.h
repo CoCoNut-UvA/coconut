@@ -47,6 +47,7 @@ struct NODE_DATA_ATTRIBUTE_REFERENCE {
 
     node_st *node_type;
     node_st *reference;
+    node_st *child_reference;
 };
 
 struct NODE_DATA_EQUATION_DEPENDENCY {
@@ -353,6 +354,7 @@ struct NODE_DATA_AST {
 #define ATTRIBUTE_REFERENCE_IATTRIBUTE(n) ((n)->data.N_attribute_reference->attribute_reference_children.attribute_reference_children_st.iattribute)
 #define ATTRIBUTE_REFERENCE_NODE_TYPE(n) ((n)->data.N_attribute_reference->node_type)
 #define ATTRIBUTE_REFERENCE_REFERENCE(n) ((n)->data.N_attribute_reference->reference)
+#define ATTRIBUTE_REFERENCE_CHILD_REFERENCE(n) ((n)->data.N_attribute_reference->child_reference)
 #define EQUATION_DEPENDENCY_IATTRIBUTE(n) ((n)->data.N_equation_dependency->equation_dependency_children.equation_dependency_children_st.iattribute)
 #define EQUATION_DEPENDENCY_NEXT(n) ((n)->data.N_equation_dependency->equation_dependency_children.equation_dependency_children_st.next)
 #define EQUATION_RULE(n) ((n)->data.N_equation->equation_children.equation_children_st.rule)

@@ -39,6 +39,7 @@ phase semantic {
         checkAttributes;
         checkProductRules;
         reachability;
+        scheduleAttributeVisits;
     }
 };
 
@@ -423,6 +424,20 @@ traversal reachability {
     }
 };
 
+traversal scheduleAttributeVisits {
+    uid = SAV,
+
+    nodes = {
+        ast
+    },
+
+    travdata {
+        ste symboltable,
+        user htable_stptr graph_nodes,
+        int errors
+    }
+};
+
 traversal setliteralInsert {
     uid = SLI,
     nodes = {
@@ -764,7 +779,8 @@ node attribute_reference {
 
     attributes {
         id node_type,
-        attribute reference
+        attribute reference,
+        child child_reference
     }
 };
 

@@ -76,6 +76,22 @@ void TRAVdataFreesetliteralInsert(ccn_trav_st *trav) {
     MEMfree(trav->trav_data.setliteralinsert);
 }
 
+extern void SAVinit();
+extern void SAVfini();
+void TRAVdataInitscheduleAttributeVisits(ccn_trav_st *trav) {
+    trav->trav_data.scheduleattributevisits = MEMmalloc(sizeof(struct data_sav));
+    struct data_sav *data = trav->trav_data.scheduleattributevisits;
+    data->errors = 0;
+    data->graph_nodes = 0;
+    data->symboltable = NULL;
+    SAVinit();
+}
+
+void TRAVdataFreescheduleAttributeVisits(ccn_trav_st *trav) {
+    SAVfini();
+    MEMfree(trav->trav_data.scheduleattributevisits);
+}
+
 extern void CPRinit();
 extern void CPRfini();
 void TRAVdataInitcheckProductRules(ccn_trav_st *trav) {

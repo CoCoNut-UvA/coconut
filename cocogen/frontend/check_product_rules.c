@@ -149,6 +149,7 @@ static void check_attribute_reference(node_st *node, bool in_rule) {
             CCNerrorAction();
             return;
         }
+        ATTRIBUTE_REFERENCE_CHILD_REFERENCE(node) = child;
         ATTRIBUTE_REFERENCE_NODE_TYPE(node) = CHILD_TYPE_REFERENCE(child);
         ref_node =
             STlookup(DATA_CPR_GET()->symboltable, CHILD_TYPE_REFERENCE(child));

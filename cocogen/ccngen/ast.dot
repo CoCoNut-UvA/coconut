@@ -11,6 +11,7 @@ attribute_reference -> id[label="inode"]
 attribute_reference -> id[label="iattribute"]
 attribute_reference -> id[color=red, label="node_type"]
 attribute_reference -> attribute[color=red, label="reference"]
+attribute_reference -> child[color=red, label="child_reference"]
 equation_dependency;
 equation_dependency -> attribute_reference[label="iattribute"]
 equation_dependency -> equation_dependency[label="next"]

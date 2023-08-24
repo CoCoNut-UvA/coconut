@@ -32,6 +32,8 @@ ccn_node *SLUsetliteral(ccn_node *);
 ccn_node *SLUsetliteral(ccn_node *);
 ccn_node *SLIsetliteral(ccn_node *);
 ccn_node *SLIsetliteral(ccn_node *);
+ccn_node *SAVast(ccn_node *);
+ccn_node *SAVast(ccn_node *);
 ccn_node *RCBast(ccn_node *);
 ccn_node *RCBast(ccn_node *);
 ccn_node *RCBsetliteral(ccn_node *);
