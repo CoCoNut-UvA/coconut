@@ -2,10 +2,10 @@
  * PREFIX: HT
  */
 
+#include <assert.h>
 #include <stdio.h>
+
 #include "palm/hash_table.h"
-
-
 #include "palm/memory.h"
 #include "palm/str.h"
 #include "palm/dbug.h"
@@ -22,6 +22,12 @@ struct htable {
     is_equal_ft is_equal_f;
     size_t size;
     size_t elements;
+};
+
+struct htable_iter {
+    htable_st *table;
+    size_t current_element;
+    struct htable_entry *current_entry;
 };
 
 /**
@@ -99,7 +105,7 @@ bool HTinsert(struct htable *table, void *key, void *value)
 
 /**
  * Remove the key, value pair from the table.
- * 
+ *
  * @return the deleted value or NULL if key is not foound.
  */
 void *HTremove(htable_st *table, void *key)
@@ -224,7 +230,7 @@ void HTmapWithKey(struct htable *table, mapk_ft fun)
 }
 
 /**
- * Map function that passes an extra data parameter to the 
+ * Map function that passes an extra data parameter to the
  * map function
  */
 void HTmapWithDataAndKey(htable_st *table, void *data, mapdk_ft fun)
@@ -238,6 +244,67 @@ void HTmapWithDataAndKey(htable_st *table, void *data, mapdk_ft fun)
     }
 }
 
+/* Iteration functions */
+
+/* Create new iterator */
+htable_iter_st *HTiterate(htable_st *table) {
+    if (table->elements == 0) {
+        return NULL;
+    }
+
+    htable_iter_st *iterator = MEMmalloc(sizeof(htable_iter_st));
+    iterator->table = table;
+    iterator->current_entry = NULL;
+    for (size_t i = 0; i < table->size; i++) {
+        if (table->entries[i]) {
+            iterator->current_entry = table->entries[i];
+            iterator->current_element = i;
+            break;
+        }
+    }
+
+    // Should have failed at table->elements check
+    assert(iterator->current_entry != NULL);
+    return iterator;
+}
+
+/* Iterate to next element. Destroys iterator if there are no more elements */
+htable_iter_st *HTiterateNext(htable_iter_st *iter) {
+    struct htable_entry *next = iter->current_entry->next;
+    if (next != NULL) {
+        iter->current_entry = next;
+        return iter;
+    }
+
+    for (size_t i = iter->current_element + 1; i < iter->table->size; ++i) {
+        if (iter->table->entries[i] != NULL) {
+            iter->current_entry = iter->table->entries[i];
+            iter->current_element = i;
+            return iter;
+        }
+    }
+
+    // No more elements
+    MEMfree(iter);
+    return NULL;
+}
+
+/* Destroy iterator early */
+void HTiterateCancel(htable_iter_st *iter) {
+    MEMfree(iter);
+}
+
+/* Get iterator value */
+void *HTiterValue(htable_iter_st *iter) {
+    assert(iter->current_entry != NULL);
+    return iter->current_entry->value;
+}
+
+/* Get iterator key */
+void *HTiterKey(htable_iter_st *iter) {
+    assert(iter->current_entry != NULL);
+    return iter->current_entry->key;
+}
 
 
 /* Implementations */
