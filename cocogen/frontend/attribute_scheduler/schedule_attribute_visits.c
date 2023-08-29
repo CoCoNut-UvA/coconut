@@ -10,15 +10,18 @@
 // TODO: split synthesized/inherited attributes in different categories (add
 // enum to GRnode and use in hash?)
 
+#include <assert.h>
+
 #include "ccn/ccn.h"
 #include "ccngen/ast.h"
+#include "dot/gen_dot_ag.h"
 #include "frontend/attribute_scheduler/graph.h"
 #include "frontend/attribute_scheduler/queue.h"
 #include "frontend/symboltable.h"
 #include "palm/ctinfo.h"
 #include "palm/hash_table.h"
 #include "palm/memory.h"
-#include <assert.h>
+#include "palm/str.h"
 
 static const int htable_size = 200;
 
@@ -271,11 +274,10 @@ static struct graph_list *generate_graph_nodeset(node_st *nodeset,
                                                  struct GRedge_list **edges) {
     struct graph_list *graphs = NULL;
     struct node_list *nodes = NULL;
-    struct GRedge_list *last_induced_edge = NULL;
-    struct GRedge_list *new_induced_edges = NULL;
-    *edges = NULL;
     add_nodeset_entries(INODESET_EXPR(nodeset), &nodes);
 
+    // For each member node, add edges between nodeset attributes and node
+    // attributes
     for (struct node_list *entry = nodes; entry != NULL; entry = entry->next) {
         graph_st *graph = GRnew();
         add_attributes(graph, nodeset, INODESET_IATTRIBUTES(nodeset));
@@ -289,7 +291,13 @@ static struct graph_list *generate_graph_nodeset(node_st *nodeset,
             }
 
             struct GRnode *n1 = GRlookup_node(graph, nodeset, attr);
+            if (n1 == NULL) {
+                n1 = GRadd_node(graph, nodeset, attr);
+            }
             struct GRnode *n2 = GRlookup_node(graph, entry->node, attr);
+            if (n2 == NULL) {
+                n2 = GRadd_node(graph, entry->node, attr);
+            }
 
             if (ATTRIBUTE_IS_INHERITED(attr)) {
                 handle_graph_error(GRadd_edge(graph, n1, n2, false));
@@ -300,21 +308,7 @@ static struct graph_list *generate_graph_nodeset(node_st *nodeset,
             }
         }
 
-        handle_graph_error(GRclose_transitivity(graph, &new_induced_edges));
-        if (new_induced_edges) {
-            if (last_induced_edge) {
-                last_induced_edge->next = new_induced_edges;
-            } else {
-                last_induced_edge = new_induced_edges;
-                *edges = new_induced_edges;
-            }
-
-            // Move to last induced edge
-            for (struct GRedge_list *e = last_induced_edge; e != NULL;
-                 e = e->next) {
-                last_induced_edge = e;
-            }
-        }
+        handle_graph_error(GRclose_transitivity(graph, edges));
 
         struct graph_list *graph_entry = MEMmalloc(sizeof(struct graph_list));
         graph_entry->graph = graph;
@@ -367,6 +361,9 @@ static graph_st *generate_graph_node(node_st *node,
             struct GRnode *n1 = GRlookup_node(graph, dep_node, dep_attr);
             assert(n1 != NULL);
             handle_graph_error(GRadd_edge(graph, n1, n2, false));
+            if (n1->node == n2->node) {
+                GRadd_new_intra_node_dependency(edges, n1, n2);
+            }
         }
     }
     handle_graph_error(GRclose_transitivity(graph, edges));
@@ -387,8 +384,8 @@ void add_induced_edges(graph_st *graph, struct GRedge_list *edges,
                     graph, node->node, entry->edge->first->attribute);
                 struct GRnode *to = GRlookup_node(
                     graph, node->node, entry->edge->second->attribute);
-                assert(from != NULL && to != NULL);
-                if (GRlookup_edge(graph, from, to)) {
+                if (from == NULL || to == NULL ||
+                    GRlookup_edge(graph, from, to)) {
                     continue;
                 }
                 handle_graph_error(GRadd_edge(graph, from, to, true));
@@ -414,6 +411,37 @@ static htable_st *partition_nodes(graph_st *graph) {
     return partition_table;
 }
 
+static void dump_dotfile(htable_st *graphs, char *filename) {
+    GDag_st *dot = GDag_dot_init(filename);
+    for (htable_iter_st *iter = HTiterate(graphs); iter != NULL;
+         iter = HTiterateNext(iter)) {
+        node_st *dot_name = get_node_name(HTiterKey(iter));
+        struct graph_list *graph = HTiterValue(iter);
+        bool multiple = graph != NULL && graph->next != NULL;
+        int i = 1;
+        for (graph = graph; graph != NULL; graph = graph->next) {
+            char *name;
+            if (multiple) {
+                char *tmp = STRitoa(i);
+                name = STRcatn(3, ID_ORIG(dot_name), "_", tmp);
+                MEMfree(tmp);
+            } else {
+                name = ID_ORIG(dot_name);
+            }
+
+            GDag_dot_add_graph(dot, DATA_SAV_GET()->symboltable, graph->graph,
+                               name);
+
+            if (multiple) {
+                MEMfree(name);
+            }
+
+            ++i;
+        }
+    }
+    GDag_dot_finish(dot);
+}
+
 /**
  * @fn SAVast
  */
@@ -429,7 +457,7 @@ node_st *SAVast(node_st *node) {
     // Create node production graphs
     for (node_st *inode = AST_INODES(node); inode != NULL;
          inode = INODE_NEXT(inode)) {
-        struct GRedge_list *edges;
+        struct GRedge_list *edges = NULL;
         graph_st *graph = generate_graph_node(inode, &edges);
         struct graph_list *graph_entry = MEMmalloc(sizeof(struct graph_list));
         graph_entry->graph = graph;
@@ -441,11 +469,15 @@ node_st *SAVast(node_st *node) {
     // Create nodeset production graphs
     for (node_st *nodeset = AST_INODESETS(node); nodeset != NULL;
          nodeset = INODESET_NEXT(nodeset)) {
-        struct GRedge_list *edges;
+        struct GRedge_list *edges = NULL;
         struct graph_list *graphs = generate_graph_nodeset(nodeset, &edges);
         HTinsert(graphs_htable, nodeset, graphs);
         combine_edgelists(&induced_edges, edges, induced_edges_map);
     }
+
+    dump_dotfile(graphs_htable, "pre_induce.dot");
+
+    int counter = 1;
 
     // Add all induced dependencies to graphs
     while (induced_edges != NULL) {
@@ -457,12 +489,19 @@ node_st *SAVast(node_st *node) {
              iter = HTiterateNext(iter)) {
             for (struct graph_list *graph = HTiterValue(iter); graph != NULL;
                  graph = graph->next) {
-                struct GRedge_list *edges;
+                struct GRedge_list *edges = NULL;
                 add_induced_edges(graph->graph, current_edges, &edges);
                 combine_edgelists(&induced_edges, edges, induced_edges_map);
             }
         }
         delete_edge_list(current_edges);
+
+        char *counter_str = STRitoa(counter);
+        char *filename = STRcatn(3, "induce_", counter_str, ".dot");
+        dump_dotfile(graphs_htable, filename);
+        MEMfree(counter_str);
+        MEMfree(filename);
+        ++counter;
     }
 
     HTdelete(induced_edges_map);

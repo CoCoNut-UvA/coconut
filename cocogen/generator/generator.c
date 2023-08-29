@@ -67,6 +67,13 @@ void GNopenSourceFile(GeneratorContext *ctx, const char *filename)
     MEMfree(full_file);
 }
 
+void GNopenAGDotFile(GeneratorContext *ctx, const char *filename)
+{
+    char *full_file = STRcat(globals.gen_ag_dot_dir, filename);
+    GNopenFile(ctx, full_file);
+    MEMfree(full_file);
+}
+
 void GNopenUserFile(GeneratorContext *ctx, const char *filename)
 {
     char *full_file = STRcat(globals.gen_user_dir, filename);
@@ -99,4 +106,6 @@ void GNprint(GeneratorContext *ctx, unsigned int style, const char *fmt, ...)
     if (style & GN_DECREASE_WS_AFTER) {
         GNindentDecrease(ctx);
     }
+
+    fflush(ctx->fp);
 }

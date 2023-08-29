@@ -51,6 +51,7 @@ int main(int argc, char *argv[])
     globals.line_map = HTnew_Int(25);
     globals.gen_hdr_dir = STRcat(global_command_line.gen_dir, "ccngen/");
     globals.gen_user_dir = STRcat(global_command_line.gen_dir, "user/");
+    globals.gen_ag_dot_dir = STRcat(global_command_line.gen_dir, "ag_dot/");
     globals.gen_src_dir = global_command_line.gen_dir;
     globals.show_ast = global_command_line.show_ast;
     globals.gen_ctx = GNnew();
@@ -64,6 +65,7 @@ int main(int argc, char *argv[])
     FSensureDirExists(global_command_line.gen_dir, 0755);
     FSensureDirExists(globals.gen_hdr_dir, 0755);
     FSensureDirExists(globals.gen_user_dir, 0755);
+    FSensureDirExists(globals.gen_ag_dot_dir, 0755);
 
     printf("--------------- Generating ---------------\n");
     CCNrun(NULL);

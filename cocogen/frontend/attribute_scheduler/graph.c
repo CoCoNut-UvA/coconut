@@ -140,6 +140,7 @@ static struct GRedge *add_edge_internal(struct GRgraph *graph,
     graph_edge->first = n1;
     graph_edge->second = n2;
     graph_edge->induced = induced;
+    assert(HTlookup_edge(graph->internal->edge_map, n1, n2) == NULL);
     HTinsert_edge(graph->internal->edge_map, graph_edge);
 
     graph_edge_entry->edge = graph_edge;
@@ -186,8 +187,8 @@ struct GRedge *GRlookup_edge(graph_st *graph, struct GRnode *from,
     return HTlookup_edge(graph->internal->edge_map, from, to);
 }
 
-static void add_induced_dependency(struct GRedge_list **added_edges,
-                                   struct GRnode *n1, struct GRnode *n2) {
+void GRadd_new_intra_node_dependency(struct GRedge_list **added_edges,
+                                     struct GRnode *n1, struct GRnode *n2) {
     struct GRedge_list *entry = MEMmalloc(sizeof(struct GRedge_list));
     struct GRedge *edge = MEMmalloc(sizeof(struct GRedge));
     edge->first = n1;
@@ -202,7 +203,6 @@ static void add_induced_dependency(struct GRedge_list **added_edges,
 struct GRerror GRclose_transitivity(struct GRgraph *graph,
                                     struct GRedge_list **added_edges) {
     struct GRerror error = {.type = GR_error_none};
-    *added_edges = NULL;
     bool changed;
     do {
         changed = false;
@@ -221,12 +221,15 @@ struct GRerror GRclose_transitivity(struct GRgraph *graph,
                         add_edge_internal(graph, i, j, true);
                         // check for new induced depencies inside a node
                         if (i->node == j->node) {
-                            add_induced_dependency(added_edges, i, j);
+                            GRadd_new_intra_node_dependency(added_edges, i, j);
                         }
                         changed = true;
                         if (check_cycle(graph, i, j, &error, true)) {
                             return error;
                         }
+
+                        // Added induced edge, no longer need to search further
+                        break;
                     }
                 }
             }

@@ -18,6 +18,7 @@ GeneratorContext *GNnew();
 void GNprint(GeneratorContext *ctx, unsigned int style, const char *fmt, ...);
 void GNopenIncludeFile(GeneratorContext *ctx, const char *filename);
 void GNopenSourceFile(GeneratorContext *ctx, const char *filename);
+void GNopenAGDotFile(GeneratorContext *ctx, const char *filename);
 void GNopenUserFile(GeneratorContext *ctx, const char *filename);
 void GNopenFile(GeneratorContext *ctx, const char *filename);
 void GNindentIncrease(GeneratorContext *ctx);
