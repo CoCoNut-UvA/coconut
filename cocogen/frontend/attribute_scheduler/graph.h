@@ -49,5 +49,7 @@ struct GRnode *GRlookup_node(graph_st *graph, node_st *node,
                              node_st *attribute);
 struct GRerror GRadd_edge(graph_st *graph, struct GRnode *from,
                           struct GRnode *to, bool induced);
+struct GRedge *GRlookup_edge(graph_st *graph, struct GRnode *from,
+                          struct GRnode *to);
 struct GRerror GRclose_transitivity(graph_st *graph,
                                     struct GRedge_list **added_edges);

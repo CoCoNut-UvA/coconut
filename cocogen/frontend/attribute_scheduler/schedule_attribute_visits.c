@@ -7,6 +7,9 @@
  *
  */
 
+// TODO: split synthesized/inherited attributes in different categories (add
+// enum to GRnode and use in hash?)
+
 #include "ccn/ccn.h"
 #include "ccngen/ast.h"
 #include "frontend/attribute_scheduler/graph.h"
@@ -18,6 +21,16 @@
 #include <assert.h>
 
 static const int htable_size = 200;
+
+struct node_list {
+    node_st *node;
+    struct node_list *next;
+};
+
+struct graph_list {
+    graph_st *graph;
+    struct graph_list *next;
+};
 
 unsigned int hash(unsigned int x) {
     x = ((x >> 16) ^ x) * 0x45d9f3b;
@@ -98,8 +111,14 @@ static void *delete_tables(void *table) {
     return NULL;
 }
 
-static void *delete_graphs(void *graph) {
-    GRdelete((graph_st *)graph);
+static void *delete_graphs(void *graphs) {
+    struct graph_list *next;
+    for (struct graph_list *graph = (struct graph_list *)graphs; graph != NULL;
+         graph = next) {
+        GRdelete(graph->graph);
+        next = graph->next;
+        MEMfree(graph);
+    }
     return NULL;
 }
 
@@ -223,7 +242,91 @@ static void combine_edgelists(struct GRedge_list **edge_list,
     }
 }
 
-static graph_st *generate_graph(node_st *node, struct GRedge_list **edges) {
+static void add_nodeset_entries(node_st *current_node,
+                                struct node_list **nodes) {
+    if (current_node == NULL) {
+        return;
+    }
+
+    struct node_list *node = MEMmalloc(sizeof(struct node_list));
+    node->node = STlookup(DATA_SAV_GET()->symboltable,
+                          SETLITERAL_REFERENCE(current_node));
+    assert(node->node != NULL && NODE_TYPE(node->node) == NT_INODE);
+    node->next = *nodes;
+    *nodes = node;
+
+    add_nodeset_entries(SETLITERAL_LEFT(current_node), nodes);
+    add_nodeset_entries(SETLITERAL_RIGHT(current_node), nodes);
+}
+
+static void delete_nodelist(struct node_list *node_list) {
+    struct node_list *next;
+    for (struct node_list *node = node_list; node != NULL; node = next) {
+        next = node->next;
+        MEMfree(node);
+    }
+}
+
+static struct graph_list *generate_graph_nodeset(node_st *nodeset,
+                                                 struct GRedge_list **edges) {
+    struct graph_list *graphs = NULL;
+    struct node_list *nodes = NULL;
+    struct GRedge_list *last_induced_edge = NULL;
+    struct GRedge_list *new_induced_edges = NULL;
+    *edges = NULL;
+    add_nodeset_entries(INODESET_EXPR(nodeset), &nodes);
+
+    for (struct node_list *entry = nodes; entry != NULL; entry = entry->next) {
+        graph_st *graph = GRnew();
+        add_attributes(graph, nodeset, INODESET_IATTRIBUTES(nodeset));
+        add_attributes(graph, entry->node, INODE_IATTRIBUTES(nodeset));
+
+        for (node_st *attr = INODESET_IATTRIBUTES(nodeset); attr != NULL;
+             attr = ATTRIBUTE_NEXT(attr)) {
+            if (!ATTRIBUTE_IS_INHERITED(attr) &&
+                !ATTRIBUTE_IS_SYNTHESIZED(attr)) {
+                continue;
+            }
+
+            struct GRnode *n1 = GRlookup_node(graph, nodeset, attr);
+            struct GRnode *n2 = GRlookup_node(graph, entry->node, attr);
+
+            if (ATTRIBUTE_IS_INHERITED(attr)) {
+                handle_graph_error(GRadd_edge(graph, n1, n2, false));
+            }
+
+            if (ATTRIBUTE_IS_SYNTHESIZED(attr)) {
+                handle_graph_error(GRadd_edge(graph, n2, n1, false));
+            }
+        }
+
+        handle_graph_error(GRclose_transitivity(graph, &new_induced_edges));
+        if (new_induced_edges) {
+            if (last_induced_edge) {
+                last_induced_edge->next = new_induced_edges;
+            } else {
+                last_induced_edge = new_induced_edges;
+                *edges = new_induced_edges;
+            }
+
+            // Move to last induced edge
+            for (struct GRedge_list *e = last_induced_edge; e != NULL;
+                 e = e->next) {
+                last_induced_edge = e;
+            }
+        }
+
+        struct graph_list *graph_entry = MEMmalloc(sizeof(struct graph_list));
+        graph_entry->graph = graph;
+        graph_entry->next = graphs;
+        graphs = graph_entry;
+    }
+
+    return graphs;
+}
+
+static graph_st *generate_graph_node(node_st *node,
+                                     struct GRedge_list **edges) {
     graph_st *graph = GRnew();
 
     add_attributes(graph, node, INODE_IATTRIBUTES(node));
@@ -273,7 +376,27 @@ static graph_st *generate_graph(node_st *node, struct GRedge_list **edges) {
 
 void add_induced_edges(graph_st *graph, struct GRedge_list *edges,
                        struct GRedge_list **new_edges) {
-    // TODO: Add induced dependencies to graph nodes
+    for (struct GRedge_list *entry = edges; entry != NULL;
+         entry = entry->next) {
+        node_st *tnode = entry->edge->first->node;
+        for (struct GRnode *node = graph->nodes; node != NULL;
+             node = node->next) {
+            node_st *node_type = get_node_type(node->node);
+            if (tnode == node_type) {
+                struct GRnode *from = GRlookup_node(
+                    graph, node->node, entry->edge->first->attribute);
+                struct GRnode *to = GRlookup_node(
+                    graph, node->node, entry->edge->second->attribute);
+                assert(from != NULL && to != NULL);
+                if (GRlookup_edge(graph, from, to)) {
+                    continue;
+                }
+                handle_graph_error(GRadd_edge(graph, from, to, true));
+            }
+        }
+    }
+
+    handle_graph_error(GRclose_transitivity(graph, new_edges));
 }
 
 static htable_st *partition_nodes(graph_st *graph) {
@@ -295,7 +418,7 @@ static htable_st *partition_nodes(graph_st *graph) {
  * @fn SAVast
  */
 node_st *SAVast(node_st *node) {
-    htable_st *graphs = HTnew_Ptr(htable_size);
+    htable_st *graphs_htable = HTnew_Ptr(htable_size);
     htable_st *partition_tables = HTnew_Ptr(htable_size);
     htable_st *induced_edges_map =
         HTnew(htable_size, hash_edge, hash_edge_equal);
@@ -303,26 +426,41 @@ node_st *SAVast(node_st *node) {
     DATA_SAV_GET()->symboltable = AST_STABLE(node);
     DATA_SAV_GET()->errors = 0;
 
+    // Create node production graphs
     for (node_st *inode = AST_INODES(node); inode != NULL;
          inode = INODE_NEXT(inode)) {
         struct GRedge_list *edges;
-        graph_st *graph = generate_graph(inode, &edges);
-        HTinsert(graphs, inode, graph);
+        graph_st *graph = generate_graph_node(inode, &edges);
+        struct graph_list *graph_entry = MEMmalloc(sizeof(struct graph_list));
+        graph_entry->graph = graph;
+        graph_entry->next = NULL;
+        HTinsert(graphs_htable, inode, graph_entry);
         combine_edgelists(&induced_edges, edges, induced_edges_map);
     }
 
-    // TODO: Also add nodesets
+    // Create nodeset production graphs
+    for (node_st *nodeset = AST_INODESETS(node); nodeset != NULL;
+         nodeset = INODESET_NEXT(nodeset)) {
+        struct GRedge_list *edges;
+        struct graph_list *graphs = generate_graph_nodeset(nodeset, &edges);
+        HTinsert(graphs_htable, nodeset, graphs);
+        combine_edgelists(&induced_edges, edges, induced_edges_map);
+    }
 
+    // Add all induced dependencies to graphs
     while (induced_edges != NULL) {
         struct GRedge_list *current_edges = induced_edges;
         induced_edges = NULL;
         HTdelete(induced_edges_map);
         induced_edges_map = HTnew(htable_size, hash_edge, hash_edge_equal);
-        for (htable_iter_st *iter = HTiterate(graphs); iter != NULL;
+        for (htable_iter_st *iter = HTiterate(graphs_htable); iter != NULL;
              iter = HTiterateNext(iter)) {
-            struct GRedge_list *edges;
-            add_induced_edges(HTiterValue(iter), current_edges, &edges);
-            combine_edgelists(&induced_edges, edges, induced_edges_map);
+            for (struct graph_list *graph = HTiterValue(iter); graph != NULL;
+                 graph = graph->next) {
+                struct GRedge_list *edges;
+                add_induced_edges(graph->graph, current_edges, &edges);
+                combine_edgelists(&induced_edges, edges, induced_edges_map);
+            }
         }
         delete_edge_list(current_edges);
     }
@@ -330,20 +468,32 @@ node_st *SAVast(node_st *node) {
     HTdelete(induced_edges_map);
 
     if (DATA_SAV_GET()->errors > 0) {
-        HTmap(graphs, delete_graphs);
-        HTdelete(graphs);
+        HTmap(graphs_htable, delete_graphs);
+        HTdelete(graphs_htable);
         return node;
     }
 
+    // Partition nodes
     for (node_st *inode = AST_INODES(node); inode != NULL;
          inode = INODE_NEXT(inode)) {
-        graph_st *graph = HTlookup(graphs, inode);
+        graph_st *graph =
+            ((struct graph_list *)HTlookup(graphs_htable, inode))->graph;
         htable_st *partition_table = partition_nodes(graph);
         HTinsert(partition_tables, inode, partition_table);
     }
 
-    HTmap(graphs, delete_graphs);
-    HTdelete(graphs);
+    // TODO: Partition nodesets
+
+    // TODO: Create intravisit dependencies from I_i to S_i and from S_i to
+    // I_i+1
+
+    // TODO: Add induced intravisit dependencies
+
+    // TODO: Check for intravisit dependency loops. In that case execute
+    // backtracking algorithm
+
+    HTmap(graphs_htable, delete_graphs);
+    HTdelete(graphs_htable);
     HTmap(partition_tables, delete_tables);
     HTdelete(partition_tables);
     return node;

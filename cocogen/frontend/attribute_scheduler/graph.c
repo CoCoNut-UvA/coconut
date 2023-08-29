@@ -84,32 +84,22 @@ void GRdelete(struct GRgraph *graph) {
     HTdelete(graph->internal->attribute_map);
     HTmap(graph->internal->edge_map, delete_subtables);
     HTdelete(graph->internal->edge_map);
+
+    struct GRnode *next_node = NULL;
+    for (struct GRnode *n = graph->nodes; n != NULL; n = next_node) {
+        next_node = n->next;
+        MEMfree(n);
+    }
+
+    struct GRedge_list *next_edge = NULL;
+    for (struct GRedge_list *e = graph->edges; e != NULL; e = next_edge) {
+        next_edge = e->next;
+        MEMfree(e->edge);
+        MEMfree(e);
+    }
+
     // graph->internal is part of graph
     MEMfree(graph);
-
-    struct GRnode *prev_node = NULL;
-    for (struct GRnode *n = graph->nodes; n != NULL; n = n->next) {
-        if (prev_node) {
-            MEMfree(prev_node);
-        }
-        prev_node = n;
-    }
-    if (prev_node) {
-        MEMfree(prev_node);
-    }
-
-    struct GRedge_list *prev_edge = NULL;
-    for (struct GRedge_list *e = graph->edges; e != NULL; e = e->next) {
-        if (prev_edge) {
-            MEMfree(prev_edge->edge);
-            MEMfree(prev_edge);
-        }
-        prev_edge = e;
-    }
-    if (prev_edge) {
-        MEMfree(prev_edge->edge);
-        MEMfree(prev_edge);
-    }
 }
 
 struct GRnode *GRadd_node(struct GRgraph *graph, node_st *node,
@@ -191,6 +181,11 @@ struct GRerror GRadd_edge(struct GRgraph *graph, struct GRnode *n1,
     return error;
 }
 
+struct GRedge *GRlookup_edge(graph_st *graph, struct GRnode *from,
+                             struct GRnode *to) {
+    return HTlookup_edge(graph->internal->edge_map, from, to);
+}
+
 static void add_induced_dependency(struct GRedge_list **added_edges,
                                    struct GRnode *n1, struct GRnode *n2) {
     struct GRedge_list *entry = MEMmalloc(sizeof(struct GRedge_list));
@@ -212,14 +207,12 @@ struct GRerror GRclose_transitivity(struct GRgraph *graph,
     do {
         changed = false;
         for (struct GRnode *i = graph->nodes; i != NULL; i = i->next) {
-            for (struct GRnode *j = graph->nodes; j != NULL;
-                 j = j->next) {
+            for (struct GRnode *j = graph->nodes; j != NULL; j = j->next) {
                 if (i == j || HTlookup_edge(graph->internal->edge_map, i, j)) {
                     continue;
                 }
 
-                for (struct GRnode *k = graph->nodes; k != NULL;
-                     k = k->next) {
+                for (struct GRnode *k = graph->nodes; k != NULL; k = k->next) {
                     if (i == k || j == k) {
                         continue;
                     }
