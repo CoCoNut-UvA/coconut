@@ -32,8 +32,24 @@ GDag_st *GDag_dot_init(char *filename) {
     return dot;
 }
 
-void GDag_dot_add_graph(GDag_st *dot, node_st *st, graph_st *graph,
-                        char *name) {
+static inline size_t lookup_partition(htable_st *partition_table, node_st *st,
+                                      struct GRnode *node) {
+    node_st *ref;
+    if (NODE_TYPE(node->node) == NT_CHILD) {
+        ref = STlookup(st, CHILD_TYPE_REFERENCE(node->node));
+    } else {
+        ref = node->node;
+    }
+
+    assert(NODE_TYPE(ref) == NT_INODE || NODE_TYPE(ref) == NT_INODESET);
+
+    htable_st *subtable = (htable_st *)HTlookup(partition_table, ref);
+    assert(subtable != NULL);
+    return (size_t)HTlookup(subtable, node->attribute);
+}
+
+void GDag_dot_add_graph(GDag_st *dot, node_st *st, graph_st *graph, char *name,
+                        htable_st *partition_table) {
     (void)dot;
     GeneratorContext *ctx = globals.gen_ctx;
     htable_st *seen = HTnew_String(10);
@@ -62,9 +78,20 @@ void GDag_dot_add_graph(GDag_st *dot, node_st *st, graph_st *graph,
                 if (attr->node != node->node) {
                     continue;
                 }
-                OUT("attr_%s__%s__%s [label=\"%s\"]\n", name, ID_LWR(node_name),
+                OUT("attr_%s__%s__%s [label=<%s", name, ID_LWR(node_name),
                     ID_LWR(ATTRIBUTE_NAME(attr->attribute)),
                     ID_ORIG(ATTRIBUTE_NAME(attr->attribute)));
+
+                if (partition_table != NULL) {
+                    size_t partition =
+                        lookup_partition(partition_table, st, attr);
+                    if (partition % 2 == 0) {
+                        OUT(" <I>I<SUB>%d</SUB></I>", partition / 2);
+                    } else {
+                        OUT(" <I>S<SUB>%d</SUB></I>", partition / 2);
+                    }
+                }
+                OUT(">];\n");
             }
             OUT("}\n");
         }
@@ -76,10 +103,8 @@ void GDag_dot_add_graph(GDag_st *dot, node_st *st, graph_st *graph,
         struct GRnode *n1 = edge->first;
         struct GRnode *n2 = edge->second;
 
-        if (n1 == NULL) {
-            fprintf(stderr, "n2: %s.%s %d\n", ID_ORIG(get_node_name(n2->node)),
-                    ID_ORIG(ATTRIBUTE_NAME(n2->attribute)), edge->induced);
-            fflush(stderr);
+        if (edge->induced && n1->node != n2->node) {
+            continue;
         }
 
         OUT("attr_%s__%s__%s -> attr_%s__%s__%s", name,

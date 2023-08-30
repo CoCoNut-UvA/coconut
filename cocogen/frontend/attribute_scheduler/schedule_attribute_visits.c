@@ -396,22 +396,66 @@ void add_induced_edges(graph_st *graph, struct GRedge_list *edges,
     handle_graph_error(GRclose_transitivity(graph, new_edges));
 }
 
-static htable_st *partition_nodes(graph_st *graph) {
+static htable_st *partition_nodes(graph_st *graph, node_st *tnode) {
     htable_st *partition_table = HTnew_Ptr(htable_size);
     queue_st *work_queue = QUcreate();
     struct GRnode *node;
     for (node = graph->nodes; node != NULL; node = node->next) {
-        QUinsert(work_queue, node);
+        if (node->node == tnode) {
+            QUinsert(work_queue, node);
+        }
     }
 
     while ((node = QUpop(work_queue))) {
-        // TODO: partition
+        bool synthesized = ATTRIBUTE_IS_SYNTHESIZED(node->attribute);
+        if (HTlookup(partition_table, node->attribute)) { // Attribute already assigned
+            continue;
+        }
+
+        struct GRnode_list *deps = GRget_intranode_dependencies(graph, node);
+        if (deps == NULL) {
+            HTinsert(partition_table, node->attribute, (void *)(synthesized ? 1UL : 2UL));
+            continue;
+        }
+
+        // Search highest partition index of dependencies
+        size_t max_partition = 0;
+        bool assignable = true;
+        struct GRnode_list *next;
+        for (struct GRnode_list *entry = deps; entry != NULL; entry = next) {
+            struct GRnode *dep = entry->node;
+            next = entry->next;
+            entry = MEMfree(entry); // No longer needed
+            size_t dep_partition = (size_t)HTlookup(partition_table, dep->attribute);
+
+            if (dep_partition == 0) {
+                // We need to wait for this dependency before we can assign this
+                // node
+                assignable = false;
+            } else {
+                max_partition = dep_partition > max_partition ? dep_partition
+                                                              : max_partition;
+            }
+        }
+
+        if (!assignable) { // Wait for other nodes to complete
+            QUinsert(work_queue, node);
+            continue;
+        }
+
+        bool dep_synthesized = max_partition % 2 == 1;
+        if (synthesized == dep_synthesized) {
+            HTinsert(partition_table, node->attribute, (void *) max_partition);
+        } else {
+            HTinsert(partition_table, node->attribute, (void *) (max_partition + 1));
+        }
     }
 
     return partition_table;
 }
 
-static void dump_dotfile(htable_st *graphs, char *filename) {
+static void dump_dotfile(htable_st *graphs, char *filename,
+                         htable_st *partition_tables) {
     GDag_st *dot = GDag_dot_init(filename);
     for (htable_iter_st *iter = HTiterate(graphs); iter != NULL;
          iter = HTiterateNext(iter)) {
@@ -430,7 +474,7 @@ static void dump_dotfile(htable_st *graphs, char *filename) {
             }
 
             GDag_dot_add_graph(dot, DATA_SAV_GET()->symboltable, graph->graph,
-                               name);
+                               name, partition_tables);
 
             if (multiple) {
                 MEMfree(name);
@@ -475,7 +519,7 @@ node_st *SAVast(node_st *node) {
         combine_edgelists(&induced_edges, edges, induced_edges_map);
     }
 
-    dump_dotfile(graphs_htable, "pre_induce.dot");
+    dump_dotfile(graphs_htable, "pre_induce.dot", NULL);
 
     int counter = 1;
 
@@ -496,9 +540,10 @@ node_st *SAVast(node_st *node) {
         }
         delete_edge_list(current_edges);
 
+        // Write intermediate results to dot file
         char *counter_str = STRitoa(counter);
         char *filename = STRcatn(3, "induce_", counter_str, ".dot");
-        dump_dotfile(graphs_htable, filename);
+        dump_dotfile(graphs_htable, filename, NULL);
         MEMfree(counter_str);
         MEMfree(filename);
         ++counter;
@@ -512,16 +557,25 @@ node_st *SAVast(node_st *node) {
         return node;
     }
 
-    // Partition nodes
+    // Partition attributes in graphs
     for (node_st *inode = AST_INODES(node); inode != NULL;
          inode = INODE_NEXT(inode)) {
-        graph_st *graph =
-            ((struct graph_list *)HTlookup(graphs_htable, inode))->graph;
-        htable_st *partition_table = partition_nodes(graph);
+        struct graph_list *graph = HTlookup(graphs_htable, inode);
+        htable_st *partition_table = partition_nodes(graph->graph, inode);
         HTinsert(partition_tables, inode, partition_table);
     }
 
-    // TODO: Partition nodesets
+    for (node_st *nodeset = AST_INODESETS(node); nodeset != NULL;
+         nodeset = INODESET_NEXT(nodeset)) {
+        struct graph_list *graph = HTlookup(graphs_htable, nodeset);
+        if (graph == NULL) { // Empty nodeset
+            continue;
+        }
+        htable_st *partition_table = partition_nodes(graph->graph, nodeset);
+        HTinsert(partition_tables, nodeset, partition_table);
+    }
+
+    dump_dotfile(graphs_htable, "partitioned.dot", partition_tables);
 
     // TODO: Create intravisit dependencies from I_i to S_i and from S_i to
     // I_i+1

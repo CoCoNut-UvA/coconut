@@ -8,6 +8,11 @@ struct GRnode {
     struct GRnode *next;
 };
 
+struct GRnode_list {
+    struct GRnode *node;
+    struct GRnode_list *next;
+};
+
 struct GRedge {
     struct GRnode *first;
     struct GRnode *second;
@@ -47,6 +52,8 @@ bool GRnode_equal(struct GRnode *n1, struct GRnode *n2);
 struct GRnode *GRadd_node(graph_st *graph, node_st *node, node_st *attribute);
 struct GRnode *GRlookup_node(graph_st *graph, node_st *node,
                              node_st *attribute);
+struct GRnode_list *GRget_intranode_dependencies(struct GRgraph *graph,
+                                                 struct GRnode *node);
 struct GRerror GRadd_edge(graph_st *graph, struct GRnode *from,
                           struct GRnode *to, bool induced);
 struct GRedge *GRlookup_edge(graph_st *graph, struct GRnode *from,
