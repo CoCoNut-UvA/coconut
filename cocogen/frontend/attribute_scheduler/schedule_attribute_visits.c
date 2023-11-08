@@ -270,6 +270,20 @@ static void delete_nodelist(struct node_list *node_list) {
     }
 }
 
+static inline node_st *get_equivalent_attribute(node_st *attr, node_st *node) {
+    node_st *equiv_attr = NULL;
+
+    for (node_st *cand = INODE_IATTRIBUTES(node); cand != NULL;
+         cand = ATTRIBUTE_NEXT(cand)) {
+        if (STReq(ID_LWR(ATTRIBUTE_NAME(attr)), ID_LWR(ATTRIBUTE_NAME(cand)))) {
+            equiv_attr = cand;
+        }
+    }
+
+    assert(equiv_attr != NULL);
+    return equiv_attr;
+}
+
 static struct graph_list *generate_graph_nodeset(node_st *nodeset,
                                                  struct GRedge_list **edges) {
     struct graph_list *graphs = NULL;
@@ -294,9 +308,10 @@ static struct graph_list *generate_graph_nodeset(node_st *nodeset,
             if (n1 == NULL) {
                 n1 = GRadd_node(graph, nodeset, attr);
             }
-            struct GRnode *n2 = GRlookup_node(graph, entry->node, attr);
+            node_st *node_attr = get_equivalent_attribute(attr, entry->node);
+            struct GRnode *n2 = GRlookup_node(graph, entry->node, node_attr);
             if (n2 == NULL) {
-                n2 = GRadd_node(graph, entry->node, attr);
+                n2 = GRadd_node(graph, entry->node, node_attr);
             }
 
             if (ATTRIBUTE_IS_INHERITED(attr)) {
@@ -408,13 +423,15 @@ static htable_st *partition_nodes(graph_st *graph, node_st *tnode) {
 
     while ((node = QUpop(work_queue))) {
         bool synthesized = ATTRIBUTE_IS_SYNTHESIZED(node->attribute);
-        if (HTlookup(partition_table, node->attribute)) { // Attribute already assigned
+        if (HTlookup(partition_table,
+                     node->attribute)) { // Attribute already assigned
             continue;
         }
 
-        struct GRnode_list *deps = GRget_intranode_dependencies(graph, node);
+        struct GRnode_list *deps = GRget_intranode_successors(graph, node);
         if (deps == NULL) {
-            HTinsert(partition_table, node->attribute, (void *)(synthesized ? 1UL : 2UL));
+            HTinsert(partition_table, node->attribute,
+                     (void *)(synthesized ? 1UL : 2UL));
             continue;
         }
 
@@ -426,7 +443,8 @@ static htable_st *partition_nodes(graph_st *graph, node_st *tnode) {
             struct GRnode *dep = entry->node;
             next = entry->next;
             entry = MEMfree(entry); // No longer needed
-            size_t dep_partition = (size_t)HTlookup(partition_table, dep->attribute);
+            size_t dep_partition =
+                (size_t)HTlookup(partition_table, dep->attribute);
 
             if (dep_partition == 0) {
                 // We need to wait for this dependency before we can assign this
@@ -445,13 +463,67 @@ static htable_st *partition_nodes(graph_st *graph, node_st *tnode) {
 
         bool dep_synthesized = max_partition % 2 == 1;
         if (synthesized == dep_synthesized) {
-            HTinsert(partition_table, node->attribute, (void *) max_partition);
+            HTinsert(partition_table, node->attribute, (void *)max_partition);
         } else {
-            HTinsert(partition_table, node->attribute, (void *) (max_partition + 1));
+            HTinsert(partition_table, node->attribute,
+                     (void *)(max_partition + 1));
         }
     }
 
     return partition_table;
+}
+
+// Create intravisit dependencies from I_i to S_i and from S_i to I_i+1:
+// i = even | i -> i - 1 i = odd  | i -> i + 3
+static inline void find_intravisit_dependencies_node(
+    struct GRedge_list **dependencies, htable_st *partition_table,
+    graph_st *graph, node_st *node, node_st *attr, size_t partition) {
+    size_t target_partition =
+        (partition % 2 == 0) ? (partition - 1) : (partition + 3);
+    struct GRnode *n1 = GRlookup_node(graph, node, attr);
+    assert(n1 != NULL);
+
+    for (htable_iter_st *iter = HTiterate(partition_table); iter != NULL;
+         iter = HTiterateNext(iter)) {
+        node_st *cand = HTiterKey(iter);
+        size_t cand_partition = (size_t)HTiterValue(iter);
+
+        if (cand_partition == target_partition) {
+            struct GRnode *n2 = GRlookup_node(graph, node, cand);
+            assert(n2 != NULL);
+            struct GRedge *dependency = MEMmalloc(sizeof(struct GRedge));
+            dependency->first = n1;
+            dependency->second = n2;
+            dependency->induced = false;
+            struct GRedge_list *entry = MEMmalloc(sizeof(struct GRedge_list));
+            entry->edge = dependency;
+            entry->next = *dependencies;
+            *dependencies = entry;
+        }
+    }
+}
+
+static struct GRedge_list *
+find_intravisit_dependencies(htable_st *graphs_htable,
+                             htable_st *partition_tables) {
+    struct GRedge_list *dependencies = NULL;
+    for (htable_iter_st *iter = HTiterate(partition_tables); iter != NULL;
+         iter = HTiterateNext(iter)) {
+        node_st *node = HTiterKey(iter);
+        struct graph_list *graphs = HTlookup(graphs_htable, node);
+        if (graphs == NULL) {
+            continue;
+        }
+        graph_st *graph = graphs->graph;
+        htable_st *subtable = HTiterValue(iter);
+        for (htable_iter_st *subiter = HTiterate(subtable); subiter != NULL;
+             subiter = HTiterateNext(subiter)) {
+            node_st *attr = HTiterKey(subiter);
+            size_t partition = (size_t)HTiterValue(subiter);
+            find_intravisit_dependencies_node(&dependencies, subtable, graph,
+                                              node, attr, partition);
+        }
+    }
 }
 
 static void dump_dotfile(htable_st *graphs, char *filename,
@@ -577,8 +649,8 @@ node_st *SAVast(node_st *node) {
 
     dump_dotfile(graphs_htable, "partitioned.dot", partition_tables);
 
-    // TODO: Create intravisit dependencies from I_i to S_i and from S_i to
-    // I_i+1
+    struct GRedge_list *intra_visit_dependencies =
+        find_intravisit_dependencies(graphs_htable, partition_tables);
 
     // TODO: Add induced intravisit dependencies
 

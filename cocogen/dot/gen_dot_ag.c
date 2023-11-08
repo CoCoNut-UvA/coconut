@@ -44,8 +44,21 @@ static inline size_t lookup_partition(htable_st *partition_table, node_st *st,
     assert(NODE_TYPE(ref) == NT_INODE || NODE_TYPE(ref) == NT_INODESET);
 
     htable_st *subtable = (htable_st *)HTlookup(partition_table, ref);
-    assert(subtable != NULL);
-    return (size_t)HTlookup(subtable, node->attribute);
+    if (subtable == NULL) {
+        return 0;
+    }
+    size_t part = (size_t)HTlookup(subtable, node->attribute);
+    if (part == 0) {
+        fprintf(stderr, "NO PARTITION %s.%s: %p.%p\n", ID_ORIG(get_node_name(node->node)), ID_ORIG(ATTRIBUTE_NAME(node->attribute)), node->node, node->attribute);
+        for (htable_iter_st *iter = HTiterate(subtable); iter != NULL; iter = HTiterateNext(iter)) {
+            node_st *attr = HTiterKey(iter);
+            size_t part_attr = (size_t) HTiterValue(iter);
+            fprintf(stderr, "Candidate %s.%s: %p.%p (%lu)\n", ID_ORIG(get_node_name(ref)), ID_ORIG(ATTRIBUTE_NAME(attr)), ref, attr, part_attr);
+        }
+        fflush(stderr);
+    }
+
+    return part;
 }
 
 void GDag_dot_add_graph(GDag_st *dot, node_st *st, graph_st *graph, char *name,
@@ -85,10 +98,13 @@ void GDag_dot_add_graph(GDag_st *dot, node_st *st, graph_st *graph, char *name,
                 if (partition_table != NULL) {
                     size_t partition =
                         lookup_partition(partition_table, st, attr);
-                    if (partition % 2 == 0) {
+
+                    if (partition == 0) {
+                        OUT(" <I><SUB>NaN</SUB></I>");
+                    } else if (partition % 2 == 0) {
                         OUT(" <I>I<SUB>%d</SUB></I>", partition / 2);
                     } else {
-                        OUT(" <I>S<SUB>%d</SUB></I>", partition / 2);
+                        OUT(" <I>S<SUB>%d</SUB></I>", (partition + 1) / 2);
                     }
                 }
                 OUT(">];\n");

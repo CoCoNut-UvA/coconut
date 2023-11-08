@@ -75,6 +75,27 @@ struct GRgraph *GRnew() {
     return graph;
 }
 
+struct GRgraph *GRcopy(struct GRgraph *graph) {
+    struct GRgraph *copy = GRnew();
+    htable_st *node_mapping = HTnew_Ptr(hashtable_size);
+
+    for (struct GRnode *node = graph->nodes; node != NULL; node = node->next) {
+        struct GRnode *new = GRadd_node(copy, node->node, node->attribute);
+        HTinsert(node_mapping, node, new);
+    }
+
+    for (struct GRedge_list *entry = graph->edges; entry != NULL;
+         entry = entry->next) {
+        struct GRedge *edge = entry->edge;
+        add_edge_internal(copy, HTlookup(node_mapping, edge->first),
+                          HTlookup(node_mapping, edge->second), edge->induced);
+    }
+
+    HTdelete(node_mapping);
+
+    return copy;
+}
+
 static void *delete_subtables(void *htable) {
     HTdelete((htable_st *)htable);
     return NULL;
@@ -131,23 +152,23 @@ struct GRnode *GRlookup_node(struct GRgraph *graph, node_st *node,
                                      &lookup_node);
 }
 
-struct GRnode_list *GRget_intranode_dependencies(struct GRgraph *graph,
-                                            struct GRnode *node) {
-    struct GRnode_list *deps = NULL;
-    for (struct GRnode *dep = graph->nodes; dep != NULL; dep = dep->next) {
-        if (dep == node || dep->node != node->node) {
+struct GRnode_list *GRget_intranode_successors(struct GRgraph *graph,
+                                               struct GRnode *node) {
+    struct GRnode_list *successors = NULL;
+    for (struct GRnode *succ = graph->nodes; succ != NULL; succ = succ->next) {
+        if (succ == node || succ->node != node->node) {
             continue;
         }
 
-        if (GRlookup_edge(graph, dep, node)) {
+        if (GRlookup_edge(graph, node, succ)) {
             struct GRnode_list *entry = MEMmalloc(sizeof(struct GRnode_list));
-            entry->node = dep;
-            entry->next = deps;
-            deps = entry;
+            entry->node = succ;
+            entry->next = successors;
+            successors = entry;
         }
     }
 
-    return deps;
+    return successors;
 }
 
 static struct GRedge *add_edge_internal(struct GRgraph *graph,
