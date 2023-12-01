@@ -195,3 +195,27 @@ node_st *DGCTlifetime_range(node_st *node)
 {
     return node;
 }
+
+/**
+ * @fn DGCTvisit_sequences
+ */
+node_st *DGCTvisit_sequences(node_st *node)
+{
+    return node;
+}
+
+/**
+ * @fn DGCTvisit_sequence_eval
+ */
+node_st *DGCTvisit_sequence_eval(node_st *node)
+{
+    return node;
+}
+
+/**
+ * @fn DGCTvisit_sequence_visit
+ */
+node_st *DGCTvisit_sequence_visit(node_st *node)
+{
+    return node;
+}

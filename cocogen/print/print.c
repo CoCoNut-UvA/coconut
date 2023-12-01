@@ -424,3 +424,30 @@ node_st *PRTlifetime_range(node_st *node)
     printf("%d", LIFETIME_RANGE_ACTION_ID(node));
     return node;
 }
+
+/**
+ * @fn PRTvisit_sequences
+ */
+node_st *PRTvisit_sequences(node_st *node)
+{
+    // TODO: Implement
+    return node;
+}
+
+/**
+ * @fn PRTvisit_sequence_eval
+ */
+node_st *PRTvisit_sequence_eval(node_st *node)
+{
+    // TODO: Implement
+    return node;
+}
+
+/**
+ * @fn PRTvisit_sequence_visit
+ */
+node_st *PRTvisit_sequence_visit(node_st *node)
+{
+    // TODO: Implement
+    return node;
+}

@@ -173,3 +173,27 @@ node_st *DGFTlifetime_range(node_st *node)
 {
     return node;
 }
+
+/**
+ * @fn DGFTvisit_sequences
+ */
+node_st *DGFTvisit_sequences(node_st *node)
+{
+    return node;
+}
+
+/**
+ * @fn DGFTvisit_sequence_eval
+ */
+node_st *DGFTvisit_sequence_eval(node_st *node)
+{
+    return node;
+}
+
+/**
+ * @fn DGFTvisit_sequence_visit
+ */
+node_st *DGFTvisit_sequence_visit(node_st *node)
+{
+    return node;
+}

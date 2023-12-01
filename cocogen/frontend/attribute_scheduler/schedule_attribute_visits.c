@@ -524,6 +524,8 @@ find_intravisit_dependencies(htable_st *graphs_htable,
                                               node, attr, partition);
         }
     }
+
+    return dependencies;
 }
 
 static void dump_dotfile(htable_st *graphs, char *filename,
@@ -653,6 +655,7 @@ node_st *SAVast(node_st *node) {
         find_intravisit_dependencies(graphs_htable, partition_tables);
 
     // TODO: Add induced intravisit dependencies
+    (void) intra_visit_dependencies;
 
     // TODO: Check for intravisit dependency loops. In that case execute
     // backtracking algorithm

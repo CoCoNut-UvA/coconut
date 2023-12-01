@@ -49,11 +49,11 @@ static inline size_t lookup_partition(htable_st *partition_table, node_st *st,
     }
     size_t part = (size_t)HTlookup(subtable, node->attribute);
     if (part == 0) {
-        fprintf(stderr, "NO PARTITION %s.%s: %p.%p\n", ID_ORIG(get_node_name(node->node)), ID_ORIG(ATTRIBUTE_NAME(node->attribute)), node->node, node->attribute);
+        fprintf(stderr, "NO PARTITION %s.%s: %p.%p\n", ID_ORIG(get_node_name(node->node)), ID_ORIG(ATTRIBUTE_NAME(node->attribute)), (void *)node->node, (void *)node->attribute);
         for (htable_iter_st *iter = HTiterate(subtable); iter != NULL; iter = HTiterateNext(iter)) {
             node_st *attr = HTiterKey(iter);
             size_t part_attr = (size_t) HTiterValue(iter);
-            fprintf(stderr, "Candidate %s.%s: %p.%p (%lu)\n", ID_ORIG(get_node_name(ref)), ID_ORIG(ATTRIBUTE_NAME(attr)), ref, attr, part_attr);
+            fprintf(stderr, "Candidate %s.%s: %p.%p (%lu)\n", ID_ORIG(get_node_name(ref)), ID_ORIG(ATTRIBUTE_NAME(attr)), (void *)ref, (void *)attr, part_attr);
         }
         fflush(stderr);
     }

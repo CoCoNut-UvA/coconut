@@ -269,3 +269,29 @@ node_st *BSTlifetime_range(node_st *node)
 {
     return node;
 }
+
+
+
+/**
+ * @fn BSTvisit_sequences
+ */
+node_st *BSTvisit_sequences(node_st *node)
+{
+    return node;
+}
+
+/**
+ * @fn BSTvisit_sequence_eval
+ */
+node_st *BSTvisit_sequence_eval(node_st *node)
+{
+    return node;
+}
+
+/**
+ * @fn BSTvisit_sequence_visit
+ */
+node_st *BSTvisit_sequence_visit(node_st *node)
+{
+    return node;
+}

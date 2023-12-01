@@ -4,6 +4,11 @@
 #include "palm/hash_table.h"
 #include "palm/memory.h"
 
+// forward declaration
+static struct GRedge *add_edge_internal(struct GRgraph *graph,
+                                        struct GRnode *n1, struct GRnode *n2,
+                                        bool induced);
+
 static const int hashtable_size = 200;
 
 struct GRgraph_internal {

@@ -694,3 +694,27 @@ node_st *DGCHTlifetime_range(node_st *node)
 {
     return node;
 }
+
+/**
+ * @fn DGCHTvisit_sequences
+ */
+node_st *DGCHTvisit_sequences(node_st *node)
+{
+    return node;
+}
+
+/**
+ * @fn DGCHTvisit_sequence_eval
+ */
+node_st *DGCHTvisit_sequence_eval(node_st *node)
+{
+    return node;
+}
+
+/**
+ * @fn DGCHTvisit_sequence_visit
+ */
+node_st *DGCHTvisit_sequence_visit(node_st *node)
+{
+    return node;
+}
