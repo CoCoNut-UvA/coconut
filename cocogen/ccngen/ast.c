@@ -41,6 +41,36 @@ node_st *ASTienum(node_st *vals, node_st *name, node_st *iprefix, char * iinfo) 
     NODE_CHILDREN(node) = node->data.N_ienum->ienum_children.ienum_children_at;
     return node;}
 
+node_st *ASTvisit_sequence_visit(node_st *sequence) {
+    node_st *node = NewNode();
+    node->data.N_visit_sequence_visit = MEMmalloc(sizeof(struct NODE_DATA_VISIT_SEQUENCE_VISIT));
+    NODE_TYPE(node) = NT_VISIT_SEQUENCE_VISIT;
+    VISIT_SEQUENCE_VISIT_NEXT(node) = NULL;
+    VISIT_SEQUENCE_VISIT_SEQUENCE(node) = sequence;
+    NODE_NUMCHILDREN(node) = 1;
+    NODE_CHILDREN(node) = node->data.N_visit_sequence_visit->visit_sequence_visit_children.visit_sequence_visit_children_at;
+    return node;}
+
+node_st *ASTvisit_sequence_eval(node_st *equation) {
+    node_st *node = NewNode();
+    node->data.N_visit_sequence_eval = MEMmalloc(sizeof(struct NODE_DATA_VISIT_SEQUENCE_EVAL));
+    NODE_TYPE(node) = NT_VISIT_SEQUENCE_EVAL;
+    VISIT_SEQUENCE_EVAL_NEXT(node) = NULL;
+    VISIT_SEQUENCE_EVAL_EQUATION(node) = equation;
+    NODE_NUMCHILDREN(node) = 1;
+    NODE_CHILDREN(node) = node->data.N_visit_sequence_eval->visit_sequence_eval_children.visit_sequence_eval_children_at;
+    return node;}
+
+node_st *ASTvisit_sequences(node_st *sequence) {
+    node_st *node = NewNode();
+    node->data.N_visit_sequences = MEMmalloc(sizeof(struct NODE_DATA_VISIT_SEQUENCES));
+    NODE_TYPE(node) = NT_VISIT_SEQUENCES;
+    VISIT_SEQUENCES_SEQUENCE(node) = sequence;
+    VISIT_SEQUENCES_NEXT(node) = NULL;
+    NODE_NUMCHILDREN(node) = 2;
+    NODE_CHILDREN(node) = node->data.N_visit_sequences->visit_sequences_children.visit_sequences_children_at;
+    return node;}
+
 node_st *ASTattribute_reference(void) {
     node_st *node = NewNode();
     node->data.N_attribute_reference = MEMmalloc(sizeof(struct NODE_DATA_ATTRIBUTE_REFERENCE));
@@ -206,9 +236,10 @@ node_st *ASTinodeset(void) {
     INODESET_UNPACKED(node) = NULL;
     INODESET_NEXT(node) = NULL;
     INODESET_CHILDREN_TABLE(node) = NULL;
+    INODESET_VISIT_SEQUENCES(node) = NULL;
     INODESET_IINFO(node) = NULL;
     INODESET_ILLEGAL_SETEXPR_ATTR(node) = false;
-    NODE_NUMCHILDREN(node) = 6;
+    NODE_NUMCHILDREN(node) = 7;
     NODE_CHILDREN(node) = node->data.N_inodeset->inodeset_children.inodeset_children_at;
     return node;}
 
@@ -222,10 +253,11 @@ node_st *ASTinode(node_st *name, char * iifno) {
     INODE_IATTRIBUTES(node) = NULL;
     INODE_IEQUATIONS(node) = NULL;
     INODE_LIFETIMES(node) = NULL;
+    INODE_VISIT_SEQUENCES(node) = NULL;
     INODE_IIFNO(node) = iifno;
     INODE_IS_ROOT(node) = 0;
     INODE_INDEX(node) = 0;
-    NODE_NUMCHILDREN(node) = 6;
+    NODE_NUMCHILDREN(node) = 7;
     NODE_CHILDREN(node) = node->data.N_inode->inode_children.inode_children_at;
     return node;}
 

@@ -21,6 +21,30 @@ struct ccn_node *DELienum(struct ccn_node *arg_node) {
     return NULL;
 }
 
+struct ccn_node *DELvisit_sequence_visit(struct ccn_node *arg_node) {
+    TRAVchildren(arg_node);
+    MEMfree(NODE_FILENAME(arg_node));
+    MEMfree(arg_node->data.N_visit_sequence_visit);
+    MEMfree(arg_node);
+    return NULL;
+}
+
+struct ccn_node *DELvisit_sequence_eval(struct ccn_node *arg_node) {
+    TRAVchildren(arg_node);
+    MEMfree(NODE_FILENAME(arg_node));
+    MEMfree(arg_node->data.N_visit_sequence_eval);
+    MEMfree(arg_node);
+    return NULL;
+}
+
+struct ccn_node *DELvisit_sequences(struct ccn_node *arg_node) {
+    TRAVchildren(arg_node);
+    MEMfree(NODE_FILENAME(arg_node));
+    MEMfree(arg_node->data.N_visit_sequences);
+    MEMfree(arg_node);
+    return NULL;
+}
+
 struct ccn_node *DELattribute_reference(struct ccn_node *arg_node) {
     TRAVchildren(arg_node);
     MEMfree(NODE_FILENAME(arg_node));

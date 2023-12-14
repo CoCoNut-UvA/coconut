@@ -1,6 +1,7 @@
 #pragma once
 enum nodesettype {
     NS_NULL,
+    NS_VISIT_SEQUENCE,
     NS_SETEXPR,
     NS_LINK,
     NS_ACTION,
@@ -11,6 +12,9 @@ enum ccn_nodetype {
     NT_NULL,
     NT_ID,
     NT_IENUM,
+    NT_VISIT_SEQUENCE_VISIT,
+    NT_VISIT_SEQUENCE_EVAL,
+    NT_VISIT_SEQUENCES,
     NT_ATTRIBUTE_REFERENCE,
     NT_EQUATION_DEPENDENCY,
     NT_EQUATION,

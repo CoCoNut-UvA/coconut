@@ -34,6 +34,30 @@ ccn_node *CPYienum(ccn_node *arg_node) {
     return new_node;
 }
 
+ccn_node *CPYvisit_sequence_visit(ccn_node *arg_node) {
+    ccn_node *new_node =ASTvisit_sequence_visit(    NULL);
+    CopyBaseNode(new_node, arg_node);
+    VISIT_SEQUENCE_VISIT_NEXT(new_node) = TRAVopt(VISIT_SEQUENCE_VISIT_NEXT(arg_node));
+    VISIT_SEQUENCE_VISIT_SEQUENCE(new_node) = VISIT_SEQUENCE_VISIT_SEQUENCE(arg_node);
+    return new_node;
+}
+
+ccn_node *CPYvisit_sequence_eval(ccn_node *arg_node) {
+    ccn_node *new_node =ASTvisit_sequence_eval(    NULL);
+    CopyBaseNode(new_node, arg_node);
+    VISIT_SEQUENCE_EVAL_NEXT(new_node) = TRAVopt(VISIT_SEQUENCE_EVAL_NEXT(arg_node));
+    VISIT_SEQUENCE_EVAL_EQUATION(new_node) = VISIT_SEQUENCE_EVAL_EQUATION(arg_node);
+    return new_node;
+}
+
+ccn_node *CPYvisit_sequences(ccn_node *arg_node) {
+    ccn_node *new_node =ASTvisit_sequences(    NULL);
+    CopyBaseNode(new_node, arg_node);
+    VISIT_SEQUENCES_SEQUENCE(new_node) = TRAVopt(VISIT_SEQUENCES_SEQUENCE(arg_node));
+    VISIT_SEQUENCES_NEXT(new_node) = TRAVopt(VISIT_SEQUENCES_NEXT(arg_node));
+    return new_node;
+}
+
 ccn_node *CPYattribute_reference(ccn_node *arg_node) {
     ccn_node *new_node =ASTattribute_reference();
     CopyBaseNode(new_node, arg_node);
@@ -172,6 +196,7 @@ ccn_node *CPYinodeset(ccn_node *arg_node) {
     INODESET_UNPACKED(new_node) = TRAVopt(INODESET_UNPACKED(arg_node));
     INODESET_NEXT(new_node) = TRAVopt(INODESET_NEXT(arg_node));
     INODESET_CHILDREN_TABLE(new_node) = TRAVopt(INODESET_CHILDREN_TABLE(arg_node));
+    INODESET_VISIT_SEQUENCES(new_node) = TRAVopt(INODESET_VISIT_SEQUENCES(arg_node));
     INODESET_IINFO(new_node) = STRcpy(INODESET_IINFO(arg_node));
     INODESET_ILLEGAL_SETEXPR_ATTR(new_node) = INODESET_ILLEGAL_SETEXPR_ATTR(arg_node);
     return new_node;
@@ -186,6 +211,7 @@ ccn_node *CPYinode(ccn_node *arg_node) {
     INODE_IATTRIBUTES(new_node) = TRAVopt(INODE_IATTRIBUTES(arg_node));
     INODE_IEQUATIONS(new_node) = TRAVopt(INODE_IEQUATIONS(arg_node));
     INODE_LIFETIMES(new_node) = TRAVopt(INODE_LIFETIMES(arg_node));
+    INODE_VISIT_SEQUENCES(new_node) = TRAVopt(INODE_VISIT_SEQUENCES(arg_node));
     INODE_IIFNO(new_node) = STRcpy(INODE_IIFNO(arg_node));
     INODE_IS_ROOT(new_node) = INODE_IS_ROOT(arg_node);
     INODE_INDEX(new_node) = INODE_INDEX(arg_node);

@@ -35,6 +35,42 @@ struct NODE_DATA_IENUM {
     char * iinfo;
 };
 
+struct NODE_DATA_VISIT_SEQUENCE_VISIT {
+    union NODE_CHILDREN_VISIT_SEQUENCE_VISIT {
+        struct NODE_CHILDREN_VISIT_SEQUENCE_VISIT_STRUCT {
+            node_st *next;
+        } visit_sequence_visit_children_st;
+
+        node_st *visit_sequence_visit_children_at[1];
+    } visit_sequence_visit_children;
+
+    node_st *sequence;
+};
+
+struct NODE_DATA_VISIT_SEQUENCE_EVAL {
+    union NODE_CHILDREN_VISIT_SEQUENCE_EVAL {
+        struct NODE_CHILDREN_VISIT_SEQUENCE_EVAL_STRUCT {
+            node_st *next;
+        } visit_sequence_eval_children_st;
+
+        node_st *visit_sequence_eval_children_at[1];
+    } visit_sequence_eval_children;
+
+    node_st *equation;
+};
+
+struct NODE_DATA_VISIT_SEQUENCES {
+    union NODE_CHILDREN_VISIT_SEQUENCES {
+        struct NODE_CHILDREN_VISIT_SEQUENCES_STRUCT {
+            node_st *sequence;
+            node_st *next;
+        } visit_sequences_children_st;
+
+        node_st *visit_sequences_children_at[2];
+    } visit_sequences_children;
+
+};
+
 struct NODE_DATA_ATTRIBUTE_REFERENCE {
     union NODE_CHILDREN_ATTRIBUTE_REFERENCE {
         struct NODE_CHILDREN_ATTRIBUTE_REFERENCE_STRUCT {
@@ -225,9 +261,10 @@ struct NODE_DATA_INODESET {
             node_st *unpacked;
             node_st *next;
             node_st *children_table;
+            node_st *visit_sequences;
         } inodeset_children_st;
 
-        node_st *inodeset_children_at[6];
+        node_st *inodeset_children_at[7];
     } inodeset_children;
 
     char * iinfo;
@@ -243,9 +280,10 @@ struct NODE_DATA_INODE {
             node_st *iattributes;
             node_st *iequations;
             node_st *lifetimes;
+            node_st *visit_sequences;
         } inode_children_st;
 
-        node_st *inode_children_at[6];
+        node_st *inode_children_at[7];
     } inode_children;
 
     char * iifno;
@@ -350,6 +388,12 @@ struct NODE_DATA_AST {
 #define IENUM_IPREFIX(n) ((n)->data.N_ienum->ienum_children.ienum_children_st.iprefix)
 #define IENUM_NEXT(n) ((n)->data.N_ienum->ienum_children.ienum_children_st.next)
 #define IENUM_IINFO(n) ((n)->data.N_ienum->iinfo)
+#define VISIT_SEQUENCE_VISIT_NEXT(n) ((n)->data.N_visit_sequence_visit->visit_sequence_visit_children.visit_sequence_visit_children_st.next)
+#define VISIT_SEQUENCE_VISIT_SEQUENCE(n) ((n)->data.N_visit_sequence_visit->sequence)
+#define VISIT_SEQUENCE_EVAL_NEXT(n) ((n)->data.N_visit_sequence_eval->visit_sequence_eval_children.visit_sequence_eval_children_st.next)
+#define VISIT_SEQUENCE_EVAL_EQUATION(n) ((n)->data.N_visit_sequence_eval->equation)
+#define VISIT_SEQUENCES_SEQUENCE(n) ((n)->data.N_visit_sequences->visit_sequences_children.visit_sequences_children_st.sequence)
+#define VISIT_SEQUENCES_NEXT(n) ((n)->data.N_visit_sequences->visit_sequences_children.visit_sequences_children_st.next)
 #define ATTRIBUTE_REFERENCE_INODE(n) ((n)->data.N_attribute_reference->attribute_reference_children.attribute_reference_children_st.inode)
 #define ATTRIBUTE_REFERENCE_IATTRIBUTE(n) ((n)->data.N_attribute_reference->attribute_reference_children.attribute_reference_children_st.iattribute)
 #define ATTRIBUTE_REFERENCE_NODE_TYPE(n) ((n)->data.N_attribute_reference->node_type)
@@ -407,6 +451,7 @@ struct NODE_DATA_AST {
 #define INODESET_UNPACKED(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.unpacked)
 #define INODESET_NEXT(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.next)
 #define INODESET_CHILDREN_TABLE(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.children_table)
+#define INODESET_VISIT_SEQUENCES(n) ((n)->data.N_inodeset->inodeset_children.inodeset_children_st.visit_sequences)
 #define INODESET_IINFO(n) ((n)->data.N_inodeset->iinfo)
 #define INODESET_ILLEGAL_SETEXPR_ATTR(n) ((n)->data.N_inodeset->illegal_setexpr_attr)
 #define INODE_NAME(n) ((n)->data.N_inode->inode_children.inode_children_st.name)
@@ -415,6 +460,7 @@ struct NODE_DATA_AST {
 #define INODE_IATTRIBUTES(n) ((n)->data.N_inode->inode_children.inode_children_st.iattributes)
 #define INODE_IEQUATIONS(n) ((n)->data.N_inode->inode_children.inode_children_st.iequations)
 #define INODE_LIFETIMES(n) ((n)->data.N_inode->inode_children.inode_children_st.lifetimes)
+#define INODE_VISIT_SEQUENCES(n) ((n)->data.N_inode->inode_children.inode_children_st.visit_sequences)
 #define INODE_IIFNO(n) ((n)->data.N_inode->iifno)
 #define INODE_IS_ROOT(n) ((n)->data.N_inode->is_root)
 #define INODE_INDEX(n) ((n)->data.N_inode->index)
@@ -455,6 +501,9 @@ struct NODE_DATA_AST {
 #define AST_USES_UNSAFE(n) ((n)->data.N_ast->uses_unsafe)
 node_st *ASTid(char * orig, char * lwr, char * Upr);
 node_st *ASTienum(node_st *vals, node_st *name, node_st *iprefix, char * iinfo);
+node_st *ASTvisit_sequence_visit(node_st *sequence);
+node_st *ASTvisit_sequence_eval(node_st *equation);
+node_st *ASTvisit_sequences(node_st *sequence);
 node_st *ASTattribute_reference(void);
 node_st *ASTequation_dependency(void);
 node_st *ASTequation(void);
@@ -496,6 +545,9 @@ union NODE_DATA {
     struct NODE_DATA_EQUATION *N_equation;
     struct NODE_DATA_EQUATION_DEPENDENCY *N_equation_dependency;
     struct NODE_DATA_ATTRIBUTE_REFERENCE *N_attribute_reference;
+    struct NODE_DATA_VISIT_SEQUENCES *N_visit_sequences;
+    struct NODE_DATA_VISIT_SEQUENCE_EVAL *N_visit_sequence_eval;
+    struct NODE_DATA_VISIT_SEQUENCE_VISIT *N_visit_sequence_visit;
     struct NODE_DATA_IENUM *N_ienum;
     struct NODE_DATA_ID *N_id;
 };

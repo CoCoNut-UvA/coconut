@@ -15,6 +15,7 @@
 #include "ccn/ccn.h"
 #include "ccngen/ast.h"
 #include "dot/gen_dot_ag.h"
+#include "frontend/attribute_scheduler/generate_visit_sequences.h"
 #include "frontend/attribute_scheduler/graph.h"
 #include "frontend/attribute_scheduler/queue.h"
 #include "frontend/symboltable.h"
@@ -659,6 +660,14 @@ node_st *SAVast(node_st *node) {
 
     // TODO: Check for intravisit dependency loops. In that case execute
     // backtracking algorithm
+
+
+    for (node_st *inode = AST_INODES(node); inode != NULL;
+         inode = INODE_NEXT(inode)) {
+        struct graph_list *graph = HTlookup(graphs_htable, inode);
+        node_st *visit_sequences = generate_visit_sequences(graph->graph, inode, AST_STABLE(node), partition_tables);
+        INODE_VISIT_SEQUENCES(inode) = visit_sequences;
+    }
 
     HTmap(graphs_htable, delete_graphs);
     HTdelete(graphs_htable);

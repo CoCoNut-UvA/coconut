@@ -2,46 +2,28 @@
 #include "palm/dbug.h"
 #include "ccn/ccn.h"
 #include "ccngen/ast.h"
-node_st *TRAVbegin(node_st *node) {
+node_st *TRAVtarget_func(node_st *node) {
     switch (NODE_TYPE(node)) {
-        case NT_ILIFETIME:
-            ILIFETIME_BEGIN(node) = TRAVopt(ILIFETIME_BEGIN(node));
+        case NT_IPASS:
+            IPASS_TARGET_FUNC(node) = TRAVopt(IPASS_TARGET_FUNC(node));
             break;
             break;
         default:
-            DBUG_ASSERT(false, "Current target has no child begin");
+            DBUG_ASSERT(false, "Current target has no child target_func");
             break;
     }
 
     return node;
 }
 
-node_st *TRAViattributes(node_st *node) {
+node_st *TRAViactions(node_st *node) {
     switch (NODE_TYPE(node)) {
-        case NT_INODE:
-            INODE_IATTRIBUTES(node) = TRAVopt(INODE_IATTRIBUTES(node));
-            break;
-            break;
-        case NT_INODESET:
-            INODESET_IATTRIBUTES(node) = TRAVopt(INODESET_IATTRIBUTES(node));
+        case NT_IPHASE:
+            IPHASE_IACTIONS(node) = TRAVopt(IPHASE_IACTIONS(node));
             break;
             break;
         default:
-            DBUG_ASSERT(false, "Current target has no child iattributes");
-            break;
-    }
-
-    return node;
-}
-
-node_st *TRAVitraversals(node_st *node) {
-    switch (NODE_TYPE(node)) {
-        case NT_AST:
-            AST_ITRAVERSALS(node) = TRAVopt(AST_ITRAVERSALS(node));
-            break;
-            break;
-        default:
-            DBUG_ASSERT(false, "Current target has no child itraversals");
+            DBUG_ASSERT(false, "Current target has no child iactions");
             break;
     }
 
@@ -94,68 +76,18 @@ node_st *TRAVname(node_st *node) {
     return node;
 }
 
-node_st *TRAVinode(node_st *node) {
+node_st *TRAVright(node_st *node) {
     switch (NODE_TYPE(node)) {
-        case NT_ATTRIBUTE_REFERENCE:
-            ATTRIBUTE_REFERENCE_INODE(node) = TRAVopt(ATTRIBUTE_REFERENCE_INODE(node));
-            break;
-            break;
-        default:
-            DBUG_ASSERT(false, "Current target has no child inode");
-            break;
-    }
-
-    return node;
-}
-
-node_st *TRAViattribute(node_st *node) {
-    switch (NODE_TYPE(node)) {
-        case NT_EQUATION_DEPENDENCY:
-            EQUATION_DEPENDENCY_IATTRIBUTE(node) = TRAVopt(EQUATION_DEPENDENCY_IATTRIBUTE(node));
-            break;
-            break;
-        case NT_ATTRIBUTE_REFERENCE:
-            ATTRIBUTE_REFERENCE_IATTRIBUTE(node) = TRAVopt(ATTRIBUTE_REFERENCE_IATTRIBUTE(node));
-            break;
-            break;
-        default:
-            DBUG_ASSERT(false, "Current target has no child iattribute");
-            break;
-    }
-
-    return node;
-}
-
-node_st *TRAVreference(node_st *node) {
-    switch (NODE_TYPE(node)) {
-        case NT_IACTIONS:
-            IACTIONS_REFERENCE(node) = TRAVopt(IACTIONS_REFERENCE(node));
-            break;
-            break;
-        case NT_SETREFERENCE:
-            SETREFERENCE_REFERENCE(node) = TRAVopt(SETREFERENCE_REFERENCE(node));
-            break;
-            break;
         case NT_SETLITERAL:
-            SETLITERAL_REFERENCE(node) = TRAVopt(SETLITERAL_REFERENCE(node));
+            SETLITERAL_RIGHT(node) = TRAVopt(SETLITERAL_RIGHT(node));
+            break;
+            break;
+        case NT_SETOPERATION:
+            SETOPERATION_RIGHT(node) = TRAVopt(SETOPERATION_RIGHT(node));
             break;
             break;
         default:
-            DBUG_ASSERT(false, "Current target has no child reference");
-            break;
-    }
-
-    return node;
-}
-
-node_st *TRAVstable(node_st *node) {
-    switch (NODE_TYPE(node)) {
-        case NT_AST:
-            AST_STABLE(node) = TRAVopt(AST_STABLE(node));
-            break;
-            break;
-        default:
-            DBUG_ASSERT(false, "Current target has no child stable");
+            DBUG_ASSERT(false, "Current target has no child right");
             break;
     }
 
@@ -176,28 +108,42 @@ node_st *TRAVexpr(node_st *node) {
     return node;
 }
 
-node_st *TRAVVals(node_st *node) {
+node_st *TRAVchildren_table(node_st *node) {
     switch (NODE_TYPE(node)) {
-        case NT_IENUM:
-            IENUM_VALS(node) = TRAVopt(IENUM_VALS(node));
+        case NT_INODESET:
+            INODESET_CHILDREN_TABLE(node) = TRAVopt(INODESET_CHILDREN_TABLE(node));
             break;
             break;
         default:
-            DBUG_ASSERT(false, "Current target has no child Vals");
+            DBUG_ASSERT(false, "Current target has no child children_table");
             break;
     }
 
     return node;
 }
 
-node_st *TRAViargs(node_st *node) {
+node_st *TRAViphases(node_st *node) {
     switch (NODE_TYPE(node)) {
-        case NT_EQUATION:
-            EQUATION_IARGS(node) = TRAVopt(EQUATION_IARGS(node));
+        case NT_AST:
+            AST_IPHASES(node) = TRAVopt(AST_IPHASES(node));
             break;
             break;
         default:
-            DBUG_ASSERT(false, "Current target has no child iargs");
+            DBUG_ASSERT(false, "Current target has no child iphases");
+            break;
+    }
+
+    return node;
+}
+
+node_st *TRAVsequence(node_st *node) {
+    switch (NODE_TYPE(node)) {
+        case NT_VISIT_SEQUENCES:
+            VISIT_SEQUENCES_SEQUENCE(node) = TRAVopt(VISIT_SEQUENCES_SEQUENCE(node));
+            break;
+            break;
+        default:
+            DBUG_ASSERT(false, "Current target has no child sequence");
             break;
     }
 
@@ -226,60 +172,28 @@ node_st *TRAVlifetimes(node_st *node) {
     return node;
 }
 
-node_st *TRAViequations(node_st *node) {
+node_st *TRAVdata(node_st *node) {
     switch (NODE_TYPE(node)) {
-        case NT_INODE:
-            INODE_IEQUATIONS(node) = TRAVopt(INODE_IEQUATIONS(node));
-            break;
-            break;
-        default:
-            DBUG_ASSERT(false, "Current target has no child iequations");
-            break;
-    }
-
-    return node;
-}
-
-node_st *TRAVinodes(node_st *node) {
-    switch (NODE_TYPE(node)) {
-        case NT_AST:
-            AST_INODES(node) = TRAVopt(AST_INODES(node));
-            break;
-            break;
         case NT_ITRAVERSAL:
-            ITRAVERSAL_INODES(node) = TRAVopt(ITRAVERSAL_INODES(node));
+            ITRAVERSAL_DATA(node) = TRAVopt(ITRAVERSAL_DATA(node));
             break;
             break;
         default:
-            DBUG_ASSERT(false, "Current target has no child inodes");
+            DBUG_ASSERT(false, "Current target has no child data");
             break;
     }
 
     return node;
 }
 
-node_st *TRAViactions(node_st *node) {
-    switch (NODE_TYPE(node)) {
-        case NT_IPHASE:
-            IPHASE_IACTIONS(node) = TRAVopt(IPHASE_IACTIONS(node));
-            break;
-            break;
-        default:
-            DBUG_ASSERT(false, "Current target has no child iactions");
-            break;
-    }
-
-    return node;
-}
-
-node_st *TRAVipasses(node_st *node) {
+node_st *TRAVitraversals(node_st *node) {
     switch (NODE_TYPE(node)) {
         case NT_AST:
-            AST_IPASSES(node) = TRAVopt(AST_IPASSES(node));
+            AST_ITRAVERSALS(node) = TRAVopt(AST_ITRAVERSALS(node));
             break;
             break;
         default:
-            DBUG_ASSERT(false, "Current target has no child ipasses");
+            DBUG_ASSERT(false, "Current target has no child itraversals");
             break;
     }
 
@@ -294,20 +208,6 @@ node_st *TRAVinodesets(node_st *node) {
             break;
         default:
             DBUG_ASSERT(false, "Current target has no child inodesets");
-            break;
-    }
-
-    return node;
-}
-
-node_st *TRAVenums(node_st *node) {
-    switch (NODE_TYPE(node)) {
-        case NT_AST:
-            AST_ENUMS(node) = TRAVopt(AST_ENUMS(node));
-            break;
-            break;
-        default:
-            DBUG_ASSERT(false, "Current target has no child enums");
             break;
     }
 
@@ -372,6 +272,18 @@ node_st *TRAVnext(node_st *node) {
             EQUATION_DEPENDENCY_NEXT(node) = TRAVopt(EQUATION_DEPENDENCY_NEXT(node));
             break;
             break;
+        case NT_VISIT_SEQUENCES:
+            VISIT_SEQUENCES_NEXT(node) = TRAVopt(VISIT_SEQUENCES_NEXT(node));
+            break;
+            break;
+        case NT_VISIT_SEQUENCE_EVAL:
+            VISIT_SEQUENCE_EVAL_NEXT(node) = TRAVopt(VISIT_SEQUENCE_EVAL_NEXT(node));
+            break;
+            break;
+        case NT_VISIT_SEQUENCE_VISIT:
+            VISIT_SEQUENCE_VISIT_NEXT(node) = TRAVopt(VISIT_SEQUENCE_VISIT_NEXT(node));
+            break;
+            break;
         case NT_IENUM:
             IENUM_NEXT(node) = TRAVopt(IENUM_NEXT(node));
             break;
@@ -388,74 +300,96 @@ node_st *TRAVnext(node_st *node) {
     return node;
 }
 
-node_st *TRAVleft(node_st *node) {
+node_st *TRAViargs(node_st *node) {
     switch (NODE_TYPE(node)) {
+        case NT_EQUATION:
+            EQUATION_IARGS(node) = TRAVopt(EQUATION_IARGS(node));
+            break;
+            break;
+        default:
+            DBUG_ASSERT(false, "Current target has no child iargs");
+            break;
+    }
+
+    return node;
+}
+
+node_st *TRAVinode(node_st *node) {
+    switch (NODE_TYPE(node)) {
+        case NT_ATTRIBUTE_REFERENCE:
+            ATTRIBUTE_REFERENCE_INODE(node) = TRAVopt(ATTRIBUTE_REFERENCE_INODE(node));
+            break;
+            break;
+        default:
+            DBUG_ASSERT(false, "Current target has no child inode");
+            break;
+    }
+
+    return node;
+}
+
+node_st *TRAVreference(node_st *node) {
+    switch (NODE_TYPE(node)) {
+        case NT_IACTIONS:
+            IACTIONS_REFERENCE(node) = TRAVopt(IACTIONS_REFERENCE(node));
+            break;
+            break;
+        case NT_SETREFERENCE:
+            SETREFERENCE_REFERENCE(node) = TRAVopt(SETREFERENCE_REFERENCE(node));
+            break;
+            break;
         case NT_SETLITERAL:
-            SETLITERAL_LEFT(node) = TRAVopt(SETLITERAL_LEFT(node));
-            break;
-            break;
-        case NT_SETOPERATION:
-            SETOPERATION_LEFT(node) = TRAVopt(SETOPERATION_LEFT(node));
+            SETLITERAL_REFERENCE(node) = TRAVopt(SETLITERAL_REFERENCE(node));
             break;
             break;
         default:
-            DBUG_ASSERT(false, "Current target has no child left");
+            DBUG_ASSERT(false, "Current target has no child reference");
             break;
     }
 
     return node;
 }
 
-node_st *TRAVtarget(node_st *node) {
+node_st *TRAVvisit_sequences(node_st *node) {
     switch (NODE_TYPE(node)) {
-        case NT_LIFETIME_RANGE:
-            LIFETIME_RANGE_TARGET(node) = TRAVopt(LIFETIME_RANGE_TARGET(node));
+        case NT_INODE:
+            INODE_VISIT_SEQUENCES(node) = TRAVopt(INODE_VISIT_SEQUENCES(node));
             break;
             break;
-        default:
-            DBUG_ASSERT(false, "Current target has no child target");
-            break;
-    }
-
-    return node;
-}
-
-node_st *TRAVtarget_func(node_st *node) {
-    switch (NODE_TYPE(node)) {
-        case NT_IPASS:
-            IPASS_TARGET_FUNC(node) = TRAVopt(IPASS_TARGET_FUNC(node));
-            break;
-            break;
-        default:
-            DBUG_ASSERT(false, "Current target has no child target_func");
-            break;
-    }
-
-    return node;
-}
-
-node_st *TRAVchildren_table(node_st *node) {
-    switch (NODE_TYPE(node)) {
         case NT_INODESET:
-            INODESET_CHILDREN_TABLE(node) = TRAVopt(INODESET_CHILDREN_TABLE(node));
+            INODESET_VISIT_SEQUENCES(node) = TRAVopt(INODESET_VISIT_SEQUENCES(node));
             break;
             break;
         default:
-            DBUG_ASSERT(false, "Current target has no child children_table");
+            DBUG_ASSERT(false, "Current target has no child visit_sequences");
             break;
     }
 
     return node;
 }
 
-node_st *TRAVdata(node_st *node) {
+node_st *TRAViequations(node_st *node) {
     switch (NODE_TYPE(node)) {
-        case NT_ITRAVERSAL:
-            ITRAVERSAL_DATA(node) = TRAVopt(ITRAVERSAL_DATA(node));
+        case NT_INODE:
+            INODE_IEQUATIONS(node) = TRAVopt(INODE_IEQUATIONS(node));
             break;
             break;
         default:
-            DBUG_ASSERT(false, "Current target has no child data");
+            DBUG_ASSERT(false, "Current target has no child iequations");
+            break;
+    }
+
+    return node;
+}
+
+node_st *TRAVend(node_st *node) {
+    switch (NODE_TYPE(node)) {
+        case NT_ILIFETIME:
+            ILIFETIME_END(node) = TRAVopt(ILIFETIME_END(node));
+            break;
+            break;
+        default:
+            DBUG_ASSERT(false, "Current target has no child end");
             break;
     }
 
@@ -488,14 +422,50 @@ node_st *TRAViprefix(node_st *node) {
     return node;
 }
 
-node_st *TRAVichildren(node_st *node) {
+node_st *TRAViattributes(node_st *node) {
     switch (NODE_TYPE(node)) {
         case NT_INODE:
-            INODE_ICHILDREN(node) = TRAVopt(INODE_ICHILDREN(node));
+            INODE_IATTRIBUTES(node) = TRAVopt(INODE_IATTRIBUTES(node));
+            break;
+            break;
+        case NT_INODESET:
+            INODESET_IATTRIBUTES(node) = TRAVopt(INODESET_IATTRIBUTES(node));
             break;
             break;
         default:
-            DBUG_ASSERT(false, "Current target has no child ichildren");
+            DBUG_ASSERT(false, "Current target has no child iattributes");
+            break;
+    }
+
+    return node;
+}
+
+node_st *TRAVunpacked(node_st *node) {
+    switch (NODE_TYPE(node)) {
+        case NT_INODESET:
+            INODESET_UNPACKED(node) = TRAVopt(INODESET_UNPACKED(node));
+            break;
+            break;
+        default:
+            DBUG_ASSERT(false, "Current target has no child unpacked");
+            break;
+    }
+
+    return node;
+}
+
+node_st *TRAVleft(node_st *node) {
+    switch (NODE_TYPE(node)) {
+        case NT_SETLITERAL:
+            SETLITERAL_LEFT(node) = TRAVopt(SETLITERAL_LEFT(node));
+            break;
+            break;
+        case NT_SETOPERATION:
+            SETOPERATION_LEFT(node) = TRAVopt(SETOPERATION_LEFT(node));
+            break;
+            break;
+        default:
+            DBUG_ASSERT(false, "Current target has no child left");
             break;
     }
 
@@ -516,28 +486,92 @@ node_st *TRAVgate_func(node_st *node) {
     return node;
 }
 
-node_st *TRAVend(node_st *node) {
+node_st *TRAVichildren(node_st *node) {
     switch (NODE_TYPE(node)) {
-        case NT_ILIFETIME:
-            ILIFETIME_END(node) = TRAVopt(ILIFETIME_END(node));
+        case NT_INODE:
+            INODE_ICHILDREN(node) = TRAVopt(INODE_ICHILDREN(node));
             break;
             break;
         default:
-            DBUG_ASSERT(false, "Current target has no child end");
+            DBUG_ASSERT(false, "Current target has no child ichildren");
             break;
     }
 
     return node;
 }
 
-node_st *TRAVunpacked(node_st *node) {
+node_st *TRAVinodes(node_st *node) {
     switch (NODE_TYPE(node)) {
-        case NT_INODESET:
-            INODESET_UNPACKED(node) = TRAVopt(INODESET_UNPACKED(node));
+        case NT_AST:
+            AST_INODES(node) = TRAVopt(AST_INODES(node));
+            break;
+            break;
+        case NT_ITRAVERSAL:
+            ITRAVERSAL_INODES(node) = TRAVopt(ITRAVERSAL_INODES(node));
             break;
             break;
         default:
-            DBUG_ASSERT(false, "Current target has no child unpacked");
+            DBUG_ASSERT(false, "Current target has no child inodes");
+            break;
+    }
+
+    return node;
+}
+
+node_st *TRAVVals(node_st *node) {
+    switch (NODE_TYPE(node)) {
+        case NT_IENUM:
+            IENUM_VALS(node) = TRAVopt(IENUM_VALS(node));
+            break;
+            break;
+        default:
+            DBUG_ASSERT(false, "Current target has no child Vals");
+            break;
+    }
+
+    return node;
+}
+
+node_st *TRAVbegin(node_st *node) {
+    switch (NODE_TYPE(node)) {
+        case NT_ILIFETIME:
+            ILIFETIME_BEGIN(node) = TRAVopt(ILIFETIME_BEGIN(node));
+            break;
+            break;
+        default:
+            DBUG_ASSERT(false, "Current target has no child begin");
+            break;
+    }
+
+    return node;
+}
+
+node_st *TRAVstable(node_st *node) {
+    switch (NODE_TYPE(node)) {
+        case NT_AST:
+            AST_STABLE(node) = TRAVopt(AST_STABLE(node));
+            break;
+            break;
+        default:
+            DBUG_ASSERT(false, "Current target has no child stable");
+            break;
+    }
+
+    return node;
+}
+
+node_st *TRAViattribute(node_st *node) {
+    switch (NODE_TYPE(node)) {
+        case NT_EQUATION_DEPENDENCY:
+            EQUATION_DEPENDENCY_IATTRIBUTE(node) = TRAVopt(EQUATION_DEPENDENCY_IATTRIBUTE(node));
+            break;
+            break;
+        case NT_ATTRIBUTE_REFERENCE:
+            ATTRIBUTE_REFERENCE_IATTRIBUTE(node) = TRAVopt(ATTRIBUTE_REFERENCE_IATTRIBUTE(node));
+            break;
+            break;
+        default:
+            DBUG_ASSERT(false, "Current target has no child iattribute");
             break;
     }
 
@@ -580,32 +614,42 @@ node_st *TRAVtype_reference(node_st *node) {
     return node;
 }
 
-node_st *TRAViphases(node_st *node) {
+node_st *TRAVtarget(node_st *node) {
     switch (NODE_TYPE(node)) {
-        case NT_AST:
-            AST_IPHASES(node) = TRAVopt(AST_IPHASES(node));
+        case NT_LIFETIME_RANGE:
+            LIFETIME_RANGE_TARGET(node) = TRAVopt(LIFETIME_RANGE_TARGET(node));
             break;
             break;
         default:
-            DBUG_ASSERT(false, "Current target has no child iphases");
+            DBUG_ASSERT(false, "Current target has no child target");
             break;
     }
 
     return node;
 }
 
-node_st *TRAVright(node_st *node) {
+node_st *TRAVipasses(node_st *node) {
     switch (NODE_TYPE(node)) {
-        case NT_SETLITERAL:
-            SETLITERAL_RIGHT(node) = TRAVopt(SETLITERAL_RIGHT(node));
-            break;
-            break;
-        case NT_SETOPERATION:
-            SETOPERATION_RIGHT(node) = TRAVopt(SETOPERATION_RIGHT(node));
+        case NT_AST:
+            AST_IPASSES(node) = TRAVopt(AST_IPASSES(node));
             break;
             break;
         default:
-            DBUG_ASSERT(false, "Current target has no child right");
+            DBUG_ASSERT(false, "Current target has no child ipasses");
+            break;
+    }
+
+    return node;
+}
+
+node_st *TRAVenums(node_st *node) {
+    switch (NODE_TYPE(node)) {
+        case NT_AST:
+            AST_ENUMS(node) = TRAVopt(AST_ENUMS(node));
+            break;
+            break;
+        default:
+            DBUG_ASSERT(false, "Current target has no child enums");
             break;
     }
 

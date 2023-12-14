@@ -11,6 +11,15 @@ char *nodetypeToName(node_st *node) {
         case NT_IENUM:
             return "ienum";
             break;
+        case NT_VISIT_SEQUENCE_VISIT:
+            return "visit_sequence_visit";
+            break;
+        case NT_VISIT_SEQUENCE_EVAL:
+            return "visit_sequence_eval";
+            break;
+        case NT_VISIT_SEQUENCES:
+            return "visit_sequences";
+            break;
         case NT_ATTRIBUTE_REFERENCE:
             return "attribute_reference";
             break;
@@ -75,6 +84,11 @@ char *nodetypeToName(node_st *node) {
             return "Unknown";
                 }
 
+}
+
+static bool TypeIsvisit_sequence(node_st *arg_node) {
+    enum ccn_nodetype node_type = NODE_TYPE(arg_node);
+    return (false || node_type == NT_VISIT_SEQUENCE_EVAL || node_type == NT_VISIT_SEQUENCE_VISIT    );
 }
 
 static bool TypeIssetexpr(node_st *arg_node) {
@@ -145,6 +159,59 @@ struct ccn_node *CHKienum(struct ccn_node *arg_node) {
     if (IENUM_NEXT(arg_node)) {
         if (NODE_TYPE(IENUM_NEXT(arg_node)) != NT_IENUM) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(ienum) has disallowed type(%s) ", nodetypeToName(IENUM_NEXT(arg_node)));
+        }
+
+    }
+
+    TRAVchildren(arg_node);
+    return arg_node;
+}
+
+struct ccn_node *CHKvisit_sequence_visit(struct ccn_node *arg_node) {
+    size_t action_id = CCNgetCurrentActionId();
+    (void)action_id;
+    if (VISIT_SEQUENCE_VISIT_NEXT(arg_node)) {
+        if (!TypeIsvisit_sequence(VISIT_SEQUENCE_VISIT_NEXT(arg_node))) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(visit_sequence_visit) has disallowed type(%s) ", nodetypeToName(VISIT_SEQUENCE_VISIT_NEXT(arg_node)));
+        }
+
+    }
+
+    TRAVchildren(arg_node);
+    return arg_node;
+}
+
+struct ccn_node *CHKvisit_sequence_eval(struct ccn_node *arg_node) {
+    size_t action_id = CCNgetCurrentActionId();
+    (void)action_id;
+    if (VISIT_SEQUENCE_EVAL_NEXT(arg_node)) {
+        if (!TypeIsvisit_sequence(VISIT_SEQUENCE_EVAL_NEXT(arg_node))) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(visit_sequence_eval) has disallowed type(%s) ", nodetypeToName(VISIT_SEQUENCE_EVAL_NEXT(arg_node)));
+        }
+
+    }
+
+    TRAVchildren(arg_node);
+    return arg_node;
+}
+
+struct ccn_node *CHKvisit_sequences(struct ccn_node *arg_node) {
+    size_t action_id = CCNgetCurrentActionId();
+    (void)action_id;
+    if (VISIT_SEQUENCES_SEQUENCE(arg_node)) {
+        if (!TypeIsvisit_sequence(VISIT_SEQUENCES_SEQUENCE(arg_node))) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(sequence) of node(visit_sequences) has disallowed type(%s) ", nodetypeToName(VISIT_SEQUENCES_SEQUENCE(arg_node)));
+        }
+
+    }
+
+    if (VISIT_SEQUENCES_SEQUENCE(arg_node) == NULL) {
+        CTI(CTI_ERROR, true, "Child(sequence) in node(visit_sequences) is missing, but specified as mandatory.\n");;
+    }
+
+    if (VISIT_SEQUENCES_NEXT(arg_node)) {
+        if (NODE_TYPE(VISIT_SEQUENCES_NEXT(arg_node)) != NT_VISIT_SEQUENCES) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(visit_sequences) has disallowed type(%s) ", nodetypeToName(VISIT_SEQUENCES_NEXT(arg_node)));
         }
 
     }
@@ -538,6 +605,13 @@ struct ccn_node *CHKinodeset(struct ccn_node *arg_node) {
 
     }
 
+    if (INODESET_VISIT_SEQUENCES(arg_node)) {
+        if (NODE_TYPE(INODESET_VISIT_SEQUENCES(arg_node)) != NT_VISIT_SEQUENCES) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(visit_sequences) of node(inodeset) has disallowed type(%s) ", nodetypeToName(INODESET_VISIT_SEQUENCES(arg_node)));
+        }
+
+    }
+
     TRAVchildren(arg_node);
     return arg_node;
 }
@@ -587,6 +661,13 @@ struct ccn_node *CHKinode(struct ccn_node *arg_node) {
     if (INODE_LIFETIMES(arg_node)) {
         if (NODE_TYPE(INODE_LIFETIMES(arg_node)) != NT_ILIFETIME) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(lifetimes) of node(inode) has disallowed type(%s) ", nodetypeToName(INODE_LIFETIMES(arg_node)));
+        }
+
+    }
+
+    if (INODE_VISIT_SEQUENCES(arg_node)) {
+        if (NODE_TYPE(INODE_VISIT_SEQUENCES(arg_node)) != NT_VISIT_SEQUENCES) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(visit_sequences) of node(inode) has disallowed type(%s) ", nodetypeToName(INODE_VISIT_SEQUENCES(arg_node)));
         }
 
     }
