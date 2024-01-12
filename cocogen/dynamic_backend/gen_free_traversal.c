@@ -175,10 +175,22 @@ node_st *DGFTlifetime_range(node_st *node)
 }
 
 /**
- * @fn DGFTvisit_sequences
+ * @fn DGFTvisit_arg_list
  */
-node_st *DGFTvisit_sequences(node_st *node)
+node_st *DGFTvisit_arg_list(node_st *node)
 {
+    CTI(CTI_WARN, true, "Not implemented DGFTvisit_arg_list");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGFTvisit
+ */
+node_st *DGFTvisit(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGFTvisit");
+    TRAVchildren(node);
     return node;
 }
 
@@ -187,6 +199,8 @@ node_st *DGFTvisit_sequences(node_st *node)
  */
 node_st *DGFTvisit_sequence_eval(node_st *node)
 {
+    CTI(CTI_WARN, true, "Not implemented DGFTvisit_sequence_eval");
+    TRAVchildren(node);
     return node;
 }
 
@@ -195,5 +209,7 @@ node_st *DGFTvisit_sequence_eval(node_st *node)
  */
 node_st *DGFTvisit_sequence_visit(node_st *node)
 {
+    CTI(CTI_WARN, true, "Not implemented DGFTvisit_sequence_visit");
+    TRAVchildren(node);
     return node;
 }

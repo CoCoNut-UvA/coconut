@@ -37,10 +37,18 @@ struct ccn_node *DELvisit_sequence_eval(struct ccn_node *arg_node) {
     return NULL;
 }
 
-struct ccn_node *DELvisit_sequences(struct ccn_node *arg_node) {
+struct ccn_node *DELvisit(struct ccn_node *arg_node) {
     TRAVchildren(arg_node);
     MEMfree(NODE_FILENAME(arg_node));
-    MEMfree(arg_node->data.N_visit_sequences);
+    MEMfree(arg_node->data.N_visit);
+    MEMfree(arg_node);
+    return NULL;
+}
+
+struct ccn_node *DELvisit_arg_list(struct ccn_node *arg_node) {
+    TRAVchildren(arg_node);
+    MEMfree(NODE_FILENAME(arg_node));
+    MEMfree(arg_node->data.N_visit_arg_list);
     MEMfree(arg_node);
     return NULL;
 }

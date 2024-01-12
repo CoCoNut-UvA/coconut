@@ -8,13 +8,20 @@ ienum -> id[label="iprefix"]
 ienum -> ienum[label="next"]
 visit_sequence_visit;
 visit_sequence_visit -> visit_sequence[label="next"]
-visit_sequence_visit -> visit_sequence[color=red, label="sequence"]
+visit_sequence_visit -> child[color=red, label="child"]
+visit_sequence_visit -> visit[color=red, label="visit"]
 visit_sequence_eval;
 visit_sequence_eval -> visit_sequence[label="next"]
-visit_sequence_eval -> equation[color=red, label="equation"]
-visit_sequences;
-visit_sequences -> visit_sequence[label="sequence"]
-visit_sequences -> visit_sequences[label="next"]
+visit_sequence_eval -> attribute_reference[color=red, label="attribute"]
+visit;
+visit -> visit_sequence[label="sequence"]
+visit -> visit_arg_list[label="inputs"]
+visit -> visit_arg_list[label="outputs"]
+visit -> visit[label="next"]
+visit -> inode[color=red, label="inode"]
+visit_arg_list;
+visit_arg_list -> attribute_reference[label="attribute"]
+visit_arg_list -> visit_arg_list[label="next"]
 attribute_reference;
 attribute_reference -> id[label="inode"]
 attribute_reference -> id[label="iattribute"]
@@ -71,7 +78,6 @@ inodeset -> attribute[label="iattributes"]
 inodeset -> id[label="unpacked"]
 inodeset -> inodeset[label="next"]
 inodeset -> nodeset_child_entry[label="children_table"]
-inodeset -> visit_sequences[label="visit_sequences"]
 inode;
 inode -> id[label="name"]
 inode -> inode[label="next"]
@@ -79,7 +85,7 @@ inode -> child[label="ichildren"]
 inode -> attribute[label="iattributes"]
 inode -> equation[label="iequations"]
 inode -> ilifetime[label="lifetimes"]
-inode -> visit_sequences[label="visit_sequences"]
+inode -> visit[label="visit"]
 ipass;
 ipass -> id[label="name"]
 ipass -> id[label="iprefix"]

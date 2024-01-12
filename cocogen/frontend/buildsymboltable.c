@@ -237,7 +237,6 @@ node_st *BSTequation_dependency(node_st *node)
  */
 node_st *BSTattribute_reference(node_st *node)
 {
-    CTI(CTI_WARN, true, "Not implemented BSTattribute_reference");
     TRAVchildren(node);
     return node;
 }
@@ -270,12 +269,18 @@ node_st *BSTlifetime_range(node_st *node)
     return node;
 }
 
-
+/**
+ * @fn BSTvisit_arg_list
+ */
+node_st *BSTvisit_arg_list(node_st *node)
+{
+    return node;
+}
 
 /**
- * @fn BSTvisit_sequences
+ * @fn BSTvisit
  */
-node_st *BSTvisit_sequences(node_st *node)
+node_st *BSTvisit(node_st *node)
 {
     return node;
 }

@@ -581,7 +581,7 @@ node inode {
         attribute iattributes,
         equation iequations,
         ilifetime lifetimes,
-        visit_sequences visit_sequences
+        visit visit
     },
 
     attributes {
@@ -598,8 +598,7 @@ node inodeset {
         attribute iattributes,
         id unpacked,
         inodeset next,
-        nodeset_child_entry children_table,
-        visit_sequences visit_sequences
+        nodeset_child_entry children_table
     },
 
     attributes {
@@ -788,10 +787,23 @@ node attribute_reference {
 
 nodeset visit_sequence = {visit_sequence_eval, visit_sequence_visit};
 
-node visit_sequences {
+node visit_arg_list {
+    children {
+        attribute_reference attribute { constructor, mandatory },
+        visit_arg_list next
+    }
+};
+
+node visit {
     children {
         visit_sequence sequence { constructor, mandatory },
-        visit_sequences next
+        visit_arg_list inputs { constructor },
+        visit_arg_list outputs { constructor },
+        visit next
+    },
+    attributes {
+        inode inode { constructor },
+        uint64 index { constructor }
     }
 };
 
@@ -800,7 +812,7 @@ node visit_sequence_eval {
         visit_sequence next
     },
     attributes {
-        equation equation { constructor }
+        attribute_reference attribute { constructor, mandatory }
     }
 };
 
@@ -809,7 +821,8 @@ node visit_sequence_visit {
         visit_sequence next
     },
     attributes {
-        visit_sequence sequence { constructor }
+        child child { constructor, mandatory },
+        visit visit { constructor, mandatory }
     }
 };
 

@@ -15,7 +15,10 @@
 #include "ccn/ccn.h"
 #include "ccngen/ast.h"
 #include "dot/gen_dot_ag.h"
-#include "frontend/attribute_scheduler/generate_visit_sequences.h"
+#include "frontend/attribute_scheduler/collect_visits.h"
+#include "frontend/attribute_scheduler/common.h"
+#include "frontend/attribute_scheduler/fill_visit_stubs.h"
+#include "frontend/attribute_scheduler/generate_visits.h"
 #include "frontend/attribute_scheduler/graph.h"
 #include "frontend/attribute_scheduler/queue.h"
 #include "frontend/symboltable.h"
@@ -36,14 +39,45 @@ struct graph_list {
     struct graph_list *next;
 };
 
-unsigned int hash(unsigned int x) {
+static void *free_visits_map(void *arg) {
+    free_visits((struct visits *)arg);
+    return NULL;
+}
+
+static void *free_stubs_map(void *arg) {
+    free_visit_stubs((struct visit_stub *)arg);
+    return NULL;
+}
+
+static void *delete_nodes(void *node) {
+    MEMfree((struct GRnode *)node);
+    return NULL;
+}
+
+static void *delete_tables(void *table) {
+    HTdelete((htable_st *)table);
+    return NULL;
+}
+
+static void *delete_graphs(void *graphs) {
+    struct graph_list *next;
+    for (struct graph_list *graph = (struct graph_list *)graphs; graph != NULL;
+         graph = next) {
+        GRdelete(graph->graph);
+        next = graph->next;
+        MEMfree(graph);
+    }
+    return NULL;
+}
+
+static unsigned int hash(unsigned int x) {
     x = ((x >> 16) ^ x) * 0x45d9f3b;
     x = ((x >> 16) ^ x) * 0x45d9f3b;
     x = (x >> 16) ^ x;
     return x;
 }
 
-unsigned int hash_ptr(void *x) {
+static unsigned int hash_ptr(void *x) {
     // prevent compiler warnings
     return hash((unsigned int)((size_t)x));
 }
@@ -75,23 +109,23 @@ static bool hash_edge_equal(void *ptr1, void *ptr2) {
            GRnode_equal(edge1->second, edge2->second);
 }
 
-static struct GRedge *HTlookup_edge(htable_st *table, struct GRnode *first,
+static inline struct GRedge *HTlookup_edge(htable_st *table, struct GRnode *first,
                                     struct GRnode *second) {
     struct GRedge lookup = {.first = first, .second = second};
     return HTlookup(table, &lookup);
 }
 
-static void HTinsert_edge(htable_st *table, struct GRedge *edge) {
+static inline void HTinsert_edge(htable_st *table, struct GRedge *edge) {
     assert(HTlookup_edge(table, edge->first, edge->second) == NULL);
     HTinsert(table, edge, edge);
 }
 
-static struct GRnode *HTlookup_graph_node(node_st *node, node_st *attribute) {
+static inline struct GRnode *HTlookup_graph_node(node_st *node, node_st *attribute) {
     struct GRnode lookup = {.node = node, .attribute = attribute};
     return HTlookup(DATA_SAV_GET()->graph_nodes, &lookup);
 }
 
-static struct GRnode *HTinsert_graph_node(node_st *node, node_st *attribute) {
+static inline struct GRnode *HTinsert_graph_node(node_st *node, node_st *attribute) {
     struct GRnode *found = HTlookup_graph_node(node, attribute);
     if (found) {
         return found;
@@ -105,27 +139,6 @@ static struct GRnode *HTinsert_graph_node(node_st *node, node_st *attribute) {
     return new_node;
 }
 
-static void *delete_nodes(void *node) {
-    MEMfree((struct GRnode *)node);
-    return NULL;
-}
-
-static void *delete_tables(void *table) {
-    HTdelete((htable_st *)table);
-    return NULL;
-}
-
-static void *delete_graphs(void *graphs) {
-    struct graph_list *next;
-    for (struct graph_list *graph = (struct graph_list *)graphs; graph != NULL;
-         graph = next) {
-        GRdelete(graph->graph);
-        next = graph->next;
-        MEMfree(graph);
-    }
-    return NULL;
-}
-
 void SAVinit() {
     DATA_SAV_GET()->graph_nodes =
         HTnew(htable_size, hash_attribute, hash_attribute_equal);
@@ -134,38 +147,6 @@ void SAVinit() {
 void SAVfini() {
     HTmap(DATA_SAV_GET()->graph_nodes, delete_nodes);
     return;
-}
-
-static inline node_st *get_node_attributes(node_st *node) {
-    if (NODE_TYPE(node) == NT_INODE) {
-        return INODE_IATTRIBUTES(node);
-    } else {
-        assert(NODE_TYPE(node) == NT_INODESET);
-        return INODESET_IATTRIBUTES(node);
-    }
-}
-
-static inline node_st *get_node_name(node_st *node) {
-    if (NODE_TYPE(node) == NT_INODE) {
-        return INODE_NAME(node);
-    } else if (NODE_TYPE(node) == NT_CHILD) {
-        return CHILD_NAME(node);
-    } else {
-        assert(NODE_TYPE(node) == NT_INODESET);
-        return INODESET_NAME(node);
-    }
-}
-
-static inline node_st *get_node_type(node_st *node) {
-    if (NODE_TYPE(node) == NT_INODE || NODE_TYPE(node) == NT_INODESET) {
-        return node;
-    } else {
-        assert(NODE_TYPE(node) == NT_CHILD);
-        node_st *ref =
-            STlookup(DATA_SAV_GET()->symboltable, CHILD_TYPE_REFERENCE(node));
-        assert(ref != NULL);
-        return ref;
-    }
 }
 
 static inline void handle_graph_error(struct GRerror error) {
@@ -204,7 +185,7 @@ static inline void add_attributes(graph_st *graph, node_st *node,
     }
 }
 
-static void delete_edge_list(struct GRedge_list *edge_list) {
+static inline void delete_edge_list(struct GRedge_list *edge_list) {
     struct GRedge_list *next_edge;
     for (struct GRedge_list *edge = edge_list; edge != NULL; edge = next_edge) {
         next_edge = edge->next;
@@ -223,10 +204,12 @@ static void combine_edgelists(struct GRedge_list **edge_list,
          new_edge = next_new_edge) {
         next_new_edge = new_edge->next;
         struct GRnode *new_n1 =
-            HTinsert_graph_node(get_node_type(new_edge->edge->first->node),
+            HTinsert_graph_node(get_node_type(new_edge->edge->first->node,
+                                              DATA_SAV_GET()->symboltable),
                                 new_edge->edge->first->attribute);
         struct GRnode *new_n2 =
-            HTinsert_graph_node(get_node_type(new_edge->edge->second->node),
+            HTinsert_graph_node(get_node_type(new_edge->edge->second->node,
+                                              DATA_SAV_GET()->symboltable),
                                 new_edge->edge->second->attribute);
 
         if (!HTlookup_edge(induced_edges_map, new_n1, new_n2)) {
@@ -263,7 +246,7 @@ static void add_nodeset_entries(node_st *current_node,
     add_nodeset_entries(SETLITERAL_RIGHT(current_node), nodes);
 }
 
-static void delete_nodelist(struct node_list *node_list) {
+static inline void delete_nodelist(struct node_list *node_list) {
     struct node_list *next;
     for (struct node_list *node = node_list; node != NULL; node = next) {
         next = node->next;
@@ -394,7 +377,8 @@ void add_induced_edges(graph_st *graph, struct GRedge_list *edges,
         node_st *tnode = entry->edge->first->node;
         for (struct GRnode *node = graph->nodes; node != NULL;
              node = node->next) {
-            node_st *node_type = get_node_type(node->node);
+            node_st *node_type =
+                get_node_type(node->node, DATA_SAV_GET()->symboltable);
             if (tnode == node_type) {
                 struct GRnode *from = GRlookup_node(
                     graph, node->node, entry->edge->first->attribute);
@@ -656,22 +640,63 @@ node_st *SAVast(node_st *node) {
         find_intravisit_dependencies(graphs_htable, partition_tables);
 
     // TODO: Add induced intravisit dependencies
-    (void) intra_visit_dependencies;
+    (void)intra_visit_dependencies;
 
     // TODO: Check for intravisit dependency loops. In that case execute
     // backtracking algorithm
 
-
+    // Collect all visit metadata (inputs/outputs)
+    htable_st *visits_htable = HTnew_Ptr(htable_size);
     for (node_st *inode = AST_INODES(node); inode != NULL;
          inode = INODE_NEXT(inode)) {
         struct graph_list *graph = HTlookup(graphs_htable, inode);
-        node_st *visit_sequences = generate_visit_sequences(graph->graph, inode, AST_STABLE(node), partition_tables);
-        INODE_VISIT_SEQUENCES(inode) = visit_sequences;
+        struct visits *visits = collect_visits(
+            graph->graph, inode, AST_STABLE(node), partition_tables);
+
+        HTinsert(visits_htable, inode, visits);
     }
 
+    for (node_st *nodeset = AST_INODESETS(node); nodeset != NULL;
+         nodeset = INODESET_NEXT(nodeset)) {
+        struct graph_list *graph = HTlookup(graphs_htable, nodeset);
+        if (graph == NULL) { // Empty nodeset
+            continue;
+        }
+        struct visits *visits = collect_visits(
+            graph->graph, nodeset, AST_STABLE(node), partition_tables);
+
+        HTinsert(visits_htable, nodeset, visits);
+        htable_st *partition_table = partition_nodes(graph->graph, nodeset);
+        HTinsert(partition_tables, nodeset, partition_table);
+    }
+
+    // Schedule visit sequences
+    htable_st *visit_mdata_htable = HTnew_Ptr(htable_size);
+    htable_st *visit_stubs_htable = HTnew_Ptr(htable_size);
+    for (node_st *inode = AST_INODES(node); inode != NULL;
+         inode = INODE_NEXT(inode)) {
+        struct graph_list *graph = HTlookup(graphs_htable, inode);
+
+        node_st *visit_sequences = generate_visits(
+            graph->graph, inode, AST_STABLE(node), visits_htable,
+            visit_mdata_htable, visit_stubs_htable);
+        INODE_VISIT(inode) = visit_sequences;
+    }
+
+    // fill in visit stubs
+    for (node_st *inode = AST_INODES(node); inode != NULL;
+         inode = INODE_NEXT(inode)) {
+        fill_visit_stubs(inode, visit_mdata_htable, visit_stubs_htable);
+    }
+
+    HTmap(visits_htable, free_visits_map);
+    HTdelete(visits_htable);
     HTmap(graphs_htable, delete_graphs);
     HTdelete(graphs_htable);
     HTmap(partition_tables, delete_tables);
     HTdelete(partition_tables);
+    HTdelete(visit_mdata_htable);
+    HTmap(visit_stubs_htable, free_stubs_map);
+    HTdelete(visit_stubs_htable);
     return node;
 }

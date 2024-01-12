@@ -333,12 +333,18 @@ node_st *CEXlifetime_range(node_st *node)
     return node;
 }
 
-
+/**
+ * @fn CEXvisit_arg_list
+ */
+node_st *CEXvisit_arg_list(node_st *node)
+{
+    return node;
+}
 
 /**
- * @fn CEXvisit_sequences
+ * @fn CEXvisit
  */
-node_st *CEXvisit_sequences(node_st *node)
+node_st *CEXvisit(node_st *node)
 {
     return node;
 }

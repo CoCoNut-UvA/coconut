@@ -138,7 +138,15 @@ node_st *PRTinode(node_st *node)
     printf("}\n");
     UNINDENT;
     printf("}\n");
+    PrintIndent();
+    printf("Visits {\n");
+    INDENT;
+    TRAVopt(INODE_VISIT(node));
+    UNINDENT;
+    PrintIndent();
+    printf("}\n");
     TRAVopt(INODE_NEXT(node));
+
     return node;
 }
 
@@ -426,11 +434,37 @@ node_st *PRTlifetime_range(node_st *node)
 }
 
 /**
- * @fn PRTvisit_sequences
+ * @fn PRTvisit_arg_list
  */
-node_st *PRTvisit_sequences(node_st *node)
+node_st *PRTvisit_arg_list(node_st *node)
 {
-    // TODO: Implement
+    TRAVattribute(node);
+
+    if (VISIT_ARG_LIST_NEXT(node)) {
+        printf(", ");
+        TRAVnext(node);
+    }
+
+    return node;
+}
+
+/**
+ * @fn PRTvisit
+ */
+node_st *PRTvisit(node_st *node)
+{
+    PrintIndent();
+    printf("%s_%lu (in: {", ID_LWR(INODE_NAME(VISIT_INODE(node))),
+                            VISIT_INDEX(node));
+    TRAVopt(VISIT_INPUTS(node));
+    printf("} out: {");
+    TRAVopt(VISIT_OUTPUTS(node));
+    printf("}) {\n");
+    INDENT;
+    TRAVopt(VISIT_SEQUENCE(node));
+    UNINDENT;
+    printf("}\n");
+    TRAVopt(VISIT_NEXT(node));
     return node;
 }
 
@@ -439,7 +473,11 @@ node_st *PRTvisit_sequences(node_st *node)
  */
 node_st *PRTvisit_sequence_eval(node_st *node)
 {
-    // TODO: Implement
+    PrintIndent();
+    printf("eval ");
+    TRAVdo(VISIT_SEQUENCE_EVAL_ATTRIBUTE(node));
+    printf("\n");
+    TRAVopt(VISIT_SEQUENCE_EVAL_NEXT(node));
     return node;
 }
 
@@ -448,6 +486,11 @@ node_st *PRTvisit_sequence_eval(node_st *node)
  */
 node_st *PRTvisit_sequence_visit(node_st *node)
 {
-    // TODO: Implement
+    node_st *visit = VISIT_SEQUENCE_VISIT_VISIT(node);
+    PrintIndent();
+    printf("visit %s %s_%lu", ID_LWR(CHILD_NAME(VISIT_SEQUENCE_VISIT_CHILD(node))),
+                            ID_LWR(INODE_NAME(VISIT_INODE(visit))), VISIT_INDEX(visit));
+    printf("\n");
+    TRAVopt(VISIT_SEQUENCE_EVAL_NEXT(node));
     return node;
 }

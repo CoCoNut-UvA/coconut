@@ -197,10 +197,22 @@ node_st *DGCTlifetime_range(node_st *node)
 }
 
 /**
- * @fn DGCTvisit_sequences
+ * @fn DGCTvisit_arg_list
  */
-node_st *DGCTvisit_sequences(node_st *node)
+node_st *DGCTvisit_arg_list(node_st *node)
 {
+    CTI(CTI_WARN, true, "Not implemented DGCTvisit_arg_list");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGCTvisit
+ */
+node_st *DGCTvisit(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGCTvisit");
+    TRAVchildren(node);
     return node;
 }
 
@@ -209,6 +221,8 @@ node_st *DGCTvisit_sequences(node_st *node)
  */
 node_st *DGCTvisit_sequence_eval(node_st *node)
 {
+    CTI(CTI_WARN, true, "Not implemented DGCTvisit_sequence_eval");
+    TRAVchildren(node);
     return node;
 }
 
@@ -217,5 +231,7 @@ node_st *DGCTvisit_sequence_eval(node_st *node)
  */
 node_st *DGCTvisit_sequence_visit(node_st *node)
 {
+    CTI(CTI_WARN, true, "Not implemented DGCTvisit_sequence_visit");
+    TRAVchildren(node);
     return node;
 }

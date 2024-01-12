@@ -15,9 +15,12 @@ ADD_FLEX_BISON_DEPENDENCY(DslTokens DslParser)
 add_executable(cocogen main.c commandline.c frontend/scanAndParse/scan_parse.c
         ${COCONUT_FILES} print/print.c frontend/ctihelp.c frontend/buildsymboltable.c frontend/check_existance.c
         frontend/nodesets/nodeset_child_table.c frontend/nodesets/propagate_attributes.c frontend/unwrap_setexpr.c
-        frontend/check_attributes.c frontend/check_product_rules.c frontend/attribute_scheduler/graph.c
-        frontend/attribute_scheduler/graph.h frontend/attribute_scheduler/queue.c frontend/attribute_scheduler/queue.h
-        frontend/attribute_scheduler/generate_visit_sequences.c frontend/attribute_scheduler/generate_visit_sequences.h
+        frontend/check_attributes.c frontend/check_product_rules.c frontend/attribute_scheduler/common.h
+        frontend/attribute_scheduler/collect_visits.c frontend/attribute_scheduler/collect_visits.h
+        frontend/attribute_scheduler/graph.c frontend/attribute_scheduler/graph.h
+        frontend/attribute_scheduler/queue.c frontend/attribute_scheduler/queue.h
+        frontend/attribute_scheduler/fill_visit_stubs.c frontend/attribute_scheduler/fill_visit_stubs.h
+        frontend/attribute_scheduler/generate_visits.c frontend/attribute_scheduler/generate_visits.h
         frontend/attribute_scheduler/schedule_attribute_visits.c dot/gen_dot_ag.c dot/gen_dot_ag.h
         dynamic_backend/gen_node_structs.c ${FLEX_DslTokens_OUTPUTS} ${BISON_DslParser_OUTPUTS} gen_helpers/format.c
         dynamic_backend/gen_node_macros.c dynamic_backend/gen_node_init_funcs.c dynamic_backend/gen_node_base_and_union.c
