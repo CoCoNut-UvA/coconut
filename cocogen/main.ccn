@@ -809,6 +809,7 @@ node visit {
 
 node visit_sequence_eval {
     children {
+        visit_sequence_eval alt, // Used for nodesets which contain multiple equations
         visit_sequence next
     },
     attributes {
@@ -818,6 +819,7 @@ node visit_sequence_eval {
 
 node visit_sequence_visit {
     children {
+        visit_sequence_visit alt, // Used for nodesets which contain multiple visits
         visit_sequence next
     },
     attributes {

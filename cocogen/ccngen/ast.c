@@ -45,10 +45,11 @@ node_st *ASTvisit_sequence_visit(node_st *child, node_st *visit) {
     node_st *node = NewNode();
     node->data.N_visit_sequence_visit = MEMmalloc(sizeof(struct NODE_DATA_VISIT_SEQUENCE_VISIT));
     NODE_TYPE(node) = NT_VISIT_SEQUENCE_VISIT;
+    VISIT_SEQUENCE_VISIT_ALT(node) = NULL;
     VISIT_SEQUENCE_VISIT_NEXT(node) = NULL;
     VISIT_SEQUENCE_VISIT_CHILD(node) = child;
     VISIT_SEQUENCE_VISIT_VISIT(node) = visit;
-    NODE_NUMCHILDREN(node) = 1;
+    NODE_NUMCHILDREN(node) = 2;
     NODE_CHILDREN(node) = node->data.N_visit_sequence_visit->visit_sequence_visit_children.visit_sequence_visit_children_at;
     return node;}
 
@@ -56,9 +57,10 @@ node_st *ASTvisit_sequence_eval(node_st *attribute) {
     node_st *node = NewNode();
     node->data.N_visit_sequence_eval = MEMmalloc(sizeof(struct NODE_DATA_VISIT_SEQUENCE_EVAL));
     NODE_TYPE(node) = NT_VISIT_SEQUENCE_EVAL;
+    VISIT_SEQUENCE_EVAL_ALT(node) = NULL;
     VISIT_SEQUENCE_EVAL_NEXT(node) = NULL;
     VISIT_SEQUENCE_EVAL_ATTRIBUTE(node) = attribute;
-    NODE_NUMCHILDREN(node) = 1;
+    NODE_NUMCHILDREN(node) = 2;
     NODE_CHILDREN(node) = node->data.N_visit_sequence_eval->visit_sequence_eval_children.visit_sequence_eval_children_at;
     return node;}
 

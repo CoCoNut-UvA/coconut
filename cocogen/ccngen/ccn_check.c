@@ -173,6 +173,13 @@ struct ccn_node *CHKienum(struct ccn_node *arg_node) {
 struct ccn_node *CHKvisit_sequence_visit(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
     (void)action_id;
+    if (VISIT_SEQUENCE_VISIT_ALT(arg_node)) {
+        if (NODE_TYPE(VISIT_SEQUENCE_VISIT_ALT(arg_node)) != NT_VISIT_SEQUENCE_VISIT) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(alt) of node(visit_sequence_visit) has disallowed type(%s) ", nodetypeToName(VISIT_SEQUENCE_VISIT_ALT(arg_node)));
+        }
+
+    }
+
     if (VISIT_SEQUENCE_VISIT_NEXT(arg_node)) {
         if (!TypeIsvisit_sequence(VISIT_SEQUENCE_VISIT_NEXT(arg_node))) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(visit_sequence_visit) has disallowed type(%s) ", nodetypeToName(VISIT_SEQUENCE_VISIT_NEXT(arg_node)));
@@ -195,6 +202,13 @@ struct ccn_node *CHKvisit_sequence_visit(struct ccn_node *arg_node) {
 struct ccn_node *CHKvisit_sequence_eval(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
     (void)action_id;
+    if (VISIT_SEQUENCE_EVAL_ALT(arg_node)) {
+        if (NODE_TYPE(VISIT_SEQUENCE_EVAL_ALT(arg_node)) != NT_VISIT_SEQUENCE_EVAL) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(alt) of node(visit_sequence_eval) has disallowed type(%s) ", nodetypeToName(VISIT_SEQUENCE_EVAL_ALT(arg_node)));
+        }
+
+    }
+
     if (VISIT_SEQUENCE_EVAL_NEXT(arg_node)) {
         if (!TypeIsvisit_sequence(VISIT_SEQUENCE_EVAL_NEXT(arg_node))) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(visit_sequence_eval) has disallowed type(%s) ", nodetypeToName(VISIT_SEQUENCE_EVAL_NEXT(arg_node)));

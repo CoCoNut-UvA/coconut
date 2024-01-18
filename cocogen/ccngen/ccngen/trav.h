@@ -4,6 +4,7 @@ node_st *TRAVrule(node_st *node);
 node_st *TRAVtarget_func(node_st *node);
 node_st *TRAVinode(node_st *node);
 node_st *TRAVvisit(node_st *node);
+node_st *TRAValt(node_st *node);
 node_st *TRAVstable(node_st *node);
 node_st *TRAVinputs(node_st *node);
 node_st *TRAVitraversals(node_st *node);

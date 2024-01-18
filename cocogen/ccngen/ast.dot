@@ -7,10 +7,12 @@ ienum -> id[label="name"]
 ienum -> id[label="iprefix"]
 ienum -> ienum[label="next"]
 visit_sequence_visit;
+visit_sequence_visit -> visit_sequence_visit[label="alt"]
 visit_sequence_visit -> visit_sequence[label="next"]
 visit_sequence_visit -> child[color=red, label="child"]
 visit_sequence_visit -> visit[color=red, label="visit"]
 visit_sequence_eval;
+visit_sequence_eval -> visit_sequence_eval[label="alt"]
 visit_sequence_eval -> visit_sequence[label="next"]
 visit_sequence_eval -> attribute_reference[color=red, label="attribute"]
 visit;

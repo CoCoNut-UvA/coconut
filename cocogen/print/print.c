@@ -295,6 +295,9 @@ node_st *PRTattribute_reference(node_st *node)
         printf("<this>");
     } else {
         printf("%s", ID_ORIG(ATTRIBUTE_REFERENCE_INODE(node)));
+        if (ATTRIBUTE_REFERENCE_NODE_TYPE(node)) {
+            printf("<%s>", ID_ORIG(ATTRIBUTE_REFERENCE_NODE_TYPE(node)));
+        }
     }
     printf(".%s", ID_ORIG(ATTRIBUTE_REFERENCE_IATTRIBUTE(node)));
     return node;
@@ -476,7 +479,15 @@ node_st *PRTvisit_sequence_eval(node_st *node)
     PrintIndent();
     printf("eval ");
     TRAVdo(VISIT_SEQUENCE_EVAL_ATTRIBUTE(node));
-    printf("\n");
+
+    if (VISIT_SEQUENCE_EVAL_ALT(node)) {
+        printf(" or\n");
+        INDENT;
+        TRAVdo(VISIT_SEQUENCE_EVAL_ALT(node));
+        UNINDENT;
+    } else {
+        printf("\n");
+    }
     TRAVopt(VISIT_SEQUENCE_EVAL_NEXT(node));
     return node;
 }
@@ -488,9 +499,20 @@ node_st *PRTvisit_sequence_visit(node_st *node)
 {
     node_st *visit = VISIT_SEQUENCE_VISIT_VISIT(node);
     PrintIndent();
+    if (visit) {
     printf("visit %s %s_%lu", ID_LWR(CHILD_NAME(VISIT_SEQUENCE_VISIT_CHILD(node))),
                             ID_LWR(INODE_NAME(VISIT_INODE(visit))), VISIT_INDEX(visit));
-    printf("\n");
-    TRAVopt(VISIT_SEQUENCE_EVAL_NEXT(node));
+    }
+
+    if (VISIT_SEQUENCE_VISIT_ALT(node)) {
+        printf(" or\n");
+        INDENT;
+        TRAVdo(VISIT_SEQUENCE_VISIT_ALT(node));
+        UNINDENT;
+    } else {
+        printf("\n");
+    }
+
+    TRAVopt(VISIT_SEQUENCE_VISIT_NEXT(node));
     return node;
 }

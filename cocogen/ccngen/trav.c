@@ -58,6 +58,24 @@ node_st *TRAVvisit(node_st *node) {
     return node;
 }
 
+node_st *TRAValt(node_st *node) {
+    switch (NODE_TYPE(node)) {
+        case NT_VISIT_SEQUENCE_EVAL:
+            VISIT_SEQUENCE_EVAL_ALT(node) = TRAVopt(VISIT_SEQUENCE_EVAL_ALT(node));
+            break;
+            break;
+        case NT_VISIT_SEQUENCE_VISIT:
+            VISIT_SEQUENCE_VISIT_ALT(node) = TRAVopt(VISIT_SEQUENCE_VISIT_ALT(node));
+            break;
+            break;
+        default:
+            DBUG_ASSERT(false, "Current target has no child alt");
+            break;
+    }
+
+    return node;
+}
+
 node_st *TRAVstable(node_st *node) {
     switch (NODE_TYPE(node)) {
         case NT_AST:
