@@ -87,7 +87,7 @@ node_st *DGVSvisit(node_st *node) {
             VISIT_ARG_LIST_ATTRIBUTE(VISIT_OUTPUTS(node))));
         OUT_NO_INDENT(" ");
     } else { // multiple output
-        OUT("struct %s_out ");
+        OUT("struct %s_out ", visit_name);
     }
 
     OUT_NO_INDENT("%s(%s *node", visit_name, basic_node_type);
@@ -109,7 +109,15 @@ node_st *DGVSvisit(node_st *node) {
         OUT("return %s_%s;\n", get_node_name_this(output),
             ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(output)));
     } else { // multiple output
-        OUT("struct %s_out visit_output;\n");
+        OUT("struct %s_out visit_output;\n", visit_name);
+        for (node_st *out_arg = VISIT_OUTPUTS(node); out_arg;
+             out_arg = VISIT_ARG_LIST_NEXT(out_arg)) {
+            node_st *output = VISIT_ARG_LIST_ATTRIBUTE(out_arg);
+            OUT("visit_output.%s_%s = %s_%s;\n", get_node_name_this(output),
+                ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(output)),
+                get_node_name_this(output),
+                ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(output)));
+        }
         OUT("return visit_output;\n");
     }
 
@@ -137,7 +145,7 @@ static inline node_st *get_equation(node_st *node, node_st *attribute) {
     return NULL;
 }
 
-static inline void print_args(node_st *equation) {
+static inline void print_equation_args(node_st *equation) {
     GeneratorContext *ctx = globals.gen_ctx;
     for (node_st *arg = EQUATION_IARGS(equation); arg;
          arg = EQUATION_DEPENDENCY_NEXT(arg)) {
@@ -183,32 +191,139 @@ node_st *DGVSvisit_sequence_eval(node_st *node) {
     node_st *attribute = VISIT_SEQUENCE_EVAL_ATTRIBUTE(node);
     OUT("");
     print_type(ATTRIBUTE_REFERENCE_REFERENCE(attribute));
-    OUT_NO_INDENT(" %s_%s = ", get_node_name_this(attribute), ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+    OUT_NO_INDENT(" %s_%s = ", get_node_name_this(attribute),
+                  ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
 
     OUT_NO_INDENT("EVAL%s_%s_%s(", ID_LWR(INODE_NAME(curr_node)),
-        get_node_name_this(attribute),
-        ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+                  get_node_name_this(attribute),
+                  ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
     node_st *equation = get_equation(curr_node, attribute);
     assert(equation != NULL);
-    print_args(equation);
-    OUT_NO_INDENT(");\n");
+    print_equation_args(equation);
+    OUT_NO_INDENT(");\n\n");
 
     TRAVopt(VISIT_SEQUENCE_EVAL_NEXT(node));
     return node;
+}
+
+static void print_visit_call(node_st *node, node_st *outputs, bool partial) {
+    GeneratorContext *ctx = globals.gen_ctx;
+    bool multiple_outputs = false;
+
+    node_st *visit = VISIT_SEQUENCE_VISIT_VISIT(node);
+    char *visit_name =
+        STRfmt("CCNvisit_%s_%d", ID_LWR(INODE_NAME(VISIT_INODE(visit))),
+               VISIT_INDEX(visit));
+
+    node_st *child = VISIT_SEQUENCE_VISIT_CHILD(node);
+    char *child_access = STRfmt("%s_%s(node)", ID_UPR(INODE_NAME(curr_node)),
+                                ID_UPR(CHILD_NAME(child)));
+
+    if (!partial) {
+        OUT("assert(NODE_TYPE(%s) == NT_%s);\n", child_access,
+            ID_UPR(INODE_NAME(VISIT_INODE(visit))));
+    }
+
+    if (VISIT_OUTPUTS(visit)) {
+        if (!VISIT_ARG_LIST_NEXT(VISIT_OUTPUTS(visit))) { // 1 output
+            node_st *attribute = VISIT_ARG_LIST_ATTRIBUTE(VISIT_OUTPUTS(visit));
+            OUT("");
+            if (!partial) {
+                print_type(ATTRIBUTE_REFERENCE_REFERENCE(attribute));
+                OUT_NO_INDENT(" ");
+            }
+            OUT_NO_INDENT("%s_%s = ",
+                          ID_LWR(CHILD_NAME(VISIT_SEQUENCE_VISIT_CHILD(node))),
+                          ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+        } else { // multiple output
+            multiple_outputs = true;
+            OUT("struct %s_out %s_output = ", visit_name, visit_name);
+        }
+    } else {
+        OUT("");
+    }
+
+    OUT_NO_INDENT("%s(%s", visit_name, child_access);
+
+    for (node_st *in_arg = VISIT_INPUTS(visit); in_arg;
+         in_arg = VISIT_ARG_LIST_NEXT(in_arg)) {
+        node_st *attribute = VISIT_ARG_LIST_ATTRIBUTE(in_arg);
+        OUT_NO_INDENT(", %s_%s",
+                      ID_LWR(CHILD_NAME(VISIT_SEQUENCE_VISIT_CHILD(node))),
+                      ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+    }
+
+    OUT_NO_INDENT(");\n");
+
+    if (multiple_outputs) {
+        for (node_st *out_arg = outputs; out_arg;
+             out_arg = VISIT_ARG_LIST_NEXT(out_arg)) {
+            node_st *attribute = VISIT_ARG_LIST_ATTRIBUTE(out_arg);
+            OUT("");
+            if (!partial) {
+                print_type(ATTRIBUTE_REFERENCE_REFERENCE(attribute));
+                OUT_NO_INDENT(" ");
+            }
+            OUT_NO_INDENT("%s_%s = %s_output.%s_%s;\n",
+                          ID_LWR(CHILD_NAME(VISIT_SEQUENCE_VISIT_CHILD(node))),
+                          ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)),
+                          visit_name, get_node_name_this(attribute),
+                          ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+        }
+    }
+
+    MEMfree(visit_name);
+    MEMfree(child_access);
 }
 
 /**
  * @fn DGVSvisit_sequence_visit
  */
 node_st *DGVSvisit_sequence_visit(node_st *node) {
+    GeneratorContext *ctx = globals.gen_ctx;
+    assert(curr_node != NULL);
+    assert(NODE_TYPE(curr_node) == NT_INODE);
+
+    node_st *visit = VISIT_SEQUENCE_VISIT_VISIT(node);
+
+    if (VISIT_SEQUENCE_VISIT_ALT(node)) {
+        // Declare output arguments
+        for (node_st *out_arg = VISIT_OUTPUTS(visit); out_arg;
+             out_arg = VISIT_ARG_LIST_NEXT(out_arg)) {
+            node_st *attribute = VISIT_ARG_LIST_ATTRIBUTE(out_arg);
+            OUT("");
+            print_type(ATTRIBUTE_REFERENCE_REFERENCE(attribute));
+            OUT_NO_INDENT(" %s_%s;\n",
+                          ID_LWR(CHILD_NAME(VISIT_SEQUENCE_VISIT_CHILD(node))),
+                          ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+        }
+
+        char *child_access =
+            STRfmt("%s_%s(node)", ID_UPR(INODE_NAME(curr_node)),
+                   ID_UPR(CHILD_NAME(VISIT_SEQUENCE_VISIT_CHILD(node))));
+        OUT("");
+        for (node_st *alt_visit = node; alt_visit;
+             alt_visit = VISIT_SEQUENCE_VISIT_ALT(alt_visit)) {
+            OUT_NO_INDENT("if (NODE_TYPE(%s) == NT_%s) {\n", child_access,
+                          ID_UPR(INODE_NAME(VISIT_INODE(
+                              VISIT_SEQUENCE_VISIT_VISIT(alt_visit)))));
+            GNindentIncrease(ctx);
+            print_visit_call(alt_visit, VISIT_OUTPUTS(visit), true);
+            GNindentDecrease(ctx);
+            OUT("} else ");
+        }
+
+        OUT_NO_INDENT("{\n");
+        GNindentIncrease(ctx);
+        OUT("assert(false); // Should not be able to get here\n");
+        OUT_END_IF();
+
+        MEMfree(child_access);
+    } else {
+        print_visit_call(node, VISIT_OUTPUTS(visit), false);
+        OUT_NO_INDENT("\n");
+    }
+
     TRAVopt(VISIT_SEQUENCE_VISIT_NEXT(node));
-    // node_st *child = ATTRIBUTE_REFERENCE_INODE(attribute);
-    // if (child == NULL) {
-    //     OUT_NO_INDENT("node");
-    // } else {
-    //     assert(NODE_TYPE(child) == NT_ID);
-    //     OUT_NO_INDENT("%s_%s(node)", ID_UPR(INODE_NAME(curr_node)),
-    //                   ID_UPR(child));
-    // }
     return node;
 }

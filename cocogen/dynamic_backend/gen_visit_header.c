@@ -85,7 +85,7 @@ node_st *DGVFvisit(node_st *node) {
             OUT_NO_INDENT(";\n");
         }
         OUT_STRUCT_END();
-        OUT("struct %s_out ");
+        OUT("struct %s_out ", visit_name);
     }
 
     OUT_NO_INDENT("%s(%s *node", visit_name, basic_node_type);
