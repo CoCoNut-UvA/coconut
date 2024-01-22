@@ -98,6 +98,7 @@ phase dynamicBackend {
         dynamicGenCopyTraversal;
         dynamicGenFreeTraversal;
         dynamicGenCheckTraversal;
+        dynamicGenVisits;
         dynamicGenUserFiles;
         dynamicGenTravFunctions;
     }
@@ -151,6 +152,18 @@ phase dynamicGenAst {
         pass dynamicSwitchToAstSource;
         pass dynamicGenBaseNodeInit;
         dynamicGenNodeConstructor;
+    }
+};
+
+phase dynamicGenVisits {
+    info = "Generate the required files for managing user nodes and AST manipulation",
+    uid = DGV,
+
+    actions {
+        pass dynamic_start_visit_header;
+        dynamicGenVisitFunctions;
+        pass dynamicSwitchToVisitSource;
+        dynamicGenVisitSource;
     }
 };
 
@@ -358,6 +371,18 @@ traversal dynamicGenNodeMacros {
     uid = DGNM,
 
     nodes = {ast, inode, child, attribute}
+};
+
+traversal dynamicGenVisitFunctions {
+    uid = DGVF,
+
+    nodes = {ast, visit}
+};
+
+traversal dynamicGenVisitSource {
+    uid = DGVS,
+
+    nodes = {ast, visit} | visit_sequence
 };
 
 traversal checkExistance {
@@ -796,7 +821,7 @@ node visit_arg_list {
 
 node visit {
     children {
-        visit_sequence sequence { constructor, mandatory },
+        visit_sequence sequence { constructor },
         visit_arg_list inputs { constructor },
         visit_arg_list outputs { constructor },
         visit next
@@ -809,7 +834,6 @@ node visit {
 
 node visit_sequence_eval {
     children {
-        visit_sequence_eval alt, // Used for nodesets which contain multiple equations
         visit_sequence next
     },
     attributes {

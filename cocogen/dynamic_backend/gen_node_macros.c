@@ -42,7 +42,9 @@ node_st *DGNMchild(node_st *node)
 node_st *DGNMattribute(node_st *node)
 {
     GeneratorContext *ctx = globals.gen_ctx;
-    OUT("#define %s_%s(n) ((n)->data.N_%s->%s)\n", curr_node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), curr_node_name, ID_LWR(ATTRIBUTE_NAME(node)));
+    if (curr_node_name) {
+        OUT("#define %s_%s(n) ((n)->data.N_%s->%s)\n", curr_node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), curr_node_name, ID_LWR(ATTRIBUTE_NAME(node)));
+    }
     TRAVchildren(node);
     return node;
 }

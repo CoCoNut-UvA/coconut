@@ -28,7 +28,8 @@ add_executable(cocogen main.c commandline.c frontend/scanAndParse/scan_parse.c
         dynamic_backend/gen_trav_v_table.c dynamic_backend/gen_node_trav_table.c dynamic_backend/gen_pass_table.c
         dynamic_backend/gen_trav_table.c dynamic_backend/gen_system_traversals.c dynamic_backend/gen_action_header.c
         dynamic_backend/gen_trav_actions.c dynamic_backend/gen_copy_traversal.c dynamic_backend/gen_constructor_call.c
-        dynamic_backend/gen_free_traversal.c dynamic_backend/gen_check_traversal.c phase_driver/gen_action_array.c
+        dynamic_backend/gen_free_traversal.c dynamic_backend/gen_check_traversal.c
+        dynamic_backend/gen_visit_header.c dynamic_backend/gen_visit_source.c phase_driver/gen_action_array.c
         phase_driver/gen_ids_table.c phase_driver/gen_action_array_header.c filesystem/utils.c filesystem/utils.h
         dynamic_backend/file_switchers.c frontend/reachability.c frontend/reachability.h
         dynamic_backend/gen_trav_structs.c dynamic_backend/gen_trav_data_getters.c dynamic_backend/gen_trav_data_ctors.c

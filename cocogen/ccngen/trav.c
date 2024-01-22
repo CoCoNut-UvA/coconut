@@ -60,10 +60,6 @@ node_st *TRAVvisit(node_st *node) {
 
 node_st *TRAValt(node_st *node) {
     switch (NODE_TYPE(node)) {
-        case NT_VISIT_SEQUENCE_EVAL:
-            VISIT_SEQUENCE_EVAL_ALT(node) = TRAVopt(VISIT_SEQUENCE_EVAL_ALT(node));
-            break;
-            break;
         case NT_VISIT_SEQUENCE_VISIT:
             VISIT_SEQUENCE_VISIT_ALT(node) = TRAVopt(VISIT_SEQUENCE_VISIT_ALT(node));
             break;

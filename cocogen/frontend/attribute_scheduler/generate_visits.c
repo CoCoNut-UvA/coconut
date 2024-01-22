@@ -359,70 +359,6 @@ add_visit_sequence_visit_nodeset(node_st *st, htable_st *visits_htable,
                                                 original_visit);
 }
 
-static node_st *add_visit_sequence_eval_nodeset_rec(node_st **visit_tail,
-                                                    node_st *st, node_st *expr,
-                                                    node_st *child,
-                                                    node_st *attribute_name) {
-    if (expr == NULL) {
-        return NULL;
-    }
-
-    assert(NODE_TYPE(expr) == NT_SETLITERAL);
-
-    node_st *node = STlookup(st, SETLITERAL_REFERENCE(expr));
-    node_st *attribute = NULL;
-    for (node_st *cand_attribute = get_node_attributes(node); cand_attribute;
-         cand_attribute = ATTRIBUTE_NEXT(cand_attribute)) {
-        if (STReq(ID_LWR(attribute_name),
-                  ID_LWR(ATTRIBUTE_NAME(cand_attribute)))) {
-            attribute = cand_attribute;
-            break;
-        }
-    }
-    assert(attribute != NULL);
-
-    node_st *reference = ASTattribute_reference();
-    ATTRIBUTE_REFERENCE_INODE(reference) = CCNcopy(get_node_name(child));
-    ATTRIBUTE_REFERENCE_IATTRIBUTE(reference) = CCNcopy(attribute_name);
-    ATTRIBUTE_REFERENCE_REFERENCE(reference) = attribute;
-    ATTRIBUTE_REFERENCE_NODE_TYPE(reference) =
-        CCNcopy(get_node_name(get_node_type(node, st)));
-    node_st *sequence = ASTvisit_sequence_eval(reference);
-
-    node_st *left_tail = NULL;
-    node_st *sequence_left = add_visit_sequence_eval_nodeset_rec(
-        &left_tail, st, SETLITERAL_LEFT(expr), child, attribute_name);
-    VISIT_SEQUENCE_EVAL_ALT(sequence) = sequence_left;
-
-    node_st *right_tail = NULL;
-    node_st *sequence_right = add_visit_sequence_eval_nodeset_rec(
-        &right_tail, st, SETLITERAL_RIGHT(expr), child, attribute_name);
-
-    if (left_tail != NULL) {
-        VISIT_SEQUENCE_EVAL_ALT(left_tail) = sequence_right;
-    } else {
-        VISIT_SEQUENCE_EVAL_ALT(sequence) = sequence_right;
-    }
-
-    if (right_tail != NULL) {
-        *visit_tail = right_tail;
-    } else if (left_tail != NULL) {
-        *visit_tail = left_tail;
-    } else {
-        *visit_tail = sequence;
-    }
-
-    return sequence;
-}
-
-static inline node_st *
-add_visit_sequence_eval_nodeset(node_st *st, node_st *expr, node_st *child,
-                                node_st *attribute_name) {
-    node_st *visit_tail = NULL;
-    return add_visit_sequence_eval_nodeset_rec(&visit_tail, st, expr, child,
-                                               attribute_name);
-}
-
 static void add_visit_sequence(node_st **visit_head, node_st **visit_tail,
                                node_st *st, node_st *node,
                                htable_st *visits_htable,
@@ -454,34 +390,29 @@ static void add_visit_sequence(node_st **visit_head, node_st **visit_tail,
             return;
         }
         printf("\n");
-        if (NODE_TYPE(gnode->node) == NT_CHILD &&
-            CHILD_TYPE(gnode->node) == CT_inodeset) {
-            node_st *nodeset = get_node_type(gnode->node, st);
-            sequence = add_visit_sequence_eval_nodeset(
-                st, INODESET_EXPR(nodeset), gnode->node,
-                ATTRIBUTE_NAME(gnode->attribute));
-        } else {
-            node_st *reference = ASTattribute_reference();
+
+        node_st *reference = ASTattribute_reference();
+        if (gnode->node != node) {
             ATTRIBUTE_REFERENCE_INODE(reference) =
                 CCNcopy(get_node_name(gnode->node));
-            ATTRIBUTE_REFERENCE_IATTRIBUTE(reference) =
-                CCNcopy(ATTRIBUTE_NAME(gnode->attribute));
-            ATTRIBUTE_REFERENCE_REFERENCE(reference) = gnode->attribute;
-            ATTRIBUTE_REFERENCE_NODE_TYPE(reference) =
-                CCNcopy(get_node_name(get_node_type(gnode->node, st)));
-
-            sequence = ASTvisit_sequence_eval(reference);
         }
+        ATTRIBUTE_REFERENCE_IATTRIBUTE(reference) =
+            CCNcopy(ATTRIBUTE_NAME(gnode->attribute));
+        ATTRIBUTE_REFERENCE_REFERENCE(reference) = gnode->attribute;
+        ATTRIBUTE_REFERENCE_NODE_TYPE(reference) =
+            CCNcopy(get_node_name(get_node_type(gnode->node, st)));
+
+        sequence = ASTvisit_sequence_eval(reference);
     }
 
     if (*visit_head == NULL) {
         *visit_head = sequence;
         *visit_tail = sequence;
     } else {
-        if (NODE_TYPE(sequence) == NT_VISIT_SEQUENCE_VISIT) {
+        if (NODE_TYPE(*visit_tail) == NT_VISIT_SEQUENCE_VISIT) {
             VISIT_SEQUENCE_VISIT_NEXT(*visit_tail) = sequence;
         } else {
-            assert(NODE_TYPE(sequence) == NT_VISIT_SEQUENCE_EVAL);
+            assert(NODE_TYPE(*visit_tail) == NT_VISIT_SEQUENCE_EVAL);
             VISIT_SEQUENCE_EVAL_NEXT(*visit_tail) = sequence;
         }
 
@@ -562,12 +493,15 @@ static node_st *generate_visit(graph_st *graph, node_st *node, node_st *st,
     return visit_head;
 }
 
-node_st *generate_visit_input(node_st *st, struct visit *visit) {
+static inline node_st *generate_visit_input(node_st *node, node_st *st,
+                                            struct visit *visit) {
     node_st *input_head = NULL;
     for (long i = visit->inputs_length - 1; i >= 0; --i) {
         node_st *attribute = ASTattribute_reference();
-        ATTRIBUTE_REFERENCE_INODE(attribute) =
-            CCNcopy(get_node_name(visit->inputs[i]->node));
+        if (visit->inputs[i]->node != node) {
+            ATTRIBUTE_REFERENCE_INODE(attribute) =
+                CCNcopy(get_node_name(visit->inputs[i]->node));
+        }
         ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute) =
             CCNcopy(ATTRIBUTE_NAME(visit->inputs[i]->attribute));
         ATTRIBUTE_REFERENCE_REFERENCE(attribute) = visit->inputs[i]->attribute;
@@ -581,12 +515,15 @@ node_st *generate_visit_input(node_st *st, struct visit *visit) {
     return input_head;
 }
 
-node_st *generate_visit_output(node_st *st, struct visit *visit) {
+static inline node_st *generate_visit_output(node_st *node, node_st *st,
+                                             struct visit *visit) {
     node_st *output_head = NULL;
     for (long i = visit->outputs_length - 1; i >= 0; --i) {
         node_st *attribute = ASTattribute_reference();
-        ATTRIBUTE_REFERENCE_INODE(attribute) =
-            CCNcopy(get_node_name(visit->outputs[i]->node));
+        if (visit->outputs[i]->node != node) {
+            ATTRIBUTE_REFERENCE_INODE(attribute) =
+                CCNcopy(get_node_name(visit->outputs[i]->node));
+        }
         ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute) =
             CCNcopy(ATTRIBUTE_NAME(visit->outputs[i]->attribute));
         ATTRIBUTE_REFERENCE_REFERENCE(attribute) = visit->outputs[i]->attribute;
@@ -621,9 +558,9 @@ node_st *generate_visits(graph_st *graph, node_st *node, node_st *st,
         node_st *visit = generate_visit(graph, node, st, visits_htable,
                                         child_visits, dependencies, scheduled,
                                         visit_stubs_htable, visits->visits[i]);
-        node_st *visits_node =
-            ASTvisit(visit, generate_visit_input(st, visits->visits[i]),
-                     generate_visit_output(st, visits->visits[i]), node, i);
+        node_st *visits_node = ASTvisit(
+            visit, generate_visit_input(node, st, visits->visits[i]),
+            generate_visit_output(node, st, visits->visits[i]), node, i);
         if (visits_head == NULL) {
             visits_head = visits_node;
             visits_tail = visits_node;

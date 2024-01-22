@@ -479,15 +479,7 @@ node_st *PRTvisit_sequence_eval(node_st *node)
     PrintIndent();
     printf("eval ");
     TRAVdo(VISIT_SEQUENCE_EVAL_ATTRIBUTE(node));
-
-    if (VISIT_SEQUENCE_EVAL_ALT(node)) {
-        printf(" or\n");
-        INDENT;
-        TRAVdo(VISIT_SEQUENCE_EVAL_ALT(node));
-        UNINDENT;
-    } else {
-        printf("\n");
-    }
+    printf("\n");
     TRAVopt(VISIT_SEQUENCE_EVAL_NEXT(node));
     return node;
 }

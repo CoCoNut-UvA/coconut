@@ -52,11 +52,10 @@ struct NODE_DATA_VISIT_SEQUENCE_VISIT {
 struct NODE_DATA_VISIT_SEQUENCE_EVAL {
     union NODE_CHILDREN_VISIT_SEQUENCE_EVAL {
         struct NODE_CHILDREN_VISIT_SEQUENCE_EVAL_STRUCT {
-            node_st *alt;
             node_st *next;
         } visit_sequence_eval_children_st;
 
-        node_st *visit_sequence_eval_children_at[2];
+        node_st *visit_sequence_eval_children_at[1];
     } visit_sequence_eval_children;
 
     node_st *attribute;
@@ -410,7 +409,6 @@ struct NODE_DATA_AST {
 #define VISIT_SEQUENCE_VISIT_NEXT(n) ((n)->data.N_visit_sequence_visit->visit_sequence_visit_children.visit_sequence_visit_children_st.next)
 #define VISIT_SEQUENCE_VISIT_CHILD(n) ((n)->data.N_visit_sequence_visit->child)
 #define VISIT_SEQUENCE_VISIT_VISIT(n) ((n)->data.N_visit_sequence_visit->visit)
-#define VISIT_SEQUENCE_EVAL_ALT(n) ((n)->data.N_visit_sequence_eval->visit_sequence_eval_children.visit_sequence_eval_children_st.alt)
 #define VISIT_SEQUENCE_EVAL_NEXT(n) ((n)->data.N_visit_sequence_eval->visit_sequence_eval_children.visit_sequence_eval_children_st.next)
 #define VISIT_SEQUENCE_EVAL_ATTRIBUTE(n) ((n)->data.N_visit_sequence_eval->attribute)
 #define VISIT_SEQUENCE(n) ((n)->data.N_visit->visit_children.visit_children_st.sequence)

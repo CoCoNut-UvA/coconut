@@ -34,6 +34,31 @@ node_st *dynamicSwitchToAstSource(node_st *root)
     return root;
 }
 
+node_st *dynamic_start_visit_header(node_st *root)
+{
+    GeneratorContext *ctx = globals.gen_ctx;
+    GNopenIncludeFile(ctx, "visit.h");
+
+    OUT("#include \"ccn/ccn_types.h\"\n");
+    OUT("#include \"ccngen/enum.h\"\n");
+    OUT("#include \"ccngen/ast.h\"\n");
+    OUT("#ifdef CCN_USES_UNSAFE\n");
+    OUT("#include \"user_types.h\"\n");
+    OUT("#endif\n");
+
+    return root;
+}
+
+node_st *dynamicSwitchToVisitSource(node_st *root)
+{
+    GeneratorContext *ctx = globals.gen_ctx;
+    GNopenSourceFile(ctx, "visit.c");
+
+    OUT("#include \"ccngen/visit.h\"\n");
+
+    return root;
+}
+
 node_st *dynamicStartEnumHeader(node_st *root)
 {
     GeneratorContext *ctx = globals.gen_ctx;
