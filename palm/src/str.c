@@ -499,7 +499,41 @@ char *STRonNull(char *alt, char *str)
 
 /*******************************************************************************
  *
+ * Description: Create format string of arbitrary length. Use like printf.
+ *
+ * @param fmt format string
+ * @param ... format string arguments
+ *
+ *
+ * @return new allocated formatted string
+ *
+ *******************************************************************************/
+
+char *STRfmt(const char *fmt, ...)
+{
+    char *str;
+    int num;
+    va_list arg_list;
+    va_start(arg_list, fmt);
+    // vsnprintf passed with size 0 will not write any bytes, but returns
+    // the desired length of the format string
+    num = vsnprintf(NULL, 0, fmt, arg_list);
+    va_end(arg_list);
+    DBUG_ASSERT(num >= 0, "Trouble in STRfmt");
+
+    // Allocate array large enough to store format
+    str = (char *)MEMmalloc(sizeof(char) * (num + 1));
+    va_start(arg_list, fmt);
+    num = vsnprintf(str, num + 1, fmt, arg_list);
+    va_end(arg_list);
+    DBUG_ASSERT(num >= 0, "Trouble in STRfmt");
+    return str;
+}
+
+/*******************************************************************************
+ *
  * Description: Convert integer to string in decimal representation.
+ * This is equivalent to `STRfmt("%d", number)`.
  *
  * @param number to convert
  *
@@ -509,14 +543,7 @@ char *STRonNull(char *alt, char *str)
 
 char *STRitoa(int number)
 {
-    char *str;
-    int num;
-
-    str = (char *)MEMmalloc(sizeof(int) * 4);
-    num = snprintf(str, (sizeof(int) * 4) - 1, "%d", number);
-    DBUG_ASSERT(num < (sizeof(int) * 4) - 1, "Trouble in STRitoa");
-
-    return str;
+    return STRfmt("%d", number);
 }
 
 /** <!-- ****************************************************************** -->

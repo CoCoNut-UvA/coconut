@@ -17,6 +17,7 @@ extern int  STRlen(const char *str);
 extern char *STRonNull( char *alt,  char *str);
 extern char *STRsubStr( const char *string, int start, int len);
 extern char *STRnull( );
+extern char *STRfmt(const char *fmt, ...);
 extern char *STRitoa(int number);
 extern char *STRsubstToken( const char *str, const char *token, const char *subst);
 extern void STRtoLower(char *str);
@@ -24,4 +25,3 @@ extern void STRtoUpper(char *str);
 extern char *STRlower(const char *str);
 extern char *STRupper(const char *str);
 #define F_PTR "%p"
-
