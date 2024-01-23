@@ -18,7 +18,7 @@ static int arg_num = 0;
 node_st *DGIFast(node_st *node)
 {
     dgif_print_semicolon = true;
-    TRAVchildren(node);
+    TRAVopt(AST_INODES(node));
     return node;
 }
 

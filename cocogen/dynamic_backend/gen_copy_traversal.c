@@ -39,32 +39,6 @@ node_st *DGCTast(node_st *node)
     return node;
 }
 
-node_st *DGCTiactions(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCTiphase(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCTitraversal(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCTitravdata(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCTipass(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
 node_st *DGCTinode(node_st *node)
 {
     const char *node_argument_name = "arg_node";
@@ -83,17 +57,6 @@ node_st *DGCTinode(node_st *node)
     return node;
 }
 
-node_st *DGCTinodeset(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCTnodeset_child_entry(node_st *node)
-{
-    TRAVchildren(node);
-    return node;
-}
-
 node_st *DGCTchild(node_st *node)
 {
     GeneratorContext *ctx = globals.gen_ctx;
@@ -109,129 +72,13 @@ node_st *DGCTattribute(node_st *node)
     GeneratorContext *ctx = globals.gen_ctx;
     char *node_name = ID_UPR(INODE_NAME(curr_node));
     char *attr_name = ID_UPR(ATTRIBUTE_NAME(node));
-    if (ATTRIBUTE_TYPE(node) == AT_string) {
+    if (ATTRIBUTE_IS_INHERITED(node) || ATTRIBUTE_IS_SYNTHESIZED(node)) {
+        // TODO
+    } else if (ATTRIBUTE_TYPE(node) == AT_string) {
         OUT_FIELD("%s_%s(new_node) = STRcpy(%s_%s(arg_node))", node_name, attr_name, node_name, attr_name);
     } else {
         OUT_FIELD("%s_%s(new_node) = %s_%s(arg_node)", node_name, attr_name, node_name, attr_name);
     }
     TRAVopt(ATTRIBUTE_NEXT(node));
-    return node;
-}
-
-/**
- * @fn DGCTequation
- */
-node_st *DGCTequation(node_st *node)
-{
-    CTI(CTI_WARN, true, "Not implemented DGCTequation");
-    TRAVchildren(node);
-    return node;
-}
-
-/**
- * @fn DGCTequation_dependency
- */
-node_st *DGCTequation_dependency(node_st *node)
-{
-    CTI(CTI_WARN, true, "Not implemented DGCTequation_dependency");
-    TRAVchildren(node);
-    return node;
-}
-
-/**
- * @fn DGCTattribute_reference
- */
-node_st *DGCTattribute_reference(node_st *node)
-{
-    CTI(CTI_WARN, true, "Not implemented DGCTattribute_reference");
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGCTste(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGCTsetoperation(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGCTsetliteral(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGCTsetreference(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGCTienum(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCTid(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCTilifetime(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCTlifetime_range(node_st *node)
-{
-    return node;
-}
-
-/**
- * @fn DGCTvisit_arg_list
- */
-node_st *DGCTvisit_arg_list(node_st *node)
-{
-    CTI(CTI_WARN, true, "Not implemented DGCTvisit_arg_list");
-    TRAVchildren(node);
-    return node;
-}
-
-/**
- * @fn DGCTvisit
- */
-node_st *DGCTvisit(node_st *node)
-{
-    CTI(CTI_WARN, true, "Not implemented DGCTvisit");
-    TRAVchildren(node);
-    return node;
-}
-
-/**
- * @fn DGCTvisit_sequence_eval
- */
-node_st *DGCTvisit_sequence_eval(node_st *node)
-{
-    CTI(CTI_WARN, true, "Not implemented DGCTvisit_sequence_eval");
-    TRAVchildren(node);
-    return node;
-}
-
-/**
- * @fn DGCTvisit_sequence_visit
- */
-node_st *DGCTvisit_sequence_visit(node_st *node)
-{
-    CTI(CTI_WARN, true, "Not implemented DGCTvisit_sequence_visit");
-    TRAVchildren(node);
     return node;
 }

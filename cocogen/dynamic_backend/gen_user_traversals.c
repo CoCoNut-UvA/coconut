@@ -20,7 +20,7 @@ node_st *DUGTitraversal(node_st *node)
 {
     GeneratorContext *ctx = globals.gen_ctx;
     {
-        char *filename = STRcatn(3, "trav_", ID_LWR(ITRAVERSAL_NAME(node)), ".c");
+        char *filename = STRfmt("trav_%s.c", ID_LWR(ITRAVERSAL_NAME(node)));
         GNopenUserFile(ctx, filename);
         MEMfree(filename);
     }

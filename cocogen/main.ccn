@@ -149,6 +149,7 @@ phase dynamicGenAst {
         dynamicGenNodeInitFunctions;
         dynamicGenNodeUnion;
         pass dynamicGenBaseNode;
+        dynamicGenNodesetAccessFunctions;
         pass dynamicSwitchToAstSource;
         pass dynamicGenBaseNodeInit;
         dynamicGenNodeConstructor;
@@ -160,6 +161,9 @@ phase dynamicGenVisits {
     uid = DGV,
 
     actions {
+        pass dynamic_start_equation_header;
+        dynamicGenEquationIncludes;
+        dynamicGenEquationFunctions;
         pass dynamic_start_visit_header;
         dynamicGenVisitFunctions;
         pass dynamicSwitchToVisitSource;
@@ -182,6 +186,13 @@ phase dynamicGenUserFiles {
             uid = DUGT,
             nodes = {
                 ast, itraversal, inode, id
+            }
+        };
+
+        traversal dynamicUserGenEquations {
+            uid = DUGE,
+            nodes = {
+                ast, inode, equation
             }
         };
     }
@@ -286,7 +297,9 @@ traversal dynamicGenConstructorCall {
 };
 
 traversal dynamicGenCopyTraversal {
-    uid = DGCT
+    uid = DGCT,
+
+    nodes = {ast, inode, child, attribute}
 };
 
 traversal dynamicGenTravActions {
@@ -367,10 +380,29 @@ traversal dynamicGenNodeStructs {
     nodes = {ast, inode, child, attribute}
 };
 
+
+traversal dynamicGenNodesetAccessFunctions {
+    uid = DGNAF,
+
+    nodes = {ast, inodeset, attribute, setliteral}
+};
+
 traversal dynamicGenNodeMacros {
     uid = DGNM,
 
-    nodes = {ast, inode, child, attribute}
+    nodes = {ast, inode, inodeset, child, attribute}
+};
+
+traversal dynamicGenEquationIncludes {
+    uid = DGEI,
+
+    nodes = {ast, inode}
+};
+
+traversal dynamicGenEquationFunctions {
+    uid = DGEF,
+
+    nodes = {ast, inode, equation}
 };
 
 traversal dynamicGenVisitFunctions {

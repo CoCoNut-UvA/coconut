@@ -15,7 +15,7 @@ static node_st *ste = NULL;
 node_st *DGNSast(node_st *node)
 {
     ste = AST_STABLE(node);
-    TRAVchildren(node);
+    TRAVopt(AST_INODES(node));
     return node;
 }
 
