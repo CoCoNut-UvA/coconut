@@ -11,7 +11,7 @@ void CopyBaseNode(node_st *target, node_st *source) {
 }
 
 ccn_node *CPYid(ccn_node *arg_node) {
-    ccn_node *new_node =ASTid(    NULL    ,     NULL    ,     NULL);
+    ccn_node *new_node = ASTid(NULL, NULL, NULL);
     CopyBaseNode(new_node, arg_node);
     ID_NEXT(new_node) = TRAVopt(ID_NEXT(arg_node));
     ID_ORIG(new_node) = STRcpy(ID_ORIG(arg_node));
@@ -24,7 +24,7 @@ ccn_node *CPYid(ccn_node *arg_node) {
 }
 
 ccn_node *CPYienum(ccn_node *arg_node) {
-    ccn_node *new_node =ASTienum(    NULL    ,     NULL    ,     NULL    ,     NULL);
+    ccn_node *new_node = ASTienum(NULL, NULL, NULL, NULL);
     CopyBaseNode(new_node, arg_node);
     IENUM_VALS(new_node) = TRAVopt(IENUM_VALS(arg_node));
     IENUM_NAME(new_node) = TRAVopt(IENUM_NAME(arg_node));
@@ -35,7 +35,7 @@ ccn_node *CPYienum(ccn_node *arg_node) {
 }
 
 ccn_node *CPYvisit_sequence_visit(ccn_node *arg_node) {
-    ccn_node *new_node =ASTvisit_sequence_visit(    NULL    ,     NULL);
+    ccn_node *new_node = ASTvisit_sequence_visit(NULL, NULL);
     CopyBaseNode(new_node, arg_node);
     VISIT_SEQUENCE_VISIT_ALT(new_node) = TRAVopt(VISIT_SEQUENCE_VISIT_ALT(arg_node));
     VISIT_SEQUENCE_VISIT_NEXT(new_node) = TRAVopt(VISIT_SEQUENCE_VISIT_NEXT(arg_node));
@@ -45,7 +45,7 @@ ccn_node *CPYvisit_sequence_visit(ccn_node *arg_node) {
 }
 
 ccn_node *CPYvisit_sequence_eval(ccn_node *arg_node) {
-    ccn_node *new_node =ASTvisit_sequence_eval(    NULL);
+    ccn_node *new_node = ASTvisit_sequence_eval(NULL);
     CopyBaseNode(new_node, arg_node);
     VISIT_SEQUENCE_EVAL_NEXT(new_node) = TRAVopt(VISIT_SEQUENCE_EVAL_NEXT(arg_node));
     VISIT_SEQUENCE_EVAL_ATTRIBUTE(new_node) = VISIT_SEQUENCE_EVAL_ATTRIBUTE(arg_node);
@@ -53,7 +53,7 @@ ccn_node *CPYvisit_sequence_eval(ccn_node *arg_node) {
 }
 
 ccn_node *CPYvisit(ccn_node *arg_node) {
-    ccn_node *new_node =ASTvisit(    NULL    ,     NULL    ,     NULL    ,     NULL    ,     0);
+    ccn_node *new_node = ASTvisit(NULL, NULL, NULL, NULL, 0);
     CopyBaseNode(new_node, arg_node);
     VISIT_SEQUENCE(new_node) = TRAVopt(VISIT_SEQUENCE(arg_node));
     VISIT_INPUTS(new_node) = TRAVopt(VISIT_INPUTS(arg_node));
@@ -65,7 +65,7 @@ ccn_node *CPYvisit(ccn_node *arg_node) {
 }
 
 ccn_node *CPYvisit_arg_list(ccn_node *arg_node) {
-    ccn_node *new_node =ASTvisit_arg_list(    NULL);
+    ccn_node *new_node = ASTvisit_arg_list(NULL);
     CopyBaseNode(new_node, arg_node);
     VISIT_ARG_LIST_ATTRIBUTE(new_node) = TRAVopt(VISIT_ARG_LIST_ATTRIBUTE(arg_node));
     VISIT_ARG_LIST_NEXT(new_node) = TRAVopt(VISIT_ARG_LIST_NEXT(arg_node));
@@ -73,7 +73,7 @@ ccn_node *CPYvisit_arg_list(ccn_node *arg_node) {
 }
 
 ccn_node *CPYattribute_reference(ccn_node *arg_node) {
-    ccn_node *new_node =ASTattribute_reference();
+    ccn_node *new_node = ASTattribute_reference();
     CopyBaseNode(new_node, arg_node);
     ATTRIBUTE_REFERENCE_INODE(new_node) = TRAVopt(ATTRIBUTE_REFERENCE_INODE(arg_node));
     ATTRIBUTE_REFERENCE_IATTRIBUTE(new_node) = TRAVopt(ATTRIBUTE_REFERENCE_IATTRIBUTE(arg_node));
@@ -84,7 +84,7 @@ ccn_node *CPYattribute_reference(ccn_node *arg_node) {
 }
 
 ccn_node *CPYequation_dependency(ccn_node *arg_node) {
-    ccn_node *new_node =ASTequation_dependency();
+    ccn_node *new_node = ASTequation_dependency();
     CopyBaseNode(new_node, arg_node);
     EQUATION_DEPENDENCY_IATTRIBUTE(new_node) = TRAVopt(EQUATION_DEPENDENCY_IATTRIBUTE(arg_node));
     EQUATION_DEPENDENCY_NEXT(new_node) = TRAVopt(EQUATION_DEPENDENCY_NEXT(arg_node));
@@ -92,7 +92,7 @@ ccn_node *CPYequation_dependency(ccn_node *arg_node) {
 }
 
 ccn_node *CPYequation(ccn_node *arg_node) {
-    ccn_node *new_node =ASTequation();
+    ccn_node *new_node = ASTequation();
     CopyBaseNode(new_node, arg_node);
     EQUATION_RULE(new_node) = TRAVopt(EQUATION_RULE(arg_node));
     EQUATION_IARGS(new_node) = TRAVopt(EQUATION_IARGS(arg_node));
@@ -101,7 +101,7 @@ ccn_node *CPYequation(ccn_node *arg_node) {
 }
 
 ccn_node *CPYattribute(ccn_node *arg_node) {
-    ccn_node *new_node =ASTattribute();
+    ccn_node *new_node = ASTattribute();
     CopyBaseNode(new_node, arg_node);
     ATTRIBUTE_NAME(new_node) = TRAVopt(ATTRIBUTE_NAME(arg_node));
     ATTRIBUTE_TYPE_REFERENCE(new_node) = TRAVopt(ATTRIBUTE_TYPE_REFERENCE(arg_node));
@@ -116,7 +116,7 @@ ccn_node *CPYattribute(ccn_node *arg_node) {
 }
 
 ccn_node *CPYitravdata(ccn_node *arg_node) {
-    ccn_node *new_node =ASTitravdata(    NULL);
+    ccn_node *new_node = ASTitravdata(NULL);
     CopyBaseNode(new_node, arg_node);
     ITRAVDATA_NAME(new_node) = TRAVopt(ITRAVDATA_NAME(arg_node));
     ITRAVDATA_TYPE_REFERENCE(new_node) = TRAVopt(ITRAVDATA_TYPE_REFERENCE(arg_node));
@@ -127,7 +127,7 @@ ccn_node *CPYitravdata(ccn_node *arg_node) {
 }
 
 ccn_node *CPYsetoperation(ccn_node *arg_node) {
-    ccn_node *new_node =ASTsetoperation(    NULL    ,     NULL    ,     0);
+    ccn_node *new_node = ASTsetoperation(NULL, NULL, 0);
     CopyBaseNode(new_node, arg_node);
     SETOPERATION_LEFT(new_node) = TRAVopt(SETOPERATION_LEFT(arg_node));
     SETOPERATION_RIGHT(new_node) = TRAVopt(SETOPERATION_RIGHT(arg_node));
@@ -136,7 +136,7 @@ ccn_node *CPYsetoperation(ccn_node *arg_node) {
 }
 
 ccn_node *CPYsetliteral(ccn_node *arg_node) {
-    ccn_node *new_node =ASTsetliteral(    NULL);
+    ccn_node *new_node = ASTsetliteral(NULL);
     CopyBaseNode(new_node, arg_node);
     SETLITERAL_REFERENCE(new_node) = TRAVopt(SETLITERAL_REFERENCE(arg_node));
     SETLITERAL_LEFT(new_node) = TRAVopt(SETLITERAL_LEFT(arg_node));
@@ -145,14 +145,14 @@ ccn_node *CPYsetliteral(ccn_node *arg_node) {
 }
 
 ccn_node *CPYsetreference(ccn_node *arg_node) {
-    ccn_node *new_node =ASTsetreference();
+    ccn_node *new_node = ASTsetreference();
     CopyBaseNode(new_node, arg_node);
     SETREFERENCE_REFERENCE(new_node) = TRAVopt(SETREFERENCE_REFERENCE(arg_node));
     return new_node;
 }
 
 ccn_node *CPYste(ccn_node *arg_node) {
-    ccn_node *new_node =ASTste();
+    ccn_node *new_node = ASTste();
     CopyBaseNode(new_node, arg_node);
     STE_NEXT(new_node) = TRAVopt(STE_NEXT(arg_node));
     STE_KEY(new_node) = STE_KEY(arg_node);
@@ -161,7 +161,7 @@ ccn_node *CPYste(ccn_node *arg_node) {
 }
 
 ccn_node *CPYchild(ccn_node *arg_node) {
-    ccn_node *new_node =ASTchild(    NULL);
+    ccn_node *new_node = ASTchild(NULL);
     CopyBaseNode(new_node, arg_node);
     CHILD_NAME(new_node) = TRAVopt(CHILD_NAME(arg_node));
     CHILD_LIFETIMES(new_node) = TRAVopt(CHILD_LIFETIMES(arg_node));
@@ -174,7 +174,7 @@ ccn_node *CPYchild(ccn_node *arg_node) {
 }
 
 ccn_node *CPYlifetime_range(ccn_node *arg_node) {
-    ccn_node *new_node =ASTlifetime_range();
+    ccn_node *new_node = ASTlifetime_range();
     CopyBaseNode(new_node, arg_node);
     LIFETIME_RANGE_TARGET(new_node) = TRAVopt(LIFETIME_RANGE_TARGET(arg_node));
     LIFETIME_RANGE_INCLUSIVE(new_node) = LIFETIME_RANGE_INCLUSIVE(arg_node);
@@ -184,7 +184,7 @@ ccn_node *CPYlifetime_range(ccn_node *arg_node) {
 }
 
 ccn_node *CPYilifetime(ccn_node *arg_node) {
-    ccn_node *new_node =ASTilifetime();
+    ccn_node *new_node = ASTilifetime();
     CopyBaseNode(new_node, arg_node);
     ILIFETIME_BEGIN(new_node) = TRAVopt(ILIFETIME_BEGIN(arg_node));
     ILIFETIME_END(new_node) = TRAVopt(ILIFETIME_END(arg_node));
@@ -194,7 +194,7 @@ ccn_node *CPYilifetime(ccn_node *arg_node) {
 }
 
 ccn_node *CPYnodeset_child_entry(ccn_node *arg_node) {
-    ccn_node *new_node =ASTnodeset_child_entry(    NULL);
+    ccn_node *new_node = ASTnodeset_child_entry(NULL);
     CopyBaseNode(new_node, arg_node);
     NODESET_CHILD_ENTRY_NEXT(new_node) = TRAVopt(NODESET_CHILD_ENTRY_NEXT(arg_node));
     NODESET_CHILD_ENTRY_REFERENCE(new_node) = NODESET_CHILD_ENTRY_REFERENCE(arg_node);
@@ -202,7 +202,7 @@ ccn_node *CPYnodeset_child_entry(ccn_node *arg_node) {
 }
 
 ccn_node *CPYinodeset(ccn_node *arg_node) {
-    ccn_node *new_node =ASTinodeset();
+    ccn_node *new_node = ASTinodeset();
     CopyBaseNode(new_node, arg_node);
     INODESET_NAME(new_node) = TRAVopt(INODESET_NAME(arg_node));
     INODESET_EXPR(new_node) = TRAVopt(INODESET_EXPR(arg_node));
@@ -216,7 +216,7 @@ ccn_node *CPYinodeset(ccn_node *arg_node) {
 }
 
 ccn_node *CPYinode(ccn_node *arg_node) {
-    ccn_node *new_node =ASTinode(    NULL    ,     NULL);
+    ccn_node *new_node = ASTinode(NULL, NULL);
     CopyBaseNode(new_node, arg_node);
     INODE_NAME(new_node) = TRAVopt(INODE_NAME(arg_node));
     INODE_NEXT(new_node) = TRAVopt(INODE_NEXT(arg_node));
@@ -232,7 +232,7 @@ ccn_node *CPYinode(ccn_node *arg_node) {
 }
 
 ccn_node *CPYipass(ccn_node *arg_node) {
-    ccn_node *new_node =ASTipass(    NULL    ,     NULL);
+    ccn_node *new_node = ASTipass(NULL, NULL);
     CopyBaseNode(new_node, arg_node);
     IPASS_NAME(new_node) = TRAVopt(IPASS_NAME(arg_node));
     IPASS_IPREFIX(new_node) = TRAVopt(IPASS_IPREFIX(arg_node));
@@ -243,7 +243,7 @@ ccn_node *CPYipass(ccn_node *arg_node) {
 }
 
 ccn_node *CPYitraversal(ccn_node *arg_node) {
-    ccn_node *new_node =ASTitraversal(    NULL);
+    ccn_node *new_node = ASTitraversal(NULL);
     CopyBaseNode(new_node, arg_node);
     ITRAVERSAL_NAME(new_node) = TRAVopt(ITRAVERSAL_NAME(arg_node));
     ITRAVERSAL_IPREFIX(new_node) = TRAVopt(ITRAVERSAL_IPREFIX(arg_node));
@@ -256,7 +256,7 @@ ccn_node *CPYitraversal(ccn_node *arg_node) {
 }
 
 ccn_node *CPYiphase(ccn_node *arg_node) {
-    ccn_node *new_node =ASTiphase(    NULL    ,     0);
+    ccn_node *new_node = ASTiphase(NULL, 0);
     CopyBaseNode(new_node, arg_node);
     IPHASE_NAME(new_node) = TRAVopt(IPHASE_NAME(arg_node));
     IPHASE_IPREFIX(new_node) = TRAVopt(IPHASE_IPREFIX(arg_node));
@@ -270,7 +270,7 @@ ccn_node *CPYiphase(ccn_node *arg_node) {
 }
 
 ccn_node *CPYiactions(ccn_node *arg_node) {
-    ccn_node *new_node =ASTiactions();
+    ccn_node *new_node = ASTiactions();
     CopyBaseNode(new_node, arg_node);
     IACTIONS_REFERENCE(new_node) = TRAVopt(IACTIONS_REFERENCE(arg_node));
     IACTIONS_NEXT(new_node) = TRAVopt(IACTIONS_NEXT(arg_node));
@@ -279,7 +279,7 @@ ccn_node *CPYiactions(ccn_node *arg_node) {
 }
 
 ccn_node *CPYast(ccn_node *arg_node) {
-    ccn_node *new_node =ASTast();
+    ccn_node *new_node = ASTast();
     CopyBaseNode(new_node, arg_node);
     AST_IPHASES(new_node) = TRAVopt(AST_IPHASES(arg_node));
     AST_ITRAVERSALS(new_node) = TRAVopt(AST_ITRAVERSALS(arg_node));

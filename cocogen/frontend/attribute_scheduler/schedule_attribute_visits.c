@@ -11,6 +11,7 @@
 // enum to GRnode and use in hash?)
 
 #include <assert.h>
+#include <stdio.h>
 
 #include "ccn/ccn.h"
 #include "ccngen/ast.h"
@@ -22,6 +23,7 @@
 #include "frontend/attribute_scheduler/graph.h"
 #include "frontend/attribute_scheduler/queue.h"
 #include "frontend/symboltable.h"
+#include "globals.h"
 #include "palm/ctinfo.h"
 #include "palm/hash_table.h"
 #include "palm/memory.h"
@@ -109,8 +111,8 @@ static bool hash_edge_equal(void *ptr1, void *ptr2) {
            GRnode_equal(edge1->second, edge2->second);
 }
 
-static inline struct GRedge *HTlookup_edge(htable_st *table, struct GRnode *first,
-                                    struct GRnode *second) {
+static inline struct GRedge *
+HTlookup_edge(htable_st *table, struct GRnode *first, struct GRnode *second) {
     struct GRedge lookup = {.first = first, .second = second};
     return HTlookup(table, &lookup);
 }
@@ -120,12 +122,14 @@ static inline void HTinsert_edge(htable_st *table, struct GRedge *edge) {
     HTinsert(table, edge, edge);
 }
 
-static inline struct GRnode *HTlookup_graph_node(node_st *node, node_st *attribute) {
+static inline struct GRnode *HTlookup_graph_node(node_st *node,
+                                                 node_st *attribute) {
     struct GRnode lookup = {.node = node, .attribute = attribute};
     return HTlookup(DATA_SAV_GET()->graph_nodes, &lookup);
 }
 
-static inline struct GRnode *HTinsert_graph_node(node_st *node, node_st *attribute) {
+static inline struct GRnode *HTinsert_graph_node(node_st *node,
+                                                 node_st *attribute) {
     struct GRnode *found = HTlookup_graph_node(node, attribute);
     if (found) {
         return found;
@@ -670,18 +674,31 @@ node_st *SAVast(node_st *node) {
         HTinsert(partition_tables, nodeset, partition_table);
     }
 
+    char *log_file_name = STRcat(globals.log_dir, "ag_schedule.log");
+    FILE *log_file = fopen(log_file_name, "w");
+    if (!log_file) {
+        CTI(CTI_ERROR, false, "Could not open file: %s\n", log_file_name);
+        CTIabortCompilation();
+    }
+    MEMfree(log_file_name);
+
     // Schedule visit sequences
     htable_st *visit_mdata_htable = HTnew_Ptr(htable_size);
     htable_st *visit_stubs_htable = HTnew_Ptr(htable_size);
     for (node_st *inode = AST_INODES(node); inode != NULL;
          inode = INODE_NEXT(inode)) {
+        fprintf(log_file, "### Generating visits for node %s\n",
+                ID_ORIG(INODE_NAME(inode)));
         struct graph_list *graph = HTlookup(graphs_htable, inode);
 
         node_st *visit_sequences = generate_visits(
             graph->graph, inode, AST_STABLE(node), visits_htable,
-            visit_mdata_htable, visit_stubs_htable);
+            visit_mdata_htable, visit_stubs_htable, log_file);
         INODE_VISIT(inode) = visit_sequences;
+        fprintf(log_file, "\n\n");
     }
+
+    fclose(log_file);
 
     // fill in visit stubs
     for (node_st *inode = AST_INODES(node); inode != NULL;

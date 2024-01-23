@@ -315,7 +315,7 @@ node_st *DGVSvisit_sequence_visit(node_st *node) {
 
         OUT_NO_INDENT("{\n");
         GNindentIncrease(ctx);
-        OUT("assert(false); // Should not be able to get here\n");
+        OUT("DBUG_ASSERT(false, \"Problem in visit\"); // Should not be able to get here\n");
         OUT_END_IF();
 
         MEMfree(child_access);

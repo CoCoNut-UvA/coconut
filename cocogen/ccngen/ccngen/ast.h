@@ -1,7 +1,11 @@
 #pragma once
-#pragma once
+#include <assert.h>
+
 #include "ccn/ccn_types.h"
 #include "ccngen/enum.h"
+#ifdef CCN_USES_UNSAFE
+#include "user_types.h"
+#endif
 typedef struct ccn_node node_st;
 struct NODE_DATA_ID {
     union NODE_CHILDREN_ID {

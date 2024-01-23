@@ -85,7 +85,7 @@ char *nodetypeToName(node_st *node) {
             break;
         default:
             return "Unknown";
-                }
+    }
 
 }
 

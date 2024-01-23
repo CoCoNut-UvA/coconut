@@ -48,7 +48,7 @@ struct visits *collect_visits(graph_st *graph, node_st *node, node_st *st,
     for (struct GRnode *gnode = graph->nodes; gnode != NULL;
          gnode = gnode->next) {
         size_t partition = lookup_partition(partition_tables, st, gnode);
-        size_t visit_index = partition / 2 + partition % 2;
+        size_t visit_index = partition / 2 + partition % 2 - 1;
         if (visit_index >= visits->length) {
             visits->visits = MEMrealloc(
                 visits->visits, (visit_index + 1) * sizeof(struct visit));

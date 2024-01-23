@@ -65,7 +65,7 @@ node_st *dynamicSwitchToVisitSource(node_st *root)
     GeneratorContext *ctx = globals.gen_ctx;
     GNopenSourceFile(ctx, "visit.c");
 
-    OUT("#include <assert.h>\n\n");
+    OUT("#include \"palm/dbug.h\"\n\n");
     OUT("#include \"ccngen/equation.h\"\n");
     OUT("#include \"ccngen/visit.h\"\n");
 

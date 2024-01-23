@@ -7,6 +7,7 @@
  */
 #include <assert.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "ccn/ccn.h"
 #include "ccngen/ast.h"
@@ -15,13 +16,17 @@
 #include "frontend/attribute_scheduler/generate_visits.h"
 #include "frontend/attribute_scheduler/graph.h"
 #include "frontend/attribute_scheduler/queue.h"
+#include "frontend/ctihelp.h"
 #include "frontend/symboltable.h"
+#include "globals.h"
 #include "palm/ctinfo.h"
 #include "palm/hash_table.h"
 #include "palm/memory.h"
 #include "palm/str.h"
 
 static const int htable_size = 200;
+
+static FILE *log = NULL;
 
 struct dependency {
     struct GRnode *dependency;
@@ -94,9 +99,9 @@ static void *free_dependencies_htable(void *item) {
     return NULL;
 }
 
-static inline void print_node(struct GRnode *node) {
-    printf("%s.%s", ID_LWR(get_node_name(node->node)),
-           ID_LWR(ATTRIBUTE_NAME(node->attribute)));
+static inline char *node_to_str(struct GRnode *node) {
+    return STRfmt("%s.%s", ID_LWR(get_node_name(node->node)),
+                  ID_LWR(ATTRIBUTE_NAME(node->attribute)));
 }
 
 static struct dependency *find_dependencies(graph_st *graph,
@@ -115,11 +120,11 @@ static struct dependency *find_dependencies(graph_st *graph,
             dep->next = deps;
             deps = dep;
 
-            printf("[Debug] Found dependency from ");
-            print_node(dep_node);
-            printf(" to ");
-            print_node(node);
-            printf("\n");
+            char *dep_node_name = node_to_str(dep_node);
+            char *to_node_name = node_to_str(node);
+            fprintf(log, "Found dependency from %s to %s\n", dep_node_name, to_node_name);
+            MEMfree(dep_node_name);
+            MEMfree(to_node_name);
         }
     }
 
@@ -127,16 +132,9 @@ static struct dependency *find_dependencies(graph_st *graph,
 }
 
 static long find_visit(struct visits *visits, struct GRnode *node) {
-    // printf("[debug] Looking for attribute ");
-    // print_node(node);
-    // printf(" (%p)\n", (void *)node->attribute);
     for (size_t i = 0; i < visits->length; ++i) {
         struct visit *visit = visits->visits[i];
-        // printf("[debug] Checking visit %lu\n", visit->index);
         for (size_t j = 0; j < visit->outputs_length; ++j) {
-            // printf("[debug] Considering ");
-            // print_node(visit->outputs[j]);
-            // printf(" (%p)\n", (void *)visit->outputs[j]->attribute);
             if (visit->outputs[j]->attribute == node->attribute) {
                 return (long)visit->index;
             }
@@ -179,7 +177,7 @@ static inline void sched_equation_dependency(node_st *node, node_st *st,
                 MEMmalloc(sizeof(struct seq_queue_item));
             new_item->is_visit = true;
             new_item->visit = child_visit;
-            printf("[debug] Unscheduled dependency visit %s %lu, adding to "
+            fprintf(log, "Unscheduled dependency visit %s %lu, adding to "
                    "queue\n",
                    ID_LWR(CHILD_NAME(dep_node)), visit->index);
             QUinsert(queue, new_item);
@@ -191,9 +189,10 @@ static inline void sched_equation_dependency(node_st *node, node_st *st,
                 MEMmalloc(sizeof(struct seq_queue_item));
             new_item->is_visit = false;
             new_item->node = dependency;
-            printf("[debug] Unscheduled dependency attribute ");
-            print_node(new_item->node);
-            printf(", adding to queue\n");
+            char *node_name = node_to_str(new_item->node);
+            fprintf(log, "Unscheduled dependency attribute %s, "
+                    "adding to queue\n", node_name);
+            MEMfree(node_name);
             QUinsert(queue, new_item);
             HTinsert(queued, dependency, (void *)1);
         }
@@ -226,7 +225,7 @@ static bool sched_visit_dependencies(graph_st *graph, node_st *node,
                 MEMmalloc(sizeof(struct seq_queue_item));
             new_item->is_visit = true;
             new_item->visit = prev_child_visit;
-            printf("[debug] Unscheduled dependency visit %s %lu, adding to "
+            fprintf(log, "Unscheduled dependency visit %s %lu, adding to "
                    "queue\n",
                    ID_LWR(CHILD_NAME(prev_child_visit->child)),
                    prev_child_visit->visit->index);
@@ -264,10 +263,9 @@ static bool sched_equation_dependencies(
         if (HTlookup(scheduled, dep->dependency)) {
             continue;
         }
-
-        printf("[debug] Found Unscheduled dependency ");
-        print_node(dep->dependency);
-        printf("\n");
+        char *dep_name = node_to_str(dep->dependency);
+        fprintf(log, "Found Unscheduled dependency %s\n", dep_name);
+        MEMfree(dep_name);
 
         has_unscheduled_dependencies = true;
         sched_equation_dependency(node, st, dep->dependency, visits_htable,
@@ -366,7 +364,7 @@ static void add_visit_sequence(node_st **visit_head, node_st **visit_tail,
                                struct seq_queue_item *item) {
     node_st *sequence;
     if (item->is_visit) {
-        printf("[debug] Visiting visit %s %lu\n",
+        fprintf(log, "Visiting visit %s %lu\n",
                ID_LWR(CHILD_NAME(item->visit->child)),
                item->visit->visit->index);
         // Actual visit will be added later
@@ -382,14 +380,14 @@ static void add_visit_sequence(node_st **visit_head, node_st **visit_tail,
         }
     } else {
         struct GRnode *gnode = item->node;
-        printf("[debug] Evaluating attribute ");
-        print_node(gnode);
+        char *node_name = node_to_str(gnode);
+        fprintf(log, "Evaluating attribute %s", node_name);
         // Will be generated by visit
         if (gnode->node != node && ATTRIBUTE_IS_SYNTHESIZED(gnode->attribute)) {
-            printf("; generated by visit, skipping...\n");
+            fprintf(log, "; generated by visit, skipping...\n");
             return;
         }
-        printf("\n");
+        fprintf(log, "\n");
 
         node_st *reference = ASTattribute_reference();
         if (gnode->node != node) {
@@ -437,9 +435,9 @@ static node_st *generate_visit(graph_st *graph, node_st *node, node_st *st,
         item = MEMmalloc(sizeof(struct seq_queue_item));
         item->is_visit = false;
         item->node = visit->outputs[i];
-        printf("[debug] Adding visit output ");
-        print_node(item->node);
-        printf(" to queue\n");
+        char *node_name = node_to_str(item->node);
+        fprintf(log, "Adding visit output %s to queue\n", node_name);
+        MEMfree(node_name);
         QUinsert(queue, item);
         HTinsert(queued, item->node, (void *)1);
     }
@@ -451,35 +449,94 @@ static node_st *generate_visit(graph_st *graph, node_st *node, node_st *st,
         }
     }
 
+    size_t iterations = 0;
     while ((item = QUpop(queue)) != NULL) {
         if (check_scheduled(scheduled, item)) {
             MEMfree(item);
             continue;
         }
 
+        if (iterations >= globals.ag_scheduler_max_iter) {
+            struct ctinfo info;
+            id_to_info(get_node_name(node), &info);
+            char *scheduled_attributes = STRnull();
+            char *unscheduled_attributes = STRnull();
+            for (struct GRnode *check_node = graph->nodes; check_node;
+                 check_node = check_node->next) {
+                char *new;
+                char *tmp = STRfmt(
+                    "  * %s.%s\n", ID_LWR(get_node_name(check_node->node)),
+                    ID_LWR(ATTRIBUTE_NAME(check_node->attribute)));
+                if (HTlookup(scheduled, check_node)) {
+                    new = STRcat(scheduled_attributes, tmp);
+                    MEMfree(scheduled_attributes);
+                    scheduled_attributes = new;
+                } else {
+                    new = STRcat(unscheduled_attributes, tmp);
+                    MEMfree(unscheduled_attributes);
+                    unscheduled_attributes = new;
+                }
+                MEMfree(tmp);
+            }
+            char *queued_elements = STRnull();
+            do {
+                char *tmp, *new;
+                if (item->is_visit) {
+                    tmp = STRfmt("  * visit %s %lu\n",
+                                 ID_LWR(CHILD_NAME(item->visit->child)),
+                                 item->visit->visit->index);
+                } else {
+                    tmp = STRfmt("  * attribute %s.%s\n",
+                                 ID_LWR(get_node_name(item->node->node)),
+                                 ID_LWR(ATTRIBUTE_NAME(item->node->attribute)));
+                }
+                new = STRcat(queued_elements, tmp);
+                MEMfree(queued_elements);
+                queued_elements = new;
+                MEMfree(tmp);
+            } while ((item = QUpop(queue)) != NULL);
+
+            CTIobj(CTI_ERROR, false, info,
+                   "Loop detected in attribute scheduling for node %s.\n"
+                   "Scheduler has been running for %lu iterations.\n"
+                   "You can increase the max iterations using "
+                   "--ag-scheduler-max-iter.\n"
+                   "Debug information:\n"
+                   "- Scheduled attributes\n%s"
+                   "- Unscheduled attributes\n%s"
+                   "- Queued elements\n%s",
+                   ID_ORIG(INODE_NAME(node)), iterations, scheduled_attributes,
+                   unscheduled_attributes, queued_elements);
+            MEMfree(scheduled_attributes);
+            MEMfree(unscheduled_attributes);
+            MEMfree(queued_elements);
+            fclose(log);
+            CTIabortCompilation();
+        }
+        iterations += 1;
+
         bool has_unscheduled_dependencies;
         if (item->is_visit) {
-            printf("[debug] Considering visit %s %lu\n",
+            fprintf(log, "Considering visit %s %lu\n",
                    ID_LWR(CHILD_NAME(item->visit->child)),
                    item->visit->visit->index);
             has_unscheduled_dependencies = sched_visit_dependencies(
                 graph, node, st, item->visit, visits_htable,
                 child_visits_htable, scheduled, queued, queue);
         } else {
-            printf("[debug] Considering attribute ");
-            print_node(item->node);
-            printf("\n");
+            char *node_name = node_to_str(item->node);
+            fprintf(log, "Considering attribute %s\n", node_name);
+            MEMfree(node_name);
             has_unscheduled_dependencies = sched_equation_dependencies(
                 node, st, item->node, visits_htable, child_visits_htable,
                 dependencies, scheduled, queued, queue);
         }
 
         if (has_unscheduled_dependencies) {
-            printf("[debug] Found unscheduled dependency, skipping...\n");
+            fprintf(log, "Found unscheduled dependency, skipping...\n");
             QUinsert(queue, item);
         } else {
-            printf(
-                "[debug] No unscheduled dependency, adding visit sequence\n");
+            fprintf(log, "No unscheduled dependency, adding visit sequence\n");
             mark_scheduled(graph, scheduled, item);
             add_visit_sequence(&visit_head, &visit_tail, st, node,
                                visits_htable, visit_stubs_htable, item);
@@ -540,7 +597,9 @@ static inline node_st *generate_visit_output(node_st *node, node_st *st,
 node_st *generate_visits(graph_st *graph, node_st *node, node_st *st,
                          htable_st *visits_htable,
                          htable_st *visit_mdata_htable,
-                         htable_st *visit_stubs_htable) {
+                         htable_st *visit_stubs_htable, FILE *log_file) {
+    log = log_file;
+
     node_st *visits_head = NULL;
     node_st *visits_tail = NULL;
     htable_st *scheduled = HTnew_Ptr(htable_size);
@@ -549,18 +608,21 @@ node_st *generate_visits(graph_st *graph, node_st *node, node_st *st,
     htable_st *child_visits =
         HTnew(htable_size, hash_child_visit, hash_child_visit_equal);
 
+    fprintf(log, "## looking up dependencies\n");
     for (struct GRnode *gnode = graph->nodes; gnode; gnode = gnode->next) {
         struct dependency *deps = find_dependencies(graph, gnode);
         HTinsert(dependencies, gnode, deps);
     }
 
+    fprintf(log, "## Start generating visits\n");
     for (size_t i = 0; i < visits->length; ++i) {
+        fprintf(log, "# visit %lu\n", i);
         node_st *visit = generate_visit(graph, node, st, visits_htable,
                                         child_visits, dependencies, scheduled,
                                         visit_stubs_htable, visits->visits[i]);
         node_st *visits_node = ASTvisit(
             visit, generate_visit_input(node, st, visits->visits[i]),
-            generate_visit_output(node, st, visits->visits[i]), node, i);
+            generate_visit_output(node, st, visits->visits[i]), node, i + 1);
         if (visits_head == NULL) {
             visits_head = visits_node;
             visits_tail = visits_node;
@@ -570,7 +632,9 @@ node_st *generate_visits(graph_st *graph, node_st *node, node_st *st,
         }
 
         HTinsert(visit_mdata_htable, visits_node, visits->visits[i]);
+        fprintf(log, "\n");
     }
+    fprintf(log, "## Finished generating visits\n");
 
     HTmap(child_visits, free_child_visit_htable);
     HTdelete(child_visits);
@@ -578,5 +642,6 @@ node_st *generate_visits(graph_st *graph, node_st *node, node_st *st,
     HTmap(dependencies, free_dependencies_htable);
     HTdelete(dependencies);
 
+    log = NULL;
     return visits_head;
 }
