@@ -1,0 +1,47 @@
+
+root node ast {
+    children {
+        y y
+    }
+};
+
+node a {
+    children {
+        b b
+    }
+};
+
+node b {
+    attributes {
+        bool b
+    }
+};
+
+start phase begin {
+    actions {
+        pass p;
+    }
+};
+
+
+nodeset x = {ast};
+
+nodeset z {
+    nodes = {a, b} - {b}
+};
+
+nodeset y {
+    nodes = {b, ast} | z,
+    attributes {
+        int val {}
+    }
+};
+
+traversal Letsgo {
+    uid = go,
+
+    travdata {
+        int val,
+        ast ast
+    }
+};

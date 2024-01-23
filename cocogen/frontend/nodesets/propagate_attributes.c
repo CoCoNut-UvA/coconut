@@ -7,19 +7,33 @@
  *
  */
 
-#include <assert.h>
 #include "ccn/ccn.h"
 #include "ccngen/ast.h"
 #include "ccngen/trav.h"
+#include "frontend/ctihelp.h"
+#include "frontend/symboltable.h"
 #include "palm/ctinfo.h"
 #include "palm/hash_table.h"
 #include "palm/str.h"
-#include "frontend/ctihelp.h"
-#include "frontend/symboltable.h"
+#include <assert.h>
 
 void PRAinit() { return; }
 
 void PRAfini() { return; }
+
+static inline bool compare_attribute_types(node_st *a, node_st *b) {
+    if (ATTRIBUTE_TYPE(a) != ATTRIBUTE_TYPE(b)) {
+        return false;
+    }
+
+    if (ATTRIBUTE_TYPE(a) == AT_link || ATTRIBUTE_TYPE(a) == AT_link_or_enum ||
+        ATTRIBUTE_TYPE(a) == AT_user) {
+        return STReq(ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(a)),
+                     ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(b)));
+    }
+
+    return true;
+}
 
 /* Classic attributes can be redeclared in a node to add the constructor
    keyword. */
@@ -44,9 +58,7 @@ static bool check_classic_exception(node_st *node, node_st *parent_attr,
         CCNerrorAction();
     } else if (ATTRIBUTE_IS_INHERITED(child_attr) ||
                ATTRIBUTE_IS_SYNTHESIZED(child_attr) ||
-               ATTRIBUTE_TYPE(parent_attr) != ATTRIBUTE_TYPE(child_attr) ||
-               !STReq(ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(parent_attr)),
-                      ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(child_attr)))) {
+               !compare_attribute_types(parent_attr, child_attr)) {
         CTIobj(CTI_ERROR, true, info,
                "Redeclaration of attribute '%s' in node '%s' has a different "
                "signature than the attribute in parent nodeset '%s'\n",
