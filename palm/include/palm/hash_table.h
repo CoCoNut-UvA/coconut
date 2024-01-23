@@ -22,6 +22,25 @@ typedef void *(*fold_ft)(void *acc, void *item);
  */
 htable_st *HTnew(size_t size, hash_key_ft hash_func, is_equal_ft is_equal_func);
 
+/* Implementations */
+/**
+ * Htable that maps `char * -> void *`
+ * @param size the number of buckets in a hash table.
+ */
+htable_st *HTnew_String(size_t size);
+
+/**
+ * Htable that maps `void * -> void *`
+ * @param size the number of buckets in a hash table.
+ */
+htable_st *HTnew_Ptr(size_t size);
+
+/**
+ * Htable that maps `int * -> void *`
+ * @param size the number of buckets in a hash table.
+ */
+htable_st *HTnew_Int(size_t size);
+
 /**
  * Insert the key, value pair from the table.
  *
@@ -55,7 +74,6 @@ void HTclear(struct htable *table);
  */
 void HTdelete(htable_st *table);
 
-
 /**
  * Map functions that apply a user function to all entries in the hash tables.
  * The entry values are replaced by the return values of the user map function.
@@ -74,35 +92,61 @@ void HTfold(htable_st *table, fold_ft fun, void *init_acc);
  */
 size_t HTelementCount(htable_st *table);
 
-/* Iteration functions that can be used to iterate over all keys and values in
-   a hashtable.
-   These functions are an alternative to the HTmap* functions.
+/**
+ * Iteration functions that can be used to iterate over all keys and values in
+ * a hashtable. These functions are an alternative to the HTmap* functions.
+ *
+ * Example usage:
+ * \verbatim embed:rst
+.. code-block:: c
 
-   Example usage:
-   for (htable_iter_st *iter = HTiterate(htable); iter;
-        iter = HTiterateNext(iter)) {
-       // Getter functions to extract htable elements
-       void *key = HTiterKey(iter);
-       void *value = HTiterValue(iter);
+  for (htable_iter_st *iter = HTiterate(htable); iter;
+       iter = HTiterateNext(iter)) {
+      // Getter functions to extract htable elements
+      void *key = HTiterKey(iter);
+      void *value = HTiterValue(iter);
 
-       // Use HTiterateCancel in early loop exits
-       if (condition) {
-           HTiterateCancel(iter);
-       }
-   }
+      // Use HTiterateCancel in early loop exits
+      if (condition) {
+          HTiterateCancel(iter);
+          break;
+      }
+  }
+  \endverbatim
+ *
+ * Create new iterator
+ *
+ * @return The new iterator, use HTiterValue, and HTiterKey to retrieve values
 */
 htable_iter_st *HTiterate(htable_st *table);
+
+/**
+ * Iterate to the next element.
+ *
+ * Will clean up iterator if there are no more elements.
+ *
+ * @param iter The iterator, should not be used after call
+ * @return The iterator with the next element, NULL if there are no more elements
+*/
 htable_iter_st *HTiterateNext(htable_iter_st *iter);
+
+/**
+ * Cancel iteration.
+ *
+ * Will clean up the iterator. Useful when breaking a loop.
+ *
+ * @param iter The iterator, should not be used after call
+*/
 void HTiterateCancel(htable_iter_st *iter);
+
+/**
+ * Get value of current element from iterator.
+ *
+*/
 void *HTiterValue(htable_iter_st *iter);
+
+/**
+ * Get key of current element from iterator.
+ *
+*/
 void *HTiterKey(htable_iter_st *iter);
-
-/* Implementations */
-/* Htable that maps char * -> void * */
-htable_st *HTnew_String(size_t size);
-
-/* Htable that maps void * -> void * */
-htable_st *HTnew_Ptr(size_t size);
-
-/* Map int * -> void * */
-htable_st *HTnew_Int(size_t size);

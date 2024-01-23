@@ -7,14 +7,10 @@
   <title>Palm &mdash; CoCoNut  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -29,11 +25,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> CoCoNut
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CoCoNut
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -73,7 +73,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Palm</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/palm.rst.txt" rel="nofollow"> View page source</a>
@@ -102,90 +102,306 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv46STRcpyPKc">
 <span id="_CPPv36STRcpyPKc"></span><span id="_CPPv26STRcpyPKc"></span><span id="STRcpy__cCP"></span><span class="target" id="str_8h_1a78108dc7ec3986d160c3e1419e0b0b34"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRcpy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">source</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46STRcpyPKc" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Copy string and allocate memory for new string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>source</strong> – String to copy </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New copied string </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv47STRncpyPKci">
 <span id="_CPPv37STRncpyPKci"></span><span id="_CPPv27STRncpyPKci"></span><span id="STRncpy__cCP.i"></span><span class="target" id="str_8h_1a477f362c5fad41b399cc9aba530e3514"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRncpy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">source</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">maxlen</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47STRncpyPKci" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv46STRcatPKcPKc">
-<span id="_CPPv36STRcatPKcPKc"></span><span id="_CPPv26STRcatPKcPKc"></span><span id="STRcat__cCP.cCP"></span><span class="target" id="str_8h_1ad29318ee427330b17ce1542a0585a13b"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRcat</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">first</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">second</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46STRcatPKcPKc" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv47STRcatniz">
-<span id="_CPPv37STRcatniz"></span><span id="_CPPv27STRcatniz"></span><span id="STRcatn__i.z"></span><span class="target" id="str_8h_1a819824edc83cb8c092c281c052238fec"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRcatn</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47STRcatniz" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv46STRtokPKcPKc">
-<span id="_CPPv36STRtokPKcPKc"></span><span id="_CPPv26STRtokPKcPKc"></span><span id="STRtok__cCP.cCP"></span><span class="target" id="str_8h_1a5d7c080c27416847f4b831f5c416f402"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRtok</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">tok</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46STRtokPKcPKc" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Copy string and allocate memory for new string.</p>
+<p>Copy only maxlen characters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – String to copy </p></li>
+<li><p><strong>maxlen</strong> – Number of characters to copy </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New copied string </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv45STReqPKcPKc">
 <span id="_CPPv35STReqPKcPKc"></span><span id="_CPPv25STReqPKcPKc"></span><span id="STReq__cCP.cCP"></span><span class="target" id="str_8h_1a20259c1b33fe437989b0b7dd94847559"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STReq</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">first</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">second</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv45STReqPKcPKc" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Compare two strings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>first</strong> – First string to compare </p></li>
+<li><p><strong>second</strong> – Second string to compare </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if string contents are equal, false if they are not equal. </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv47STReqciPKcPKc">
 <span id="_CPPv37STReqciPKcPKc"></span><span id="_CPPv27STReqciPKcPKc"></span><span id="STReqci__cCP.cCP"></span><span class="target" id="str_8h_1a9c80afb5d5dc1aa4bff2e8091bf35dc6"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STReqci</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">first</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">second</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47STReqciPKcPKc" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv49STRprefixPKcPKc">
-<span id="_CPPv39STRprefixPKcPKc"></span><span id="_CPPv29STRprefixPKcPKc"></span><span id="STRprefix__cCP.cCP"></span><span class="target" id="str_8h_1a41ec49f5a0da1c9fce6bad2483d480f6"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STRprefix</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">prefix</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49STRprefixPKcPKc" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv49STRsuffixPKcPKc">
-<span id="_CPPv39STRsuffixPKcPKc"></span><span id="_CPPv29STRsuffixPKcPKc"></span><span id="STRsuffix__cCP.cCP"></span><span class="target" id="str_8h_1a8d4d1981a7e19b80a7c15cfce2cea7ed"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STRsuffix</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">suffix</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49STRsuffixPKcPKc" title="Permalink to this definition"></a><br /></dt>
-<dd><p>return true if suffix is the end of str, else return false. </p>
+<dd><p>Compare two strings in a case insensitive way.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>first</strong> – First string to compare </p></li>
+<li><p><strong>second</strong> – Second string to compare </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if string contents are equal, false if they are not equal. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv46STReqnPKcPKci">
 <span id="_CPPv36STReqnPKcPKci"></span><span id="_CPPv26STReqnPKcPKci"></span><span id="STReqn__cCP.cCP.i"></span><span class="target" id="str_8h_1afa01b6bd726a8705b44eb112c6bfadee"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STReqn</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">first</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">second</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46STReqnPKcPKci" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv46STRsubPKcPKc">
-<span id="_CPPv36STRsubPKcPKc"></span><span id="_CPPv26STRsubPKcPKc"></span><span id="STRsub__cCP.cCP"></span><span class="target" id="str_8h_1a52048bc0adb3cd65d071e8b4f95a1f3a"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STRsub</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">sub</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46STRsubPKcPKc" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Compare two strings up to a certain limit of characters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>first</strong> – First string to compare </p></li>
+<li><p><strong>second</strong> – Second string to compare </p></li>
+<li><p><strong>n</strong> – number of relevant characters </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the relevant prefixes of strings are equal, false if they are not equal. </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv46STRlenPKc">
-<span id="_CPPv36STRlenPKc"></span><span id="_CPPv26STRlenPKc"></span><span id="STRlen__cCP"></span><span class="target" id="str_8h_1a2882033863cb859aea86e1c383aaef65"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STRlen</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46STRlenPKc" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
+<span id="_CPPv36STRlenPKc"></span><span id="_CPPv26STRlenPKc"></span><span id="STRlen__cCP"></span><span class="target" id="str_8h_1ae342a477355a81190862bb76098f6d68"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STRlen</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46STRlenPKc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Yield the length of a string</p>
+<p>Mostly to provide a complete interface and to avoid using standard string facilities throughout the compiler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Length of the string </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv46STRcatPKcPKc">
+<span id="_CPPv36STRcatPKcPKc"></span><span id="_CPPv26STRcatPKcPKc"></span><span id="STRcat__cCP.cCP"></span><span class="target" id="str_8h_1ad29318ee427330b17ce1542a0585a13b"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRcat</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">first</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">second</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46STRcatPKcPKc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Concatenate two strings and allocate memory for new string.</p>
+<p>Copy only maxlen characters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>first</strong> – First string </p></li>
+<li><p><strong>second</strong> – Second string </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New concatenated string </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv47STRcatniz">
+<span id="_CPPv37STRcatniz"></span><span id="_CPPv27STRcatniz"></span><span id="STRcatn__i.z"></span><span class="target" id="str_8h_1a819824edc83cb8c092c281c052238fec"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRcatn</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47STRcatniz" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Concatenate n strings and allocate memory for new string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> – Number of strings </p></li>
+<li><p><strong>...</strong> – n amount of “const char *”-type strings </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New concatenated string </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv46STRfmtPKcz">
+<span id="_CPPv36STRfmtPKcz"></span><span id="_CPPv26STRfmtPKcz"></span><span id="STRfmt__cCP.z"></span><span class="target" id="str_8h_1af416ab05bfc4a6e58f077dcb9ac07b00"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRfmt</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">fmt</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46STRfmtPKcz" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Create a format string of an arbitrary length.</p>
+<p>Can be used like printf, but returns a string instead of printing to the terminal.</p>
+<p>Similar to s(n)printf, but STRfmt will allocate a new string of the required length, saving you the hassle of determining the length of a format string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fmt</strong> – format string that supports the same conversion specifiers as printf. See <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">3</span> <span class="pre">printf</span></code></p></li>
+<li><p><strong>...</strong> – format string arguments Arbitrary amount of arguments for format string</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The newly allocated formatted string </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv49STRonNullPcPc">
 <span id="_CPPv39STRonNullPcPc"></span><span id="_CPPv29STRonNullPcPc"></span><span id="STRonNull__cP.cP"></span><span class="target" id="str_8h_1a55b32f3d7c1a4b6813c1fb93dc7cc99e"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRonNull</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">alt</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49STRonNullPcPc" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv49STRsubStrPKcii">
-<span id="_CPPv39STRsubStrPKcii"></span><span id="_CPPv29STRsubStrPKcii"></span><span id="STRsubStr__cCP.i.i"></span><span class="target" id="str_8h_1a6a430d63e85cb7e70f241d8af62499d7"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRsubStr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">string</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">start</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49STRsubStrPKcii" title="Permalink to this definition"></a><br /></dt>
-<dd><p>copy part of a string from start to start + len. if len is &lt;0 then len is relative to the length of the string. </p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv47STRnullv">
-<span id="_CPPv37STRnullv"></span><span id="_CPPv27STRnullv"></span><span id="STRnull"></span><span class="target" id="str_8h_1a06e2f68e3ae20382dbe401952ceaa15c"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRnull</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47STRnullv" title="Permalink to this definition"></a><br /></dt>
-<dd><p>return an allocated empty string </p>
+<dd><p>Yields either the argument string if it is not NULL or an empty constant string otherwise.</p>
+<p>This is helpful for instance when printing strings with the s conversion specifier and the string to print may be NULL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alt</strong> – Alternative string to return if str is NULL </p></li>
+<li><p><strong>str</strong> – String that may be NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>str if <code class="docutils literal notranslate"><span class="pre">str</span> <span class="pre">!=</span> <span class="pre">NULL</span></code>, else alt </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv47STRitoai">
 <span id="_CPPv37STRitoai"></span><span id="_CPPv27STRitoai"></span><span id="STRitoa__i"></span><span class="target" id="str_8h_1a9372bf4da5d61c04cf5684e2547b7e23"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRitoa</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">number</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47STRitoai" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Convert integer to string in decimal representation. This is equivalent to <code class="docutils literal notranslate"><span class="pre">STRfmt(&quot;%d&quot;,</span> <span class="pre">number)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>number</strong> – to convert</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The newly allocated string representation of number </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv48STRlowerPKc">
+<span id="_CPPv38STRlowerPKc"></span><span id="_CPPv28STRlowerPKc"></span><span id="STRlower__cCP"></span><span class="target" id="str_8h_1aae4ba6ddfc40d7ddc5639ef697345ec7"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRlower</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv48STRlowerPKc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Convert a string to its lower form, but does not consume original string. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>str</strong> – The string to transform. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Allocated string, which is the lower form of str. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv48STRupperPKc">
+<span id="_CPPv38STRupperPKc"></span><span id="_CPPv28STRupperPKc"></span><span id="STRupper__cCP"></span><span class="target" id="str_8h_1a9c71af4e300ca96806123b9d2b183bae"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRupper</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv48STRupperPKc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Convert a string to its upper form, but does not consume original string. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>str</strong> – The string to transform. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Allocated string, which is the upper form of str. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv46STRtokPKcPKc">
+<span id="_CPPv36STRtokPKcPKc"></span><span id="_CPPv26STRtokPKcPKc"></span><span id="STRtok__cCP.cCP"></span><span class="target" id="str_8h_1a5d7c080c27416847f4b831f5c416f402"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRtok</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">tok</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46STRtokPKcPKc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Tokenize string.</p>
+<p>On first call the str will be copied to internal static variable, next calls str should be NULL. With last call the allocated memory of the copy will be freed.</p>
+<p>In contrast to strtok, STRtok leaves the argument string untouched and always allocates the tokens in fresh memory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>str</strong> – String to tokenize </p></li>
+<li><p><strong>tok</strong> – Tokenizer </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Either a pointer to the next token or NULL when no more tokens. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49STRprefixPKcPKc">
+<span id="_CPPv39STRprefixPKcPKc"></span><span id="_CPPv29STRprefixPKcPKc"></span><span id="STRprefix__cCP.cCP"></span><span class="target" id="str_8h_1a41ec49f5a0da1c9fce6bad2483d480f6"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STRprefix</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">prefix</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49STRprefixPKcPKc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks if prefix is at the start of str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prefix</strong> – First string to compare </p></li>
+<li><p><strong>str</strong> – Second string to compare </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if prefix is at the start of str, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49STRsuffixPKcPKc">
+<span id="_CPPv39STRsuffixPKcPKc"></span><span id="_CPPv29STRsuffixPKcPKc"></span><span id="STRsuffix__cCP.cCP"></span><span class="target" id="str_8h_1a8d4d1981a7e19b80a7c15cfce2cea7ed"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STRsuffix</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">suffix</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49STRsuffixPKcPKc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks if suffix is at the end of str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prefix</strong> – First string to compare </p></li>
+<li><p><strong>str</strong> – Second string to compare </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if suffix is at the end of str, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv46STRsubPKcPKc">
+<span id="_CPPv36STRsubPKcPKc"></span><span id="_CPPv26STRsubPKcPKc"></span><span id="STRsub__cCP.cCP"></span><span class="target" id="str_8h_1a52048bc0adb3cd65d071e8b4f95a1f3a"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STRsub</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">sub</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46STRsubPKcPKc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks if sub is contained inside of str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sub</strong> – Substring to find </p></li>
+<li><p><strong>str</strong> – String to search </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True when sub is a substring of str, false otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49STRsubStrPKcii">
+<span id="_CPPv39STRsubStrPKcii"></span><span id="_CPPv29STRsubStrPKcii"></span><span id="STRsubStr__cCP.i.i"></span><span class="target" id="str_8h_1a6a430d63e85cb7e70f241d8af62499d7"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRsubStr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">string</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">start</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49STRsubStrPKcii" title="Permalink to this definition"></a><br /></dt>
+<dd><p>copy part of a string from start to start + len.</p>
+<p>If len is &lt;0 then len is relative to the length of the string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>string</strong> – String to copy from </p></li>
+<li><p><strong>start</strong> – Position to start copy </p></li>
+<li><p><strong>len</strong> – Length to copy, can be negative </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Copied part of the string </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv413STRsubstTokenPKcPKcPKc">
 <span id="_CPPv313STRsubstTokenPKcPKcPKc"></span><span id="_CPPv213STRsubstTokenPKcPKcPKc"></span><span id="STRsubstToken__cCP.cCP.cCP"></span><span class="target" id="str_8h_1accfb106f9bd37dc2417c4e9b367a6468"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRsubstToken</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">token</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">subst</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413STRsubstTokenPKcPKcPKc" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Substitute all occurrences of token in str with subst. </p>
+<dd><p>Substitute all occurrences of token in str with subst</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -223,29 +439,12 @@
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv48STRlowerPKc">
-<span id="_CPPv38STRlowerPKc"></span><span id="_CPPv28STRlowerPKc"></span><span id="STRlower__cCP"></span><span class="target" id="str_8h_1aae4ba6ddfc40d7ddc5639ef697345ec7"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRlower</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv48STRlowerPKc" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Convert a string to its lower form, but does not consume original string. </p>
+<dt class="sig sig-object cpp" id="_CPPv47STRnullv">
+<span id="_CPPv37STRnullv"></span><span id="_CPPv27STRnullv"></span><span id="STRnull"></span><span class="target" id="str_8h_1a06e2f68e3ae20382dbe401952ceaa15c"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRnull</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47STRnullv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Yield an empty string.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>str</strong> – The string to transform. </p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Malloced string, which is the lower form of str. </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv48STRupperPKc">
-<span id="_CPPv38STRupperPKc"></span><span id="_CPPv28STRupperPKc"></span><span id="STRupper__cCP"></span><span class="target" id="str_8h_1a9c71af4e300ca96806123b9d2b183bae"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">STRupper</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv48STRupperPKc" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Convert a string to its upper form, but does not consume the original string. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>str</strong> – The string to transform </p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Allocated string, which is the upper form of str. </p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An allocated empty string </p>
 </dd>
 </dl>
 </dd></dl>
@@ -259,6 +458,11 @@
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv49htable_st">
 <span id="_CPPv39htable_st"></span><span id="_CPPv29htable_st"></span><span id="htable_st"></span><span class="target" id="hash__table_8h_1a17cc7120b41bdec2aa8c54f8c61a9821"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">htable</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">htable_st</span></span></span><a class="headerlink" href="#_CPPv49htable_st" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv414htable_iter_st">
+<span id="_CPPv314htable_iter_st"></span><span id="_CPPv214htable_iter_st"></span><span id="htable_iter_st"></span><span class="target" id="hash__table_8h_1abc3d7303098c41b52abefd5b5f124430"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">htable_iter</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">htable_iter_st</span></span></span><a class="headerlink" href="#_CPPv414htable_iter_st" title="Permalink to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp type">
@@ -310,16 +514,56 @@
 </dd></dl>
 
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412HTnew_String6size_t">
+<span id="_CPPv312HTnew_String6size_t"></span><span id="_CPPv212HTnew_String6size_t"></span><span id="HTnew_String__s"></span><span class="target" id="hash__table_8h_1aa189d993dbf22301cfbe3863cdc4dd82"></span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTnew_String</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412HTnew_String6size_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Htable that maps <code class="docutils literal notranslate"><span class="pre">char</span> <span class="pre">*</span> <span class="pre">-&gt;</span> <span class="pre">void</span> <span class="pre">*</span></code> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>size</strong> – the number of buckets in a hash table. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49HTnew_Ptr6size_t">
+<span id="_CPPv39HTnew_Ptr6size_t"></span><span id="_CPPv29HTnew_Ptr6size_t"></span><span id="HTnew_Ptr__s"></span><span class="target" id="hash__table_8h_1abf5d965b18b02bd9dc53ebfb9db8866b"></span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTnew_Ptr</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49HTnew_Ptr6size_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Htable that maps <code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">*</span> <span class="pre">-&gt;</span> <span class="pre">void</span> <span class="pre">*</span></code> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>size</strong> – the number of buckets in a hash table. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49HTnew_Int6size_t">
+<span id="_CPPv39HTnew_Int6size_t"></span><span id="_CPPv29HTnew_Int6size_t"></span><span id="HTnew_Int__s"></span><span class="target" id="hash__table_8h_1a0d10aaa06cd04d36dfed0067ef4173eb"></span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTnew_Int</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49HTnew_Int6size_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Htable that maps <code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">*</span> <span class="pre">-&gt;</span> <span class="pre">void</span> <span class="pre">*</span></code> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>size</strong> – the number of buckets in a hash table. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv48HTinsertP9htable_stPvPv">
 <span id="_CPPv38HTinsertP9htable_stPvPv"></span><span id="_CPPv28HTinsertP9htable_stPvPv"></span><span id="HTinsert__htable_stP.voidP.voidP"></span><span class="target" id="hash__table_8h_1a735a0fa8f2090fd1343a34bc27fbac3c"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HTinsert</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">key</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv48HTinsertP9htable_stPvPv" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Insert the key, value pair from the table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>true if insertion was successful. </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv48HTlookupP9htable_stPv">
 <span id="_CPPv38HTlookupP9htable_stPv"></span><span id="_CPPv28HTlookupP9htable_stPv"></span><span id="HTlookup__htable_stP.voidP"></span><span class="target" id="hash__table_8h_1a2416e9b46424f95c1c2de4fe4a352bf4"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTlookup</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv48HTlookupP9htable_stPv" title="Permalink to this definition"></a><br /></dt>
-<dd><dl class="field-list simple">
+<dd><p>Lookup a value in the hash table.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>value found or NULL if key is not present. </p>
+<dd class="field-odd"><p>the corresponding value or NULL if key is not found. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -330,7 +574,7 @@
 <dd><p>Remove the key, value pair from the table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>the deleted value or NULL if key is not foound. </p>
+<dd class="field-odd"><p>the deleted value or NULL if key is not found. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -350,7 +594,13 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv45HTmapP9htable_st6map_ft">
 <span id="_CPPv35HTmapP9htable_st6map_ft"></span><span id="_CPPv25HTmapP9htable_st6map_ft"></span><span id="HTmap__htable_stP.map_ft"></span><span class="target" id="hash__table_8h_1a4723bcd518a233d9e316399274a3b523"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HTmap</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span>, <a class="reference internal" href="#_CPPv46map_ft" title="map_ft"><span class="n"><span class="pre">map_ft</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">fun</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv45HTmapP9htable_st6map_ft" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Map functions that apply a user function to all entries in the hash tables. The entry values are replaced by the return values of the user map function.<ul class="simple">
+<li><p>HTmap only passes the entry values to the map function.</p></li>
+<li><p>HTmapWithKey passes the entry keys &amp; values to the map functions.</p></li>
+<li><p>HTmapWithKey passes the entry keys &amp; values and user-provided data to the map functions. </p></li>
+</ul>
+</p>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv412HTmapWithKeyP9htable_st7mapk_ft">
@@ -360,8 +610,7 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv419HTmapWithDataAndKeyP9htable_stPv8mapdk_ft">
 <span id="_CPPv319HTmapWithDataAndKeyP9htable_stPv8mapdk_ft"></span><span id="_CPPv219HTmapWithDataAndKeyP9htable_stPv8mapdk_ft"></span><span id="HTmapWithDataAndKey__htable_stP.voidP.mapdk_ft"></span><span class="target" id="hash__table_8h_1ac335d7e21ee15dce82d9ed265c722982"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HTmapWithDataAndKey</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">data</span></span>, <a class="reference internal" href="#_CPPv48mapdk_ft" title="mapdk_ft"><span class="n"><span class="pre">mapdk_ft</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">fun</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419HTmapWithDataAndKeyP9htable_stPv8mapdk_ft" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Map function that passes an extra data parameter to the map function </p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv46HTfoldP9htable_st7fold_ftPv">
@@ -371,34 +620,79 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv414HTelementCountP9htable_st">
 <span id="_CPPv314HTelementCountP9htable_st"></span><span id="_CPPv214HTelementCountP9htable_st"></span><span id="HTelementCount__htable_stP"></span><span class="target" id="hash__table_8h_1aa6980add366f1e8cb0c4c99726a258bb"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HTelementCount</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414HTelementCountP9htable_st" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv412HTnew_String6size_t">
-<span id="_CPPv312HTnew_String6size_t"></span><span id="_CPPv212HTnew_String6size_t"></span><span id="HTnew_String__s"></span><span class="target" id="hash__table_8h_1aa189d993dbf22301cfbe3863cdc4dd82"></span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTnew_String</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412HTnew_String6size_t" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Create a new hash table for strings. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>size</strong> – determines the number of buckets in the table. </p>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the amount of entries in the hash table. </p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv49HTnew_Ptr6size_t">
-<span id="_CPPv39HTnew_Ptr6size_t"></span><span id="_CPPv29HTnew_Ptr6size_t"></span><span id="HTnew_Ptr__s"></span><span class="target" id="hash__table_8h_1abf5d965b18b02bd9dc53ebfb9db8866b"></span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTnew_Ptr</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49HTnew_Ptr6size_t" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Create a new hash table for pointers. </p>
+<dt class="sig sig-object cpp" id="_CPPv49HTiterateP9htable_st">
+<span id="_CPPv39HTiterateP9htable_st"></span><span id="_CPPv29HTiterateP9htable_st"></span><span id="HTiterate__htable_stP"></span><span class="target" id="hash__table_8h_1a44f8b9378b2cc87772fab3dd3757d8ac"></span><a class="reference internal" href="#_CPPv414htable_iter_st" title="htable_iter_st"><span class="n"><span class="pre">htable_iter_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTiterate</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49HTiterateP9htable_st" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Iteration functions that can be used to iterate over all keys and values in a hashtable. These functions are an alternative to the HTmap* functions.</p>
+<p>Example usage: <p><div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">htable_iter_st</span><span class="w"> </span><span class="o">*</span><span class="n">iter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HTiterate</span><span class="p">(</span><span class="n">htable</span><span class="p">);</span><span class="w"> </span><span class="n">iter</span><span class="p">;</span>
+<span class="w">     </span><span class="n">iter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HTiterateNext</span><span class="p">(</span><span class="n">iter</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Getter functions to extract htable elements</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HTiterKey</span><span class="p">(</span><span class="n">iter</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HTiterValue</span><span class="p">(</span><span class="n">iter</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Use HTiterateCancel in early loop exits</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">condition</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">HTiterateCancel</span><span class="p">(</span><span class="n">iter</span><span class="p">);</span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</p>
+</p>
+<p>Create new iterator</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>size</strong> – determines the number of buckets in the table. </p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The new iterator, use HTiterValue, and HTiterKey to retrieve values </p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv49HTnew_Int6size_t">
-<span id="_CPPv39HTnew_Int6size_t"></span><span id="_CPPv29HTnew_Int6size_t"></span><span id="HTnew_Int__s"></span><span class="target" id="hash__table_8h_1a0d10aaa06cd04d36dfed0067ef4173eb"></span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTnew_Int</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49HTnew_Int6size_t" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dt class="sig sig-object cpp" id="_CPPv413HTiterateNextP14htable_iter_st">
+<span id="_CPPv313HTiterateNextP14htable_iter_st"></span><span id="_CPPv213HTiterateNextP14htable_iter_st"></span><span id="HTiterateNext__htable_iter_stP"></span><span class="target" id="hash__table_8h_1a43a1a9abbc3b4268f770ce34bc405a51"></span><a class="reference internal" href="#_CPPv414htable_iter_st" title="htable_iter_st"><span class="n"><span class="pre">htable_iter_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTiterateNext</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414htable_iter_st" title="htable_iter_st"><span class="n"><span class="pre">htable_iter_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">iter</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413HTiterateNextP14htable_iter_st" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Iterate to the next element.</p>
+<p>Will clean up iterator if there are no more elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>iter</strong> – The iterator, should not be used after call </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The iterator with the next element, NULL if there are no more elements </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415HTiterateCancelP14htable_iter_st">
+<span id="_CPPv315HTiterateCancelP14htable_iter_st"></span><span id="_CPPv215HTiterateCancelP14htable_iter_st"></span><span id="HTiterateCancel__htable_iter_stP"></span><span class="target" id="hash__table_8h_1a1764b3a36177b0bd566163458c209f6f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HTiterateCancel</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414htable_iter_st" title="htable_iter_st"><span class="n"><span class="pre">htable_iter_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">iter</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415HTiterateCancelP14htable_iter_st" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Cancel iteration.</p>
+<p>Will clean up the iterator. Useful when breaking a loop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>iter</strong> – The iterator, should not be used after call </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411HTiterValueP14htable_iter_st">
+<span id="_CPPv311HTiterValueP14htable_iter_st"></span><span id="_CPPv211HTiterValueP14htable_iter_st"></span><span id="HTiterValue__htable_iter_stP"></span><span class="target" id="hash__table_8h_1ab3880d32ecaa67b190d24f38d4e6e208"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTiterValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414htable_iter_st" title="htable_iter_st"><span class="n"><span class="pre">htable_iter_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">iter</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411HTiterValueP14htable_iter_st" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get value of current element from iterator. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49HTiterKeyP14htable_iter_st">
+<span id="_CPPv39HTiterKeyP14htable_iter_st"></span><span id="_CPPv29HTiterKeyP14htable_iter_st"></span><span id="HTiterKey__htable_iter_stP"></span><span class="target" id="hash__table_8h_1aee5b24a30268923e16ff332f55259881"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTiterKey</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414htable_iter_st" title="htable_iter_st"><span class="n"><span class="pre">htable_iter_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">iter</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49HTiterKeyP14htable_iter_st" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get key of current element from iterator. </p>
+</dd></dl>
 
 </div>
 </section>
@@ -478,8 +772,7 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv47DBUGoffv">
 <span id="_CPPv37DBUGoffv"></span><span id="_CPPv27DBUGoffv"></span><span id="DBUGoff"></span><span class="target" id="dbug_8h_1acf1d33a08ecfde70a7888b5c6e1293dc"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DBUGoff</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47DBUGoffv" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Turn off debugging. Doesn’t print anything! </p>
-</dd></dl>
+<dd></dd></dl>
 
 </div>
 </section>
@@ -502,6 +795,23 @@
 </dd></dl>
 
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv410MEMreallocPv6size_t">
+<span id="_CPPv310MEMreallocPv6size_t"></span><span id="_CPPv210MEMreallocPv6size_t"></span><span id="MEMrealloc__voidP.s"></span><span class="target" id="memory_8h_1aee40b1299d4815bae619d2ccb05cfd86"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">MEMrealloc</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">address</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv410MEMreallocPv6size_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Reallocate memory. If memory can not be allocated this function calls the CTIabortOufOfMemory function and exists. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address</strong> – address to resize, can be NULL. Address can not be used again after call. </p></li>
+<li><p><strong>size</strong> – Amount to allocate. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pointer to an allocated structure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv47MEMfreePv">
 <span id="_CPPv37MEMfreePv"></span><span id="_CPPv27MEMfreePv"></span><span id="MEMfree__voidP"></span><span class="target" id="memory_8h_1abc15e658f56aca9d4e52139c1179fd6f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">MEMfree</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">address</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47MEMfreePv" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Free memory. Returns NULL, but allows to do assignment to freed structure. </p>
@@ -515,12 +825,35 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv47MEMcopy6size_tPv">
 <span id="_CPPv37MEMcopy6size_tPv"></span><span id="_CPPv27MEMcopy6size_tPv"></span><span id="MEMcopy__s.voidP"></span><span class="target" id="memory_8h_1aebd99a62798a8845b475d2f2e1c280c8"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">MEMcopy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">mem</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47MEMcopy6size_tPv" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Copy memory to a new memory location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> – amount of bytes to copy to new region. </p></li>
+<li><p><strong>mem</strong> – Memory location to copy from. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New memory location of size bytes. </p>
+</dd>
+</dl>
+</dd></dl>
 
 </div>
 </section>
 <section id="ctinfo-h">
 <h2>ctinfo.h<a class="headerlink" href="#ctinfo-h" title="Permalink to this heading"></a></h2>
+<p>This file provides the interface for producing any kind of output during compilation.</p>
+<p>We have 4 levels of verbosity controlled by the command line option -v and the global variable verbose_level.</p>
+<p>Verbose level 0:</p>
+<p>Only error messages are printed.</p>
+<p>Verbose level 1:</p>
+<p>Error messages and warnings are printed.</p>
+<p>Verbose level 2:</p>
+<p>Error messages, warnings and basic compile time information, e.g. compiler phases, are printed.</p>
+<p>Verbose level 3:</p>
+<p>Error messages, warnings and full compile time information are printed.</p>
+<p>Default values are 1 for the product version and 3 for the developer version. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
 <dl class="cpp enum">
@@ -556,16 +889,16 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv427CTIinstallInterruptHandlersv">
 <span id="_CPPv327CTIinstallInterruptHandlersv"></span><span id="_CPPv227CTIinstallInterruptHandlersv"></span><span id="CTIinstallInterruptHandlers__void"></span><span class="target" id="ctinfo_8h_1ab00074bba79f9f8467b5df29db67b747"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTIinstallInterruptHandlers</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv427CTIinstallInterruptHandlersv" title="Permalink to this definition"></a><br /></dt>
-<dd><p>installs interrupt handlers </p>
+<dd><p>Installs interrupt handlers </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv428CTIgetErrorMessageLineLengthv">
 <span id="_CPPv328CTIgetErrorMessageLineLengthv"></span><span id="_CPPv228CTIgetErrorMessageLineLengthv"></span><span id="CTIgetErrorMessageLineLength"></span><span class="target" id="ctinfo_8h_1a22d326e684296fc1b32aa085771f7010"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTIgetErrorMessageLineLength</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv428CTIgetErrorMessageLineLengthv" title="Permalink to this definition"></a><br /></dt>
-<dd><p>yields useful line length for error messages </p>
+<dd><p>Yields useful line length for error messages</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>line length </p>
+<dd class="field-odd"><p>Line length </p>
 </dd>
 </dl>
 </dd></dl>
@@ -573,10 +906,10 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv427CTIgetWarnMessageLineLengthv">
 <span id="_CPPv327CTIgetWarnMessageLineLengthv"></span><span id="_CPPv227CTIgetWarnMessageLineLengthv"></span><span id="CTIgetWarnMessageLineLength__void"></span><span class="target" id="ctinfo_8h_1a1c8a8f9c2371166787be4ec03b10a707"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTIgetWarnMessageLineLength</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv427CTIgetWarnMessageLineLengthv" title="Permalink to this definition"></a><br /></dt>
-<dd><p>yields useful line length for warning messages </p>
+<dd><p>Yields useful line length for warning messages</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>line length </p>
+<dd class="field-odd"><p>Line length </p>
 </dd>
 </dl>
 </dd></dl>
@@ -586,7 +919,7 @@
 <span id="_CPPv314CTIgetWarningsv"></span><span id="_CPPv214CTIgetWarningsv"></span><span id="CTIgetWarnings"></span><span class="target" id="ctinfo_8h_1a17b9212065be26d6994fd4de77a4fb67"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTIgetWarnings</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414CTIgetWarningsv" title="Permalink to this definition"></a><br /></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The number of warnings currently produced. </p>
+<dd class="field-odd"><p>The number of warnings currently produced </p>
 </dd>
 </dl>
 </dd></dl>
@@ -604,19 +937,20 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv419CTIabortCompilationv">
 <span id="_CPPv319CTIabortCompilationv"></span><span id="_CPPv219CTIabortCompilationv"></span><span id="CTIabortCompilation"></span><span class="target" id="ctinfo_8h_1a934270f920055e59a17088d60a514075"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTIabortCompilation</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419CTIabortCompilationv" title="Permalink to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Terminates the compilation process with a suitable error message. </p>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv415CTIabortOnErrorv">
 <span id="_CPPv315CTIabortOnErrorv"></span><span id="_CPPv215CTIabortOnErrorv"></span><span id="CTIabortOnError"></span><span class="target" id="ctinfo_8h_1a9efc8927a768a8329c46bd405d953132"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTIabortOnError</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415CTIabortOnErrorv" title="Permalink to this definition"></a><br /></dt>
-<dd><p>terminates compilation process if errors have occurred. </p>
+<dd><p>Terminates the compilation process if errors have occurred. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv419CTIabortOutOfMemoryj">
 <span id="_CPPv319CTIabortOutOfMemoryj"></span><span id="_CPPv219CTIabortOutOfMemoryj"></span><span id="CTIabortOutOfMemory__unsigned-i"></span><span class="target" id="ctinfo_8h_1a1c5f59a9f5681f4e901503d5f926f23e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CTIabortOutOfMemory</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">request</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419CTIabortOutOfMemoryj" title="Permalink to this definition"></a><br /></dt>
-<dd><p>produces a specific “out of memory” error message without file name and line number and terminates the compilation process. </p>
-<p>This very special function is needed because the normal procedure of formatting a message may require further allocation of memory, which in this very case generates a vicious circle of error messages instead of terminating compilation properly.</p>
+<dd><p>produces a specific “out of memory” error message without file name and line number and terminates the compilation process.</p>
+<p>This very special function is needed because the normal procedure of formatting a message may require further llocation of memory, which in this very case generates a vicious circle of error messages instead of terminating compilation properly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>request</strong> – size of requested memory </p>

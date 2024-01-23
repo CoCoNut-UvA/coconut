@@ -5,11 +5,6 @@
 #include <sys/stat.h>
 #include <err.h>
 
-/**
- * It calls err if the directory could not be created.
- * @param dirname Directory to ensure.
- * @param mode Mode in which directory is to be created.
- */
 void FSensureDirExists(char *dirname, mode_t mode)
 {
     if (mkdir(dirname, mode) == 0) {
@@ -30,4 +25,3 @@ void FSensureDirExists(char *dirname, mode_t mode)
         }
     }
 }
-

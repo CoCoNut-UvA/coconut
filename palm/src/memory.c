@@ -38,9 +38,10 @@ void *MEMmalloc(size_t size)
 }
 
 /**
- * Allocate memory. If memory can not be allocated this function
+ * Reallocate memory. If memory can not be allocated this function
  * calls the CTIabortOufOfMemory function and exists.
- * @param address address to resize, can be NULL.
+ * @param address address to resize, can be NULL. Address can not be used again
+ * after call.
  * @param size Amount to allocate.
  * @return A pointer to an allocated structure.
  */
@@ -67,6 +68,7 @@ void *MEMrealloc(void *address, size_t size)
     }
     else {
         ptr = NULL;
+        MEMfree(address);
     }
 
     return ptr;

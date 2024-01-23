@@ -1,35 +1,3 @@
-/**
- *
- * @file
- *
- * This file provides the interface for producing any kind of output during
- * compilation.
- *
- * We have 4 levels of verbosity controlled by the command line option -v
- * and the global variable verbose_level.
- *
- * Verbose level 0:
- *
- * Only error messages are printed.
- *
- * Verbose level 1:
- *
- * Error messages and warnings are printed.
- *
- * Verbose level 2:
- *
- * Error messages, warnings and basic compile time information, e.g. compiler
- * phases,  are printed.
- *
- * Verbose level 3:
- *
- * Error messages, warnings and full compile time information are printed.
- *
- *
- * Default values are 1 for the product version and 3 for the developer version.
- *
- */
-
 #include "palm/ctinfo.h"
 
 #include <signal.h>

@@ -390,9 +390,9 @@ bool STRsub(const char *sub, const char *str)
  *
  *******************************************************************************/
 
-int STRlen(const char *s)
+size_t STRlen(const char *s)
 {
-    int len;
+    size_t len;
 
     if (s == NULL) {
         len = 0;
