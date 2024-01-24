@@ -15,7 +15,8 @@ node_st *dynamic_start_ast_header(node_st *root)
     GeneratorContext *ctx = globals.gen_ctx;
     GNopenIncludeFile(ctx, "ast.h");
 
-    OUT("#include <assert.h>\n\n");
+    OUT("#include <assert.h>\n");
+    OUT("#include <stddef.h>\n\n");
     OUT("#include \"ccn/ccn_types.h\"\n");
     OUT("#include \"ccngen/enum.h\"\n");
     OUT("#ifdef CCN_USES_UNSAFE\n");

@@ -62,6 +62,8 @@ node_st *DGNAFattribute(node_st *node)
         curr_attribute = node;
         TRAVopt(INODESET_EXPR(curr_nodeset));
         curr_attribute = NULL;
+        OUT_BEGIN_DEFAULT_CASE();
+        OUT_END_CASE();
         OUT_END_SWITCH();
         OUT("assert(false); // Should not be able to get here\n");
         OUT("return NULL;\n");

@@ -73,14 +73,16 @@ static bool check_classic_exception(node_st *node, node_st *parent_attr,
     return true;
 }
 
-static void check_existing_attributes(node_st *node, node_st *first_attr,
+static bool check_existing_attributes(node_st *node, node_st *first_attr,
                                       node_st *new_attribute) {
+    bool exists_exception = false;
     for (node_st *attribute = first_attr; attribute != NULL;
          attribute = ATTRIBUTE_NEXT(attribute)) {
         if (STReq(ID_LWR(ATTRIBUTE_NAME(attribute)),
                   ID_LWR(ATTRIBUTE_NAME(new_attribute)))) {
             if (NODE_TYPE(node) == NT_INODE &&
                 check_classic_exception(node, new_attribute, attribute)) {
+                exists_exception = true;
                 continue;
             }
 
@@ -104,6 +106,8 @@ static void check_existing_attributes(node_st *node, node_st *first_attr,
             CCNerrorAction();
         }
     }
+
+    return exists_exception;
 }
 
 static void check_existing_child(node_st *node, node_st *new_attribute) {
@@ -133,7 +137,12 @@ static void propagate_attribute(node_st *node, node_st *attribute) {
         attribute_list = &INODESET_IATTRIBUTES(node);
     }
 
-    check_existing_attributes(node, *attribute_list, attribute);
+    bool exists_exception = check_existing_attributes(node, *attribute_list, attribute);
+
+    if (exists_exception) { // Attribute already exists, and is allowed
+        return;
+    }
+
     if (NODE_TYPE(node) == NT_INODE) {
         check_existing_child(node, attribute);
     }
