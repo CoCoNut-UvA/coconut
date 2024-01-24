@@ -152,8 +152,7 @@ char *CTIgetErrorMessageVA(int line, const char *format, va_list arg_p)
     ProcessMessage(message_buffer,
         message_line_length - strlen(error_message_header));
 
-    first_line = (char *)MEMmalloc(32 * sizeof(char));
-    sprintf(first_line, "line %d @", line);
+    first_line = STRfmt("line %d @", line);
     res = STRcat(first_line, message_buffer);
     first_line = MEMfree(first_line);
 
