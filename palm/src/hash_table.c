@@ -244,7 +244,8 @@ void HTmapWithDataAndKey(htable_st *table, void *data, mapdk_ft fun)
     }
 }
 
-/* Iteration functions */
+/* Iteration functions
+   See palm/hash_table.h for example usage */
 
 /* Create new iterator */
 htable_iter_st *HTiterate(htable_st *table) {

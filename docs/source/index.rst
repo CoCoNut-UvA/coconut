@@ -24,6 +24,7 @@ communicate with the CoCoNut driver from within your compiler, and, finally, wal
     copra
     palm
     calculator
+    attribute_grammar
     faq
     bugs
 
