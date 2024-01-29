@@ -59,7 +59,11 @@ node_st *DGCCattribute(node_st *node)
             OUT_NO_INDENT(", ");
         }
         arg_num++;
-        OUT_NO_INDENT("%s", FMTattributeDefaultVal(ATTRIBUTE_TYPE(node)));
+        if (ATTRIBUTE_TYPE(node) == AT_user) {
+            OUT_NO_INDENT("0");
+        } else {
+            OUT_NO_INDENT("%s", FMTattributeDefaultVal(ATTRIBUTE_TYPE(node)));
+        }
     }
     TRAVopt(ATTRIBUTE_NEXT(node));
     return node;

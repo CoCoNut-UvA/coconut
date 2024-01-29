@@ -70,7 +70,7 @@ node_st *DUGTid(node_st *node)
     OUT("/**\n");
     OUT(" * @fn %s%s\n", curr_trav, ID_LWR(node));
     OUT(" */\n");
-    OUT("node_st *%s%s(node_st *node)\n{\n    TRAVchildren(node)\n    return node;\n}\n\n", curr_trav, ID_LWR(node));
+    OUT("node_st *%s%s(node_st *node)\n{\n    TRAVchildren(node);\n    return node;\n}\n\n", curr_trav, ID_LWR(node));
     TRAVopt(ID_NEXT(node));
     return node;
 }

@@ -17,6 +17,7 @@ node_st *dynamic_start_ast_header(node_st *root)
 
     OUT("#include <assert.h>\n");
     OUT("#include <stddef.h>\n\n");
+    OUT("#include \"ccngen/ccn_defs.h\"\n");
     OUT("#include \"ccn/ccn_types.h\"\n");
     OUT("#include \"ccngen/enum.h\"\n");
     OUT("#ifdef CCN_USES_UNSAFE\n");
@@ -51,6 +52,7 @@ node_st *dynamic_start_visit_header(node_st *root)
     GeneratorContext *ctx = globals.gen_ctx;
     GNopenIncludeFile(ctx, "visit.h");
 
+    OUT("#include \"ccngen/ccn_defs.h\"\n");
     OUT("#include \"ccn/ccn_types.h\"\n");
     OUT("#include \"ccngen/enum.h\"\n");
     OUT("#include \"ccngen/ast.h\"\n");
@@ -95,7 +97,7 @@ node_st *dynamicStartTravData(node_st *root)
     GeneratorContext *ctx = globals.gen_ctx;
     GNopenIncludeFile(ctx, "trav_data.h");
 
-    OUT("#include\"ccngen/ccn_defs.h\"\n");
+    OUT("#include \"ccngen/ccn_defs.h\"\n");
     OUT("#include \"ccn/ccn_types.h\"\n");
     OUT("#ifdef CCN_USES_UNSAFE\n");
     OUT("#include \"user_types.h\"\n");

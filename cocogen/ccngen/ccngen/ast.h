@@ -1,6 +1,8 @@
 #pragma once
 #include <assert.h>
+#include <stddef.h>
 
+#include "ccngen/ccn_defs.h"
 #include "ccn/ccn_types.h"
 #include "ccngen/enum.h"
 #ifdef CCN_USES_UNSAFE

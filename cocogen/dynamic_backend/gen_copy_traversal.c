@@ -27,7 +27,17 @@ node_st *DGCTast(node_st *node)
     OUT("#include \"ccngen/ast.h\"\n");
     OUT("#include <stddef.h>\n");
     OUT("#include \"palm/str.h\"\n");
-    OUT("#include \"ccn/dynamic_core.h\"\n");
+    OUT("#include \"palm/ctinfo.h\"\n");
+    OUT("#include \"ccn/dynamic_core.h\"\n\n");
+    OUT("static const char *const user_warn =\n");
+    GNindentIncrease(ctx);
+    OUT("\"%%s:%%d: Attributes with user types do not support deep copying, \"\n");
+    OUT("\"instead the attributes are copied by value. Make sure you set \"\n");
+    OUT("\"a correct value for the copied node's attribute yourself. Add \"\n");
+    OUT("\"`#define CCN_USES_UNSAFE_ACKNOWLEDGE` to user_types.h to \"\n");
+    OUT("\"disable this warning.\";\n");
+    GNindentDecrease(ctx);
+    OUT_NO_INDENT("\n");
     OUT_START_FUNC("void CopyBaseNode(node_st *target, node_st *source)");
     OUT_STATEMENT("NODE_BCOL(target) = NODE_BCOL(source)");
     OUT_STATEMENT("NODE_ECOL(target) = NODE_ECOL(source)");
@@ -76,6 +86,13 @@ node_st *DGCTattribute(node_st *node)
         // TODO
     } else if (ATTRIBUTE_TYPE(node) == AT_string) {
         OUT_FIELD("%s_%s(new_node) = STRcpy(%s_%s(arg_node))", node_name, attr_name, node_name, attr_name);
+    } else if (ATTRIBUTE_TYPE(node) == AT_user) {
+        OUT_NO_INDENT("\n");
+        OUT_NO_INDENT("#ifndef CCN_USES_UNSAFE_ACKNOWLEDGE\n");
+        OUT("CTI(CTI_WARN, true, user_warn, __FILE__, __LINE__);\n");
+        OUT_NO_INDENT("#endif // CCN_USES_UNSAFE_ACKNOWLEDGE\n");
+        OUT("%s_%s(new_node) = %s_%s(arg_node); // might not be copied\n", node_name, attr_name, node_name, attr_name);
+        OUT_NO_INDENT("\n");
     } else {
         OUT_FIELD("%s_%s(new_node) = %s_%s(arg_node)", node_name, attr_name, node_name, attr_name);
     }

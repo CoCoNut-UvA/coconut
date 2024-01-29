@@ -76,6 +76,8 @@ node_st *DGNCattribute(node_st *node)
         OUT_FIELD("%s_%s(node) = %s", node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), DGHattributeField(node));
     } else if (ATTRIBUTE_IS_INHERITED(node) || ATTRIBUTE_IS_SYNTHESIZED(node)) {
         // TODO
+    } else if (ATTRIBUTE_TYPE(node) == AT_user) {
+                OUT_FIELD("%s_%s(node) = 0", node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)));
     } else {
         OUT_FIELD("%s_%s(node) = %s", node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), FMTattributeDefaultVal(ATTRIBUTE_TYPE(node)));
     }

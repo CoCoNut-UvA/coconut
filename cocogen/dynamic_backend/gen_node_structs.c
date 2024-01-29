@@ -11,10 +11,12 @@
 static char *basic_node_type = "node_st";
 static int child_num = 0;
 static node_st *ste = NULL;
+static node_st *ast = NULL;
 
 node_st *DGNSast(node_st *node)
 {
     ste = AST_STABLE(node);
+    ast = node;
     TRAVopt(AST_INODES(node));
     return node;
 }
@@ -68,6 +70,9 @@ node_st *DGNSattribute(node_st *node)
             assert(ref);
             assert(NODE_TYPE(ref) == NT_IENUM);
             OUT_FIELD("enum %s %s", ID_ORIG(IENUM_NAME(ref)), ID_LWR(ATTRIBUTE_NAME(node)));
+        } else if (ATTRIBUTE_TYPE(node) == AT_user) {
+            OUT_FIELD("%s %s", ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(node)), ID_LWR(ATTRIBUTE_NAME(node)));
+            AST_USES_UNSAFE(ast) = true;
         } else {
             OUT_FIELD("%s %s", FMTattributeTypeToString(ATTRIBUTE_TYPE(node)), ID_LWR(ATTRIBUTE_NAME(node)));
         }

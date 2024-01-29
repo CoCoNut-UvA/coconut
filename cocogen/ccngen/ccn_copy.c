@@ -1,7 +1,16 @@
 #include "ccngen/ast.h"
 #include <stddef.h>
 #include "palm/str.h"
+#include "palm/ctinfo.h"
 #include "ccn/dynamic_core.h"
+
+static const char *const user_warn =
+    "%s:%d: Attributes with user types do not support deep copying, "
+    "instead the attributes are copied by value. Make sure you set "
+    "a correct value for the copied node's attribute yourself. Add "
+    "`#define CCN_USES_UNSAFE_ACKNOWLEDGE` to user_types.h to "
+    "disable this warning.";
+
 void CopyBaseNode(node_st *target, node_st *source) {
     NODE_BCOL(target) = NODE_BCOL(source);
     NODE_ECOL(target) = NODE_ECOL(source);

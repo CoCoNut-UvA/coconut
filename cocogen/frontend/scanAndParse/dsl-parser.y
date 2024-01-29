@@ -803,6 +803,26 @@ attribute: attribute_primitive_type[type] id[name] '{' attribute_optional_keywor
            ATTRIBUTE_TYPE_REFERENCE($$) = $type;
            ATTRIBUTE_TYPE($$) = AT_link_or_enum;
     }
+    | T_UNSAFE id[type] id[name] '{' attribute_optional_keywords[keywords] '}'
+    {
+        $$ = ASTattribute();
+        ATTRIBUTE_NAME($$) = $name;
+        ATTRIBUTE_TYPE_REFERENCE($$) = $type;
+        ATTRIBUTE_TYPE($$) = AT_user;
+        struct bison_attribute_options *options = parse_attribute_options($keywords);
+        ATTRIBUTE_IN_CONSTRUCTOR($$) = options->constructor;
+        ATTRIBUTE_IS_INHERITED($$) = options->inherited;
+        ATTRIBUTE_IS_SYNTHESIZED($$) = options->synthesized;
+        ATTRIBUTE_LIFETIMES($$) = options->lifetime;
+        free(options);
+    }
+    | T_UNSAFE id[type] id[name]
+    {
+           $$ = ASTattribute();
+           ATTRIBUTE_NAME($$) = $name;
+           ATTRIBUTE_TYPE_REFERENCE($$) = $type;
+           ATTRIBUTE_TYPE($$) = AT_user;
+    }
     ;
 
 attribute_primitive_type: T_BOOL
