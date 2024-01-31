@@ -181,7 +181,7 @@ for something like 'Stage3' is not required but is still allowed.
 
 Equations
 ==========
-Equations allow you to specify attribute dependencies.
+Equations, or evaluation rules, allow you to specify attribute dependencies.
 Each synthesized attribute part of the current node, and each inherited attribute part of the children node(set)s, need a corresponding dependency specification.
 Equations are described as follows:
 

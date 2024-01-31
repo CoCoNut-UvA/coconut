@@ -3,7 +3,7 @@ CoCoNut DSL
 =============
 The DSL used by CoCoNut is case-insensitive for names and other attributes.
 This means that there is no distinction between a node names *Num* and a node named *NUM*.
-This is the case, because CoCoNut uses several different representations for code generation, one 
+This is the case, because CoCoNut uses several different representations for code generation, one
 of those is the fully capitalized version of a name.
 Nonetheless, there is a distinction between keywords and names. Names can not collide with CoCoNut keywords, see :doc:`reserved`, or C keywords.
 As a result, you can not name a node *float*, but you can name a node *Float*.
@@ -54,8 +54,9 @@ An example enum definition looks as follows:
 
 Node
 ===============
-A node consists out of children, attributes and node lifetimes. Children link to other nodes, which provides tree building.
+A node consists out of children, attributes, equations and node lifetimes. Children link to other nodes, which provides tree building.
 Attributes are information stored in the node, every attribute has a type and a name, which becomes a field in the C struct of the node.
+Equations store attribute dependencies that need to be specified when using attribute grammars.
 Node lifetimes enable the specification of stages in the compiler where the node is disallowed.
 In every 'program' there must be one *root* node present. The *root* node will be the root in your AST and the starting point of most of your actions.
 
@@ -72,6 +73,11 @@ In every 'program' there must be one *root* node present. The *root* node will b
             ...,
             <attribute n>
         },]
+        [equations {
+            <equation 1>,
+            ...,
+            <equation n>
+        },]
         [lifetime {
             <node lifetime 1>,
             ...,
@@ -81,7 +87,7 @@ In every 'program' there must be one *root* node present. The *root* node will b
 
 | Children and attributes, for a node, are defined in the following way, respectively:
 |   <child> :: <child type> <name> [ { [constructor], [<lifetimes>] } ]
-|   <attribute> :: <attribute type> <name> [ { [constructor], [<lifetimes> [#]_] } ]
+|   <attribute> :: <attribute type> <name> [ { [constructor], [inherited], [synthesized], [<lifetimes> [#]_] } ]
 
 The type for children can be a defined node or a defined nodeset.
 The attribute types can be a defined enum, a defined node, a defined nodeset, or a :doc:`primitive_types`.
@@ -106,6 +112,9 @@ An example node, without lifetimes, is as follows:
     };
 
 This will result in the constructor: ASTbinop(left, right, op);
+
+
+.. [#] Lifetimes for attributes are only possible for string attributes or node/nodeset attributes.
 
 
 Lifetimes
@@ -170,21 +179,78 @@ and 'Stage2' also has an 'OTP' then the 'OTP' from 'Stage2' would be seen as the
 for something like 'Stage3' is not required but is still allowed.
 
 
+Equations
+==========
+Equations, or evaluation rules, allow you to specify attribute dependencies.
+Each synthesized attribute part of the current node, and each inherited attribute part of the children node(set)s, need a corresponding dependency specification.
+Equations are described as follows:
+
+.. code-block::  text
+
+    <equation> :: <target node specifier>.<target attribute name> = [ { args = [ { <dependency 1>, ..., <dependency n> } ] } ]
+
+, where the dependency is in the form:
+
+.. code-block:: text
+
+    <dependency node specifier>.<dependency attribute name>
+
+The node specifier can either by the name of a child node(set), or `this` to access attributes part of the current node.
+You can create dependencies on any synthesized, inherited, or classic attribute that is part of the current node, or any of the children node(sets).
+
+We can rewrite the previous node definition with a synthesized attribute to calculate the sum of a BinOp:
+
+.. code-block:: text
+
+    node Expr {
+        attributes {
+            int value { constructor }
+        }
+    };
+
+    root node BinOp {
+        children {
+            Expr left { constructor, mandatory},
+            Expr right { constructor, mandatory}
+        },
+        attributes {
+            BinOpEnum op { constructor },
+            int sum { synthesized }
+        },
+        equation {
+            this.sum = {args = {left.value, right.value}}
+        }
+    };
+
+We have now specified that the sum of BinOp depends on the value of the left and right expression.\ [#]_
+For more information on attribute grammars, see :ref:`attribute_grammar`.
+
+
+.. [#] Note that the definition of Expr has been heavily simplified for the example.
+
 
 Nodeset
 ==================
 Some nodes might have children that can be of multiple types. To enable this, a nodeset can be created. The node then gets the nodeset
 as a child and all the types in the nodeset can be used as a child. A nodeset requires a name and a set of nodes.
 The nodes specifier in a nodeset uses a set expression, providing the option to compose nodesets to build a new nodeset.
+Nodesets can also have associated attributes. These attributes will be propagated to all the member nodes and nodesets.
+Do note that attributes declared in nodesets can not use the constructor specifier, instead attributes may be repeated in the node declaration with the same signature to add the constructor specifier.
 
 .. code-block:: text
 
     nodeset <name> {
-        nodes = <set expr>
+        nodes = <set expr>[,
+        attributes {
+            <attribute 1>,
+            ...,
+            <attribute n>
+        }
+        ]
     };
 
 
-It is also possible to use a short notation for nodesets.
+It is also possible to use a short notation for nodesets. The short notation does not support nodeset attributes.
 ::
 
     nodeset <name> = <set expr>;
@@ -212,6 +278,8 @@ While in the longer form it looks as follows:
 
 The {Var, Cast} statement is an inline set definition and the *Constant* is a reference to another defined nodeset. So, when an identifier is not
 enclosed with {}, it is seen as a reference to another nodeset. It is also possible to use () to group set expressions and define the evaluation order.
+
+Nodesets using the `&` set intersect, and `-` set difference operators can not use nodeset attributes. Only the `|` set union operator is supported.
 
 -------
 Actions
@@ -304,7 +372,7 @@ Traversal Data
 ==============
 Some traversals need to pass around data between functions inside the traversal. To make this convenient, CoCoNut provides the option
 to denote traversal data in a traversal. The traversal data body is similar to that of attributes, with the extension of user types.
-User types are signalled with the 'user' keyword and requires the file "user_types.h" to be on the include path of your compiler. 
+User types are signalled with the 'user' keyword and requires the file "user_types.h" to be on the include path of your compiler.
 CoCoNut automatically creates and destroys the structure of the traversal data. However, CoCoNut does not assume ownership of the members,
 therefore, you are required to malloc/free them yourself.
 
@@ -379,8 +447,3 @@ Now it is possible to define the common structure of your compiler using the def
 A valid CoCoNut program is a combination of these primitives, with 1 root node, 1 start phase and all top-level
 primitives are ended by a ';'. There is no scope or namespace in CoCoNut and it is not required to define something before
 referencing it.
-
-
-
-
-.. [#] Lifetimes for attributes are only possible for string attributes or node/nodeset attributes.

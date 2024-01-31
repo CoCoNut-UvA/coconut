@@ -17,7 +17,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Bugs" href="bugs.html" />
-    <link rel="prev" title="Calculator Example" href="calculator.html" /> 
+    <link rel="prev" title="Attribute Grammars in CoCoNut" href="attribute_grammar.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,6 +49,7 @@
 <li class="toctree-l1"><a class="reference internal" href="copra.html">Copra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="palm.html">Palm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="calculator.html">Calculator Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="attribute_grammar.html">Attribute Grammars in CoCoNut</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">FAQ</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#can-cycles-have-a-gate">Can cycles have a gate?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#do-unreachable-nodes-need-to-be-handled">Do unreachable nodes need to be handled?</a></li>
@@ -105,8 +106,10 @@ However, there is a small bug with the generation of the dot file, see <a class=
 </section>
 <section id="can-i-define-a-user-type-for-attributes">
 <h2>Can I define a user type for attributes?<a class="headerlink" href="#can-i-define-a-user-type-for-attributes" title="Permalink to this heading"></a></h2>
-<p>No, at the moment you can not and you likely do not need it.
-If you have a usecase where you really need it, please let me know.</p>
+<p>Yes, there is experimental support for user type attributes.
+Do note however that CoCoNut will not handle user type memory, meaning that the copy
+traversal only copies the attributes by value (which can be problematic for pointer types),
+and CoCoNut will also not free user type attributes.</p>
 </section>
 </section>
 
@@ -114,7 +117,7 @@ If you have a usecase where you really need it, please let me know.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="calculator.html" class="btn btn-neutral float-left" title="Calculator Example" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="attribute_grammar.html" class="btn btn-neutral float-left" title="Attribute Grammars in CoCoNut" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="bugs.html" class="btn btn-neutral float-right" title="Bugs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
