@@ -13,6 +13,7 @@
 #include "ccn/dynamic_core.h"
 #include "gen_helpers/out_macros.h"
 #include "globals.h"
+#include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "gen_helpers.h"
 
@@ -126,6 +127,12 @@ node_st *DGCHTinodeset(node_st *node)
     return node;
 }
 
+node_st *DGCHTnodeset_child_entry(node_st *node)
+{
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *DGCHTchild(node_st *node)
 {
     GeneratorContext *ctx = globals.gen_ctx;
@@ -159,6 +166,36 @@ node_st *DGCHTattribute(node_st *node)
     curr_attribute = node;
     TRAVlifetimes(node);
     TRAVnext(node);
+    return node;
+}
+
+/**
+ * @fn DGCHTequation
+ */
+node_st *DGCHTequation(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGCHTequation");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGCHTequation_dependency
+ */
+node_st *DGCHTequation_dependency(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGCHTequation_dependency");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGCHTattribute_reference
+ */
+node_st *DGCHTattribute_reference(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGCHTattribute_reference");
+    TRAVchildren(node);
     return node;
 }
 
@@ -655,5 +692,45 @@ node_st *DGCHTilifetime(node_st *node)
 
 node_st *DGCHTlifetime_range(node_st *node)
 {
+    return node;
+}
+
+/**
+ * @fn DGCHTvisit_arg_list
+ */
+node_st *DGCHTvisit_arg_list(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGCHTvisit_arg_list");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGCHTvisit
+ */
+node_st *DGCHTvisit(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGCHTvisit");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGCHTvisit_sequence_eval
+ */
+node_st *DGCHTvisit_sequence_eval(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGCHTvisit_sequence_eval");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGCHTvisit_sequence_visit
+ */
+node_st *DGCHTvisit_sequence_visit(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGCHTvisit_sequence_visit");
+    TRAVchildren(node);
     return node;
 }

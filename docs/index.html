@@ -7,14 +7,10 @@
   <title>Welcome to CoCoNut’s documentation! &mdash; CoCoNut  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -28,11 +24,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="#" class="icon icon-home"> CoCoNut
+
+          
+          
+          <a href="#" class="icon icon-home">
+            CoCoNut
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -48,6 +48,7 @@
 <li class="toctree-l1"><a class="reference internal" href="copra.html">Copra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="palm.html">Palm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="calculator.html">Calculator Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="attribute_grammar.html">Attribute Grammars in CoCoNut</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a></li>
 </ul>
@@ -65,7 +66,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home"></a></li>
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Welcome to CoCoNut’s documentation!</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
@@ -128,11 +129,20 @@ communicate with the CoCoNut driver from within your compiler, and, finally, wal
 <li class="toctree-l2"><a class="reference internal" href="calculator.html#fully-using-coconut">Fully using CoCoNut</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="attribute_grammar.html">Attribute Grammars in CoCoNut</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="attribute_grammar.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="attribute_grammar.html#adding-attributes-to-the-dsl-file">Adding attributes to the DSL file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="attribute_grammar.html#visit-generation">Visit generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="attribute_grammar.html#evaluation-rules">Evaluation rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="attribute_grammar.html#more-information">More information</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#can-cycles-have-a-gate">Can cycles have a gate?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#do-unreachable-nodes-need-to-be-handled">Do unreachable nodes need to be handled?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#how-do-i-create-a-png-of-my-ast">How do I create a png of my AST?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#can-i-define-a-user-type-for-attributes">Can I define a user type for attributes?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#can-i-have-syntax-highlighting-for-the-dsl-files-in-vscode">Can I have syntax highlighting for the DSL files in vscode?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a><ul>
@@ -161,7 +171,7 @@ communicate with the CoCoNut driver from within your compiler, and, finally, wal
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Damian.</p>
+    <p>&#169; Copyright 2024, Damian.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

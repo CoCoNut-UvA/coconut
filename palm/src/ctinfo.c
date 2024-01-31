@@ -1,35 +1,3 @@
-/**
- *
- * @file
- *
- * This file provides the interface for producing any kind of output during
- * compilation.
- *
- * We have 4 levels of verbosity controlled by the command line option -v
- * and the global variable verbose_level.
- *
- * Verbose level 0:
- *
- * Only error messages are printed.
- *
- * Verbose level 1:
- *
- * Error messages and warnings are printed.
- *
- * Verbose level 2:
- *
- * Error messages, warnings and basic compile time information, e.g. compiler
- * phases,  are printed.
- *
- * Verbose level 3:
- *
- * Error messages, warnings and full compile time information are printed.
- *
- *
- * Default values are 1 for the product version and 3 for the developer version.
- *
- */
-
 #include "palm/ctinfo.h"
 
 #include <signal.h>
@@ -45,7 +13,7 @@
 
 static char *message_buffer = NULL;
 static int message_buffer_size = 0;
-static int message_line_length = 76;
+static int message_line_length = 116;
 
 static char *abort_message_header = "abort: ";
 static char *error_message_header = "error: ";
@@ -184,8 +152,7 @@ char *CTIgetErrorMessageVA(int line, const char *format, va_list arg_p)
     ProcessMessage(message_buffer,
         message_line_length - strlen(error_message_header));
 
-    first_line = (char *)MEMmalloc(32 * sizeof(char));
-    sprintf(first_line, "line %d @", line);
+    first_line = STRfmt("line %d @", line);
     res = STRcat(first_line, message_buffer);
     first_line = MEMfree(first_line);
 

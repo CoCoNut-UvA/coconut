@@ -23,6 +23,7 @@ GeneratorContext *GNnew()
     GeneratorContext *ctx = MEMmalloc(sizeof(GeneratorContext));
     ctx->indent_size = 4;
     ctx->indent_level = 0;
+    ctx->fp = NULL;
     return ctx;
 }
 
@@ -59,9 +60,25 @@ void GNopenIncludeFile(GeneratorContext *ctx, const char *filename)
     GNprint(ctx, GN_DEFAULT, "#pragma once\n");
 }
 
+void GNopenEquationIncludeFile(GeneratorContext *ctx, const char *filename)
+{
+    char *full_file = STRcat(globals.gen_eqhdr_dir, filename);
+    GNopenFile(ctx, full_file);
+    MEMfree(full_file);
+
+    GNprint(ctx, GN_DEFAULT, "#pragma once\n");
+}
+
 void GNopenSourceFile(GeneratorContext *ctx, const char *filename)
 {
     char *full_file = STRcat(globals.gen_src_dir, filename);
+    GNopenFile(ctx, full_file);
+    MEMfree(full_file);
+}
+
+void GNopenAGDotFile(GeneratorContext *ctx, const char *filename)
+{
+    char *full_file = STRcat(globals.gen_ag_dot_dir, filename);
     GNopenFile(ctx, full_file);
     MEMfree(full_file);
 }
@@ -98,4 +115,6 @@ void GNprint(GeneratorContext *ctx, unsigned int style, const char *fmt, ...)
     if (style & GN_DECREASE_WS_AFTER) {
         GNindentDecrease(ctx);
     }
+
+    fflush(ctx->fp);
 }

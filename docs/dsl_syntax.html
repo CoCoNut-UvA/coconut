@@ -7,14 +7,10 @@
   <title>CoCoNut DSL &mdash; CoCoNut  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -29,11 +25,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> CoCoNut
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CoCoNut
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -46,6 +46,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#enum">Enum</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#node">Node</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#lifetimes">Lifetimes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#equations">Equations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#nodeset">Nodeset</a></li>
 </ul>
 </li>
@@ -70,6 +71,7 @@
 <li class="toctree-l1"><a class="reference internal" href="copra.html">Copra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="palm.html">Palm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="calculator.html">Calculator Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="attribute_grammar.html">Attribute Grammars in CoCoNut</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a></li>
 </ul>
@@ -87,7 +89,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">CoCoNut DSL</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/dsl_syntax.rst.txt" rel="nofollow"> View page source</a>
@@ -144,8 +146,9 @@ Lastly, an enum has a name, which corresponds to the name in the generated C enu
 </section>
 <section id="node">
 <h3>Node<a class="headerlink" href="#node" title="Permalink to this heading"></a></h3>
-<p>A node consists out of children, attributes and node lifetimes. Children link to other nodes, which provides tree building.
+<p>A node consists out of children, attributes, equations and node lifetimes. Children link to other nodes, which provides tree building.
 Attributes are information stored in the node, every attribute has a type and a name, which becomes a field in the C struct of the node.
+Equations store attribute dependencies that need to be specified when using attribute grammars.
 Node lifetimes enable the specification of stages in the compiler where the node is disallowed.
 In every ‘program’ there must be one <em>root</em> node present. The <em>root</em> node will be the root in your AST and the starting point of most of your actions.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[root] node &lt;name&gt; {
@@ -159,6 +162,11 @@ In every ‘program’ there must be one <em>root</em> node present. The <em>roo
         ...,
         &lt;attribute n&gt;
     },]
+    [equations {
+        &lt;equation 1&gt;,
+        ...,
+        &lt;equation n&gt;
+    },]
     [lifetime {
         &lt;node lifetime 1&gt;,
         ...,
@@ -171,7 +179,7 @@ In every ‘program’ there must be one <em>root</em> node present. The <em>roo
 <div class="line">Children and attributes, for a node, are defined in the following way, respectively:</div>
 <div class="line-block">
 <div class="line">&lt;child&gt; :: &lt;child type&gt; &lt;name&gt; [ { [constructor], [&lt;lifetimes&gt;] } ]</div>
-<div class="line">&lt;attribute&gt; :: &lt;attribute type&gt; &lt;name&gt; [ { [constructor], [&lt;lifetimes&gt; <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>] } ]</div>
+<div class="line">&lt;attribute&gt; :: &lt;attribute type&gt; &lt;name&gt; [ { [constructor], [inherited], [synthesized], [&lt;lifetimes&gt; <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>] } ]</div>
 </div>
 </div>
 <p>The type for children can be a defined node or a defined nodeset.
@@ -192,6 +200,12 @@ only if they have the ‘constructor’ specification.</p>
 </pre></div>
 </div>
 <p>This will result in the constructor: ASTbinop(left, right, op);</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Lifetimes for attributes are only possible for string attributes or node/nodeset attributes.</p>
+</aside>
+</aside>
 </section>
 <section id="lifetimes">
 <h3>Lifetimes<a class="headerlink" href="#lifetimes" title="Permalink to this heading"></a></h3>
@@ -243,17 +257,70 @@ The ‘TBO’ and ‘OPT’ values are unique ids and not full names. This is es
 and ‘Stage2’ also has an ‘OTP’ then the ‘OTP’ from ‘Stage2’ would be seen as the end of the lifetime because it is the first encounter. If only one ‘OPT’ is present, the need
 for something like ‘Stage3’ is not required but is still allowed.</p>
 </section>
+<section id="equations">
+<h3>Equations<a class="headerlink" href="#equations" title="Permalink to this heading"></a></h3>
+<p>Equations, or evaluation rules, allow you to specify attribute dependencies.
+Each synthesized attribute part of the current node, and each inherited attribute part of the children node(set)s, need a corresponding dependency specification.
+Equations are described as follows:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;equation&gt; :: &lt;target node specifier&gt;.&lt;target attribute name&gt; = [ { args = [ { &lt;dependency 1&gt;, ..., &lt;dependency n&gt; } ] } ]
+</pre></div>
+</div>
+<p>, where the dependency is in the form:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;dependency node specifier&gt;.&lt;dependency attribute name&gt;
+</pre></div>
+</div>
+<p>The node specifier can either by the name of a child node(set), or <cite>this</cite> to access attributes part of the current node.
+You can create dependencies on any synthesized, inherited, or classic attribute that is part of the current node, or any of the children node(sets).</p>
+<p>We can rewrite the previous node definition with a synthesized attribute to calculate the sum of a BinOp:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>node Expr {
+    attributes {
+        int value { constructor }
+    }
+};
+
+root node BinOp {
+    children {
+        Expr left { constructor, mandatory},
+        Expr right { constructor, mandatory}
+    },
+    attributes {
+        BinOpEnum op { constructor },
+        int sum { synthesized }
+    },
+    equation {
+        this.sum = {args = {left.value, right.value}}
+    }
+};
+</pre></div>
+</div>
+<p>We have now specified that the sum of BinOp depends on the value of the left and right expression.<a class="footnote-reference brackets" href="#id4" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>
+For more information on attribute grammars, see <a class="reference internal" href="attribute_grammar.html#attribute-grammar"><span class="std std-ref">Attribute Grammars in CoCoNut</span></a>.</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id4" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
+<p>Note that the definition of Expr has been heavily simplified for the example.</p>
+</aside>
+</aside>
+</section>
 <section id="nodeset">
 <h3>Nodeset<a class="headerlink" href="#nodeset" title="Permalink to this heading"></a></h3>
 <p>Some nodes might have children that can be of multiple types. To enable this, a nodeset can be created. The node then gets the nodeset
 as a child and all the types in the nodeset can be used as a child. A nodeset requires a name and a set of nodes.
-The nodes specifier in a nodeset uses a set expression, providing the option to compose nodesets to build a new nodeset.</p>
+The nodes specifier in a nodeset uses a set expression, providing the option to compose nodesets to build a new nodeset.
+Nodesets can also have associated attributes. These attributes will be propagated to all the member nodes and nodesets.
+Do note that attributes declared in nodesets can not use the constructor specifier, instead attributes may be repeated in the node declaration with the same signature to add the constructor specifier.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>nodeset &lt;name&gt; {
-    nodes = &lt;set expr&gt;
+    nodes = &lt;set expr&gt;[,
+    attributes {
+        &lt;attribute 1&gt;,
+        ...,
+        &lt;attribute n&gt;
+    }
+    ]
 };
 </pre></div>
 </div>
-<p>It is also possible to use a short notation for nodesets.</p>
+<p>It is also possible to use a short notation for nodesets. The short notation does not support nodeset attributes.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nodeset</span> <span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;</span> <span class="o">=</span> <span class="o">&lt;</span><span class="nb">set</span> <span class="n">expr</span><span class="o">&gt;</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -277,6 +344,7 @@ Expr nodeset as follows:</p>
 </div>
 <p>The {Var, Cast} statement is an inline set definition and the <em>Constant</em> is a reference to another defined nodeset. So, when an identifier is not
 enclosed with {}, it is seen as a reference to another nodeset. It is also possible to use () to group set expressions and define the evaluation order.</p>
+<p>Nodesets using the <cite>&amp;</cite> set intersect, and <cite>-</cite> set difference operators can not use nodeset attributes. Only the <cite>|</cite> set union operator is supported.</p>
 </section>
 </section>
 <section id="actions">
@@ -418,12 +486,6 @@ is never reached. Therefore, a maximum cycle can be specified to prevent this fr
 A valid CoCoNut program is a combination of these primitives, with 1 root node, 1 start phase and all top-level
 primitives are ended by a ‘;’. There is no scope or namespace in CoCoNut and it is not required to define something before
 referencing it.</p>
-<aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id2" role="note">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
-<p>Lifetimes for attributes are only possible for string attributes or node/nodeset attributes.</p>
-</aside>
-</aside>
 </section>
 </section>
 </section>
@@ -439,7 +501,7 @@ referencing it.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Damian.</p>
+    <p>&#169; Copyright 2024, Damian.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

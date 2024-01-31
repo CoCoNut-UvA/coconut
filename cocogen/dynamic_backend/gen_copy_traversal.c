@@ -27,7 +27,17 @@ node_st *DGCTast(node_st *node)
     OUT("#include \"ccngen/ast.h\"\n");
     OUT("#include <stddef.h>\n");
     OUT("#include \"palm/str.h\"\n");
-    OUT("#include \"ccn/dynamic_core.h\"\n");
+    OUT("#include \"palm/ctinfo.h\"\n");
+    OUT("#include \"ccn/dynamic_core.h\"\n\n");
+    OUT("static const char *const user_warn =\n");
+    GNindentIncrease(ctx);
+    OUT("\"%%s:%%d: Attributes with user types do not support deep copying, \"\n");
+    OUT("\"instead the attributes are copied by value. Make sure you set \"\n");
+    OUT("\"a correct value for the copied node's attribute yourself. Add \"\n");
+    OUT("\"`#define CCN_USES_UNSAFE_ACKNOWLEDGE` to user_types.h to \"\n");
+    OUT("\"disable this warning.\";\n");
+    GNindentDecrease(ctx);
+    OUT_NO_INDENT("\n");
     OUT_START_FUNC("void CopyBaseNode(node_st *target, node_st *source)");
     OUT_STATEMENT("NODE_BCOL(target) = NODE_BCOL(source)");
     OUT_STATEMENT("NODE_ECOL(target) = NODE_ECOL(source)");
@@ -36,32 +46,6 @@ node_st *DGCTast(node_st *node)
     OUT_STATEMENT("NODE_FILENAME(target) = STRcpy(NODE_FILENAME(source))");
     OUT_END_FUNC();
     TRAVopt(AST_INODES(node));
-    return node;
-}
-
-node_st *DGCTiactions(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCTiphase(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCTitraversal(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCTitravdata(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCTipass(node_st *node)
-{
-    TRAVchildren(node);
     return node;
 }
 
@@ -83,11 +67,6 @@ node_st *DGCTinode(node_st *node)
     return node;
 }
 
-node_st *DGCTinodeset(node_st *node)
-{
-    return node;
-}
-
 node_st *DGCTchild(node_st *node)
 {
     GeneratorContext *ctx = globals.gen_ctx;
@@ -103,59 +82,20 @@ node_st *DGCTattribute(node_st *node)
     GeneratorContext *ctx = globals.gen_ctx;
     char *node_name = ID_UPR(INODE_NAME(curr_node));
     char *attr_name = ID_UPR(ATTRIBUTE_NAME(node));
-    if (ATTRIBUTE_TYPE(node) == AT_string) {
+    if (ATTRIBUTE_IS_INHERITED(node) || ATTRIBUTE_IS_SYNTHESIZED(node)) {
+        // TODO
+    } else if (ATTRIBUTE_TYPE(node) == AT_string) {
         OUT_FIELD("%s_%s(new_node) = STRcpy(%s_%s(arg_node))", node_name, attr_name, node_name, attr_name);
+    } else if (ATTRIBUTE_TYPE(node) == AT_user) {
+        OUT_NO_INDENT("\n");
+        OUT_NO_INDENT("#ifndef CCN_USES_UNSAFE_ACKNOWLEDGE\n");
+        OUT("CTI(CTI_WARN, true, user_warn, __FILE__, __LINE__);\n");
+        OUT_NO_INDENT("#endif // CCN_USES_UNSAFE_ACKNOWLEDGE\n");
+        OUT("%s_%s(new_node) = %s_%s(arg_node); // might not be copied\n", node_name, attr_name, node_name, attr_name);
+        OUT_NO_INDENT("\n");
     } else {
         OUT_FIELD("%s_%s(new_node) = %s_%s(arg_node)", node_name, attr_name, node_name, attr_name);
     }
     TRAVopt(ATTRIBUTE_NEXT(node));
-    return node;
-}
-
-node_st *DGCTste(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGCTsetoperation(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGCTsetliteral(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGCTsetreference(node_st *node)
-{
-
-    TRAVchildren(node);
-    return node;
-}
-
-node_st *DGCTienum(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCTid(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCTilifetime(node_st *node)
-{
-    return node;
-}
-
-node_st *DGCTlifetime_range(node_st *node)
-{
     return node;
 }

@@ -129,9 +129,24 @@ node_st *PRTinode(node_st *node)
     UNINDENT;
     PrintIndent();
     printf("}\n");
+    PrintIndent();
+    printf("Equations {\n");
+    INDENT;
+    TRAVopt(INODE_IEQUATIONS(node));
+    UNINDENT;
+    PrintIndent();
+    printf("}\n");
     UNINDENT;
     printf("}\n");
+    PrintIndent();
+    printf("Visits {\n");
+    INDENT;
+    TRAVopt(INODE_VISIT(node));
+    UNINDENT;
+    PrintIndent();
+    printf("}\n");
     TRAVopt(INODE_NEXT(node));
+
     return node;
 }
 
@@ -142,16 +157,156 @@ node_st *PRTchild(node_st *node)
     return node;
 }
 
+void print_attribute_type(enum attribute_type type, node_st *type_reference) {
+    switch (type)
+    {
+        case AT_user:
+        case AT_link:
+        case AT_link_or_enum:
+            printf("%s", ID_ORIG(type_reference));
+            break;
+        case AT_int:
+        printf("int");
+        break;
+        case AT_string:
+        printf("string");
+        break;
+        case AT_bool:
+        printf("bool");
+        break;
+        case AT_int8:
+        printf("int8");
+        break;
+        case AT_int16:
+        printf("int16");
+        break;
+        case AT_int32:
+        printf("int32");
+        break;
+        case AT_int64:
+        printf("int64");
+        break;
+        case AT_float:
+        printf("float");
+        break;
+        case AT_double:
+        printf("double");
+        break;
+        case AT_uint:
+        printf("uint");
+        break;
+        case AT_uint8:
+        printf("uint8");
+        break;
+        case AT_uint16:
+        printf("uint16");
+        break;
+        case AT_uint32:
+        printf("uint32");
+        break;
+        case AT_uint64:
+        printf("uint64");
+        break;
+    default:
+        printf("<unknown type>");
+        break;
+    }
+}
+
 node_st *PRTattribute(node_st *node)
 {
+    bool prev = false;
     PrintIndent();
-    printf("%s\n", ID_ORIG(ATTRIBUTE_NAME(node)));
+    print_attribute_type(ATTRIBUTE_TYPE(node), ATTRIBUTE_TYPE_REFERENCE(node));
+    printf(" %s {", ID_ORIG(ATTRIBUTE_NAME(node)));
+    if (ATTRIBUTE_IN_CONSTRUCTOR(node)) {
+        printf("constructor");
+        prev = true;
+    }
+    if (ATTRIBUTE_IS_SYNTHESIZED(node)) {
+        if (prev) {
+            printf(", ");
+        }
+        printf("synthesized");
+        prev = true;
+    }
+    if (ATTRIBUTE_IS_INHERITED(node)) {
+        if (prev) {
+            printf(", ");
+        }
+        printf("inherited");
+        prev = true;
+    }
+    if (ATTRIBUTE_LIFETIMES(node)) {
+        if (prev) {
+            printf(", ");
+        }
+        printf("lifetimes {\n");
+        INDENT;
+        TRAVlifetimes(node);
+        UNINDENT;
+        PrintIndent();
+        printf("}");
+    }
+    printf("}\n");
     TRAVopt(ATTRIBUTE_NEXT(node));
+    return node;
+}
+
+/**
+ * @fn PRTequation
+ */
+node_st *PRTequation(node_st *node)
+{
+    PrintIndent();
+    TRAVrule(node);
+    printf(" = {\n");
+    INDENT;
+    PrintIndent();
+    printf("args = {");
+    TRAViargs(node);
+    printf("}\n");
+    UNINDENT;
+    PrintIndent();
+    printf("}\n");
+    TRAVopt(EQUATION_NEXT(node));
+    return node;
+}
+
+/**
+ * @fn PRTequation_dependency
+ */
+node_st *PRTequation_dependency(node_st *node)
+{
+    TRAViattribute(node);
+    if (EQUATION_DEPENDENCY_NEXT(node)) {
+        printf(", ");
+        TRAVnext(node);
+    }
+    return node;
+}
+
+/**
+ * @fn PRTattribute_reference
+ */
+node_st *PRTattribute_reference(node_st *node)
+{
+    if (!ATTRIBUTE_REFERENCE_INODE(node)) {
+        printf("<this>");
+    } else {
+        printf("%s", ID_ORIG(ATTRIBUTE_REFERENCE_INODE(node)));
+        if (ATTRIBUTE_REFERENCE_NODE_TYPE(node)) {
+            printf("<%s>", ID_ORIG(ATTRIBUTE_REFERENCE_NODE_TYPE(node)));
+        }
+    }
+    printf(".%s", ID_ORIG(ATTRIBUTE_REFERENCE_IATTRIBUTE(node)));
     return node;
 }
 
 node_st *PRTsetreference(node_st *node)
 {
+    PrintIndent();
+    printf("(ref) %s\n", ID_ORIG(SETREFERENCE_REFERENCE(node)));
     return node;
 }
 
@@ -166,15 +321,75 @@ node_st *PRTsetliteral(node_st *node)
     return node;
 }
 
+node_st *PRTsetoperation(node_st *node)
+{
+    PrintIndent();
+    printf("(\n");
+    INDENT;
+    TRAVleft(node);
+    UNINDENT;
+    PrintIndent();
+    switch (SETOPERATION_TYPE(node)) {
+        case SO_difference:
+            printf("-");
+            break;
+        case SO_intersect:
+            printf("&");
+            break;
+        case SO_iunion:
+            printf("|");
+            break;
+        default:
+            printf("<unknown operator>");
+            break;
+    }
+    printf("\n");
+    INDENT;
+    TRAVright(node);
+    UNINDENT;
+    PrintIndent();
+    printf(")\n");
+    return node;
+}
+
 node_st *PRTinodeset(node_st *node)
 {
-    printf("nodeset %s {\n", ID_ORIG(INODESET_NAME(node)));
+    printf("nodeset %s ", ID_ORIG(INODESET_NAME(node)));
+    if (INODESET_ILLEGAL_SETEXPR_ATTR(node)) {
+        printf("(illegal attr setexpr) ");
+    }
+    printf("{\n");
     INDENT;
     TRAVopt(INODESET_EXPR(node));
+
+    PrintIndent();
+    printf("Child nodesets {\n");
+    INDENT;
+    TRAVopt(INODESET_CHILDREN_TABLE(node));
     UNINDENT;
     PrintIndent();
     printf("}\n");
+
+    PrintIndent();
+    printf("Attributes {\n");
+    INDENT;
+    TRAVopt(INODESET_IATTRIBUTES(node));
+    UNINDENT;
+    PrintIndent();
+    printf("}\n");
+
+    UNINDENT;
+    PrintIndent();
+    printf("}\n");
+
     TRAVopt(INODESET_NEXT(node));
+    return node;
+}
+
+node_st *PRTnodeset_child_entry(node_st *node) {
+    PrintIndent();
+    printf("%s\n", ID_ORIG(INODESET_NAME(NODESET_CHILD_ENTRY_REFERENCE(node))));
+    TRAVopt(NODESET_CHILD_ENTRY_NEXT(node));
     return node;
 }
 
@@ -182,11 +397,6 @@ node_st *PRTid(node_st *node)
 {
     PrintIndent();
     printf("%s\n", ID_ORIG(node));
-    return node;
-}
-
-node_st *PRTsetoperation(node_st *node)
-{
     return node;
 }
 
@@ -204,6 +414,7 @@ node_st *PRTste(node_st *node)
 
 node_st *PRTilifetime(node_st *node)
 {
+    PrintIndent();
     if (ILIFETIME_TYPE(node) == LT_mandatory) {
         printf("mandatory");
     } else {
@@ -222,5 +433,78 @@ node_st *PRTilifetime(node_st *node)
 node_st *PRTlifetime_range(node_st *node)
 {
     printf("%d", LIFETIME_RANGE_ACTION_ID(node));
+    return node;
+}
+
+/**
+ * @fn PRTvisit_arg_list
+ */
+node_st *PRTvisit_arg_list(node_st *node)
+{
+    TRAVattribute(node);
+
+    if (VISIT_ARG_LIST_NEXT(node)) {
+        printf(", ");
+        TRAVnext(node);
+    }
+
+    return node;
+}
+
+/**
+ * @fn PRTvisit
+ */
+node_st *PRTvisit(node_st *node)
+{
+    PrintIndent();
+    printf("%s_%lu (in: {", ID_LWR(INODE_NAME(VISIT_INODE(node))),
+                            VISIT_INDEX(node));
+    TRAVopt(VISIT_INPUTS(node));
+    printf("} out: {");
+    TRAVopt(VISIT_OUTPUTS(node));
+    printf("}) {\n");
+    INDENT;
+    TRAVopt(VISIT_SEQUENCE(node));
+    UNINDENT;
+    printf("}\n");
+    TRAVopt(VISIT_NEXT(node));
+    return node;
+}
+
+/**
+ * @fn PRTvisit_sequence_eval
+ */
+node_st *PRTvisit_sequence_eval(node_st *node)
+{
+    PrintIndent();
+    printf("eval ");
+    TRAVdo(VISIT_SEQUENCE_EVAL_ATTRIBUTE(node));
+    printf("\n");
+    TRAVopt(VISIT_SEQUENCE_EVAL_NEXT(node));
+    return node;
+}
+
+/**
+ * @fn PRTvisit_sequence_visit
+ */
+node_st *PRTvisit_sequence_visit(node_st *node)
+{
+    node_st *visit = VISIT_SEQUENCE_VISIT_VISIT(node);
+    PrintIndent();
+    if (visit) {
+    printf("visit %s %s_%lu", ID_LWR(CHILD_NAME(VISIT_SEQUENCE_VISIT_CHILD(node))),
+                            ID_LWR(INODE_NAME(VISIT_INODE(visit))), VISIT_INDEX(visit));
+    }
+
+    if (VISIT_SEQUENCE_VISIT_ALT(node)) {
+        printf(" or\n");
+        INDENT;
+        TRAVdo(VISIT_SEQUENCE_VISIT_ALT(node));
+        UNINDENT;
+    } else {
+        printf("\n");
+    }
+
+    TRAVopt(VISIT_SEQUENCE_VISIT_NEXT(node));
     return node;
 }

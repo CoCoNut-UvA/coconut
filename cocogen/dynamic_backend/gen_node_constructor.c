@@ -17,7 +17,7 @@ static char *node_name_upr = NULL;
 node_st *DGNCast(node_st *node)
 {
     dgif_print_semicolon = false;
-    TRAVchildren(node);
+    TRAVopt(AST_INODES(node));
     return node;
 }
 
@@ -74,10 +74,13 @@ node_st *DGNCattribute(node_st *node)
     GeneratorContext *ctx = globals.gen_ctx;
     if (ATTRIBUTE_IN_CONSTRUCTOR(node)) {
         OUT_FIELD("%s_%s(node) = %s", node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), DGHattributeField(node));
+    } else if (ATTRIBUTE_IS_INHERITED(node) || ATTRIBUTE_IS_SYNTHESIZED(node)) {
+        // TODO
+    } else if (ATTRIBUTE_TYPE(node) == AT_user) {
+                OUT_FIELD("%s_%s(node) = 0", node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)));
     } else {
         OUT_FIELD("%s_%s(node) = %s", node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), FMTattributeDefaultVal(ATTRIBUTE_TYPE(node)));
     }
     TRAVchildren(node);
     return node;
 }
-

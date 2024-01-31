@@ -13,6 +13,7 @@
 #include "globals.h"
 #include "palm/hash_table.h"
 #include "frontend/symboltable.h"
+#include "frontend/ctihelp.h"
 
 
 static node_st *last_ste = NULL;
@@ -53,17 +54,6 @@ node_st *BSTiactions(node_st *node)
     TRAVchildren(node);
     return node;
 }
-
-// Helper to convert an ID into an info object for error reporting.
-void id_to_info(node_st *ID, struct ctinfo *info)
-{
-   struct ctinfo tmp = {.first_line = ID_ROW(ID), .filename = globals.filename,
-           .line = HTlookup(globals.line_map, &ID_ROW(ID)),
-           .first_column = ID_COL_BEGIN(ID), .last_column = ID_COL_END(ID)};
-   *info = tmp;
-}
-
-
 
 node_st *BSTiphase(node_st *node)
 {
@@ -181,6 +171,12 @@ node_st *BSTinodeset(node_st *node)
     return node;
 }
 
+node_st *BSTnodeset_child_entry(node_st *node)
+{
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *BSTchild(node_st *node)
 {
     TRAVchildren(node);
@@ -218,6 +214,33 @@ node_st *BSTattribute(node_st *node)
     return node;
 }
 
+/**
+ * @fn BSTequation
+ */
+node_st *BSTequation(node_st *node)
+{
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn BSTequation_dependency
+ */
+node_st *BSTequation_dependency(node_st *node)
+{
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn BSTattribute_reference
+ */
+node_st *BSTattribute_reference(node_st *node)
+{
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *BSTienum(node_st *node)
 {
     if (STlookup(first_ste, IENUM_NAME(node))) {
@@ -242,6 +265,38 @@ node_st *BSTilifetime(node_st *node)
 }
 
 node_st *BSTlifetime_range(node_st *node)
+{
+    return node;
+}
+
+/**
+ * @fn BSTvisit_arg_list
+ */
+node_st *BSTvisit_arg_list(node_st *node)
+{
+    return node;
+}
+
+/**
+ * @fn BSTvisit
+ */
+node_st *BSTvisit(node_st *node)
+{
+    return node;
+}
+
+/**
+ * @fn BSTvisit_sequence_eval
+ */
+node_st *BSTvisit_sequence_eval(node_st *node)
+{
+    return node;
+}
+
+/**
+ * @fn BSTvisit_sequence_visit
+ */
+node_st *BSTvisit_sequence_visit(node_st *node)
 {
     return node;
 }

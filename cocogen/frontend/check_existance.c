@@ -9,9 +9,8 @@
 #include "palm/str.h"
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
+#include "frontend/ctihelp.h"
 #include "frontend/symboltable.h"
-
-extern void id_to_info(node_st *ID, struct ctinfo *info);
 
 static bool seen_root_node = false;
 static bool seen_start_phase = false;
@@ -30,6 +29,7 @@ static char *uid_reserved[] = {
     "CPY",
     "CHK",
     "DEL",
+    "EVAL",
 };
 
 void checkUID(node_st *id)
@@ -157,6 +157,17 @@ node_st *CEXinode(node_st *node)
 
 node_st *CEXinodeset(node_st *node)
 {
+    TRAVopt(INODESET_IATTRIBUTES(node));
+    if (node_ste != NULL) {
+        TRAVstart(node_ste, TRAV_free);
+        node_ste = NULL;
+    }
+    TRAVopt(INODESET_NEXT(node));
+    return node;
+}
+
+node_st *CEXnodeset_child_entry(node_st *node)
+{
     TRAVchildren(node);
     return node;
 }
@@ -261,6 +272,28 @@ node_st *CEXattribute(node_st *node)
     return node;
 }
 
+node_st *CEXequation(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented CEXequation");
+    TRAVchildren(node);
+    return node;
+}
+
+
+node_st *CEXequation_dependency(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented CEXequation_dependency");
+    TRAVchildren(node);
+    return node;
+}
+
+node_st *CEXattribute_reference(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented CEXattribute_reference");
+    TRAVchildren(node);
+    return node;
+}
+
 static char *preserved_enum_prefix[] = {
     "NT",
     "NS",
@@ -297,6 +330,38 @@ node_st *CEXilifetime(node_st *node)
 }
 
 node_st *CEXlifetime_range(node_st *node)
+{
+    return node;
+}
+
+/**
+ * @fn CEXvisit_arg_list
+ */
+node_st *CEXvisit_arg_list(node_st *node)
+{
+    return node;
+}
+
+/**
+ * @fn CEXvisit
+ */
+node_st *CEXvisit(node_st *node)
+{
+    return node;
+}
+
+/**
+ * @fn CEXvisit_sequence_eval
+ */
+node_st *CEXvisit_sequence_eval(node_st *node)
+{
+    return node;
+}
+
+/**
+ * @fn CEXvisit_sequence_visit
+ */
+node_st *CEXvisit_sequence_visit(node_st *node)
 {
     return node;
 }

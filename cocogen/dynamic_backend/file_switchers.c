@@ -15,9 +15,14 @@ node_st *dynamic_start_ast_header(node_st *root)
     GeneratorContext *ctx = globals.gen_ctx;
     GNopenIncludeFile(ctx, "ast.h");
 
-    OUT("#pragma once\n");
+    OUT("#include <assert.h>\n");
+    OUT("#include <stddef.h>\n\n");
+    OUT("#include \"ccngen/ccn_defs.h\"\n");
     OUT("#include \"ccn/ccn_types.h\"\n");
     OUT("#include \"ccngen/enum.h\"\n");
+    OUT("#ifdef CCN_USES_UNSAFE\n");
+    OUT("#include \"user_types.h\"\n");
+    OUT("#endif\n");
     OUT("typedef struct ccn_node %s;\n", "node_st");
 
     return root;
@@ -30,6 +35,42 @@ node_st *dynamicSwitchToAstSource(node_st *root)
 
     OUT("#include \"ccngen/ast.h\"\n");
     OUT("#include \"palm/memory.h\"\n");
+
+    return root;
+}
+
+node_st *dynamic_start_equation_header(node_st *root)
+{
+    GeneratorContext *ctx = globals.gen_ctx;
+    GNopenIncludeFile(ctx, "equation.h");
+
+    return root;
+}
+
+node_st *dynamic_start_visit_header(node_st *root)
+{
+    GeneratorContext *ctx = globals.gen_ctx;
+    GNopenIncludeFile(ctx, "visit.h");
+
+    OUT("#include \"ccngen/ccn_defs.h\"\n");
+    OUT("#include \"ccn/ccn_types.h\"\n");
+    OUT("#include \"ccngen/enum.h\"\n");
+    OUT("#include \"ccngen/ast.h\"\n");
+    OUT("#ifdef CCN_USES_UNSAFE\n");
+    OUT("#include \"user_types.h\"\n");
+    OUT("#endif\n");
+
+    return root;
+}
+
+node_st *dynamicSwitchToVisitSource(node_st *root)
+{
+    GeneratorContext *ctx = globals.gen_ctx;
+    GNopenSourceFile(ctx, "visit.c");
+
+    OUT("#include \"palm/dbug.h\"\n\n");
+    OUT("#include \"ccngen/equation.h\"\n");
+    OUT("#include \"ccngen/visit.h\"\n");
 
     return root;
 }
@@ -56,7 +97,7 @@ node_st *dynamicStartTravData(node_st *root)
     GeneratorContext *ctx = globals.gen_ctx;
     GNopenIncludeFile(ctx, "trav_data.h");
 
-    OUT("#include\"ccngen/ccn_defs.h\"\n");
+    OUT("#include \"ccngen/ccn_defs.h\"\n");
     OUT("#include \"ccn/ccn_types.h\"\n");
     OUT("#ifdef CCN_USES_UNSAFE\n");
     OUT("#include \"user_types.h\"\n");

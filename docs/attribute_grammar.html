@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attribute Grammars in CoCoNut &mdash; CoCoNut  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="FAQ" href="faq.html" />
+    <link rel="prev" title="Calculator Example" href="calculator.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CoCoNut
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dsl_syntax.html">CoCoNut DSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codegen.html">Codegen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="working_with_traversals.html">Working With CoCoNut</a></li>
+<li class="toctree-l1"><a class="reference internal" href="primitive_types.html">Primitive types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reserved.html">Reserved</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copra.html">Copra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="palm.html">Palm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calculator.html">Calculator Example</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Attribute Grammars in CoCoNut</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-attributes-to-the-dsl-file">Adding attributes to the DSL file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#visit-generation">Visit generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#evaluation-rules">Evaluation rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#more-information">More information</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CoCoNut</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Attribute Grammars in CoCoNut</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/attribute_grammar.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="attribute-grammars-in-coconut">
+<span id="attribute-grammar"></span><h1>Attribute Grammars in CoCoNut<a class="headerlink" href="#attribute-grammars-in-coconut" title="Permalink to this heading"></a></h1>
+<p>Attribute Grammars, as originally proposed by Donald E. Knuth <a class="reference external" href="https://doi.org/10.1007/BF01692511">here</a>, provide an intuitive way to do semantic analysis on an AST without using traversals. CoCoNut already has attributes which are associated to nodes to store information, but attribute grammars allow us to define simple evaluation rules to determine the value of the attributes, instead of manually assigning values.</p>
+<p>AG support in CoCoNut is still very experimental, so feel free to contact <a class="reference external" href="https://www.uva.nl/en/profile/l/a/t.laan/t.laan.html">Tristan Laan</a> if you run into any problems, or need additional features.</p>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
+<p>Attribute Grammars denote two types of attributes, synthesized and inherited attributes.
+Synthesized attributes are computed from the values of child nodes, which means attribute values will be propagated up the AST.
+Inherited attributes are computed from parent or sibling nodes, which allows attribute values to propagate down the AST as well, and provide context on where the node is located in the tree.</p>
+<p>CoCoNut has three types of attributes: (1) synthesized attributes, which can have dependencies on attributes from children nodes, or on attributes from the current node; (2) inherited attributes, which can have dependencies on attributes from parent or sibling nodes; and (3) classic attributes, which can not have any dependencies or evaluation rules, and instead must have their value set manually.</p>
+</section>
+<section id="adding-attributes-to-the-dsl-file">
+<h2>Adding attributes to the DSL file<a class="headerlink" href="#adding-attributes-to-the-dsl-file" title="Permalink to this heading"></a></h2>
+<p>Synthesized and inherited attributes can either be assigned to nodesets, or directly to nodes themselves. Do note that when you assign an inherited attribute to a nodeset, member nodes of the nodeset are not allowed to have <em>additional</em> inherited attributes. You can add additional synthesized attributes in CoCoNut, even though this does not strictly comply with attribute grammar rules.</p>
+<p>As an example, this is a valid configuration:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>nodeset S {
+    nodes = {A}
+    attributes {
+        int p { inherited }
+    }
+};
+
+node A {
+    attributes {
+        int q { synthesized }
+    }
+};
+</pre></div>
+</div>
+<p>While this is not allowed:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>nodeset S {
+    nodes = {A}
+    attributes {
+        int p { inherited }
+    }
+};
+
+node A {
+    attributes {
+        int q { inherited }
+    }
+};
+</pre></div>
+</div>
+<p>Synthesized and inherited attributes need to have their dependencies specified at the node level. This is done in equation blocks, where evaluation rules are be declared. We need to know the dependencies (i.e. inputs of the evaluation rules) know, such that CoCoNut can generate the evaluation rule stubs later on. Synthesized attributes have their evaluation rule specified in the corresponding nodes, while inherited attributes have their evaluation rule specified in the parent nodes. This means that root nodes cannot have any inherited attributes. When compiling the DSL file, cocogen will specify where evaluation rules are missing.</p>
+<p>An evaluation rule declaration uses the following syntax:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;target node specifier&gt;.&lt;target attribute name&gt; = [ { args = [ { &lt;dependency 1&gt;, ..., &lt;dependency n&gt; } ] } ]
+</pre></div>
+</div>
+<p>, where the dependency is in the form:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;dependency node specifier&gt;.&lt;dependency attribute name&gt;
+</pre></div>
+</div>
+<p>Node specifiers can either be <cite>this</cite> to target the current node, or a child node of the current node. As a simple example, this is an AST definition of a binary tree with attributes for the sum of the tree, and the depth of the nodes:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>nodeset tree {
+    nodes = {binop, leaf},
+    attributes {
+        int sum {synthesized},
+        int depth {inherited}
+    }
+};
+
+root node prog {
+    children {
+        tree tree
+    },
+    attributes {
+        int sum {synthesized}
+    },
+    equations {
+        tree.depth = {args = {}},
+        this.sum = {args = {tree.sum}}
+    }
+};
+
+node binop {
+    children {
+        tree left,
+        tree right
+    },
+    equations {
+        this.sum = {args = {left.sum, right.sum}},
+        left.depth = {args = {this.depth}},
+        right.depth = {args = {this.depth}}
+    }
+};
+
+node leaf {
+    attributes {
+        int val {constructor}
+    },
+    equations {
+        this.sum = {args = {this.val}}
+    }
+};
+</pre></div>
+</div>
+</section>
+<section id="visit-generation">
+<h2>Visit generation<a class="headerlink" href="#visit-generation" title="Permalink to this heading"></a></h2>
+<p>If we compile the example binary tree AST definition, cocogen will first divide the attributes over separate partitions, where nodes in later partitions can only depend on nodes in the same or lower partitions. Graphs of this process are stored in <code class="docutils literal notranslate"><span class="pre">ccngen/ag_dot</span></code>. The attributes in each partition are then scheduled into visit sequences. A log of this process is stored in <code class="docutils literal notranslate"><span class="pre">ccngen/log/ag_schedule.log</span></code>. More details on this process can be found in <a class="reference external" href="https://doi.org/10.1145/2678015.2682543">this paper</a>.</p>
+<p>The resulting visits can be found in <code class="docutils literal notranslate"><span class="pre">ccngen/visit.c</span></code>. As an example, here is the visit for the binop node:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">CCNvisit_binop_1</span><span class="p">(</span><span class="n">node_st</span><span class="w"> </span><span class="o">*</span><span class="n">node</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">this_depth</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">right_depth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EVALbinop_right_depth</span><span class="p">(</span><span class="n">this_depth</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">right_sum</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">NODE_TYPE</span><span class="p">(</span><span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">node</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NT_BINOP</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">right_sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CCNvisit_binop_1</span><span class="p">(</span><span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">node</span><span class="p">),</span><span class="w"> </span><span class="n">right_depth</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">NODE_TYPE</span><span class="p">(</span><span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">node</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NT_LEAF</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">right_sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CCNvisit_leaf_1</span><span class="p">(</span><span class="n">BINOP_RIGHT</span><span class="p">(</span><span class="n">node</span><span class="p">),</span><span class="w"> </span><span class="n">right_depth</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">DBUG_ASSERT</span><span class="p">(</span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Problem in visit&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// Should not be able to get here</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">left_depth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EVALbinop_left_depth</span><span class="p">(</span><span class="n">this_depth</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">left_sum</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">NODE_TYPE</span><span class="p">(</span><span class="n">BINOP_LEFT</span><span class="p">(</span><span class="n">node</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NT_BINOP</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">left_sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CCNvisit_binop_1</span><span class="p">(</span><span class="n">BINOP_LEFT</span><span class="p">(</span><span class="n">node</span><span class="p">),</span><span class="w"> </span><span class="n">left_depth</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">NODE_TYPE</span><span class="p">(</span><span class="n">BINOP_LEFT</span><span class="p">(</span><span class="n">node</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NT_LEAF</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">left_sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CCNvisit_leaf_1</span><span class="p">(</span><span class="n">BINOP_LEFT</span><span class="p">(</span><span class="n">node</span><span class="p">),</span><span class="w"> </span><span class="n">left_depth</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">DBUG_ASSERT</span><span class="p">(</span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Problem in visit&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// Should not be able to get here</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">this_sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EVALbinop_this_sum</span><span class="p">(</span><span class="n">left_sum</span><span class="p">,</span><span class="w"> </span><span class="n">right_sum</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">this_sum</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>We can see the visit receives the inherited attributes as argument, and returns the synthesized attributes. For each child, first the corresponding depth is calculated, and then the visit calls into the child visit to retrieve the corresponding sum. At the end the child sums are used to evaluate and return the total sum.</p>
+</section>
+<section id="evaluation-rules">
+<h2>Evaluation rules<a class="headerlink" href="#evaluation-rules" title="Permalink to this heading"></a></h2>
+<p>You may have noticed that the implementations of the EVAL* functions are missing. This is because you have to provide them! cocogen creates header files for the evaluation rules in <code class="docutils literal notranslate"><span class="pre">ccngen/equation.h</span></code> and provides stub files for you to use in <code class="docutils literal notranslate"><span class="pre">ccngen/user/eq*.c</span></code>. As an example here is the stub file for the binop node:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;ccngen/equations/binop.h&quot;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">EVALbinop_this_sum</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">left_sum</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">right_sum</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">EVALbinop_left_depth</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">this_depth</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">EVALbinop_right_depth</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">this_depth</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>A correct implementation might look like this:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;ccngen/equations/binop.h&quot;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">EVALbinop_this_sum</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">left_sum</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">right_sum</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">left_sum</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">right_sum</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">EVALbinop_left_depth</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">this_depth</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">this_depth</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">EVALbinop_right_depth</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">this_depth</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">this_depth</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="more-information">
+<h2>More information<a class="headerlink" href="#more-information" title="Permalink to this heading"></a></h2>
+<p>For more information, <a class="reference external" href="https://en.wikipedia.org/wiki/Attribute_grammar">Wikipedia</a> has a short article which gives a brief explanation of the theory behind attribute grammars. As mentioned before <a class="reference external" href="https://doi.org/10.1145/2678015.2682543">this paper</a> by L. Thomas van Binsbergen, Jeroen Bransen, and Atze Dijkstra provides detailed information on the scheduling part of attribute grammars.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="calculator.html" class="btn btn-neutral float-left" title="Calculator Example" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="faq.html" class="btn btn-neutral float-right" title="FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Damian.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

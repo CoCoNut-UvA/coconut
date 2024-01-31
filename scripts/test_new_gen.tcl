@@ -45,7 +45,7 @@ proc run_tests {tmp} {
 	if {[ catch {
 		cd $tmp/coconut/build
 		exec ctest -V
-	} err ]} { 
+	} err ]} {
 		puts $err
 		puts "===================================FAILED==============================="
 		cleanup $tmp
@@ -63,5 +63,3 @@ for {set i 0} {$i < 4} {incr i} {
 run_tests $tmp
 cleanup $tmp
 exit 0
-
-

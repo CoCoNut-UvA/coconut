@@ -1,6 +1,7 @@
 #include "commandline.h"
 
 #include <getopt.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,6 +11,8 @@
 extern char *yy_filename;
 
 struct command_line global_command_line;
+
+static const size_t default_ag_max_iter = 1000;
 
 static
 void InitGlobalOptions() {
@@ -23,6 +26,7 @@ void InitGlobalOptions() {
     global_command_line.backend = NULL;
     global_command_line.gen_dir = NULL;
     global_command_line.debug = false;
+    global_command_line.ag_scheduler_max_iter = default_ag_max_iter;
 }
 
 static
@@ -33,28 +37,30 @@ void Usage(char *program) {
 
     printf("Usage: %s [OPTION...] COCONUT_FILE\n", program);
     printf("Options:\n");
-    printf("  --help                       This help message.\n");
+    printf("  --help                        This help message.\n");
     /*
-    printf("  --list-gen-files             Outputs a list of files which "
+    printf("  --list-gen-files              Outputs a list of files which "
            "would be (re)generated,\n");
-    printf("                               but does not actually modify any "
+    printf("                                but does not actually modify any "
            "files.(NOT IMPLEMENTED)\n");
     */
-    printf("  --verbose/-v                 Enable verbose mode.\n");
-    printf("  --breakpoint/-b <breakpoint> Set a breakpoint.\n");
+    printf("  --verbose/-v                  Enable verbose mode.\n");
+    printf("  --breakpoint/-b <breakpoint>  Set a breakpoint.\n");
     //printf("  --dot                        Will produce ast.dot in "
 //"<gen_dir>/dot.\n");
-    printf("  --consistency-checks         Do consistency checks on the AST "
+    printf("  --consistency-checks          Do consistency checks on the AST "
            "during runtime.\n");
-    //printf("  --profiling                  Generate the requirements for a "
+    //printf("  --profiling                   Generate the requirements for a "
 //           "time and memory profile in your compiler.\n");
-    //printf("  --breakpoints                Enable setting breakpoints in your "
+    //printf("  --breakpoints                 Enable setting breakpoints in your "
  //          "compiler, generates an API for this.\n");
-    //printf("  --gen_user_files             Generates user traversal files.\n");
-    printf("  --backend <backend name>     Selects generation backend, either "
+    //printf("  --gen_user_files              Generates user traversal files.\n");
+    printf("  --backend <backend name>      Selects generation backend, either "
            "typed or dynamic(default=dynamic).\n");
-    printf("  --show-ast                   Pretty print the ast at end of compilation\n");
-    printf("  --show-structure             Pretty print the structure of the compiler.\n");
+    printf("  --show-ast                    Pretty print the ast at end of compilation\n");
+    printf("  --show-structure              Pretty print the structure of the compiler.\n");
+    printf("  --ag-scheduler-max-iter <int> Maximum iterations to be used by the ag "
+           "scheduler, defaults to %lu.\n", default_ag_max_iter);
 }
 
 static
@@ -80,10 +86,12 @@ void CLprocessArgs(int argc, char *argv[]) {
         {"breakpoint", required_argument, 0, 33},
         {"show-structure", no_argument, 0, 34},
         {"debug", no_argument, 0, 35},
+        {"ag-scheduler-max-iter", required_argument, 0, 36},
         {0, 0, 0, 0}};
 
     int option_index;
     int c;
+    char *endptr;
 
     while (1) {
         c = getopt_long(argc, argv, "v", long_options, &option_index);
@@ -135,6 +143,15 @@ void CLprocessArgs(int argc, char *argv[]) {
             exit(0);
         case 35:
             global_command_line.debug = true;
+            break;
+        case 36:
+            global_command_line.ag_scheduler_max_iter = strtoul(optarg, &endptr,
+                                                                10);
+            if (endptr == optarg) {
+                printf("CLI: Error parsing ag max iter. Could not convert '%s' "
+                       "to an integer. Exiting.\n", optarg);
+                exit(EXIT_FAILURE);
+            }
             break;
         case 'h':
             Usage(argv[0]);

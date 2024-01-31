@@ -10,8 +10,8 @@
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
 #include "frontend/symboltable.h"
+#include "frontend/ctihelp.h"
 
-extern void id_to_info(node_st *ID, struct ctinfo *info);
 static node_st *last_action = NULL;
 static node_st *last_node = NULL;
 static node_st *curr_target = NULL;

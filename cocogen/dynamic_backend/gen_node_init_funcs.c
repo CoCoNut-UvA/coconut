@@ -18,7 +18,7 @@ static int arg_num = 0;
 node_st *DGIFast(node_st *node)
 {
     dgif_print_semicolon = true;
-    TRAVchildren(node);
+    TRAVopt(AST_INODES(node));
     return node;
 }
 
@@ -71,6 +71,8 @@ node_st *DGIFattribute(node_st *node)
             OUT("%s *%s", basic_node_type, DGHattributeField(node));
         } else if (ATTRIBUTE_TYPE(node) == AT_link_or_enum) {
             OUT("enum %s %s", ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(node)), DGHattributeField(node));
+        } else if (ATTRIBUTE_TYPE(node) == AT_user) {
+            OUT("%s %s", ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(node)), ID_LWR(ATTRIBUTE_NAME(node)));
         } else {
             OUT("%s %s", FMTattributeTypeToString(ATTRIBUTE_TYPE(node)), DGHattributeField(node));
         }

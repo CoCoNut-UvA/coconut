@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stddef.h>
 
 // TODO: maybe make the struct 'private' and wrap into access modifiers.
 struct command_line {
@@ -15,6 +16,7 @@ struct command_line {
     bool debug;
     char *backend;
     char *gen_dir;
+    size_t ag_scheduler_max_iter;
 };
 
 extern struct command_line global_command_line;

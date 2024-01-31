@@ -1,5 +1,5 @@
 #pragma once
-#include"ccngen/ccn_defs.h"
+#include "ccngen/ccn_defs.h"
 #include "ccn/ccn_types.h"
 #ifdef CCN_USES_UNSAFE
 #include "user_types.h"
@@ -29,6 +29,36 @@ struct data_sli {
     node_st *value;
 };
 
+struct data_sav {
+    int errors;
+    htable_stptr graph_nodes;
+    node_st *symboltable;
+};
+
+struct data_cpr {
+    htable_stptr found_attributes;
+    htable_stptr found_children;
+    node_st *curr_node;
+    node_st *symboltable;
+};
+
+struct data_cha {
+    bool in_nodeset;
+};
+
+struct data_pra {
+    node_st *curr_nodeset;
+    node_st *symboltable;
+};
+
+struct data_nct {
+    htable_stptr built_tables;
+    htable_stptr added_refs;
+    node_st *last_entry;
+    node_st *curr_set;
+    node_st *symboltable;
+};
+
 struct data_dgcht {
     int lifetime_target;
 };
@@ -49,6 +79,11 @@ union TRAV_DATA {
     struct data_slis *setliteralintersect;
     struct data_slu *setliteralunion;
     struct data_sli *setliteralinsert;
+    struct data_sav *scheduleattributevisits;
+    struct data_cpr *checkproductrules;
+    struct data_cha *checkattributes;
+    struct data_pra *propagateattributes;
+    struct data_nct *nodesetchildtable;
     struct data_dgcht *dynamicgenchecktraversal;
     struct data_dgt_f *dynamicgentravfunctions;
     struct data_dgtdt *dynamicgentravdatatables;
@@ -59,6 +94,11 @@ union TRAV_DATA {
 #define DATA_SLIS_GET() (TRAVgetCurrent()->trav_data.setliteralintersect)
 #define DATA_SLU_GET() (TRAVgetCurrent()->trav_data.setliteralunion)
 #define DATA_SLI_GET() (TRAVgetCurrent()->trav_data.setliteralinsert)
+#define DATA_SAV_GET() (TRAVgetCurrent()->trav_data.scheduleattributevisits)
+#define DATA_CPR_GET() (TRAVgetCurrent()->trav_data.checkproductrules)
+#define DATA_CHA_GET() (TRAVgetCurrent()->trav_data.checkattributes)
+#define DATA_PRA_GET() (TRAVgetCurrent()->trav_data.propagateattributes)
+#define DATA_NCT_GET() (TRAVgetCurrent()->trav_data.nodesetchildtable)
 #define DATA_DGCHT_GET() (TRAVgetCurrent()->trav_data.dynamicgenchecktraversal)
 #define DATA_DGT_F_GET() (TRAVgetCurrent()->trav_data.dynamicgentravfunctions)
 #define DATA_DGTDT_GET() (TRAVgetCurrent()->trav_data.dynamicgentravdatatables)
@@ -72,6 +112,16 @@ void TRAVdataInitsetliteralUnion(struct ccn_trav *trav);
 void TRAVdataFreesetliteralUnion(struct ccn_trav *trav);
 void TRAVdataInitsetliteralInsert(struct ccn_trav *trav);
 void TRAVdataFreesetliteralInsert(struct ccn_trav *trav);
+void TRAVdataInitscheduleAttributeVisits(struct ccn_trav *trav);
+void TRAVdataFreescheduleAttributeVisits(struct ccn_trav *trav);
+void TRAVdataInitcheckProductRules(struct ccn_trav *trav);
+void TRAVdataFreecheckProductRules(struct ccn_trav *trav);
+void TRAVdataInitcheckAttributes(struct ccn_trav *trav);
+void TRAVdataFreecheckAttributes(struct ccn_trav *trav);
+void TRAVdataInitpropagateAttributes(struct ccn_trav *trav);
+void TRAVdataFreepropagateAttributes(struct ccn_trav *trav);
+void TRAVdataInitnodesetChildTable(struct ccn_trav *trav);
+void TRAVdataFreenodesetChildTable(struct ccn_trav *trav);
 void TRAVdataInitdynamicGenCheckTraversal(struct ccn_trav *trav);
 void TRAVdataFreedynamicGenCheckTraversal(struct ccn_trav *trav);
 void TRAVdataInitdynamicGenTravFunctions(struct ccn_trav *trav);

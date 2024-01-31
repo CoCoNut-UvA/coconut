@@ -25,6 +25,60 @@ static int node_index = 0;
 
 //static struct ctinfo *NewLocation(struct ctinfo *info);
 
+enum bison_attribute_options_type {
+    BISON_BAO_constructor,
+    BISON_BAO_inherited,
+    BISON_BAO_synthesized,
+    BISON_BAO_lifetime
+};
+
+struct bison_attribute_options_temp {
+    node_st *lifetime;
+    enum bison_attribute_options_type value;
+    struct bison_attribute_options_temp *next;
+};
+
+struct bison_attribute_options {
+    node_st *lifetime;
+    bool constructor;
+    bool inherited;
+    bool synthesized;
+};
+
+struct bison_attribute_options *parse_attribute_options(struct bison_attribute_options_temp *start) {
+    struct bison_attribute_options_temp *cur, *prev;
+    struct bison_attribute_options *data = malloc(sizeof(struct bison_attribute_options));
+    data->lifetime = NULL;
+    data->constructor = false;
+    data->inherited = false;
+    data->synthesized = false;
+    node_st *current_lifetime = NULL;
+    prev = NULL;
+    for (cur = start; cur != NULL; cur = cur->next) {
+        if (cur->value == BISON_BAO_constructor) {
+            data->constructor = true;
+        } else if (cur->value == BISON_BAO_inherited) {
+            data->inherited = true;
+        } else if (cur->value == BISON_BAO_synthesized) {
+            data->synthesized = true;
+        } else {
+            if (current_lifetime == NULL) {
+                data->lifetime = cur->lifetime;
+                current_lifetime = cur->lifetime;
+            } else {
+                ILIFETIME_NEXT(current_lifetime) = cur->lifetime;
+                current_lifetime = cur->lifetime;
+            }
+        }
+        free(prev);
+        prev = cur;
+    }
+    free(prev);
+
+    return data;
+}
+
+
 
 void yyerror(const char* s);
 int yydebug = 1;
@@ -61,6 +115,7 @@ struct ctinfo yy_ctinfo;
     bool boolean;
     node_st* node;
     enum attribute_type attr_type;
+    struct bison_attribute_options_temp* attr_options;
 }
 
 %define parse.error verbose
@@ -90,11 +145,14 @@ struct ctinfo yy_ctinfo;
 %token T_TRUE "true"
 %token T_FALSE "false"
 
+%token T_ARGS "args"
 %token T_ATTRIBUTES "attributes"
 %token T_CHILDREN "children"
 %token T_CONSTRUCTOR "construct"
 %token T_CYCLE "cycle"
 %token T_ENUM "enum"
+%token T_EQUATIONS "equations"
+%token T_INHERITED "inherited"
 %token T_MANDATORY "mandatory"
 %token T_NODE "node"
 %token T_NODES "nodes"
@@ -110,6 +168,8 @@ struct ctinfo yy_ctinfo;
 %token T_ROOT "root"
 %token T_START "start"
 %token T_SUBPHASES "subphases"
+%token T_SYNTHESIZED "synthesized"
+%token T_THIS "this"
 %token T_TO "to"
 %token T_TRAVERSAL "traversal"
 %token T_TRAVDATA "travdata"
@@ -131,10 +191,12 @@ struct ctinfo yy_ctinfo;
 %type<string> info
 %type<boolean> is_start is_constructor is_root
 %type<node> phase entry pass node traversal cycleheader phaseheader id action actionsbody traversalnodes prefix
-    actions childrenbody attributebody attributes attribute children child setoperation setliterals func
-    setexpr enum idlist enumvalues nodeset travdata travdatalist travdataitem nodelifetimes
-    lifetimes lifetime lifetime_range range_spec childlifetimes uid mandatory_uid gate attributelifetimes
+    actions childrenbody attributebody attributes attribute equationbody equations equation equationprodblock
+    equationdependencybody equationdependencies equationdependency attribute_reference children child setoperation
+    setliterals func setexpr enum idlist enumvalues nodeset travdata travdatalist travdataitem nodelifetimes
+    lifetimes lifetime lifetime_range range_spec childlifetimes uid mandatory_uid gate
 %type<attr_type> attribute_primitive_type
+%type<attr_options> attribute_optional_keywords attribute_optional_keyword
 
 %left '&' '-' '|'
 
@@ -533,12 +595,29 @@ setliterals: setliterals ',' id
            }
 
 
-node: is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebody[attributes] ',' nodelifetimes[lifetimes] '}'
+node: is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebody[attributes] ',' equationbody[equations] ',' nodelifetimes[lifetimes] '}'
     {
         $$ = ASTinode($name, NULL);
         INODE_IS_ROOT($$) = $root;
         INODE_ICHILDREN($$) = $children;
         INODE_IATTRIBUTES($$) = $attributes;
+        INODE_IEQUATIONS($$) = $equations;
+        INODE_LIFETIMES($$) = $lifetimes;
+    }
+    | is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebody[attributes] ',' nodelifetimes[lifetimes] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_ICHILDREN($$) = $children;
+        INODE_IATTRIBUTES($$) = $attributes;
+        INODE_LIFETIMES($$) = $lifetimes;
+    }
+    | is_root[root] T_NODE id[name] '{' attributebody[attributes] ',' equationbody[equations] ',' nodelifetimes[lifetimes] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_IATTRIBUTES($$) = $attributes;
+        INODE_IEQUATIONS($$) = $equations;
         INODE_LIFETIMES($$) = $lifetimes;
     }
     | is_root[root] T_NODE id[name] '{' attributebody[attributes] ',' nodelifetimes[lifetimes] '}'
@@ -548,6 +627,14 @@ node: is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebod
         INODE_IATTRIBUTES($$) = $attributes;
         INODE_LIFETIMES($$) = $lifetimes;
     }
+    | is_root[root] T_NODE id[name] '{' childrenbody[children] ',' equationbody[equations] ',' nodelifetimes[lifetimes] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_ICHILDREN($$) = $children;
+        INODE_IEQUATIONS($$) = $equations;
+        INODE_LIFETIMES($$) = $lifetimes;
+    }
     | is_root[root] T_NODE id[name] '{' childrenbody[children] ',' nodelifetimes[lifetimes] '}'
     {
         $$ = ASTinode($name, NULL);
@@ -555,24 +642,57 @@ node: is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebod
         INODE_ICHILDREN($$) = $children;
         INODE_LIFETIMES($$) = $lifetimes;
     }
+    | is_root[root] T_NODE id[name] '{' attributebody[attributes] ',' equationbody[equations] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_IATTRIBUTES($$) = $attributes;
+        INODE_IEQUATIONS($$) = $equations;
+    }
     | is_root[root] T_NODE id[name] '{' attributebody[attributes]  '}'
     {
         $$ = ASTinode($name, NULL);
         INODE_IS_ROOT($$) = $root;
         INODE_IATTRIBUTES($$) = $attributes;
     }
-    | is_root[root] T_NODE id[name] '{'  childrenbody[children]  '}'
+    | is_root[root] T_NODE id[name] '{' childrenbody[children] ',' equationbody[equations] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_ICHILDREN($$) = $children;
+        INODE_IEQUATIONS($$) = $equations;
+    }
+    | is_root[root] T_NODE id[name] '{' childrenbody[children] '}'
     {
         $$ = ASTinode($name, NULL);
         INODE_IS_ROOT($$) = $root;
         INODE_ICHILDREN($$) = $children;
     }
-    | is_root[root] T_NODE id[name] '{'  childrenbody[children] ','  attributebody[attributes] '}'
+    | is_root[root] T_NODE id[name] '{' childrenbody[children] ',' attributebody[attributes] ',' equationbody[equations] '}'
     {
         $$ = ASTinode($name, NULL);
         INODE_IS_ROOT($$) = $root;
         INODE_ICHILDREN($$) = $children;
         INODE_IATTRIBUTES($$) = $attributes;
+        INODE_IEQUATIONS($$) = $equations;
+    }
+    | is_root[root] T_NODE id[name] '{' childrenbody[children] ',' attributebody[attributes] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_ICHILDREN($$) = $children;
+        INODE_IATTRIBUTES($$) = $attributes;
+    }
+    | is_root[root] T_NODE id[name] '{' equationbody[equations] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_IEQUATIONS($$) = $equations;
+    }
+    | is_root[root] T_NODE id[name] '{' '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
     }
     ;
 
@@ -604,27 +724,58 @@ attributes: attribute ',' attributes
     }
     ;
 
-attribute: attribute_primitive_type[type] id[name] '{' is_constructor[constructor]  '}'
+attribute_optional_keywords:
+    %empty
     {
-        $$ = ASTattribute();
-        ATTRIBUTE_NAME($$) = $name;
-        ATTRIBUTE_TYPE($$) = $type;
-        ATTRIBUTE_IN_CONSTRUCTOR($$) = $constructor;
+        $$ = NULL;
     }
-    | attribute_primitive_type[type] id[name] '{' attributelifetimes[lifetimes]  '}'
+    | attribute_optional_keyword[keyword]
     {
-        $$ = ASTattribute();
-        ATTRIBUTE_NAME($$) = $name;
-        ATTRIBUTE_TYPE($$) = $type;
-        ATTRIBUTE_LIFETIMES($$) = $lifetimes;
+        $$ = $keyword;
+        $$->next = NULL;
     }
-    | attribute_primitive_type[type] id[name] '{' is_constructor[constructor] ',' attributelifetimes[lifetimes] '}'
+    | attribute_optional_keyword[keyword] ',' attribute_optional_keywords[next]
+    {
+        $$ = $keyword;
+        $$->next = $next;
+    }
+    ;
+
+attribute_optional_keyword: T_CONSTRUCTOR
+    {
+        $$ = malloc(sizeof(struct bison_attribute_options_temp));
+        $$->value = BISON_BAO_constructor;
+    }
+    | T_INHERITED
+    {
+        $$ = malloc(sizeof(struct bison_attribute_options_temp));
+        $$->value = BISON_BAO_inherited;
+    }
+    | T_SYNTHESIZED
+    {
+        $$ = malloc(sizeof(struct bison_attribute_options_temp));
+        $$->value = BISON_BAO_synthesized;
+    }
+    | lifetime
+    {
+        $$ = malloc(sizeof(struct bison_attribute_options_temp));
+        $$->value = BISON_BAO_lifetime;
+        $$->lifetime = $1;
+        ILIFETIME_NEXT($$->lifetime) = NULL;
+    }
+    ;
+
+attribute: attribute_primitive_type[type] id[name] '{' attribute_optional_keywords[keywords]  '}'
     {
         $$ = ASTattribute();
         ATTRIBUTE_NAME($$) = $name;
         ATTRIBUTE_TYPE($$) = $type;
-        ATTRIBUTE_IN_CONSTRUCTOR($$) = $constructor;
-        ATTRIBUTE_LIFETIMES($$) = $lifetimes;
+        struct bison_attribute_options *options = parse_attribute_options($keywords);
+        ATTRIBUTE_IN_CONSTRUCTOR($$) = options->constructor;
+        ATTRIBUTE_IS_INHERITED($$) = options->inherited;
+        ATTRIBUTE_IS_SYNTHESIZED($$) = options->synthesized;
+        ATTRIBUTE_LIFETIMES($$) = options->lifetime;
+        free(options);
     }
     | attribute_primitive_type[type] id[name]
     {
@@ -632,36 +783,18 @@ attribute: attribute_primitive_type[type] id[name] '{' is_constructor[constructo
           ATTRIBUTE_NAME($$) = $name;
           ATTRIBUTE_TYPE($$) = $type;
     }
-    | attribute_primitive_type[type] id[name] '{' '}'
-    {
-          $$ = ASTattribute();
-          ATTRIBUTE_NAME($$) = $name;
-          ATTRIBUTE_TYPE($$) = $type;
-    }
-    | id[type] id[name] '{' is_constructor[constructor] '}'
-    {
-        $$ = ASTattribute();
-       ATTRIBUTE_NAME($$) = $name;
-       ATTRIBUTE_TYPE_REFERENCE($$) = $type;
-       ATTRIBUTE_TYPE($$) = AT_link_or_enum;
-       ATTRIBUTE_IN_CONSTRUCTOR($$) = $constructor;
-    }
-    | id[type] id[name] '{' is_constructor[constructor] ',' attributelifetimes[lifetimes]'}'
+    | id[type] id[name] '{' attribute_optional_keywords[keywords] '}'
     {
         $$ = ASTattribute();
         ATTRIBUTE_NAME($$) = $name;
         ATTRIBUTE_TYPE_REFERENCE($$) = $type;
         ATTRIBUTE_TYPE($$) = AT_link_or_enum;
-        ATTRIBUTE_IN_CONSTRUCTOR($$) = $constructor;
-        ATTRIBUTE_LIFETIMES($$) = $lifetimes;
-    }
-    | id[type] id[name] '{' attributelifetimes[lifetimes] '}'
-    {
-        $$ = ASTattribute();
-        ATTRIBUTE_NAME($$) = $name;
-        ATTRIBUTE_TYPE_REFERENCE($$) = $type;
-        ATTRIBUTE_TYPE($$) = AT_link_or_enum;
-        ATTRIBUTE_LIFETIMES($$) = $lifetimes;
+        struct bison_attribute_options *options = parse_attribute_options($keywords);
+        ATTRIBUTE_IN_CONSTRUCTOR($$) = options->constructor;
+        ATTRIBUTE_IS_INHERITED($$) = options->inherited;
+        ATTRIBUTE_IS_SYNTHESIZED($$) = options->synthesized;
+        ATTRIBUTE_LIFETIMES($$) = options->lifetime;
+        free(options);
     }
     | id[type] id[name]
     {
@@ -669,6 +802,26 @@ attribute: attribute_primitive_type[type] id[name] '{' is_constructor[constructo
            ATTRIBUTE_NAME($$) = $name;
            ATTRIBUTE_TYPE_REFERENCE($$) = $type;
            ATTRIBUTE_TYPE($$) = AT_link_or_enum;
+    }
+    | T_UNSAFE id[type] id[name] '{' attribute_optional_keywords[keywords] '}'
+    {
+        $$ = ASTattribute();
+        ATTRIBUTE_NAME($$) = $name;
+        ATTRIBUTE_TYPE_REFERENCE($$) = $type;
+        ATTRIBUTE_TYPE($$) = AT_user;
+        struct bison_attribute_options *options = parse_attribute_options($keywords);
+        ATTRIBUTE_IN_CONSTRUCTOR($$) = options->constructor;
+        ATTRIBUTE_IS_INHERITED($$) = options->inherited;
+        ATTRIBUTE_IS_SYNTHESIZED($$) = options->synthesized;
+        ATTRIBUTE_LIFETIMES($$) = options->lifetime;
+        free(options);
+    }
+    | T_UNSAFE id[type] id[name]
+    {
+           $$ = ASTattribute();
+           ATTRIBUTE_NAME($$) = $name;
+           ATTRIBUTE_TYPE_REFERENCE($$) = $type;
+           ATTRIBUTE_TYPE($$) = AT_user;
     }
     ;
 
@@ -700,6 +853,82 @@ attribute_primitive_type: T_BOOL
     { $$ = AT_int64; }
     ;
 
+equationbody: T_EQUATIONS '{' equations '}'
+    {
+        $$ = $3;
+    }
+    ;
+
+equations: equation ',' equations
+    {
+        EQUATION_NEXT($1) = $3;
+        $$ = $1;
+    }
+    | equation
+    {
+        $$ = $1;
+    }
+    ;
+
+equation: attribute_reference[attr] '=' equationprodblock[prod]
+    {
+        $$ = ASTequation();
+        EQUATION_RULE($$) = $attr;
+        EQUATION_IARGS($$) = $prod;
+    }
+    ;
+
+equationprodblock: '{' equationdependencybody[deps] '}'
+    {
+        $$ = $deps;
+    }
+    | '{' '}'
+    {
+        $$ = NULL;
+    }
+    ;
+
+equationdependencybody: T_ARGS '=' '{' equationdependencies[deps] '}'
+    {
+        $$ = $deps;
+    }
+    | T_ARGS '=' '{' '}'
+    {
+        $$ = NULL;
+    }
+    ;
+
+equationdependencies: equationdependency[dep] ',' equationdependencies[next]
+    {
+        EQUATION_DEPENDENCY_NEXT($dep) = $next;
+        $$ = $dep;
+    }
+    | equationdependency[dep]
+    {
+        $$ = $dep;
+    }
+    ;
+
+equationdependency: attribute_reference[dep]
+    {
+        $$ = ASTequation_dependency();
+        EQUATION_DEPENDENCY_IATTRIBUTE($$) = $dep;
+    }
+    ;
+
+attribute_reference: id[inode] '.' id[attr]
+    {
+        $$ = ASTattribute_reference();
+        ATTRIBUTE_REFERENCE_INODE($$) = $inode;
+        ATTRIBUTE_REFERENCE_IATTRIBUTE($$) = $attr;
+    }
+    | T_THIS '.' id[attr]
+    {
+        $$ = ASTattribute_reference();
+        ATTRIBUTE_REFERENCE_INODE($$) = NULL;
+        ATTRIBUTE_REFERENCE_IATTRIBUTE($$) = $attr;
+    }
+    ;
 
 is_constructor:
     T_CONSTRUCTOR
@@ -770,12 +999,6 @@ nodelifetimes: %empty
     | T_LIFETIME '{' lifetimes '}'
     {
         $$ = $3;
-    }
-    ;
-
-attributelifetimes: lifetimes
-    {
-        $$ = $1;
     }
     ;
 
@@ -879,12 +1102,27 @@ range_spec: id '.' range_spec
     }
     ;
 
-nodeset: T_NODESET id[name] '{' info[information] ',' T_NODES '=' setexpr[expr] '}'
+nodeset: T_NODESET id[name] '{' info[information] ',' T_NODES '=' setexpr[expr] ',' attributebody[attributes] '}'
         {
             $$ = ASTinodeset();
             INODESET_EXPR($$) = $expr;
             INODESET_NAME($$) = $name;
             INODESET_IINFO($$) = $information;
+            INODESET_IATTRIBUTES($$) = $attributes;
+        }
+        | T_NODESET id[name] '{' info[information] ',' T_NODES '=' setexpr[expr] '}'
+        {
+            $$ = ASTinodeset();
+            INODESET_EXPR($$) = $expr;
+            INODESET_NAME($$) = $name;
+            INODESET_IINFO($$) = $information;
+        }
+        | T_NODESET id[name] '{' T_NODES '=' setexpr[expr] ',' attributebody[attributes] '}'
+        {
+            $$ = ASTinodeset();
+            INODESET_EXPR($$) = $expr;
+            INODESET_NAME($$) = $name;
+            INODESET_IATTRIBUTES($$) = $attributes;
         }
         | T_NODESET id[name] '{' T_NODES '=' setexpr[expr] '}'
         {

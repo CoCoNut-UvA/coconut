@@ -74,6 +74,12 @@ node_st *DGFTinodeset(node_st *node)
     return node;
 }
 
+node_st *DGFTnodeset_child_entry(node_st *node)
+{
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *DGFTchild(node_st *node)
 {
 
@@ -87,6 +93,36 @@ node_st *DGFTattribute(node_st *node)
         OUT_FIELD("MEMfree(arg_node->data.N_%s->%s)", ID_LWR(INODE_NAME(curr_node)), ID_LWR(ATTRIBUTE_NAME(node)));
     }
     TRAVopt(ATTRIBUTE_NEXT(node));
+    return node;
+}
+
+/**
+ * @fn DGFTequation
+ */
+node_st *DGFTequation(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGFTequation");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGFTequation_dependency
+ */
+node_st *DGFTequation_dependency(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGFTequation_dependency");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGFTattribute_reference
+ */
+node_st *DGFTattribute_reference(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGFTattribute_reference");
+    TRAVchildren(node);
     return node;
 }
 
@@ -135,5 +171,45 @@ node_st *DGFTilifetime(node_st *node)
 
 node_st *DGFTlifetime_range(node_st *node)
 {
+    return node;
+}
+
+/**
+ * @fn DGFTvisit_arg_list
+ */
+node_st *DGFTvisit_arg_list(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGFTvisit_arg_list");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGFTvisit
+ */
+node_st *DGFTvisit(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGFTvisit");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGFTvisit_sequence_eval
+ */
+node_st *DGFTvisit_sequence_eval(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGFTvisit_sequence_eval");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGFTvisit_sequence_visit
+ */
+node_st *DGFTvisit_sequence_visit(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGFTvisit_sequence_visit");
+    TRAVchildren(node);
     return node;
 }

@@ -33,8 +33,13 @@ phase semantic {
     actions {
         buildSymbolTable;
         checkExistance;
+        nodesetChildTable;
         unwrapSetExpr;
+        propagateAttributes;
+        checkAttributes;
+        checkProductRules;
         reachability;
+        scheduleAttributeVisits;
     }
 };
 
@@ -93,6 +98,7 @@ phase dynamicBackend {
         dynamicGenCopyTraversal;
         dynamicGenFreeTraversal;
         dynamicGenCheckTraversal;
+        dynamicGenVisits;
         dynamicGenUserFiles;
         dynamicGenTravFunctions;
     }
@@ -143,9 +149,25 @@ phase dynamicGenAst {
         dynamicGenNodeInitFunctions;
         dynamicGenNodeUnion;
         pass dynamicGenBaseNode;
+        dynamicGenNodesetAccessFunctions;
         pass dynamicSwitchToAstSource;
         pass dynamicGenBaseNodeInit;
         dynamicGenNodeConstructor;
+    }
+};
+
+phase dynamicGenVisits {
+    info = "Generate the required files for managing user nodes and AST manipulation",
+    uid = DGV,
+
+    actions {
+        pass dynamic_start_equation_header;
+        dynamicGenEquationIncludes;
+        dynamicGenEquationFunctions;
+        pass dynamic_start_visit_header;
+        dynamicGenVisitFunctions;
+        pass dynamicSwitchToVisitSource;
+        dynamicGenVisitSource;
     }
 };
 
@@ -164,6 +186,13 @@ phase dynamicGenUserFiles {
             uid = DUGT,
             nodes = {
                 ast, itraversal, inode, id
+            }
+        };
+
+        traversal dynamicUserGenEquations {
+            uid = DUGE,
+            nodes = {
+                ast, inode, equation
             }
         };
     }
@@ -268,7 +297,9 @@ traversal dynamicGenConstructorCall {
 };
 
 traversal dynamicGenCopyTraversal {
-    uid = DGCT
+    uid = DGCT,
+
+    nodes = {ast, inode, child, attribute}
 };
 
 traversal dynamicGenTravActions {
@@ -349,12 +380,42 @@ traversal dynamicGenNodeStructs {
     nodes = {ast, inode, child, attribute}
 };
 
+
+traversal dynamicGenNodesetAccessFunctions {
+    uid = DGNAF,
+
+    nodes = {ast, inodeset, attribute, setliteral}
+};
+
 traversal dynamicGenNodeMacros {
     uid = DGNM,
 
-    nodes = {ast, inode, child, attribute}
+    nodes = {ast, inode, inodeset, child, attribute}
 };
 
+traversal dynamicGenEquationIncludes {
+    uid = DGEI,
+
+    nodes = {ast, inode}
+};
+
+traversal dynamicGenEquationFunctions {
+    uid = DGEF,
+
+    nodes = {ast, inode, equation}
+};
+
+traversal dynamicGenVisitFunctions {
+    uid = DGVF,
+
+    nodes = {ast, visit}
+};
+
+traversal dynamicGenVisitSource {
+    uid = DGVS,
+
+    nodes = {ast, visit} | visit_sequence
+};
 
 traversal checkExistance {
     uid = CEX
@@ -364,9 +425,52 @@ traversal buildSymbolTable {
     uid = BST
 };
 
+traversal nodesetChildTable {
+    uid = NCT,
+
+    nodes = setexpr | {inodeset, ast},
+
+    travdata {
+        ste symboltable,
+        inodeset curr_set,
+        nodeset_child_entry last_entry,
+        user htable_stptr added_refs,
+        user htable_stptr built_tables
+    }
+};
+
 traversal unwrapSetExpr {
     uid = USE,
     nodes = setexpr | {ast}
+};
+
+traversal propagateAttributes {
+    uid = PRA,
+    nodes = {ast, inodeset, nodeset_child_entry, setliteral},
+
+    travdata {
+        ste symboltable,
+        inodeset curr_nodeset
+    }
+};
+
+traversal checkAttributes {
+    uid = CHA,
+    nodes = {inodeset, inode, attribute},
+    travdata {
+        bool in_nodeset
+    }
+};
+
+traversal checkProductRules {
+    uid = CPR,
+    nodes = {ast, inode, equation, equation_dependency, attribute, child},
+    travdata {
+        ste symboltable,
+        inode curr_node,
+        user htable_stptr found_children,
+        user htable_stptr found_attributes
+    }
 };
 
 traversal reachability {
@@ -374,6 +478,20 @@ traversal reachability {
 
     nodes = {
         ast, setliteral, itraversal, inode, child, inodeset
+    }
+};
+
+traversal scheduleAttributeVisits {
+    uid = SAV,
+
+    nodes = {
+        ast
+    },
+
+    travdata {
+        ste symboltable,
+        user htable_stptr graph_nodes,
+        int errors
     }
 };
 
@@ -459,7 +577,7 @@ root node ast {
 };
 
 nodeset action = { iphase, itraversal, ipass};
-nodeset link = action | {inode, id};
+nodeset link = action | {inode, inodeset, id};
 
 node iactions {
     children {
@@ -518,7 +636,9 @@ node inode {
         inode next,
         child ichildren,
         attribute iattributes,
-        ilifetime lifetimes
+        equation iequations,
+        ilifetime lifetimes,
+        visit visit
     },
 
     attributes {
@@ -532,12 +652,25 @@ node inodeset {
     children {
         id name,
         setexpr expr,
+        attribute iattributes,
         id unpacked,
-        inodeset next
+        inodeset next,
+        nodeset_child_entry children_table
     },
 
     attributes {
-        string iinfo
+        string iinfo,
+        bool illegal_setexpr_attr
+    }
+};
+
+node nodeset_child_entry {
+    children {
+        nodeset_child_entry next
+    },
+
+    attributes {
+        inodeset reference { constructor, mandatory }
     }
 };
 
@@ -674,7 +807,80 @@ node attribute {
 
     attributes {
         attribute_type type,
-        int in_constructor
+        bool in_constructor,
+        bool is_inherited,
+        bool is_synthesized,
+        bool is_propagated
+    }
+};
+
+node equation {
+    children {
+        attribute_reference rule,
+        equation_dependency iargs,
+        equation next
+    }
+};
+
+node equation_dependency {
+    children {
+        attribute_reference iattribute,
+        equation_dependency next
+    }
+};
+
+node attribute_reference {
+    children {
+        id inode,
+        id iattribute
+    },
+
+    attributes {
+        id node_type,
+        attribute reference,
+        child child_reference
+    }
+};
+
+nodeset visit_sequence = {visit_sequence_eval, visit_sequence_visit};
+
+node visit_arg_list {
+    children {
+        attribute_reference attribute { constructor, mandatory },
+        visit_arg_list next
+    }
+};
+
+node visit {
+    children {
+        visit_sequence sequence { constructor },
+        visit_arg_list inputs { constructor },
+        visit_arg_list outputs { constructor },
+        visit next
+    },
+    attributes {
+        inode inode { constructor },
+        uint64 index { constructor }
+    }
+};
+
+node visit_sequence_eval {
+    children {
+        visit_sequence next
+    },
+    attributes {
+        attribute_reference attribute { constructor, mandatory }
+    }
+};
+
+node visit_sequence_visit {
+    children {
+        visit_sequence_visit alt, // Used for nodesets which contain multiple visits
+        visit_sequence next
+    },
+    attributes {
+        child child { constructor, mandatory },
+        visit visit { constructor, mandatory }
     }
 };
 

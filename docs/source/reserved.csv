@@ -1,8 +1,11 @@
+args
 attributes
 children
 constructor
 cycle
 enum
+equations
+inherited
 mandatory
 node
 nodeset
@@ -14,6 +17,8 @@ phases
 actions
 prefix
 subphases
+synthesized
+this
 to
 traversal
 travdata

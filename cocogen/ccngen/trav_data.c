@@ -76,6 +76,86 @@ void TRAVdataFreesetliteralInsert(ccn_trav_st *trav) {
     MEMfree(trav->trav_data.setliteralinsert);
 }
 
+extern void SAVinit();
+extern void SAVfini();
+void TRAVdataInitscheduleAttributeVisits(ccn_trav_st *trav) {
+    trav->trav_data.scheduleattributevisits = MEMmalloc(sizeof(struct data_sav));
+    struct data_sav *data = trav->trav_data.scheduleattributevisits;
+    data->errors = 0;
+    data->graph_nodes = 0;
+    data->symboltable = NULL;
+    SAVinit();
+}
+
+void TRAVdataFreescheduleAttributeVisits(ccn_trav_st *trav) {
+    SAVfini();
+    MEMfree(trav->trav_data.scheduleattributevisits);
+}
+
+extern void CPRinit();
+extern void CPRfini();
+void TRAVdataInitcheckProductRules(ccn_trav_st *trav) {
+    trav->trav_data.checkproductrules = MEMmalloc(sizeof(struct data_cpr));
+    struct data_cpr *data = trav->trav_data.checkproductrules;
+    data->found_attributes = 0;
+    data->found_children = 0;
+    data->curr_node = NULL;
+    data->symboltable = NULL;
+    CPRinit();
+}
+
+void TRAVdataFreecheckProductRules(ccn_trav_st *trav) {
+    CPRfini();
+    MEMfree(trav->trav_data.checkproductrules);
+}
+
+extern void CHAinit();
+extern void CHAfini();
+void TRAVdataInitcheckAttributes(ccn_trav_st *trav) {
+    trav->trav_data.checkattributes = MEMmalloc(sizeof(struct data_cha));
+    struct data_cha *data = trav->trav_data.checkattributes;
+    data->in_nodeset = false;
+    CHAinit();
+}
+
+void TRAVdataFreecheckAttributes(ccn_trav_st *trav) {
+    CHAfini();
+    MEMfree(trav->trav_data.checkattributes);
+}
+
+extern void PRAinit();
+extern void PRAfini();
+void TRAVdataInitpropagateAttributes(ccn_trav_st *trav) {
+    trav->trav_data.propagateattributes = MEMmalloc(sizeof(struct data_pra));
+    struct data_pra *data = trav->trav_data.propagateattributes;
+    data->curr_nodeset = NULL;
+    data->symboltable = NULL;
+    PRAinit();
+}
+
+void TRAVdataFreepropagateAttributes(ccn_trav_st *trav) {
+    PRAfini();
+    MEMfree(trav->trav_data.propagateattributes);
+}
+
+extern void NCTinit();
+extern void NCTfini();
+void TRAVdataInitnodesetChildTable(ccn_trav_st *trav) {
+    trav->trav_data.nodesetchildtable = MEMmalloc(sizeof(struct data_nct));
+    struct data_nct *data = trav->trav_data.nodesetchildtable;
+    data->built_tables = 0;
+    data->added_refs = 0;
+    data->last_entry = NULL;
+    data->curr_set = NULL;
+    data->symboltable = NULL;
+    NCTinit();
+}
+
+void TRAVdataFreenodesetChildTable(ccn_trav_st *trav) {
+    NCTfini();
+    MEMfree(trav->trav_data.nodesetchildtable);
+}
+
 extern void DGCHTinit();
 extern void DGCHTfini();
 void TRAVdataInitdynamicGenCheckTraversal(ccn_trav_st *trav) {

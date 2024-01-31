@@ -4,7 +4,7 @@
  * This traversal assigns a unique ID(integer) to every action.
  * These IDS are used in the check traversal and lifetimes.
  */
-
+#include <assert.h>
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
 #include "frontend/symboltable.h"
@@ -18,6 +18,7 @@ static node_st *ste = NULL;
 node_st *AITAast(node_st *node)
 {
     ste = AST_STABLE(node);
+    assert(AST_START_PHASE(node) != NULL);
     TRAVdo(AST_START_PHASE(node));
     return node;
 }
