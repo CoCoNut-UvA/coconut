@@ -29,3 +29,11 @@ Yes, there is experimental support for user type attributes.
 Do note however that CoCoNut will not handle user type memory, meaning that the copy
 traversal only copies the attributes by value (which can be problematic for pointer types),
 and CoCoNut will also not free user type attributes.
+
+Can I have syntax highlighting for the DSL files in vscode?
+-----------------------------------------------------------
+Yes, we provide a Visual Studio Code extension in the Visual Studio Marketplace,
+named `NutCracker <https://marketplace.visualstudio.com/items?itemName=CoCoNut-UvA.nutcracker>`_.
+The extension provides syntax highlighting for the CoCoNut DSL files (.ccn). If you have
+any issues with the highlighting, or want to contribute, head over to the
+corresponding repository here: `https://github.com/CoCoNut-UvA/nutcracker <https://github.com/CoCoNut-UvA/nutcracker>`_
