@@ -6,8 +6,11 @@ ienum -> id[label="Vals"]
 ienum -> id[label="name"]
 ienum -> id[label="iprefix"]
 ienum -> ienum[label="next"]
+visit_sequence_dummy;
+visit_sequence_dummy -> visit_sequence_alt[label="alt"]
+visit_sequence_dummy -> inode[color=red, label="inode"]
 visit_sequence_visit;
-visit_sequence_visit -> visit_sequence_visit[label="alt"]
+visit_sequence_visit -> visit_sequence_alt[label="alt"]
 visit_sequence_visit -> visit_sequence[label="next"]
 visit_sequence_visit -> child[color=red, label="child"]
 visit_sequence_visit -> visit[color=red, label="visit"]
@@ -117,6 +120,9 @@ ast -> ienum[label="enums"]
 ast -> ste[label="stable"]
 ast -> inode[color=red, label="root_node"]
 ast -> iphase[color=red, label="start_phase"]
+visit_sequence_alt;
+visit_sequence_alt -> visit_sequence_visit [color=blue]
+visit_sequence_alt -> visit_sequence_dummy [color=blue]
 visit_sequence;
 visit_sequence -> visit_sequence_eval [color=blue]
 visit_sequence -> visit_sequence_visit [color=blue]

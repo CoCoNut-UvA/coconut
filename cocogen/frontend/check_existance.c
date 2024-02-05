@@ -359,6 +359,14 @@ node_st *CEXvisit_sequence_eval(node_st *node)
 }
 
 /**
+ * @fn CEXvisit_sequence_dummy
+ */
+node_st *CEXvisit_sequence_dummy(node_st *node)
+{
+    return node;
+}
+
+/**
  * @fn CEXvisit_sequence_visit
  */
 node_st *CEXvisit_sequence_visit(node_st *node)

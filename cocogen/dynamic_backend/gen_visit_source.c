@@ -32,7 +32,7 @@ static inline void print_type(node_st *attribute) {
         // Should be handled by check_existence.
         assert(ref);
         assert(NODE_TYPE(ref) == NT_IENUM);
-        OUT("enum %s", ID_ORIG(IENUM_NAME(ref)));
+        OUT_NO_INDENT("enum %s", ID_ORIG(IENUM_NAME(ref)));
     } else if (ATTRIBUTE_TYPE(attribute) == AT_user) {
         OUT_NO_INDENT("%s", ID_ORIG(ATTRIBUTE_TYPE_REFERENCE(attribute)));
     } else {
@@ -276,6 +276,19 @@ static void print_visit_call(node_st *node, node_st *outputs, bool partial) {
     MEMfree(child_access);
 }
 
+static inline node_st *get_alt(node_st *visit) {
+    switch (NODE_TYPE(visit))
+    {
+    case NT_VISIT_SEQUENCE_VISIT:
+        return VISIT_SEQUENCE_VISIT_ALT(visit);
+    case NT_VISIT_SEQUENCE_DUMMY:
+        return VISIT_SEQUENCE_DUMMY_ALT(visit);
+    default:
+        assert(false);
+        return NULL;
+    }
+}
+
 /**
  * @fn DGVSvisit_sequence_visit
  */
@@ -303,13 +316,21 @@ node_st *DGVSvisit_sequence_visit(node_st *node) {
                    ID_UPR(CHILD_NAME(VISIT_SEQUENCE_VISIT_CHILD(node))));
         OUT("");
         for (node_st *alt_visit = node; alt_visit;
-             alt_visit = VISIT_SEQUENCE_VISIT_ALT(alt_visit)) {
-            OUT_NO_INDENT("if (NODE_TYPE(%s) == NT_%s) {\n", child_access,
-                          ID_UPR(INODE_NAME(VISIT_INODE(
-                              VISIT_SEQUENCE_VISIT_VISIT(alt_visit)))));
-            GNindentIncrease(ctx);
-            print_visit_call(alt_visit, VISIT_OUTPUTS(visit), true);
-            GNindentDecrease(ctx);
+             alt_visit = get_alt(alt_visit)) {
+            if (NODE_TYPE(alt_visit) == NT_VISIT_SEQUENCE_VISIT) {
+                OUT_NO_INDENT("if (NODE_TYPE(%s) == NT_%s) {\n", child_access,
+                            ID_UPR(INODE_NAME(VISIT_INODE(
+                                VISIT_SEQUENCE_VISIT_VISIT(alt_visit)))));
+                GNindentIncrease(ctx);
+                print_visit_call(alt_visit, VISIT_OUTPUTS(visit), true);
+                GNindentDecrease(ctx);
+            } else {
+                OUT_NO_INDENT("if (NODE_TYPE(%s) == NT_%s) {\n", child_access,
+                            ID_UPR(INODE_NAME(VISIT_SEQUENCE_DUMMY_INODE(alt_visit))));
+                GNindentIncrease(ctx);
+                OUT("// This node type does not require a visit.\n");
+                GNindentDecrease(ctx);
+            }
             OUT("} else ");
         }
 

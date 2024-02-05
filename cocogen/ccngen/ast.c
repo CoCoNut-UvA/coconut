@@ -41,6 +41,16 @@ node_st *ASTienum(node_st *vals, node_st *name, node_st *iprefix, char * iinfo) 
     NODE_CHILDREN(node) = node->data.N_ienum->ienum_children.ienum_children_at;
     return node;}
 
+node_st *ASTvisit_sequence_dummy(node_st *inode) {
+    node_st *node = NewNode();
+    node->data.N_visit_sequence_dummy = MEMmalloc(sizeof(struct NODE_DATA_VISIT_SEQUENCE_DUMMY));
+    NODE_TYPE(node) = NT_VISIT_SEQUENCE_DUMMY;
+    VISIT_SEQUENCE_DUMMY_ALT(node) = NULL;
+    VISIT_SEQUENCE_DUMMY_INODE(node) = inode;
+    NODE_NUMCHILDREN(node) = 1;
+    NODE_CHILDREN(node) = node->data.N_visit_sequence_dummy->visit_sequence_dummy_children.visit_sequence_dummy_children_at;
+    return node;}
+
 node_st *ASTvisit_sequence_visit(node_st *child, node_st *visit) {
     node_st *node = NewNode();
     node->data.N_visit_sequence_visit = MEMmalloc(sizeof(struct NODE_DATA_VISIT_SEQUENCE_VISIT));

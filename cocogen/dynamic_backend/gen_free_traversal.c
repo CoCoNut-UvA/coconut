@@ -205,6 +205,16 @@ node_st *DGFTvisit_sequence_eval(node_st *node)
 }
 
 /**
+ * @fn DGFTvisit_sequence_dummy
+ */
+node_st *DGFTvisit_sequence_dummy(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGFTvisit_sequence_dummy");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
  * @fn DGFTvisit_sequence_visit
  */
 node_st *DGFTvisit_sequence_visit(node_st *node)

@@ -485,6 +485,24 @@ node_st *PRTvisit_sequence_eval(node_st *node)
 }
 
 /**
+ * @fn PRTvisit_sequence_dummy
+ */
+node_st *PRTvisit_sequence_dummy(node_st *node)
+{
+    PrintIndent();
+    printf("<dummy visit for %s>", ID_ORIG(INODE_NAME(VISIT_SEQUENCE_DUMMY_INODE(node))));
+    if (VISIT_SEQUENCE_DUMMY_ALT(node)) {
+        printf(" or\n");
+        INDENT;
+        TRAVdo(VISIT_SEQUENCE_DUMMY_ALT(node));
+        UNINDENT;
+    } else {
+        printf("\n");
+    }
+    return node;
+}
+
+/**
  * @fn PRTvisit_sequence_visit
  */
 node_st *PRTvisit_sequence_visit(node_st *node)

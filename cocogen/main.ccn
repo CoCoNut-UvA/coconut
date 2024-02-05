@@ -874,14 +874,25 @@ node visit_sequence_eval {
     }
 };
 
+nodeset visit_sequence_alt = {visit_sequence_visit, visit_sequence_dummy};
+
 node visit_sequence_visit {
     children {
-        visit_sequence_visit alt, // Used for nodesets which contain multiple visits
+        visit_sequence_alt alt, // Used for nodesets which contain multiple visits
         visit_sequence next
     },
     attributes {
         child child { constructor, mandatory },
         visit visit { constructor, mandatory }
+    }
+};
+
+node visit_sequence_dummy {
+    children {
+        visit_sequence_alt alt
+    },
+    attributes {
+        inode inode { constructor, mandatory }
     }
 };
 

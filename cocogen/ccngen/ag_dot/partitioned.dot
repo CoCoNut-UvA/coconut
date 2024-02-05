@@ -19,6 +19,11 @@ style="filled";
 color="lightgrey";
 label=<Production of <B>visit</B>>;
 }
+subgraph cluster_visit_sequence_dummy {
+style="filled";
+color="lightgrey";
+label=<Production of <B>visit_sequence_dummy</B>>;
+}
 subgraph cluster_ipass {
 style="filled";
 color="lightgrey";
@@ -63,6 +68,11 @@ subgraph cluster_lifetime_range {
 style="filled";
 color="lightgrey";
 label=<Production of <B>lifetime_range</B>>;
+}
+subgraph cluster_visit_sequence_visit {
+style="filled";
+color="lightgrey";
+label=<Production of <B>visit_sequence_visit</B>>;
 }
 subgraph cluster_visit_sequence_1 {
 style="filled";
@@ -119,15 +129,20 @@ style="filled";
 color="lightgrey";
 label=<Production of <B>iactions</B>>;
 }
-subgraph cluster_visit_sequence_visit {
+subgraph cluster_id {
 style="filled";
 color="lightgrey";
-label=<Production of <B>visit_sequence_visit</B>>;
+label=<Production of <B>id</B>>;
 }
 subgraph cluster_attribute_reference {
 style="filled";
 color="lightgrey";
 label=<Production of <B>attribute_reference</B>>;
+}
+subgraph cluster_ienum {
+style="filled";
+color="lightgrey";
+label=<Production of <B>ienum</B>>;
 }
 subgraph cluster_itraversal {
 style="filled";
@@ -139,6 +154,16 @@ style="filled";
 color="lightgrey";
 label=<Production of <B>iphase</B>>;
 }
+subgraph cluster_visit_sequence_alt_1 {
+style="filled";
+color="lightgrey";
+label=<Production of <B>visit_sequence_alt_1</B>>;
+}
+subgraph cluster_visit_sequence_alt_2 {
+style="filled";
+color="lightgrey";
+label=<Production of <B>visit_sequence_alt_2</B>>;
+}
 subgraph cluster_itravdata {
 style="filled";
 color="lightgrey";
@@ -149,20 +174,10 @@ style="filled";
 color="lightgrey";
 label=<Production of <B>child</B>>;
 }
-subgraph cluster_id {
-style="filled";
-color="lightgrey";
-label=<Production of <B>id</B>>;
-}
 subgraph cluster_setoperation {
 style="filled";
 color="lightgrey";
 label=<Production of <B>setoperation</B>>;
-}
-subgraph cluster_ienum {
-style="filled";
-color="lightgrey";
-label=<Production of <B>ienum</B>>;
 }
 subgraph cluster_visit_sequence_eval {
 style="filled";

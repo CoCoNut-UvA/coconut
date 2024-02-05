@@ -43,6 +43,14 @@ ccn_node *CPYienum(ccn_node *arg_node) {
     return new_node;
 }
 
+ccn_node *CPYvisit_sequence_dummy(ccn_node *arg_node) {
+    ccn_node *new_node = ASTvisit_sequence_dummy(NULL);
+    CopyBaseNode(new_node, arg_node);
+    VISIT_SEQUENCE_DUMMY_ALT(new_node) = TRAVopt(VISIT_SEQUENCE_DUMMY_ALT(arg_node));
+    VISIT_SEQUENCE_DUMMY_INODE(new_node) = VISIT_SEQUENCE_DUMMY_INODE(arg_node);
+    return new_node;
+}
+
 ccn_node *CPYvisit_sequence_visit(ccn_node *arg_node) {
     ccn_node *new_node = ASTvisit_sequence_visit(NULL, NULL);
     CopyBaseNode(new_node, arg_node);

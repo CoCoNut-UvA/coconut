@@ -301,6 +301,21 @@ static inline bool mark_scheduled(graph_st *graph, htable_st *scheduled,
     }
 }
 
+static inline void set_alt(node_st *sequence, node_st *alt) {
+    switch (NODE_TYPE(sequence))
+    {
+    case NT_VISIT_SEQUENCE_VISIT:
+        VISIT_SEQUENCE_VISIT_ALT(sequence) = alt;
+        break;
+    case NT_VISIT_SEQUENCE_DUMMY:
+        VISIT_SEQUENCE_DUMMY_ALT(sequence) = alt;
+        break;
+    default:
+        assert(false);
+        break;
+    }
+}
+
 static node_st *add_visit_sequence_visit_nodeset_rec(
     node_st **visit_tail, node_st *st, htable_st *visits_htable,
     htable_st *visit_stubs_htable, node_st *expr, node_st *child,
@@ -313,27 +328,31 @@ static node_st *add_visit_sequence_visit_nodeset_rec(
 
     node_st *node = STlookup(st, SETLITERAL_REFERENCE(expr));
     struct visits *visits = HTlookup(visits_htable, node);
-    assert(original_visit->index < visits->length);
-    struct visit *visit = visits->visits[original_visit->index];
+    node_st *sequence = NULL;
+    if (original_visit->index < visits->length) {
+        struct visit *visit = visits->visits[original_visit->index];
 
-    node_st *sequence = ASTvisit_sequence_visit(child, NULL);
-    add_visit_stub(visit_stubs_htable, visit, sequence);
+        sequence = ASTvisit_sequence_visit(child, NULL);
+        add_visit_stub(visit_stubs_htable, visit, sequence);
+    } else {
+        fprintf(log, "Do not add visit %s %lu for type %s\n", ID_LWR(get_node_name(child)), original_visit->index, ID_LWR(get_node_name(node)));
+        sequence = ASTvisit_sequence_dummy(node);
+    }
 
     node_st *left_tail = NULL;
     node_st *sequence_left = add_visit_sequence_visit_nodeset_rec(
         &left_tail, st, visits_htable, visit_stubs_htable,
         SETLITERAL_LEFT(expr), child, original_visit);
-    VISIT_SEQUENCE_VISIT_ALT(sequence) = sequence_left;
+    set_alt(sequence, sequence_left);
 
     node_st *right_tail = NULL;
     node_st *sequence_right = add_visit_sequence_visit_nodeset_rec(
         &right_tail, st, visits_htable, visit_stubs_htable,
         SETLITERAL_RIGHT(expr), child, original_visit);
-
     if (left_tail != NULL) {
-        VISIT_SEQUENCE_VISIT_ALT(left_tail) = sequence_right;
+        set_alt(left_tail, sequence_right);
     } else {
-        VISIT_SEQUENCE_VISIT_ALT(sequence) = sequence_right;
+        set_alt(sequence, sequence_right);
     }
 
     if (right_tail != NULL) {
@@ -403,6 +422,10 @@ static void add_visit_sequence(node_st **visit_head, node_st **visit_tail,
         sequence = ASTvisit_sequence_eval(reference);
     }
 
+    if (sequence == NULL) {
+        return;
+    }
+
     if (*visit_head == NULL) {
         *visit_head = sequence;
         *visit_tail = sequence;
@@ -423,7 +446,7 @@ static node_st *generate_visit(graph_st *graph, node_st *node, node_st *st,
                                htable_st *child_visits_htable,
                                htable_st *dependencies, htable_st *scheduled,
                                htable_st *visit_stubs_htable,
-                               struct visit *visit) {
+                               struct visit *visit, bool last_visit) {
     queue_st *queue = QUcreate();
     htable_st *queued = HTnew_Ptr(htable_size);
     node_st *visit_head = NULL;
@@ -440,6 +463,24 @@ static node_st *generate_visit(graph_st *graph, node_st *node, node_st *st,
         MEMfree(node_name);
         QUinsert(queue, item);
         HTinsert(queued, item->node, (void *)1);
+    }
+
+    // Insert child visits in queue
+    for (node_st *child = INODE_ICHILDREN(node); child; child = CHILD_NEXT(child)) {
+        struct visits *child_visits = HTlookup(visits_htable, get_node_type(child, st));
+        assert(child_visits != NULL);
+        size_t stop = last_visit ? child_visits->length : MIN(visit->index + 1, child_visits->length);
+        for (size_t i = 0; i < stop; ++i) {
+            assert(i < child_visits->length);
+            item = MEMmalloc(sizeof(struct seq_queue_item));
+            item->is_visit = true;
+            item->visit = MEMmalloc(sizeof(struct child_visit));
+            item->visit->visit = child_visits->visits[i];
+            item->visit->child = child;
+            fprintf(log, "Adding child visit %s %lu to queue\n", ID_LWR(CHILD_NAME(child)), child_visits->visits[i]->index);
+            QUinsert(queue, item);
+            HTinsert(queued, item->visit, (void *)1);
+        }
     }
 
     // Mark inputs as computed
@@ -619,7 +660,8 @@ node_st *generate_visits(graph_st *graph, node_st *node, node_st *st,
         fprintf(log, "# visit %lu\n", i);
         node_st *visit = generate_visit(graph, node, st, visits_htable,
                                         child_visits, dependencies, scheduled,
-                                        visit_stubs_htable, visits->visits[i]);
+                                        visit_stubs_htable, visits->visits[i],
+                                        (i + 1) == visits->length);
         node_st *visits_node = ASTvisit(
             visit, generate_visit_input(node, st, visits->visits[i]),
             generate_visit_output(node, st, visits->visits[i]), node, i + 1);

@@ -674,6 +674,9 @@ node_st *SAVast(node_st *node) {
         HTinsert(partition_tables, nodeset, partition_table);
     }
 
+    generate_empty_visits(AST_INODES(node), AST_INODESETS(node),
+                          AST_STABLE(node), visits_htable);
+
     char *log_file_name = STRcat(globals.log_dir, "ag_schedule.log");
     FILE *log_file = fopen(log_file_name, "w");
     if (!log_file) {

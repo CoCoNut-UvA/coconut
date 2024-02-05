@@ -726,6 +726,16 @@ node_st *DGCHTvisit_sequence_eval(node_st *node)
 }
 
 /**
+ * @fn DGCHTvisit_sequence_dummy
+ */
+node_st *DGCHTvisit_sequence_dummy(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGCHTvisit_sequence_dummy");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
  * @fn DGCHTvisit_sequence_visit
  */
 node_st *DGCHTvisit_sequence_visit(node_st *node)

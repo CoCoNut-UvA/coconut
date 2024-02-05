@@ -41,6 +41,18 @@ struct NODE_DATA_IENUM {
     char * iinfo;
 };
 
+struct NODE_DATA_VISIT_SEQUENCE_DUMMY {
+    union NODE_CHILDREN_VISIT_SEQUENCE_DUMMY {
+        struct NODE_CHILDREN_VISIT_SEQUENCE_DUMMY_STRUCT {
+            node_st *alt;
+        } visit_sequence_dummy_children_st;
+
+        node_st *visit_sequence_dummy_children_at[1];
+    } visit_sequence_dummy_children;
+
+    node_st *inode;
+};
+
 struct NODE_DATA_VISIT_SEQUENCE_VISIT {
     union NODE_CHILDREN_VISIT_SEQUENCE_VISIT {
         struct NODE_CHILDREN_VISIT_SEQUENCE_VISIT_STRUCT {
@@ -411,6 +423,8 @@ struct NODE_DATA_AST {
 #define IENUM_IPREFIX(n) ((n)->data.N_ienum->ienum_children.ienum_children_st.iprefix)
 #define IENUM_NEXT(n) ((n)->data.N_ienum->ienum_children.ienum_children_st.next)
 #define IENUM_IINFO(n) ((n)->data.N_ienum->iinfo)
+#define VISIT_SEQUENCE_DUMMY_ALT(n) ((n)->data.N_visit_sequence_dummy->visit_sequence_dummy_children.visit_sequence_dummy_children_st.alt)
+#define VISIT_SEQUENCE_DUMMY_INODE(n) ((n)->data.N_visit_sequence_dummy->inode)
 #define VISIT_SEQUENCE_VISIT_ALT(n) ((n)->data.N_visit_sequence_visit->visit_sequence_visit_children.visit_sequence_visit_children_st.alt)
 #define VISIT_SEQUENCE_VISIT_NEXT(n) ((n)->data.N_visit_sequence_visit->visit_sequence_visit_children.visit_sequence_visit_children_st.next)
 #define VISIT_SEQUENCE_VISIT_CHILD(n) ((n)->data.N_visit_sequence_visit->child)
@@ -531,6 +545,7 @@ struct NODE_DATA_AST {
 #define AST_USES_UNSAFE(n) ((n)->data.N_ast->uses_unsafe)
 node_st *ASTid(char * orig, char * lwr, char * Upr);
 node_st *ASTienum(node_st *vals, node_st *name, node_st *iprefix, char * iinfo);
+node_st *ASTvisit_sequence_dummy(node_st *inode);
 node_st *ASTvisit_sequence_visit(node_st *child, node_st *visit);
 node_st *ASTvisit_sequence_eval(node_st *attribute);
 node_st *ASTvisit(node_st *sequence, node_st *inputs, node_st *outputs, node_st *inode, uint64_t index);
@@ -580,6 +595,7 @@ union NODE_DATA {
     struct NODE_DATA_VISIT *N_visit;
     struct NODE_DATA_VISIT_SEQUENCE_EVAL *N_visit_sequence_eval;
     struct NODE_DATA_VISIT_SEQUENCE_VISIT *N_visit_sequence_visit;
+    struct NODE_DATA_VISIT_SEQUENCE_DUMMY *N_visit_sequence_dummy;
     struct NODE_DATA_IENUM *N_ienum;
     struct NODE_DATA_ID *N_id;
 };

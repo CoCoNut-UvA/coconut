@@ -7,8 +7,8 @@
  */
 #include <assert.h>
 
-#include "frontend/attribute_scheduler/common.h"
 #include "frontend/attribute_scheduler/collect_visits.h"
+#include "frontend/attribute_scheduler/common.h"
 #include "palm/ctinfo.h"
 #include "palm/hash_table.h"
 #include "palm/memory.h"
@@ -87,4 +87,88 @@ struct visits *collect_visits(graph_st *graph, node_st *node, node_st *st,
     }
 
     return visits;
+}
+
+static bool node_has_visit(node_st *node, node_st *st,
+                           htable_st *visits_htable) {
+    for (node_st *child = INODE_ICHILDREN(node); child != NULL;
+         child = CHILD_NEXT(child)) {
+        node_st *child_ref = get_node_type(child, st);
+        struct visits *visits = HTlookup(visits_htable, child_ref);
+        assert(visits != NULL);
+        if (visits->length > 0) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+static bool nodeset_has_visit(node_st *expr, node_st *st,
+                              htable_st *visits_htable) {
+    if (expr == NULL) {
+        return NULL;
+    }
+
+    assert(NODE_TYPE(expr) == NT_SETLITERAL);
+
+    node_st *node = STlookup(st, SETLITERAL_REFERENCE(expr));
+    struct visits *visits = HTlookup(visits_htable, node);
+    if (visits->length > 0) {
+        return true;
+    }
+
+    return nodeset_has_visit(SETLITERAL_LEFT(expr), st, visits_htable) ||
+           nodeset_has_visit(SETLITERAL_RIGHT(expr), st, visits_htable);
+}
+
+static inline void add_empty_visit(struct visits *visits) {
+    visits->visits = MEMrealloc(visits->visits, 1 * sizeof(struct visit));
+    visits->visits[0] = MEMmalloc(sizeof(struct visit));
+    visits->visits[0]->index = 0;
+    visits->visits[0]->inputs = NULL;
+    visits->visits[0]->inputs_length = 0;
+    visits->visits[0]->outputs = NULL;
+    visits->visits[0]->outputs_length = 0;
+    visits->length = 1;
+}
+
+/* We want every visit to be reachable from the root node. So if a child node
+   has any visit, while the current node doesn't, we add an empty visit with
+   the purpose of calling the child visits.
+*/
+void generate_empty_visits(node_st *nodes, node_st *nodesets, node_st *st,
+                           htable_st *visits_htable) {
+    size_t changes;
+
+    do {
+        changes = 0;
+
+        for (node_st *node = nodes; node != NULL; node = INODE_NEXT(node)) {
+            struct visits *visits = HTlookup(visits_htable, node);
+            assert(visits != NULL);
+            if (visits->length > 0) {
+                continue;
+            }
+
+            if (node_has_visit(node, st, visits_htable)) {
+                add_empty_visit(visits);
+                changes += 1;
+            }
+        }
+
+        for (node_st *nodeset = nodesets; nodeset;
+             nodeset = INODESET_NEXT(nodeset)) {
+            struct visits *visits = HTlookup(visits_htable, nodeset);
+            assert(visits != NULL);
+            if (visits->length > 0) {
+                continue;
+            }
+
+            if (nodeset_has_visit(INODESET_EXPR(nodeset), st, visits_htable)) {
+                add_empty_visit(visits);
+                changes += 1;
+            }
+        }
+    } while (changes > 0); // Keep adding visits until there are no more changes
 }
