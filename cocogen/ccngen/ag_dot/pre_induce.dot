@@ -1,4 +1,49 @@
 digraph G {
+subgraph cluster_setexpr_1 {
+style="filled";
+color="lightgrey";
+label=<Production of <B>setexpr_1</B>>;
+}
+subgraph cluster_setexpr_2 {
+style="filled";
+color="lightgrey";
+label=<Production of <B>setexpr_2</B>>;
+}
+subgraph cluster_setexpr_3 {
+style="filled";
+color="lightgrey";
+label=<Production of <B>setexpr_3</B>>;
+}
+subgraph cluster_visit {
+style="filled";
+color="lightgrey";
+label=<Production of <B>visit</B>>;
+}
+subgraph cluster_ipass {
+style="filled";
+color="lightgrey";
+label=<Production of <B>ipass</B>>;
+}
+subgraph cluster_attribute {
+style="filled";
+color="lightgrey";
+label=<Production of <B>attribute</B>>;
+}
+subgraph cluster_nodeset_child_entry {
+style="filled";
+color="lightgrey";
+label=<Production of <B>nodeset_child_entry</B>>;
+}
+subgraph cluster_equation {
+style="filled";
+color="lightgrey";
+label=<Production of <B>equation</B>>;
+}
+subgraph cluster_ste {
+style="filled";
+color="lightgrey";
+label=<Production of <B>ste</B>>;
+}
 subgraph cluster_visit_arg_list {
 style="filled";
 color="lightgrey";
@@ -153,50 +198,5 @@ subgraph cluster_action_3 {
 style="filled";
 color="lightgrey";
 label=<Production of <B>action_3</B>>;
-}
-subgraph cluster_setexpr_1 {
-style="filled";
-color="lightgrey";
-label=<Production of <B>setexpr_1</B>>;
-}
-subgraph cluster_setexpr_2 {
-style="filled";
-color="lightgrey";
-label=<Production of <B>setexpr_2</B>>;
-}
-subgraph cluster_setexpr_3 {
-style="filled";
-color="lightgrey";
-label=<Production of <B>setexpr_3</B>>;
-}
-subgraph cluster_visit {
-style="filled";
-color="lightgrey";
-label=<Production of <B>visit</B>>;
-}
-subgraph cluster_ipass {
-style="filled";
-color="lightgrey";
-label=<Production of <B>ipass</B>>;
-}
-subgraph cluster_attribute {
-style="filled";
-color="lightgrey";
-label=<Production of <B>attribute</B>>;
-}
-subgraph cluster_nodeset_child_entry {
-style="filled";
-color="lightgrey";
-label=<Production of <B>nodeset_child_entry</B>>;
-}
-subgraph cluster_equation {
-style="filled";
-color="lightgrey";
-label=<Production of <B>equation</B>>;
-}
-subgraph cluster_ste {
-style="filled";
-color="lightgrey";
-label=<Production of <B>ste</B>>;
 }
 }

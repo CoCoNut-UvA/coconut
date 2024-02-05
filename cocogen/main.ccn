@@ -458,7 +458,8 @@ traversal checkAttributes {
     uid = CHA,
     nodes = {inodeset, inode, attribute},
     travdata {
-        bool in_nodeset
+        bool in_nodeset,
+        inode curr_node
     }
 };
 

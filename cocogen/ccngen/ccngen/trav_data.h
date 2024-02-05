@@ -43,6 +43,7 @@ struct data_cpr {
 };
 
 struct data_cha {
+    node_st *curr_node;
     bool in_nodeset;
 };
 
