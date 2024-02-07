@@ -4,6 +4,7 @@
 
 #include "ccn/dynamic_core.h"
 #include "ccngen/ast.h"
+#include "ccngen/trav.h"
 #include "dynamic_backend/gen_helpers.h"
 #include "frontend/symboltable.h"
 #include "gen_helpers/out_macros.h"
@@ -14,6 +15,7 @@ static char *basic_node_type = "node_st";
 static node_st *ste = NULL;
 static node_st *curr_nodeset = NULL;
 static node_st *curr_attribute = NULL;
+static bool is_classic = false;
 
 static inline void print_type(node_st *attribute) {
     GeneratorContext *ctx = globals.gen_ctx;
@@ -33,14 +35,14 @@ static inline void print_type(node_st *attribute) {
     }
 }
 
-node_st *DGNAFast(node_st *node)
+node_st *DGNSAFast(node_st *node)
 {
     ste = AST_STABLE(node);
     TRAVopt(AST_INODESETS(node));
     return node;
 }
 
-node_st *DGNAFinodeset(node_st *node)
+node_st *DGNSAFinodeset(node_st *node)
 {
     curr_nodeset = node;
     TRAVopt(INODESET_IATTRIBUTES(node));
@@ -49,35 +51,47 @@ node_st *DGNAFinodeset(node_st *node)
     return node;
 }
 
-node_st *DGNAFattribute(node_st *node)
+node_st *DGNSAFattribute(node_st *node)
 {
     assert(curr_nodeset);
     GeneratorContext *ctx = globals.gen_ctx;
-    if (!ATTRIBUTE_IS_INHERITED(node) && !ATTRIBUTE_IS_SYNTHESIZED(node)) {
-        OUT("static inline ");
-        print_type(node);
-        OUT_NO_INDENT(" *CCNaccess_%s_%s(%s *node) {\n", ID_LWR(INODESET_NAME(curr_nodeset)), ID_LWR(ATTRIBUTE_NAME(node)), basic_node_type);
-        GNindentIncrease(ctx);
-        OUT_BEGIN_SWITCH("NODE_TYPE(node)");
-        curr_attribute = node;
-        TRAVopt(INODESET_EXPR(curr_nodeset));
-        curr_attribute = NULL;
-        OUT_BEGIN_DEFAULT_CASE();
-        OUT_END_CASE();
-        OUT_END_SWITCH();
-        OUT("assert(false); // Should not be able to get here\n");
-        OUT("return NULL;\n");
-        OUT_END_FUNC();
-        }
-    TRAVchildren(node);
+    is_classic = !ATTRIBUTE_IS_INHERITED(node) && !ATTRIBUTE_IS_SYNTHESIZED(node);
+
+    OUT("static inline ");
+    print_type(node);
+    OUT_NO_INDENT(" ");
+    if (is_classic) {
+        OUT_NO_INDENT("*");
+    }
+    OUT_NO_INDENT("CCNaccess_%s_%s(%s *node) {\n", ID_LWR(INODESET_NAME(curr_nodeset)), ID_LWR(ATTRIBUTE_NAME(node)), basic_node_type);
+    GNindentIncrease(ctx);
+    OUT_BEGIN_SWITCH("NODE_TYPE(node)");
+    curr_attribute = node;
+    TRAVopt(INODESET_EXPR(curr_nodeset));
+    curr_attribute = NULL;
+    OUT_BEGIN_DEFAULT_CASE();
+    OUT_END_CASE();
+    OUT_END_SWITCH();
+    OUT("DBUG_ASSERT(false, \"Node is not a '%s'\");\n", ID_ORIG(INODESET_NAME(curr_nodeset)));
+    OUT("return NULL;\n");
+    OUT_END_FUNC();
+    TRAVnext(node);
     return node;
 }
 
-node_st *DGNAFsetliteral(node_st *node)
+node_st *DGNSAFsetliteral(node_st *node)
 {
     GeneratorContext *ctx = globals.gen_ctx;
     OUT_BEGIN_CASE("NT_%s", ID_UPR(SETLITERAL_REFERENCE(node)));
-    OUT("return &(%s_%s(node));\n", ID_UPR(SETLITERAL_REFERENCE(node)), ID_UPR(ATTRIBUTE_NAME(curr_attribute)));
+    OUT("return ");
+    if (is_classic) {
+        OUT_NO_INDENT("&(");
+    }
+    OUT_NO_INDENT("%s_%s(node)", ID_UPR(SETLITERAL_REFERENCE(node)), ID_UPR(ATTRIBUTE_NAME(curr_attribute)));
+    if (is_classic) {
+        OUT_NO_INDENT(")");
+    }
+    OUT_NO_INDENT(";\n");
     OUT_END_CASE_NO_BREAK();
     TRAVchildren(node);
     return node;

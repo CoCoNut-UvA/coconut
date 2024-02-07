@@ -88,9 +88,14 @@ node_st *DGCTattribute(node_st *node)
     GeneratorContext *ctx = globals.gen_ctx;
     char *node_name = ID_UPR(INODE_NAME(curr_node));
     char *attr_name = ID_UPR(ATTRIBUTE_NAME(node));
+
+    // We do not copy inherited and synthesized attributes.
     if (ATTRIBUTE_IS_INHERITED(node) || ATTRIBUTE_IS_SYNTHESIZED(node)) {
-        // TODO
-    } else if (ATTRIBUTE_TYPE(node) == AT_string) {
+        TRAVopt(ATTRIBUTE_NEXT(node));
+        return node;
+    }
+
+    if (ATTRIBUTE_TYPE(node) == AT_string) {
         OUT_FIELD("%s_%s(new_node) = STRcpy(%s_%s(arg_node))", node_name, attr_name, node_name, attr_name);
     } else if (ATTRIBUTE_TYPE(node) == AT_user) {
         OUT_NO_INDENT("\n");

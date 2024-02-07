@@ -27,6 +27,16 @@ static char *basic_node_type = "node_st";
 static node_st *ste = NULL;
 static node_st *curr_node = NULL;
 
+static inline void print_set_value(node_st *attribute, char *value) {
+    GeneratorContext *ctx = globals.gen_ctx;
+    assert(curr_node != NULL);
+    OUT("node->data.N_%s->_%s.ccn_val_set = true;\n",
+        ID_LWR(INODE_NAME(curr_node)), ID_LWR(ATTRIBUTE_NAME(attribute)));
+    OUT("node->data.N_%s->_%s.%s = %s;\n", ID_LWR(INODE_NAME(curr_node)),
+        ID_LWR(ATTRIBUTE_NAME(attribute)), ID_LWR(ATTRIBUTE_NAME(attribute)),
+        value);
+}
+
 static inline void print_type(node_st *attribute) {
     GeneratorContext *ctx = globals.gen_ctx;
     if (ATTRIBUTE_TYPE(attribute) == AT_link) {
@@ -103,6 +113,20 @@ node_st *DGVSvisit(node_st *node) {
     OUT_NO_INDENT(")");
     OUT_START_FUNC_FIELD();
     curr_node = VISIT_INODE(node);
+
+    for (node_st *in_arg = VISIT_INPUTS(node); in_arg;
+         in_arg = VISIT_ARG_LIST_NEXT(in_arg)) {
+        node_st *attribute = VISIT_ARG_LIST_ATTRIBUTE(in_arg);
+        char *arg_str =
+            STRfmt("%s_%s", get_node_name_this(attribute),
+                   ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+        print_set_value(ATTRIBUTE_REFERENCE_REFERENCE(attribute), arg_str);
+        MEMfree(arg_str);
+    }
+    if (VISIT_INPUTS(node)) {
+        OUT_NO_INDENT("\n");
+    }
+
     TRAVopt(VISIT_SEQUENCE(node));
 
     if (!VISIT_OUTPUTS(node)) { // 0 output
@@ -301,6 +325,18 @@ node_st *DGVSvisit_sequence_eval(node_st *node) {
                 OUT("}\n\n");
             }
         }
+    }
+
+    if (ATTRIBUTE_REFERENCE_INODE(attribute) ==
+        NULL) { // attribute of current node
+        assert(
+            ATTRIBUTE_IS_SYNTHESIZED(ATTRIBUTE_REFERENCE_REFERENCE(attribute)));
+        char *arg_str =
+            STRfmt("%s_%s", get_node_name_this(attribute),
+                   ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+
+        print_set_value(ATTRIBUTE_REFERENCE_REFERENCE(attribute), arg_str);
+        MEMfree(arg_str);
     }
 
     HTdelete(children_null);

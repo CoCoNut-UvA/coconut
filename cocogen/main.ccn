@@ -158,6 +158,7 @@ phase dynamicGenAst {
         dynamicGenNodeInitFunctions;
         dynamicGenNodeUnion;
         pass dynamicGenBaseNode;
+        dynamicGenNodeAccessFunctions;
         dynamicGenNodesetAccessFunctions;
         pass dynamicSwitchToAstSource;
         pass dynamicGenBaseNodeInit;
@@ -389,9 +390,14 @@ traversal dynamicGenNodeStructs {
     nodes = {ast, inode, child, attribute}
 };
 
+traversal dynamicGenNodeAccessFunctions {
+    uid = DGNAF,
+
+    nodes = {ast, inode, attribute}
+};
 
 traversal dynamicGenNodesetAccessFunctions {
-    uid = DGNAF,
+    uid = DGNSAF,
 
     nodes = {ast, inodeset, attribute, setliteral}
 };

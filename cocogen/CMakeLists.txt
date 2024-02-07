@@ -23,14 +23,14 @@ add_executable(cocogen main.c commandline.c frontend/scanAndParse/scan_parse.c
         frontend/attribute_scheduler/generate_visits.c frontend/attribute_scheduler/generate_visits.h
         frontend/attribute_scheduler/schedule_attribute_visits.c dot/gen_dot_ag.c dot/gen_dot_ag.h
         dynamic_backend/gen_node_structs.c ${FLEX_DslTokens_OUTPUTS} ${BISON_DslParser_OUTPUTS} gen_helpers/format.c
-        dynamic_backend/gen_nodeset_access_funcs.c dynamic_backend/gen_node_macros.c
-        dynamic_backend/gen_node_init_funcs.c dynamic_backend/gen_node_base_and_union.c
-        dynamic_backend/gen_node_constructor.c dynamic_backend/gen_enums.c dynamic_backend/gen_enum_values.c
-        dynamic_backend/gen_trav_v_table.c dynamic_backend/gen_node_trav_table.c dynamic_backend/gen_pass_table.c
-        dynamic_backend/gen_trav_table.c dynamic_backend/gen_system_traversals.c dynamic_backend/gen_action_header.c
-        dynamic_backend/gen_trav_actions.c dynamic_backend/gen_copy_traversal.c dynamic_backend/gen_constructor_call.c
-        dynamic_backend/gen_free_traversal.c dynamic_backend/gen_check_traversal.c
-        dynamic_backend/collect_children.c dynamic_backend/collect_children.h
+        dynamic_backend/gen_node_access_funcs.c dynamic_backend/gen_nodeset_access_funcs.c
+        dynamic_backend/gen_node_macros.c dynamic_backend/gen_node_init_funcs.c
+        dynamic_backend/gen_node_base_and_union.c dynamic_backend/gen_node_constructor.c dynamic_backend/gen_enums.c
+        dynamic_backend/gen_enum_values.c dynamic_backend/gen_trav_v_table.c dynamic_backend/gen_node_trav_table.c
+        dynamic_backend/gen_pass_table.c dynamic_backend/gen_trav_table.c dynamic_backend/gen_system_traversals.c
+        dynamic_backend/gen_action_header.c dynamic_backend/gen_trav_actions.c dynamic_backend/gen_copy_traversal.c
+        dynamic_backend/gen_constructor_call.c dynamic_backend/gen_free_traversal.c
+        dynamic_backend/gen_check_traversal.c dynamic_backend/collect_children.c dynamic_backend/collect_children.h
         dynamic_backend/gen_equation_functions.c dynamic_backend/gen_equation_includes.c
         dynamic_backend/gen_user_equations.c dynamic_backend/gen_visit_header.c dynamic_backend/gen_visit_source.c
         phase_driver/gen_action_array.c phase_driver/gen_ids_table.c phase_driver/gen_action_array_header.c
