@@ -146,6 +146,12 @@ void HTiterateCancel(htable_iter_st *iter);
 void *HTiterValue(htable_iter_st *iter);
 
 /**
+ * Set value of current element from iterator.
+ *
+*/
+void HTiterSetValue(htable_iter_st *iter, void *value);
+
+/**
  * Get key of current element from iterator.
  *
 */

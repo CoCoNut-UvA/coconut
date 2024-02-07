@@ -30,6 +30,7 @@ add_executable(cocogen main.c commandline.c frontend/scanAndParse/scan_parse.c
         dynamic_backend/gen_trav_table.c dynamic_backend/gen_system_traversals.c dynamic_backend/gen_action_header.c
         dynamic_backend/gen_trav_actions.c dynamic_backend/gen_copy_traversal.c dynamic_backend/gen_constructor_call.c
         dynamic_backend/gen_free_traversal.c dynamic_backend/gen_check_traversal.c
+        dynamic_backend/collect_children.c dynamic_backend/collect_children.h
         dynamic_backend/gen_equation_functions.c dynamic_backend/gen_equation_includes.c
         dynamic_backend/gen_user_equations.c dynamic_backend/gen_visit_header.c dynamic_backend/gen_visit_source.c
         phase_driver/gen_action_array.c phase_driver/gen_ids_table.c phase_driver/gen_action_array_header.c
@@ -37,7 +38,8 @@ add_executable(cocogen main.c commandline.c frontend/scanAndParse/scan_parse.c
         frontend/reachability.h dynamic_backend/gen_trav_structs.c dynamic_backend/gen_trav_data_getters.c
         dynamic_backend/gen_trav_data_ctors.c dynamic_backend/gen_trav_data_union.c
         dynamic_backend/gen_trav_data_ctors_header.c dynamic_backend/gen_trav_data_tables.c dot/gen_dot.c
-        frontend/lifetimes/assign_id_to_actions.c frontend/lifetimes/map_id_to_lifetimes.c sets/literal_insert.c
+        frontend/lifetimes/assign_id_to_actions.c frontend/lifetimes/map_id_to_lifetimes.c
+        frontend/lifetimes/children_set_mandatory.c sets/literal_insert.c
         sets/set.h sets/set.c sets/literal_lookup.c sets/literal_intersect.c sets/literal_union.c
         sets/literal_difference.c phase_driver/gen_gate_header.c dynamic_backend/gate.c
         dynamic_backend/gen_user_passes.c dynamic_backend/gen_user_traversals.c static/gates.c static/gen_ast_structs.c

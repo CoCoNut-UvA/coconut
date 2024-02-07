@@ -29,7 +29,13 @@ node_st *DGCTast(node_st *node)
     OUT("#include \"palm/str.h\"\n");
     OUT("#include \"palm/ctinfo.h\"\n");
     OUT("#include \"ccn/dynamic_core.h\"\n\n");
-    OUT("static const char *const user_warn =\n");
+    // Consider switching to C23 [[maybe_unused]] in the future
+    OUT("#ifdef __GNUC__\n");
+    OUT("#define MAYBE_UNUSED __attribute__((unused))\n");
+    OUT("#else\n");
+    OUT("#define MAYBE_UNUSED\n");
+    OUT("#endif\n\n");
+    OUT("static const char *const user_warn MAYBE_UNUSED =\n");
     GNindentIncrease(ctx);
     OUT("\"%%s:%%d: Attributes with user types do not support deep copying, \"\n");
     OUT("\"instead the attributes are copied by value. Make sure you set \"\n");

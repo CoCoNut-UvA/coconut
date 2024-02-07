@@ -201,3 +201,18 @@ void TRAVdataFreedynamicGenTravDataTables(ccn_trav_st *trav) {
     MEMfree(trav->trav_data.dynamicgentravdatatables);
 }
 
+extern void CSMinit();
+extern void CSMfini();
+void TRAVdataInitchildrenSetMandatory(ccn_trav_st *trav) {
+    trav->trav_data.childrensetmandatory = MEMmalloc(sizeof(struct data_csm));
+    struct data_csm *data = trav->trav_data.childrensetmandatory;
+    data->curr_child = NULL;
+    data->ste = NULL;
+    CSMinit();
+}
+
+void TRAVdataFreechildrenSetMandatory(ccn_trav_st *trav) {
+    CSMfini();
+    MEMfree(trav->trav_data.childrensetmandatory);
+}
+

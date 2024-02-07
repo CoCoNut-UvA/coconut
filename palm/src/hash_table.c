@@ -301,6 +301,12 @@ void *HTiterValue(htable_iter_st *iter) {
     return iter->current_entry->value;
 }
 
+/* Set iterator value */
+void HTiterSetValue(htable_iter_st *iter, void *value) {
+    assert(iter->current_entry != NULL);
+    iter->current_entry->value = value;
+}
+
 /* Get iterator key */
 void *HTiterKey(htable_iter_st *iter) {
     assert(iter->current_entry != NULL);

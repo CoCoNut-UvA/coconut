@@ -474,9 +474,7 @@ static node_st *generate_visit(graph_st *graph, node_st *node, node_st *st,
             assert(i < child_visits->length);
             item = MEMmalloc(sizeof(struct seq_queue_item));
             item->is_visit = true;
-            item->visit = MEMmalloc(sizeof(struct child_visit));
-            item->visit->visit = child_visits->visits[i];
-            item->visit->child = child;
+            item->visit = get_child_visit(child_visits_htable, child, child_visits->visits[i]);
             fprintf(log, "Adding child visit %s %lu to queue\n", ID_LWR(CHILD_NAME(child)), child_visits->visits[i]->index);
             QUinsert(queue, item);
             HTinsert(queued, item->visit, (void *)1);

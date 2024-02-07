@@ -74,6 +74,11 @@ struct data_dgtdt {
     fileptr file;
 };
 
+struct data_csm {
+    node_st *curr_child;
+    node_st *ste;
+};
+
 union TRAV_DATA {
     struct data_slc *setliteralcontains;
     struct data_sld *setliteraldifference;
@@ -88,6 +93,7 @@ union TRAV_DATA {
     struct data_dgcht *dynamicgenchecktraversal;
     struct data_dgt_f *dynamicgentravfunctions;
     struct data_dgtdt *dynamicgentravdatatables;
+    struct data_csm *childrensetmandatory;
 };
 
 #define DATA_SLC_GET() (TRAVgetCurrent()->trav_data.setliteralcontains)
@@ -103,6 +109,7 @@ union TRAV_DATA {
 #define DATA_DGCHT_GET() (TRAVgetCurrent()->trav_data.dynamicgenchecktraversal)
 #define DATA_DGT_F_GET() (TRAVgetCurrent()->trav_data.dynamicgentravfunctions)
 #define DATA_DGTDT_GET() (TRAVgetCurrent()->trav_data.dynamicgentravdatatables)
+#define DATA_CSM_GET() (TRAVgetCurrent()->trav_data.childrensetmandatory)
 void TRAVdataInitsetliteralContains(struct ccn_trav *trav);
 void TRAVdataFreesetliteralContains(struct ccn_trav *trav);
 void TRAVdataInitsetliteralDifference(struct ccn_trav *trav);
@@ -129,3 +136,5 @@ void TRAVdataInitdynamicGenTravFunctions(struct ccn_trav *trav);
 void TRAVdataFreedynamicGenTravFunctions(struct ccn_trav *trav);
 void TRAVdataInitdynamicGenTravDataTables(struct ccn_trav *trav);
 void TRAVdataFreedynamicGenTravDataTables(struct ccn_trav *trav);
+void TRAVdataInitchildrenSetMandatory(struct ccn_trav *trav);
+void TRAVdataFreechildrenSetMandatory(struct ccn_trav *trav);

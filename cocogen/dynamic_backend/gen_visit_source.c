@@ -11,13 +11,17 @@
 #include "ccn/ccn.h"
 #include "ccn/dynamic_core.h"
 #include "ccngen/ast.h"
+#include "dynamic_backend/collect_children.h"
 #include "frontend/symboltable.h"
 #include "gen_helpers/format.h"
 #include "gen_helpers/out_macros.h"
 #include "globals.h"
 #include "palm/ctinfo.h"
+#include "palm/hash_table.h"
 #include "palm/memory.h"
 #include "palm/str.h"
+
+static const int htable_size = 100;
 
 static char *basic_node_type = "node_st";
 static node_st *ste = NULL;
@@ -145,22 +149,48 @@ static inline node_st *get_equation(node_st *node, node_st *attribute) {
     return NULL;
 }
 
-static inline void print_equation_args(node_st *equation) {
+static inline node_st *get_child(node_st *child_name) {
+    for (node_st *candidate = INODE_ICHILDREN(curr_node); candidate;
+         candidate = CHILD_NEXT(candidate)) {
+        if (STReq(ID_LWR(CHILD_NAME(candidate)), ID_LWR(child_name))) {
+            return candidate;
+        }
+    }
+
+    return NULL;
+}
+
+static inline void print_equation_args(node_st *equation,
+                                       htable_st *children_null) {
     GeneratorContext *ctx = globals.gen_ctx;
+    bool first = true;
     for (node_st *arg = EQUATION_IARGS(equation); arg;
          arg = EQUATION_DEPENDENCY_NEXT(arg)) {
         node_st *attribute = EQUATION_DEPENDENCY_IATTRIBUTE(arg);
         node_st *reference = ATTRIBUTE_REFERENCE_REFERENCE(attribute);
+        bool is_child = ATTRIBUTE_REFERENCE_INODE(attribute) != NULL;
+        if (is_child) {
+            node_st *child = get_child(ATTRIBUTE_REFERENCE_INODE(attribute));
+            assert(child != NULL);
+            if ((enum child_htable)HTlookup(children_null, child) == CH_FALSE) {
+                continue;
+            }
+        }
+
+        if (first) {
+            first = false;
+        } else {
+            OUT_NO_INDENT(", ");
+        }
+
         // Classic attribute dependency
         if (!ATTRIBUTE_IS_INHERITED(reference) &&
             !ATTRIBUTE_IS_SYNTHESIZED(reference)) {
             node_st *node_name = INODE_NAME(curr_node);
             assert(node_name != NULL);
-            bool is_child = ATTRIBUTE_REFERENCE_INODE(attribute) != NULL;
             if (is_child) {
                 node_name = ATTRIBUTE_REFERENCE_NODE_TYPE(attribute);
             }
-
             OUT_NO_INDENT("%s_%s(", ID_UPR(node_name),
                           ID_UPR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
             if (is_child) {
@@ -173,10 +203,6 @@ static inline void print_equation_args(node_st *equation) {
             OUT_NO_INDENT("%s_%s", get_node_name_this(attribute),
                           ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
         }
-
-        if (EQUATION_DEPENDENCY_NEXT(arg)) {
-            OUT_NO_INDENT(", ");
-        }
     }
 }
 
@@ -188,25 +214,104 @@ node_st *DGVSvisit_sequence_eval(node_st *node) {
     assert(curr_node != NULL);
     assert(NODE_TYPE(curr_node) == NT_INODE);
 
+    htable_st *children_null = HTnew_Ptr(htable_size);
     node_st *attribute = VISIT_SEQUENCE_EVAL_ATTRIBUTE(node);
-    OUT("");
-    print_type(ATTRIBUTE_REFERENCE_REFERENCE(attribute));
-    OUT_NO_INDENT(" %s_%s = ", get_node_name_this(attribute),
-                  ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
-
-    OUT_NO_INDENT("EVAL%s_%s_%s(", ID_LWR(INODE_NAME(curr_node)),
-                  get_node_name_this(attribute),
-                  ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
     node_st *equation = get_equation(curr_node, attribute);
     assert(equation != NULL);
-    print_equation_args(equation);
-    OUT_NO_INDENT(");\n\n");
+    struct child_list *children =
+        collect_children_equation_args(children_null, curr_node, equation);
+
+    if (HTelementCount(children_null) == 0) {
+        OUT("");
+        print_type(ATTRIBUTE_REFERENCE_REFERENCE(attribute));
+        OUT_NO_INDENT(" %s_%s = ", get_node_name_this(attribute),
+                      ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+
+        OUT_NO_INDENT("EVAL%s_%s_%s(", ID_LWR(INODE_NAME(curr_node)),
+                      get_node_name_this(attribute),
+                      ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+        print_equation_args(equation, children_null);
+        OUT_NO_INDENT(");\n\n");
+    } else {
+        // Declare output
+        OUT("");
+        print_type(ATTRIBUTE_REFERENCE_REFERENCE(attribute));
+        OUT_NO_INDENT(" %s_%s;\n", get_node_name_this(attribute),
+                      ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+        OUT("");
+        // 2^{elements}
+        size_t combinations = ((size_t)1UL) << HTelementCount(children_null);
+        for (size_t bitmask = 0; bitmask < combinations; ++bitmask) {
+            // Set bitmask in htable
+            size_t i = 0;
+            for (htable_iter_st *iter = HTiterate(children_null); iter;
+                 iter = HTiterateNext(iter)) {
+                if (bitmask & (0x1UL << i)) {
+                    HTiterSetValue(iter, (void *)CH_TRUE);
+                } else {
+                    HTiterSetValue(iter, (void *)CH_FALSE);
+                }
+                ++i;
+            }
+
+            if (bitmask != combinations - 1) {
+                OUT_NO_INDENT("if (");
+                bool first = true;
+                for (htable_iter_st *iter = HTiterate(children_null); iter;
+                     iter = HTiterateNext(iter)) {
+                    node_st *child = HTiterKey(iter);
+                    if ((enum child_htable)HTiterValue(iter) == CH_FALSE) {
+                        if (first) {
+                            first = false;
+                        } else {
+                            OUT_NO_INDENT(" && ");
+                        }
+                        OUT_NO_INDENT("%s_%s(node) == NULL",
+                                      ID_UPR(INODE_NAME(curr_node)),
+                                      ID_UPR(CHILD_NAME(child)));
+                    }
+                }
+                OUT_NO_INDENT(") {\n");
+            } else {
+                OUT_NO_INDENT("{\n");
+            }
+
+            GNindentIncrease(ctx);
+
+            OUT("%s_%s = ", get_node_name_this(attribute),
+                ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+
+            OUT_NO_INDENT("EVAL%s_%s_%s", ID_LWR(INODE_NAME(curr_node)),
+                          get_node_name_this(attribute),
+                          ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+            for (struct child_list *entry = children; entry;
+                 entry = entry->next) {
+                if ((enum child_htable)HTlookup(children_null, entry->child) ==
+                    CH_FALSE) {
+                    OUT_NO_INDENT("_%s_NULL", ID_LWR(CHILD_NAME(entry->child)));
+                }
+            }
+            OUT_NO_INDENT("(");
+            print_equation_args(equation, children_null);
+            OUT_NO_INDENT(");\n");
+            GNindentDecrease(ctx);
+            if (bitmask != combinations - 1) {
+                OUT("} else ");
+            } else {
+                OUT("}\n\n");
+            }
+        }
+    }
+
+    HTdelete(children_null);
+    destroy_child_list(children);
 
     TRAVopt(VISIT_SEQUENCE_EVAL_NEXT(node));
     return node;
 }
 
-static void print_visit_call(node_st *node, node_st *outputs, bool partial) {
+static void print_visit_call(node_st *node, node_st *outputs,
+                             bool output_declaration, bool is_nodeset) {
     GeneratorContext *ctx = globals.gen_ctx;
     bool multiple_outputs = false;
 
@@ -219,7 +324,7 @@ static void print_visit_call(node_st *node, node_st *outputs, bool partial) {
     char *child_access = STRfmt("%s_%s(node)", ID_UPR(INODE_NAME(curr_node)),
                                 ID_UPR(CHILD_NAME(child)));
 
-    if (!partial) {
+    if (!is_nodeset) {
         OUT("assert(NODE_TYPE(%s) == NT_%s);\n", child_access,
             ID_UPR(INODE_NAME(VISIT_INODE(visit))));
     }
@@ -228,7 +333,7 @@ static void print_visit_call(node_st *node, node_st *outputs, bool partial) {
         if (!VISIT_ARG_LIST_NEXT(VISIT_OUTPUTS(visit))) { // 1 output
             node_st *attribute = VISIT_ARG_LIST_ATTRIBUTE(VISIT_OUTPUTS(visit));
             OUT("");
-            if (!partial) {
+            if (output_declaration) {
                 print_type(ATTRIBUTE_REFERENCE_REFERENCE(attribute));
                 OUT_NO_INDENT(" ");
             }
@@ -260,7 +365,7 @@ static void print_visit_call(node_st *node, node_st *outputs, bool partial) {
              out_arg = VISIT_ARG_LIST_NEXT(out_arg)) {
             node_st *attribute = VISIT_ARG_LIST_ATTRIBUTE(out_arg);
             OUT("");
-            if (!partial) {
+            if (output_declaration) {
                 print_type(ATTRIBUTE_REFERENCE_REFERENCE(attribute));
                 OUT_NO_INDENT(" ");
             }
@@ -277,8 +382,7 @@ static void print_visit_call(node_st *node, node_st *outputs, bool partial) {
 }
 
 static inline node_st *get_alt(node_st *visit) {
-    switch (NODE_TYPE(visit))
-    {
+    switch (NODE_TYPE(visit)) {
     case NT_VISIT_SEQUENCE_VISIT:
         return VISIT_SEQUENCE_VISIT_ALT(visit);
     case NT_VISIT_SEQUENCE_DUMMY:
@@ -298,35 +402,43 @@ node_st *DGVSvisit_sequence_visit(node_st *node) {
     assert(NODE_TYPE(curr_node) == NT_INODE);
 
     node_st *visit = VISIT_SEQUENCE_VISIT_VISIT(node);
+    node_st *child = VISIT_SEQUENCE_VISIT_CHILD(node);
+    char *child_access = NULL;
 
-    if (VISIT_SEQUENCE_VISIT_ALT(node)) {
+    if (VISIT_SEQUENCE_VISIT_ALT(node) || !CHILD_IS_MANDATORY(child)) {
         // Declare output arguments
         for (node_st *out_arg = VISIT_OUTPUTS(visit); out_arg;
              out_arg = VISIT_ARG_LIST_NEXT(out_arg)) {
             node_st *attribute = VISIT_ARG_LIST_ATTRIBUTE(out_arg);
             OUT("");
             print_type(ATTRIBUTE_REFERENCE_REFERENCE(attribute));
-            OUT_NO_INDENT(" %s_%s;\n",
-                          ID_LWR(CHILD_NAME(VISIT_SEQUENCE_VISIT_CHILD(node))),
+            OUT_NO_INDENT(" %s_%s;\n", ID_LWR(CHILD_NAME(child)),
                           ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
         }
 
-        char *child_access =
-            STRfmt("%s_%s(node)", ID_UPR(INODE_NAME(curr_node)),
-                   ID_UPR(CHILD_NAME(VISIT_SEQUENCE_VISIT_CHILD(node))));
+        child_access = STRfmt("%s_%s(node)", ID_UPR(INODE_NAME(curr_node)),
+                              ID_UPR(CHILD_NAME(child)));
+    }
+
+    if (!CHILD_IS_MANDATORY(child)) {
+        OUT_BEGIN_IF("%s != NULL", child_access);
+    }
+
+    if (VISIT_SEQUENCE_VISIT_ALT(node)) { // Visit type is a nodeset
         OUT("");
         for (node_st *alt_visit = node; alt_visit;
              alt_visit = get_alt(alt_visit)) {
             if (NODE_TYPE(alt_visit) == NT_VISIT_SEQUENCE_VISIT) {
                 OUT_NO_INDENT("if (NODE_TYPE(%s) == NT_%s) {\n", child_access,
-                            ID_UPR(INODE_NAME(VISIT_INODE(
-                                VISIT_SEQUENCE_VISIT_VISIT(alt_visit)))));
+                              ID_UPR(INODE_NAME(VISIT_INODE(
+                                  VISIT_SEQUENCE_VISIT_VISIT(alt_visit)))));
                 GNindentIncrease(ctx);
-                print_visit_call(alt_visit, VISIT_OUTPUTS(visit), true);
+                print_visit_call(alt_visit, VISIT_OUTPUTS(visit), false, true);
                 GNindentDecrease(ctx);
             } else {
-                OUT_NO_INDENT("if (NODE_TYPE(%s) == NT_%s) {\n", child_access,
-                            ID_UPR(INODE_NAME(VISIT_SEQUENCE_DUMMY_INODE(alt_visit))));
+                OUT_NO_INDENT(
+                    "if (NODE_TYPE(%s) == NT_%s) {\n", child_access,
+                    ID_UPR(INODE_NAME(VISIT_SEQUENCE_DUMMY_INODE(alt_visit))));
                 GNindentIncrease(ctx);
                 OUT("// This node type does not require a visit.\n");
                 GNindentDecrease(ctx);
@@ -336,14 +448,21 @@ node_st *DGVSvisit_sequence_visit(node_st *node) {
 
         OUT_NO_INDENT("{\n");
         GNindentIncrease(ctx);
-        OUT("DBUG_ASSERT(false, \"Problem in visit\"); // Should not be able to get here\n");
+        OUT("DBUG_ASSERT(false, \"Problem in visit\"); // Should not be able "
+            "to get here\n");
         OUT_END_IF();
 
-        MEMfree(child_access);
     } else {
-        print_visit_call(node, VISIT_OUTPUTS(visit), false);
+        print_visit_call(node, VISIT_OUTPUTS(visit), CHILD_IS_MANDATORY(child),
+                         false);
         OUT_NO_INDENT("\n");
     }
+
+    if (!CHILD_IS_MANDATORY(child)) {
+        OUT_END_IF();
+    }
+
+    MEMfree(child_access);
 
     TRAVopt(VISIT_SEQUENCE_VISIT_NEXT(node));
     return node;

@@ -62,6 +62,15 @@ phase unpackLifetimes {
             uid = MITL,
             nodes = {ast, inode, iactions, ilifetime, lifetime_range, id}
         };
+
+        traversal childrenSetMandatory {
+            uid = CSM,
+            nodes = {ast, inode, child, ilifetime},
+            travdata {
+                ste ste,
+                child curr_child
+            }
+        };
     }
 };
 

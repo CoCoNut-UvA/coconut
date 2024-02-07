@@ -4,7 +4,13 @@
 #include "palm/ctinfo.h"
 #include "ccn/dynamic_core.h"
 
-static const char *const user_warn =
+#ifdef __GNUC__
+#define MAYBE_UNUSED __attribute__((unused))
+#else
+#define MAYBE_UNUSED
+#endif
+
+static const char *const user_warn MAYBE_UNUSED =
     "%s:%d: Attributes with user types do not support deep copying, "
     "instead the attributes are copied by value. Make sure you set "
     "a correct value for the copied node's attribute yourself. Add "

@@ -97,6 +97,7 @@ enum ccn_traversal_type {
     TRAV_DUGT,
     TRAV_DUGP,
     TRAV_SGNS,
+    TRAV_CSM,
     TRAV_MITL,
     TRAV_AITA,
     TRAV_CLT,
