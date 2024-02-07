@@ -273,7 +273,7 @@ ccn_node *CPYitraversal(ccn_node *arg_node) {
 }
 
 ccn_node *CPYiphase(ccn_node *arg_node) {
-    ccn_node *new_node = ASTiphase(NULL, 0);
+    ccn_node *new_node = ASTiphase(NULL, false);
     CopyBaseNode(new_node, arg_node);
     IPHASE_NAME(new_node) = TRAVopt(IPHASE_NAME(arg_node));
     IPHASE_IPREFIX(new_node) = TRAVopt(IPHASE_IPREFIX(arg_node));

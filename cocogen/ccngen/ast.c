@@ -212,8 +212,8 @@ node_st *ASTchild(node_st *name) {
     CHILD_NEXT(node) = NULL;
     CHILD_TYPE_REFERENCE(node) = NULL;
     CHILD_TYPE(node) = 0;
-    CHILD_IN_CONSTRUCTOR(node) = 0;
-    CHILD_IS_MANDATORY(node) = 0;
+    CHILD_IN_CONSTRUCTOR(node) = false;
+    CHILD_IS_MANDATORY(node) = false;
     NODE_NUMCHILDREN(node) = 4;
     NODE_CHILDREN(node) = node->data.N_child->child_children.child_children_at;
     return node;}
@@ -280,7 +280,7 @@ node_st *ASTinode(node_st *name, char * iifno) {
     INODE_LIFETIMES(node) = NULL;
     INODE_VISIT(node) = NULL;
     INODE_IIFNO(node) = iifno;
-    INODE_IS_ROOT(node) = 0;
+    INODE_IS_ROOT(node) = false;
     INODE_INDEX(node) = 0;
     NODE_NUMCHILDREN(node) = 7;
     NODE_CHILDREN(node) = node->data.N_inode->inode_children.inode_children_at;
@@ -314,7 +314,7 @@ node_st *ASTitraversal(node_st *name) {
     NODE_CHILDREN(node) = node->data.N_itraversal->itraversal_children.itraversal_children_at;
     return node;}
 
-node_st *ASTiphase(node_st *name, int is_start) {
+node_st *ASTiphase(node_st *name, bool is_start) {
     node_st *node = NewNode();
     node->data.N_iphase = MEMmalloc(sizeof(struct NODE_DATA_IPHASE));
     NODE_TYPE(node) = NT_IPHASE;
@@ -324,7 +324,7 @@ node_st *ASTiphase(node_st *name, int is_start) {
     IPHASE_IACTIONS(node) = NULL;
     IPHASE_NEXT(node) = NULL;
     IPHASE_IS_START(node) = is_start;
-    IPHASE_IS_CYCLE(node) = 0;
+    IPHASE_IS_CYCLE(node) = false;
     IPHASE_IINFO(node) = NULL;
     NODE_NUMCHILDREN(node) = 5;
     NODE_CHILDREN(node) = node->data.N_iphase->iphase_children.iphase_children_at;

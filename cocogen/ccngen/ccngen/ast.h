@@ -244,8 +244,8 @@ struct NODE_DATA_CHILD {
     } child_children;
 
     enum child_type type;
-    int in_constructor;
-    int is_mandatory;
+    bool in_constructor;
+    bool is_mandatory;
 };
 
 struct NODE_DATA_LIFETIME_RANGE {
@@ -322,7 +322,7 @@ struct NODE_DATA_INODE {
     } inode_children;
 
     char * iifno;
-    int is_root;
+    bool is_root;
     int index;
 };
 
@@ -371,8 +371,8 @@ struct NODE_DATA_IPHASE {
         node_st *iphase_children_at[5];
     } iphase_children;
 
-    int is_start;
-    int is_cycle;
+    bool is_start;
+    bool is_cycle;
     char * iinfo;
 };
 
@@ -567,7 +567,7 @@ node_st *ASTinodeset(void);
 node_st *ASTinode(node_st *name, char * iifno);
 node_st *ASTipass(node_st *name, char * iifno);
 node_st *ASTitraversal(node_st *name);
-node_st *ASTiphase(node_st *name, int is_start);
+node_st *ASTiphase(node_st *name, bool is_start);
 node_st *ASTiactions(void);
 node_st *ASTast(void);
 union NODE_DATA {
