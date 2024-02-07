@@ -13,6 +13,7 @@ extern bool dgif_print_semicolon;
 static char *basic_node_type = "node_st";
 static long num_children = 0;
 static char *node_name_upr = NULL;
+static char *node_name_lwr = NULL;
 
 node_st *DGNCast(node_st *node)
 {
@@ -31,6 +32,7 @@ node_st *DGNCinode(node_st *node)
     TRAVstart(node, TRAV_DGIF);
 
     node_name_upr = ID_UPR(INODE_NAME(node));
+    node_name_lwr = ID_LWR(INODE_NAME(node));
     OUT_START_FUNC_FIELD();
     {
         OUT_FIELD("%s *node = NewNode()", basic_node_type);
@@ -75,7 +77,7 @@ node_st *DGNCattribute(node_st *node)
     if (ATTRIBUTE_IN_CONSTRUCTOR(node)) {
         OUT_FIELD("%s_%s(node) = %s", node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), DGHattributeField(node));
     } else if (ATTRIBUTE_IS_INHERITED(node) || ATTRIBUTE_IS_SYNTHESIZED(node)) {
-        // TODO
+        OUT_FIELD("node->data.N_%s->_%s.ccn_val_set = false", node_name_lwr, ID_LWR(ATTRIBUTE_NAME(node)));
     } else if (ATTRIBUTE_TYPE(node) == AT_user) {
                 OUT_FIELD("%s_%s(node) = 0", node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)));
     } else {
