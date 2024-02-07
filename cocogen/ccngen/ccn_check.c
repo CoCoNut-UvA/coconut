@@ -3,7 +3,7 @@
 #include "ccn/phase_driver.h"
 #include "ccngen/ast.h"
 #include "palm/ctinfo.h"
-char *nodetypeToName(node_st *node) {
+static inline char *nodetypeToName(node_st *node) {
     switch (NODE_TYPE(node)) {
         case NT_ID:
             return "id";

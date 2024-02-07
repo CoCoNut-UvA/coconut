@@ -178,6 +178,10 @@ phase dynamicGenVisits {
         dynamicGenVisitFunctions;
         pass dynamicSwitchToVisitSource;
         dynamicGenVisitSource;
+        pass dynamic_start_ag_header;
+        dynamicGenAGHeader;
+        pass dynamicSwitchToAGSource;
+        dynamicGenAGSource;
     }
 };
 
@@ -429,7 +433,19 @@ traversal dynamicGenVisitFunctions {
 traversal dynamicGenVisitSource {
     uid = DGVS,
 
-    nodes = {ast, visit} | visit_sequence
+    nodes = {ast, visit}
+};
+
+traversal dynamicGenAGHeader {
+    uid = DGAGH,
+
+    nodes = {ast}
+};
+
+traversal dynamicGenAGSource {
+    uid = DGAGS,
+
+    nodes = {ast, inode, visit}
 };
 
 traversal checkExistance {

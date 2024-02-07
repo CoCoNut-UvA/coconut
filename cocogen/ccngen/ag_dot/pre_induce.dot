@@ -1,38 +1,88 @@
 digraph G {
-subgraph cluster_equation {
+subgraph cluster_child {
 style="filled";
 color="lightgrey";
-label=<Production of <B>equation</B>>;
+label=<Production of <B>child</B>>;
 }
-subgraph cluster_ste {
+subgraph cluster_inode {
 style="filled";
 color="lightgrey";
-label=<Production of <B>ste</B>>;
+label=<Production of <B>inode</B>>;
 }
-subgraph cluster_visit_arg_list {
+subgraph cluster_iphase {
 style="filled";
 color="lightgrey";
-label=<Production of <B>visit_arg_list</B>>;
+label=<Production of <B>iphase</B>>;
 }
-subgraph cluster_ilifetime {
+subgraph cluster_id {
 style="filled";
 color="lightgrey";
-label=<Production of <B>ilifetime</B>>;
-}
-subgraph cluster_inodeset {
-style="filled";
-color="lightgrey";
-label=<Production of <B>inodeset</B>>;
+label=<Production of <B>id</B>>;
 }
 subgraph cluster_lifetime_range {
 style="filled";
 color="lightgrey";
 label=<Production of <B>lifetime_range</B>>;
 }
+subgraph cluster_ipass {
+style="filled";
+color="lightgrey";
+label=<Production of <B>ipass</B>>;
+}
+subgraph cluster_visit_arg_list {
+style="filled";
+color="lightgrey";
+label=<Production of <B>visit_arg_list</B>>;
+}
+subgraph cluster_action_1 {
+style="filled";
+color="lightgrey";
+label=<Production of <B>action_1</B>>;
+}
+subgraph cluster_action_2 {
+style="filled";
+color="lightgrey";
+label=<Production of <B>action_2</B>>;
+}
+subgraph cluster_action_3 {
+style="filled";
+color="lightgrey";
+label=<Production of <B>action_3</B>>;
+}
 subgraph cluster_visit_sequence_visit {
 style="filled";
 color="lightgrey";
 label=<Production of <B>visit_sequence_visit</B>>;
+}
+subgraph cluster_visit_sequence_eval {
+style="filled";
+color="lightgrey";
+label=<Production of <B>visit_sequence_eval</B>>;
+}
+subgraph cluster_ilifetime {
+style="filled";
+color="lightgrey";
+label=<Production of <B>ilifetime</B>>;
+}
+subgraph cluster_nodeset_child_entry {
+style="filled";
+color="lightgrey";
+label=<Production of <B>nodeset_child_entry</B>>;
+}
+subgraph cluster_ste {
+style="filled";
+color="lightgrey";
+label=<Production of <B>ste</B>>;
+}
+subgraph cluster_setoperation {
+style="filled";
+color="lightgrey";
+label=<Production of <B>setoperation</B>>;
+}
+subgraph cluster_iactions {
+style="filled";
+color="lightgrey";
+label=<Production of <B>iactions</B>>;
 }
 subgraph cluster_visit_sequence_1 {
 style="filled";
@@ -44,10 +94,90 @@ style="filled";
 color="lightgrey";
 label=<Production of <B>visit_sequence_2</B>>;
 }
+subgraph cluster_setliteral {
+style="filled";
+color="lightgrey";
+label=<Production of <B>setliteral</B>>;
+}
+subgraph cluster_ienum {
+style="filled";
+color="lightgrey";
+label=<Production of <B>ienum</B>>;
+}
+subgraph cluster_ast {
+style="filled";
+color="lightgrey";
+label=<Production of <B>ast</B>>;
+}
+subgraph cluster_visit_sequence_dummy {
+style="filled";
+color="lightgrey";
+label=<Production of <B>visit_sequence_dummy</B>>;
+}
+subgraph cluster_equation {
+style="filled";
+color="lightgrey";
+label=<Production of <B>equation</B>>;
+}
+subgraph cluster_equation_dependency {
+style="filled";
+color="lightgrey";
+label=<Production of <B>equation_dependency</B>>;
+}
 subgraph cluster_setreference {
 style="filled";
 color="lightgrey";
 label=<Production of <B>setreference</B>>;
+}
+subgraph cluster_visit {
+style="filled";
+color="lightgrey";
+label=<Production of <B>visit</B>>;
+}
+subgraph cluster_visit_sequence_alt_1 {
+style="filled";
+color="lightgrey";
+label=<Production of <B>visit_sequence_alt_1</B>>;
+}
+subgraph cluster_visit_sequence_alt_2 {
+style="filled";
+color="lightgrey";
+label=<Production of <B>visit_sequence_alt_2</B>>;
+}
+subgraph cluster_attribute_reference {
+style="filled";
+color="lightgrey";
+label=<Production of <B>attribute_reference</B>>;
+}
+subgraph cluster_itravdata {
+style="filled";
+color="lightgrey";
+label=<Production of <B>itravdata</B>>;
+}
+subgraph cluster_inodeset {
+style="filled";
+color="lightgrey";
+label=<Production of <B>inodeset</B>>;
+}
+subgraph cluster_attribute {
+style="filled";
+color="lightgrey";
+label=<Production of <B>attribute</B>>;
+}
+subgraph cluster_setexpr_1 {
+style="filled";
+color="lightgrey";
+label=<Production of <B>setexpr_1</B>>;
+}
+subgraph cluster_setexpr_2 {
+style="filled";
+color="lightgrey";
+label=<Production of <B>setexpr_2</B>>;
+}
+subgraph cluster_setexpr_3 {
+style="filled";
+color="lightgrey";
+label=<Production of <B>setexpr_3</B>>;
 }
 subgraph cluster_link_1 {
 style="filled";
@@ -79,139 +209,9 @@ style="filled";
 color="lightgrey";
 label=<Production of <B>link_6</B>>;
 }
-subgraph cluster_setliteral {
-style="filled";
-color="lightgrey";
-label=<Production of <B>setliteral</B>>;
-}
-subgraph cluster_iactions {
-style="filled";
-color="lightgrey";
-label=<Production of <B>iactions</B>>;
-}
-subgraph cluster_id {
-style="filled";
-color="lightgrey";
-label=<Production of <B>id</B>>;
-}
-subgraph cluster_attribute_reference {
-style="filled";
-color="lightgrey";
-label=<Production of <B>attribute_reference</B>>;
-}
-subgraph cluster_ienum {
-style="filled";
-color="lightgrey";
-label=<Production of <B>ienum</B>>;
-}
 subgraph cluster_itraversal {
 style="filled";
 color="lightgrey";
 label=<Production of <B>itraversal</B>>;
-}
-subgraph cluster_iphase {
-style="filled";
-color="lightgrey";
-label=<Production of <B>iphase</B>>;
-}
-subgraph cluster_visit_sequence_alt_1 {
-style="filled";
-color="lightgrey";
-label=<Production of <B>visit_sequence_alt_1</B>>;
-}
-subgraph cluster_visit_sequence_alt_2 {
-style="filled";
-color="lightgrey";
-label=<Production of <B>visit_sequence_alt_2</B>>;
-}
-subgraph cluster_itravdata {
-style="filled";
-color="lightgrey";
-label=<Production of <B>itravdata</B>>;
-}
-subgraph cluster_child {
-style="filled";
-color="lightgrey";
-label=<Production of <B>child</B>>;
-}
-subgraph cluster_setoperation {
-style="filled";
-color="lightgrey";
-label=<Production of <B>setoperation</B>>;
-}
-subgraph cluster_visit_sequence_eval {
-style="filled";
-color="lightgrey";
-label=<Production of <B>visit_sequence_eval</B>>;
-}
-subgraph cluster_equation_dependency {
-style="filled";
-color="lightgrey";
-label=<Production of <B>equation_dependency</B>>;
-}
-subgraph cluster_ast {
-style="filled";
-color="lightgrey";
-label=<Production of <B>ast</B>>;
-}
-subgraph cluster_inode {
-style="filled";
-color="lightgrey";
-label=<Production of <B>inode</B>>;
-}
-subgraph cluster_action_1 {
-style="filled";
-color="lightgrey";
-label=<Production of <B>action_1</B>>;
-}
-subgraph cluster_action_2 {
-style="filled";
-color="lightgrey";
-label=<Production of <B>action_2</B>>;
-}
-subgraph cluster_action_3 {
-style="filled";
-color="lightgrey";
-label=<Production of <B>action_3</B>>;
-}
-subgraph cluster_setexpr_1 {
-style="filled";
-color="lightgrey";
-label=<Production of <B>setexpr_1</B>>;
-}
-subgraph cluster_setexpr_2 {
-style="filled";
-color="lightgrey";
-label=<Production of <B>setexpr_2</B>>;
-}
-subgraph cluster_setexpr_3 {
-style="filled";
-color="lightgrey";
-label=<Production of <B>setexpr_3</B>>;
-}
-subgraph cluster_visit {
-style="filled";
-color="lightgrey";
-label=<Production of <B>visit</B>>;
-}
-subgraph cluster_visit_sequence_dummy {
-style="filled";
-color="lightgrey";
-label=<Production of <B>visit_sequence_dummy</B>>;
-}
-subgraph cluster_attribute {
-style="filled";
-color="lightgrey";
-label=<Production of <B>attribute</B>>;
-}
-subgraph cluster_nodeset_child_entry {
-style="filled";
-color="lightgrey";
-label=<Production of <B>nodeset_child_entry</B>>;
-}
-subgraph cluster_ipass {
-style="filled";
-color="lightgrey";
-label=<Production of <B>ipass</B>>;
 }
 }

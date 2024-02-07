@@ -41,7 +41,7 @@ node_st *DGCHTast(node_st *node)
     OUT("#include \"ccngen/ast.h\"\n");
     OUT("#include \"palm/ctinfo.h\"\n");
     ast = node;
-    OUT_START_FUNC("char *nodetypeToName(node_st *node)");
+    OUT_START_FUNC("static inline char *nodetypeToName(node_st *node)");
     OUT_BEGIN_SWITCH("NODE_TYPE(node)");
     gen_type_names = true;
     TRAVinodes(node);

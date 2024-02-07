@@ -33,6 +33,7 @@ add_executable(cocogen main.c commandline.c frontend/scanAndParse/scan_parse.c
         dynamic_backend/gen_check_traversal.c dynamic_backend/collect_children.c dynamic_backend/collect_children.h
         dynamic_backend/gen_equation_functions.c dynamic_backend/gen_equation_includes.c
         dynamic_backend/gen_user_equations.c dynamic_backend/gen_visit_header.c dynamic_backend/gen_visit_source.c
+        dynamic_backend/gen_ag_header.c dynamic_backend/gen_ag_source.c
         phase_driver/gen_action_array.c phase_driver/gen_ids_table.c phase_driver/gen_action_array_header.c
         filesystem/utils.c filesystem/utils.h dynamic_backend/file_switchers.c frontend/reachability.c
         frontend/reachability.h dynamic_backend/gen_trav_structs.c dynamic_backend/gen_trav_data_getters.c

@@ -119,3 +119,27 @@ node_st *dynamicSwitchTravData(node_st *root)
 
     return root;
 }
+
+node_st *dynamic_start_ag_header(node_st *root)
+{
+    GeneratorContext *ctx = globals.gen_ctx;
+    GNopenIncludeFile(ctx, "ag.h");
+    OUT("#include \"ccn/ccn_types.h\"\n\n");
+
+    return root;
+}
+
+
+
+node_st *dynamicSwitchToAGSource(node_st *root)
+{
+    GeneratorContext *ctx = globals.gen_ctx;
+    GNopenSourceFile(ctx, "ag.c");
+    OUT("#include \"ccn/phase_driver.h\"\n");
+    OUT("#include \"ccngen/ast.h\"\n");
+    OUT("#include \"ccngen/ag.h\"\n");
+    OUT("#include \"ccngen/enum.h\"\n");
+    OUT("#include \"ccngen/visit.h\"\n");
+    OUT("#include \"palm/ctinfo.h\"\n\n");
+    return root;
+}
