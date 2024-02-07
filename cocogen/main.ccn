@@ -433,7 +433,7 @@ traversal dynamicGenVisitFunctions {
 traversal dynamicGenVisitSource {
     uid = DGVS,
 
-    nodes = {ast, visit}
+    nodes = {ast, visit} | visit_sequence
 };
 
 traversal dynamicGenAGHeader {

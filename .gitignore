@@ -53,6 +53,7 @@ dkms.conf
 
 # Build dirs
 build*/
+cocogen/ccngen/ag_dot
 
 # Bin dir
 bin/
