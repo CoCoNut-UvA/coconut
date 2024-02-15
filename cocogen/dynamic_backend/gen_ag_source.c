@@ -97,7 +97,14 @@ node_st *DGAGSinode(node_st *node) {
         return node;
     }
 
-    if (INODE_VISIT(node) && !VISIT_INPUTS(INODE_VISIT(node))) {
+    bool has_inherited_attributes = false;
+    for (node_st *visit = INODE_VISIT(node); visit; visit = VISIT_NEXT(visit)) {
+        if (VISIT_INPUTS(node)) {
+            has_inherited_attributes = true;
+        }
+    }
+
+    if (INODE_VISIT(node) && !has_inherited_attributes) {
         if (curr_state == create_function) {
             OUT_START_FUNC(
                 "static inline void CCNevaluateAttributes_%s(%s *node)",

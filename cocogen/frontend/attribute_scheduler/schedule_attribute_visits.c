@@ -21,6 +21,7 @@
 #include "frontend/attribute_scheduler/fill_visit_stubs.h"
 #include "frontend/attribute_scheduler/generate_visits.h"
 #include "frontend/attribute_scheduler/graph.h"
+#include "frontend/attribute_scheduler/partition_nodes.h"
 #include "frontend/attribute_scheduler/queue.h"
 #include "frontend/symboltable.h"
 #include "globals.h"
@@ -400,68 +401,6 @@ void add_induced_edges(graph_st *graph, struct GRedge_list *edges,
     handle_graph_error(GRclose_transitivity(graph, new_edges));
 }
 
-static htable_st *partition_nodes(graph_st *graph, node_st *tnode) {
-    htable_st *partition_table = HTnew_Ptr(htable_size);
-    queue_st *work_queue = QUcreate();
-    struct GRnode *node;
-    for (node = graph->nodes; node != NULL; node = node->next) {
-        if (node->node == tnode) {
-            QUinsert(work_queue, node);
-        }
-    }
-
-    while ((node = QUpop(work_queue))) {
-        bool synthesized = ATTRIBUTE_IS_SYNTHESIZED(node->attribute);
-        if (HTlookup(partition_table,
-                     node->attribute)) { // Attribute already assigned
-            continue;
-        }
-
-        struct GRnode_list *deps = GRget_intranode_successors(graph, node);
-        if (deps == NULL) {
-            HTinsert(partition_table, node->attribute,
-                     (void *)(synthesized ? 1UL : 2UL));
-            continue;
-        }
-
-        // Search highest partition index of dependencies
-        size_t max_partition = 0;
-        bool assignable = true;
-        struct GRnode_list *next;
-        for (struct GRnode_list *entry = deps; entry != NULL; entry = next) {
-            struct GRnode *dep = entry->node;
-            next = entry->next;
-            entry = MEMfree(entry); // No longer needed
-            size_t dep_partition =
-                (size_t)HTlookup(partition_table, dep->attribute);
-
-            if (dep_partition == 0) {
-                // We need to wait for this dependency before we can assign this
-                // node
-                assignable = false;
-            } else {
-                max_partition = dep_partition > max_partition ? dep_partition
-                                                              : max_partition;
-            }
-        }
-
-        if (!assignable) { // Wait for other nodes to complete
-            QUinsert(work_queue, node);
-            continue;
-        }
-
-        bool dep_synthesized = max_partition % 2 == 1;
-        if (synthesized == dep_synthesized) {
-            HTinsert(partition_table, node->attribute, (void *)max_partition);
-        } else {
-            HTinsert(partition_table, node->attribute,
-                     (void *)(max_partition + 1));
-        }
-    }
-
-    return partition_table;
-}
-
 // Create intravisit dependencies from I_i to S_i and from S_i to I_i+1:
 // i = even | i -> i - 1 i = odd  | i -> i + 3
 static inline void find_intravisit_dependencies_node(
@@ -670,8 +609,6 @@ node_st *SAVast(node_st *node) {
             graph->graph, nodeset, AST_STABLE(node), partition_tables);
 
         HTinsert(visits_htable, nodeset, visits);
-        htable_st *partition_table = partition_nodes(graph->graph, nodeset);
-        HTinsert(partition_tables, nodeset, partition_table);
     }
 
     generate_empty_visits(AST_INODES(node), AST_INODESETS(node),

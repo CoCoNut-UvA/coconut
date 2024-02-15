@@ -104,7 +104,7 @@ void GDag_dot_add_graph(GDag_st *dot, node_st *st, graph_st *graph, char *name,
                     } else if (partition % 2 == 0) {
                         OUT(" <I>I<SUB>%d</SUB></I>", partition / 2);
                     } else {
-                        OUT(" <I>S<SUB>%d</SUB></I>", (partition + 1) / 2);
+                        OUT(" <I>S<SUB>%d</SUB></I>", partition / 2);
                     }
                 }
                 OUT(">];\n");

@@ -18,6 +18,7 @@ add_executable(cocogen main.c commandline.c frontend/scanAndParse/scan_parse.c
         frontend/check_attributes.c frontend/check_product_rules.c frontend/attribute_scheduler/common.h
         frontend/attribute_scheduler/collect_visits.c frontend/attribute_scheduler/collect_visits.h
         frontend/attribute_scheduler/graph.c frontend/attribute_scheduler/graph.h
+        frontend/attribute_scheduler/partition_nodes.c frontend/attribute_scheduler/partition_nodes.h
         frontend/attribute_scheduler/queue.c frontend/attribute_scheduler/queue.h
         frontend/attribute_scheduler/fill_visit_stubs.c frontend/attribute_scheduler/fill_visit_stubs.h
         frontend/attribute_scheduler/generate_visits.c frontend/attribute_scheduler/generate_visits.h
