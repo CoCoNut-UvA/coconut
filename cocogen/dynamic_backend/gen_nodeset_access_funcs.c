@@ -99,7 +99,7 @@ node_st *DGNSAFattribute(node_st *node) {
     if (is_classic) {
         OUT_NO_INDENT("*");
     }
-    OUT_NO_INDENT(") NULL;\n");
+    OUT_NO_INDENT(") 0;\n");
     OUT_END_FUNC();
     TRAVnext(node);
     return node;
