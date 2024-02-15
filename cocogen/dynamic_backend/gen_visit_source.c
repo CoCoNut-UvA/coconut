@@ -83,9 +83,27 @@ static inline void print_argument(node_st *arg) {
  */
 node_st *DGVSast(node_st *node) {
     GeneratorContext *ctx = globals.gen_ctx;
-    OUT("\n");
+    OUT_NO_INDENT("\n");
+    OUT_NO_INDENT("#if defined(__clang__)\n");
+    OUT_NO_INDENT("#pragma clang diagnostic push\n");
+    OUT_NO_INDENT("// Ignore unused parameters\n");
+    OUT_NO_INDENT("#pragma clang diagnostic ignored \"-Wunused-parameter\"\n");
+    OUT_NO_INDENT("// Ignore uninitialized variable (already handled by assert)\n");
+    OUT_NO_INDENT("#pragma clang diagnostic ignored \"-Wsometimes-uninitialized\"\n");
+    OUT_NO_INDENT("#elif defined(__GNUC__)\n");
+    OUT_NO_INDENT("#pragma GCC diagnostic push\n");
+    OUT_NO_INDENT("// Ignore unused parameters\n");
+    OUT_NO_INDENT("#pragma GCC diagnostic ignored \"-Wunused-parameter\"\n");
+    OUT_NO_INDENT("#endif\n\n");
+
     ste = AST_STABLE(node);
     TRAVchildren(node);
+
+    OUT_NO_INDENT("#if defined(__clang__)\n");
+    OUT_NO_INDENT("#pragma clang diagnostic pop\n");
+    OUT_NO_INDENT("#elif defined(__GNUC__)\n");
+    OUT_NO_INDENT("#pragma GCC diagnostic pop\n");
+    OUT_NO_INDENT("#endif\n\n");
     return node;
 }
 

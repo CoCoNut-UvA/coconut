@@ -79,6 +79,15 @@ struct data_csm {
     node_st *ste;
 };
 
+// Ignore empty struct warning
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-empty-struct"
+#elif defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#endif
+
 union TRAV_DATA {
     struct data_slc *setliteralcontains;
     struct data_sld *setliteraldifference;
@@ -95,6 +104,12 @@ union TRAV_DATA {
     struct data_dgtdt *dynamicgentravdatatables;
     struct data_csm *childrensetmandatory;
 };
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#elif defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 #define DATA_SLC_GET() (TRAVgetCurrent()->trav_data.setliteralcontains)
 #define DATA_SLD_GET() (TRAVgetCurrent()->trav_data.setliteraldifference)

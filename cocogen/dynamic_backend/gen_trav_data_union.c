@@ -6,9 +6,24 @@
 node_st *DGTDUast(node_st *node)
 {
     GeneratorContext *ctx = globals.gen_ctx;
+    OUT_NO_INDENT("// Ignore empty struct warning\n");
+    OUT_NO_INDENT("#if defined(__clang__)\n");
+    OUT_NO_INDENT("#pragma clang diagnostic push\n");
+    OUT_NO_INDENT("#pragma clang diagnostic ignored \"-Wgnu-empty-struct\"\n");
+    OUT_NO_INDENT("#elif defined(__GNUC__)\n");
+    OUT_NO_INDENT("#pragma GCC diagnostic push\n");
+    OUT_NO_INDENT("#pragma GCC diagnostic ignored \"-Wpedantic\"\n");
+    OUT_NO_INDENT("#endif\n\n");
+
     OUT_UNION("TRAV_DATA");
     TRAVopt(AST_ITRAVERSALS(node));
     OUT_STRUCT_END();
+
+    OUT_NO_INDENT("#if defined(__clang__)\n");
+    OUT_NO_INDENT("#pragma clang diagnostic pop\n");
+    OUT_NO_INDENT("#elif defined(__GNUC__)\n");
+    OUT_NO_INDENT("#pragma GCC diagnostic pop\n");
+    OUT_NO_INDENT("#endif\n\n");
 
     return node;
 }
