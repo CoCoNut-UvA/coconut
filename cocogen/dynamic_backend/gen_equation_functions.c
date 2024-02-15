@@ -96,6 +96,14 @@ static inline node_st *get_child(node_st *child_name) {
 static inline void print_equation_args(node_st *equation,
                                        htable_st *children_null) {
     GeneratorContext *ctx = globals.gen_ctx;
+    if (!EQUATION_IARGS(equation)) {
+        /* print void to force type checking of user implementation
+        (without it the compiler does not give an error if the user adds
+        arguments) */
+        OUT_NO_INDENT("void");
+        return;
+    }
+
     bool first = true;
     for (node_st *arg = EQUATION_IARGS(equation); arg;
          arg = EQUATION_DEPENDENCY_NEXT(arg)) {
