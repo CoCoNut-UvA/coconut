@@ -70,7 +70,13 @@ node_st *dynamicSwitchToVisitSource(node_st *root)
 
     OUT("#include \"palm/dbug.h\"\n\n");
     OUT("#include \"ccngen/equation.h\"\n");
-    OUT("#include \"ccngen/visit.h\"\n");
+    OUT("#include \"ccngen/visit.h\"\n\n");
+    // Consider switching to C23 [[maybe_unused]] in the future
+    OUT("#ifdef __GNUC__\n");
+    OUT("#define MAYBE_UNUSED __attribute__((unused))\n");
+    OUT("#else\n");
+    OUT("#define MAYBE_UNUSED\n");
+    OUT("#endif\n");
 
     return root;
 }

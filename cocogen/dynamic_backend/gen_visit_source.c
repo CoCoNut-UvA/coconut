@@ -37,6 +37,11 @@ static inline void print_set_value(node_st *attribute, char *value) {
         value);
 }
 
+static inline void print_unused() {
+    GeneratorContext *ctx = globals.gen_ctx;
+    OUT_NO_INDENT(" MAYBE_UNUSED");
+}
+
 static inline void print_type(node_st *attribute) {
     GeneratorContext *ctx = globals.gen_ctx;
     if (ATTRIBUTE_TYPE(attribute) == AT_link) {
@@ -248,10 +253,10 @@ node_st *DGVSvisit_sequence_eval(node_st *node) {
     if (HTelementCount(children_null) == 0) {
         OUT("");
         print_type(ATTRIBUTE_REFERENCE_REFERENCE(attribute));
-        OUT_NO_INDENT(" %s_%s = ", get_node_name_this(attribute),
+        OUT_NO_INDENT(" %s_%s", get_node_name_this(attribute),
                       ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
-
-        OUT_NO_INDENT("EVAL%s_%s_%s(", ID_LWR(INODE_NAME(curr_node)),
+        print_unused();
+        OUT_NO_INDENT(" = EVAL%s_%s_%s(", ID_LWR(INODE_NAME(curr_node)),
                       get_node_name_this(attribute),
                       ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
         print_equation_args(equation, children_null);
@@ -260,8 +265,10 @@ node_st *DGVSvisit_sequence_eval(node_st *node) {
         // Declare output
         OUT("");
         print_type(ATTRIBUTE_REFERENCE_REFERENCE(attribute));
-        OUT_NO_INDENT(" %s_%s;\n", get_node_name_this(attribute),
+        OUT_NO_INDENT(" %s_%s", get_node_name_this(attribute),
                       ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+        print_unused();
+        OUT_NO_INDENT(";\n");
         OUT("");
         // 2^{elements}
         size_t combinations = ((size_t)1UL) << HTelementCount(children_null);
@@ -346,6 +353,22 @@ node_st *DGVSvisit_sequence_eval(node_st *node) {
     return node;
 }
 
+static inline bool is_desired(node_st *output, node_st *outputs) {
+    assert(NODE_TYPE(output) == NT_VISIT_ARG_LIST);
+    assert(NODE_TYPE(outputs) == NT_VISIT_ARG_LIST);
+    for (node_st *candidate = outputs; candidate;
+         candidate = VISIT_ARG_LIST_NEXT(candidate)) {
+        node_st *attr = VISIT_ARG_LIST_ATTRIBUTE(output);
+        node_st *cand_attr = VISIT_ARG_LIST_ATTRIBUTE(candidate);
+        if (STReq(ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attr)),
+                  ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(cand_attr)))) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 static void print_visit_call(node_st *node, node_st *outputs,
                              bool output_declaration, bool is_nodeset) {
     GeneratorContext *ctx = globals.gen_ctx;
@@ -373,12 +396,23 @@ static void print_visit_call(node_st *node, node_st *outputs,
                 print_type(ATTRIBUTE_REFERENCE_REFERENCE(attribute));
                 OUT_NO_INDENT(" ");
             }
-            OUT_NO_INDENT("%s_%s = ",
-                          ID_LWR(CHILD_NAME(VISIT_SEQUENCE_VISIT_CHILD(node))),
-                          ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+
+            // If the output is not desired, we discard the output
+            if (output_declaration || is_desired(VISIT_OUTPUTS(visit),
+                                                 outputs)) {
+                OUT_NO_INDENT("%s_%s",
+                    ID_LWR(CHILD_NAME(VISIT_SEQUENCE_VISIT_CHILD(node))),
+                    ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+                if (output_declaration) {
+                    print_unused();
+                }
+                OUT_NO_INDENT(" = ");
+            }
         } else { // multiple output
             multiple_outputs = true;
-            OUT("struct %s_out %s_output = ", visit_name, visit_name);
+            OUT("struct %s_out %s_output", visit_name, visit_name);
+            print_unused();
+            OUT_NO_INDENT(" = ");
         }
     } else {
         OUT("");
@@ -397,8 +431,11 @@ static void print_visit_call(node_st *node, node_st *outputs,
     OUT_NO_INDENT(");\n");
 
     if (multiple_outputs) {
-        for (node_st *out_arg = outputs; out_arg;
+        for (node_st *out_arg = VISIT_OUTPUTS(visit); out_arg;
              out_arg = VISIT_ARG_LIST_NEXT(out_arg)) {
+            if (!is_desired(out_arg, outputs)) {
+                continue;
+            }
             node_st *attribute = VISIT_ARG_LIST_ATTRIBUTE(out_arg);
             OUT("");
             if (output_declaration) {
@@ -448,8 +485,10 @@ node_st *DGVSvisit_sequence_visit(node_st *node) {
             node_st *attribute = VISIT_ARG_LIST_ATTRIBUTE(out_arg);
             OUT("");
             print_type(ATTRIBUTE_REFERENCE_REFERENCE(attribute));
-            OUT_NO_INDENT(" %s_%s;\n", ID_LWR(CHILD_NAME(child)),
+            OUT_NO_INDENT(" %s_%s", ID_LWR(CHILD_NAME(child)),
                           ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+            print_unused();
+            OUT_NO_INDENT(";\n");
         }
 
         child_access = STRfmt("%s_%s(node)", ID_UPR(INODE_NAME(curr_node)),
@@ -461,6 +500,13 @@ node_st *DGVSvisit_sequence_visit(node_st *node) {
     }
 
     if (VISIT_SEQUENCE_VISIT_ALT(node)) { // Visit type is a nodeset
+        /* At this point we do not know what the actual nodeset visit outputs
+           were, so instead we simply declare the outputs of the first visit.
+           This should at least include all the nodeset visit outputs, and
+           the other variables might be left uninitialized, but should not
+           be accessed later on. For every visit we check which outputs are
+           'desired' by checking if it was declared.*/
+        node_st *outputs = VISIT_OUTPUTS(visit);
         OUT("");
         for (node_st *alt_visit = node; alt_visit;
              alt_visit = get_alt(alt_visit)) {
@@ -469,7 +515,7 @@ node_st *DGVSvisit_sequence_visit(node_st *node) {
                               ID_UPR(INODE_NAME(VISIT_INODE(
                                   VISIT_SEQUENCE_VISIT_VISIT(alt_visit)))));
                 GNindentIncrease(ctx);
-                print_visit_call(alt_visit, VISIT_OUTPUTS(visit), false, true);
+                print_visit_call(alt_visit, outputs, false, true);
                 GNindentDecrease(ctx);
             } else {
                 OUT_NO_INDENT(

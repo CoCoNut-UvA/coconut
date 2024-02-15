@@ -130,52 +130,13 @@ node_st *DGAGSinode(node_st *node) {
  */
 node_st *DGAGSvisit(node_st *node) {
     GeneratorContext *ctx = globals.gen_ctx;
-    bool multiple_outputs = false;
     assert(curr_node != NULL);
+    assert(!VISIT_INPUTS(node));
 
     char *visit_name =
         STRfmt("CCNvisit_%s_%d", ID_LWR(INODE_NAME(VISIT_INODE(node))),
                VISIT_INDEX(node));
-
-    if (VISIT_OUTPUTS(node)) {
-        if (!VISIT_ARG_LIST_NEXT(VISIT_OUTPUTS(node))) { // 1 output
-            node_st *attribute = VISIT_ARG_LIST_ATTRIBUTE(VISIT_OUTPUTS(node));
-            OUT("");
-            print_type(ATTRIBUTE_REFERENCE_REFERENCE(attribute));
-            OUT_NO_INDENT(" %s = ",
-                          ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
-        } else { // multiple output
-            multiple_outputs = true;
-            OUT("struct %s_out %s_output = ", visit_name, visit_name);
-        }
-    } else {
-        OUT("");
-    }
-
-    OUT_NO_INDENT("%s(node", visit_name);
-
-    for (node_st *in_arg = VISIT_INPUTS(node); in_arg;
-         in_arg = VISIT_ARG_LIST_NEXT(in_arg)) {
-        node_st *attribute = VISIT_ARG_LIST_ATTRIBUTE(in_arg);
-        OUT_NO_INDENT(", %s",
-                      ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
-    }
-
-    OUT_NO_INDENT(");\n");
-
-    if (multiple_outputs) {
-        for (node_st *out_arg = VISIT_OUTPUTS(node); out_arg;
-             out_arg = VISIT_ARG_LIST_NEXT(out_arg)) {
-            node_st *attribute = VISIT_ARG_LIST_ATTRIBUTE(out_arg);
-            OUT("");
-            print_type(ATTRIBUTE_REFERENCE_REFERENCE(attribute));
-            OUT_NO_INDENT(" %s = %s_output.%s_%s;\n",
-                          ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)),
-                          visit_name, get_node_name_this(attribute),
-                          ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
-        }
-    }
-
+    OUT("%s(node);\n", visit_name);
     MEMfree(visit_name);
 
     TRAVnext(node);
