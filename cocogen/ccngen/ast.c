@@ -1,5 +1,6 @@
 #include "ccngen/ast.h"
 #include "palm/memory.h"
+#include "palm/dbug.h"
 node_st *NewNode() {
     node_st *node = MEMmalloc(sizeof(node_st));
     NODE_TYPE(node) = NT_NULL;

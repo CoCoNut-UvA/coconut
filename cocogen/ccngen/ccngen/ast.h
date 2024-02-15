@@ -7,7 +7,6 @@
 #ifdef CCN_USES_UNSAFE
 #include "user_types.h"
 #endif
-#include "palm/dbug.h"
 typedef struct ccn_node node_st;
 struct NODE_DATA_ID {
     union NODE_CHILDREN_ID {

@@ -163,6 +163,8 @@ phase dynamicGenAst {
         pass dynamicSwitchToAstSource;
         pass dynamicGenBaseNodeInit;
         dynamicGenNodeConstructor;
+        dynamicGenNodeAccessFunctionsError;
+        dynamicGenNodesetAccessFunctionsError;
     }
 };
 
@@ -404,6 +406,18 @@ traversal dynamicGenNodesetAccessFunctions {
     uid = DGNSAF,
 
     nodes = {ast, inodeset, attribute, setliteral}
+};
+
+traversal dynamicGenNodeAccessFunctionsError {
+    uid = DGNAFE,
+
+    nodes = {ast, inode, attribute}
+};
+
+traversal dynamicGenNodesetAccessFunctionsError {
+    uid = DGNSAFE,
+
+    nodes = {ast, inodeset, attribute}
 };
 
 traversal dynamicGenNodeMacros {

@@ -1,6 +1,6 @@
+#include <assert.h>
 #include <stddef.h>
 #include <stdio.h>
-#include <assert.h>
 
 #include "ccn/dynamic_core.h"
 #include "ccngen/ast.h"
@@ -33,15 +33,13 @@ static inline void print_type(node_st *attribute) {
     }
 }
 
-node_st *DGNAFast(node_st *node)
-{
+node_st *DGNAFast(node_st *node) {
     ste = AST_STABLE(node);
     TRAVopt(AST_INODES(node));
     return node;
 }
 
-node_st *DGNAFinode(node_st *node)
-{
+node_st *DGNAFinode(node_st *node) {
     curr_node = node;
     TRAVopt(INODE_IATTRIBUTES(node));
     curr_node = NULL;
@@ -49,19 +47,33 @@ node_st *DGNAFinode(node_st *node)
     return node;
 }
 
-node_st *DGNAFattribute(node_st *node)
-{
+node_st *DGNAFattribute(node_st *node) {
     assert(curr_node);
     GeneratorContext *ctx = globals.gen_ctx;
 
     if (ATTRIBUTE_IS_INHERITED(node) || ATTRIBUTE_IS_SYNTHESIZED(node)) {
+        OUT("void CCNaccess_readonly_%s_%s_error(int line, const char *file, "
+            "const char *func);\n",
+            ID_LWR(INODE_NAME(curr_node)), ID_LWR(ATTRIBUTE_NAME(node)));
         OUT("static inline ");
         print_type(node);
-        OUT_NO_INDENT(" CCNaccess_readonly_%s_%s(%s *node) {\n", ID_LWR(INODE_NAME(curr_node)), ID_LWR(ATTRIBUTE_NAME(node)), basic_node_type);
+        OUT_NO_INDENT(" CCNaccess_readonly_%s_%s(int line, const char *file, "
+                      "const char *func, %s *node) {\n",
+                      ID_LWR(INODE_NAME(curr_node)),
+                      ID_LWR(ATTRIBUTE_NAME(node)), basic_node_type);
         GNindentIncrease(ctx);
-        OUT("DBUG_ASSERT(node->data.N_%s->_%s.ccn_val_set == true,\n", ID_LWR(INODE_NAME(curr_node)), ID_LWR(ATTRIBUTE_NAME(node)));
-        OUT("            \"Trying to access attribute before it has been evaluated.\");\n");
-        OUT("return node->data.N_%s->_%s.%s;\n", ID_LWR(INODE_NAME(curr_node)), ID_LWR(ATTRIBUTE_NAME(node)), ID_LWR(ATTRIBUTE_NAME(node)));
+
+        OUT("#ifndef NDEBUG\n");
+        OUT_BEGIN_IF("node->data.N_%s->_%s.ccn_val_set == false",
+                     ID_LWR(INODE_NAME(curr_node)),
+                     ID_LWR(ATTRIBUTE_NAME(node)));
+        OUT("CCNaccess_readonly_%s_%s_error(line, file, func);\n",
+            ID_LWR(INODE_NAME(curr_node)), ID_LWR(ATTRIBUTE_NAME(node)));
+        OUT_END_IF();
+        OUT("#endif\n");
+
+        OUT("return node->data.N_%s->_%s.%s;\n", ID_LWR(INODE_NAME(curr_node)),
+            ID_LWR(ATTRIBUTE_NAME(node)), ID_LWR(ATTRIBUTE_NAME(node)));
         OUT_END_FUNC();
     }
     TRAVnext(node);

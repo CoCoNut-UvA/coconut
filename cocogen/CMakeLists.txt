@@ -24,7 +24,8 @@ add_executable(cocogen main.c commandline.c frontend/scanAndParse/scan_parse.c
         frontend/attribute_scheduler/generate_visits.c frontend/attribute_scheduler/generate_visits.h
         frontend/attribute_scheduler/schedule_attribute_visits.c dot/gen_dot_ag.c dot/gen_dot_ag.h
         dynamic_backend/gen_node_structs.c ${FLEX_DslTokens_OUTPUTS} ${BISON_DslParser_OUTPUTS} gen_helpers/format.c
-        dynamic_backend/gen_node_access_funcs.c dynamic_backend/gen_nodeset_access_funcs.c
+        dynamic_backend/gen_node_access_funcs.c dynamic_backend/gen_node_access_funcs_error.c
+        dynamic_backend/gen_nodeset_access_funcs.c dynamic_backend/gen_nodeset_access_funcs_error.c
         dynamic_backend/gen_node_macros.c dynamic_backend/gen_node_init_funcs.c
         dynamic_backend/gen_node_base_and_union.c dynamic_backend/gen_node_constructor.c dynamic_backend/gen_enums.c
         dynamic_backend/gen_enum_values.c dynamic_backend/gen_trav_v_table.c dynamic_backend/gen_node_trav_table.c

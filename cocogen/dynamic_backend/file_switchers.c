@@ -22,7 +22,6 @@ node_st *dynamic_start_ast_header(node_st *root)
     OUT("#ifdef CCN_USES_UNSAFE\n");
     OUT("#include \"user_types.h\"\n");
     OUT("#endif\n");
-    OUT("#include \"palm/dbug.h\"\n");
     OUT("typedef struct ccn_node %s;\n", "node_st");
 
     return root;
@@ -35,6 +34,7 @@ node_st *dynamicSwitchToAstSource(node_st *root)
 
     OUT("#include \"ccngen/ast.h\"\n");
     OUT("#include \"palm/memory.h\"\n");
+    OUT("#include \"palm/dbug.h\"\n");
 
     return root;
 }

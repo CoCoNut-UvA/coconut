@@ -60,14 +60,14 @@ node_st *DGNMattribute(node_st *node)
             OUT("#define %s_%s(n) ((n)->data.N_%s->%s)\n", curr_node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), curr_node_name, ID_LWR(ATTRIBUTE_NAME(node)));
         } else {
             assert(curr_nodeset_name);
-            OUT("#define %s_%s(n) (*CCNaccess_%s_%s(n))\n", curr_nodeset_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), curr_nodeset_name, ID_LWR(ATTRIBUTE_NAME(node)));
+            OUT("#define %s_%s(n) (*CCNaccess_%s_%s(__LINE__, __FILE__, __func__, n))\n", curr_nodeset_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), curr_nodeset_name, ID_LWR(ATTRIBUTE_NAME(node)));
         }
     } else {
         if (curr_node_name) {
-            OUT("#define %s_%s(n) CCNaccess_readonly_%s_%s(n)\n", curr_node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), curr_node_name, ID_LWR(ATTRIBUTE_NAME(node)));
+            OUT("#define %s_%s(n) CCNaccess_readonly_%s_%s(__LINE__, __FILE__, __func__, n)\n", curr_node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), curr_node_name, ID_LWR(ATTRIBUTE_NAME(node)));
         } else {
             assert(curr_nodeset_name);
-            OUT("#define %s_%s(n) CCNaccess_readonly_%s_%s(n)\n", curr_nodeset_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), curr_nodeset_name, ID_LWR(ATTRIBUTE_NAME(node)));
+            OUT("#define %s_%s(n) CCNaccess_readonly_%s_%s(__LINE__, __FILE__, __func__, n)\n", curr_nodeset_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), curr_nodeset_name, ID_LWR(ATTRIBUTE_NAME(node)));
         }
     }
     TRAVchildren(node);
