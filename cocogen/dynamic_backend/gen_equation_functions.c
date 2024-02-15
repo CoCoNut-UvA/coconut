@@ -68,6 +68,7 @@ node_st *DGEFinode(node_st *node) {
         char *filename = STRfmt("%s.h", ID_LWR(INODE_NAME(node)));
         GNopenEquationIncludeFile(ctx, filename);
         MEMfree(filename);
+        OUT("#include \"ccn/ccn_defs.h\"\n");
         OUT("#include \"ccn/ccn_types.h\"\n");
         OUT("#include \"ccngen/enum.h\"\n");
         OUT("#ifdef CCN_USES_UNSAFE\n");
