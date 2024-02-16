@@ -24,10 +24,10 @@ extern void DBUGoff();
 /**
  * @brief Assert expression and print message when expressions fails.
  *        In most cases, a simple assert is good enough and you dont need this!
- * 
+ *
  * Example usage:
  *   - DBUG_ASSERT(true, "Hello DBUG");
- *   - DBUG_ASSERT(2 > 3, "%d is not bigger than %d", 2, 3); 
+ *   - DBUG_ASSERT(2 > 3, "%d is not bigger than %d", 2, 3);
  * @param expr the expr to test, must be testable in an if.
  * @param ...  Variable args like printf, however, this contains the format string for portability.
  */
@@ -74,14 +74,13 @@ extern void DBUGoff();
     } while (0)
 
 #else
-#define DBUG_ASSERT(expr, msg)
-
+#define DBUG_ASSERT(expr, ...)
 
 // Assert with format string.
 #define DBUG_ASSERTF(expr, format, ...)
 
 // Debug message identified by header.
-#define DBUG(header, msg)
+#define DBUG(...)
 
 // Formatted debug message identified by header.
 #define DBUGF(header, format, ...)
