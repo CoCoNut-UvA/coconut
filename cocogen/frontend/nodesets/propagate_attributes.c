@@ -114,7 +114,7 @@ static void check_existing_child(node_st *node, node_st *new_attribute) {
     for (node_st *child = INODE_ICHILDREN(node); child != NULL;
          child = CHILD_NEXT(child)) {
         if (STReq(ID_LWR(CHILD_NAME(child)),
-                  ID_LWR(CHILD_NAME(new_attribute)))) {
+                  ID_LWR(ATTRIBUTE_NAME(new_attribute)))) {
             struct ctinfo info;
             id_to_info(CHILD_NAME(child), &info);
             CTIobj(

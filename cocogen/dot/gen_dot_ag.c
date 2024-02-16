@@ -47,7 +47,8 @@ static inline size_t lookup_partition(htable_st *partition_table, node_st *st,
     if (subtable == NULL) {
         return 0;
     }
-    size_t part = (size_t)HTlookup(subtable, node->attribute);
+    size_t part = (size_t)HTlookup(subtable,
+                                   ID_LWR(ATTRIBUTE_NAME(node->attribute)));
     if (part == 0) {
         fprintf(stderr, "NO PARTITION %s.%s: %p.%p\n", ID_ORIG(get_node_name(node->node)), ID_ORIG(ATTRIBUTE_NAME(node->attribute)), (void *)node->node, (void *)node->attribute);
         for (htable_iter_st *iter = HTiterate(subtable); iter != NULL; iter = HTiterateNext(iter)) {

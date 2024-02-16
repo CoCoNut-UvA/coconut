@@ -14,6 +14,20 @@
 static node_st *curr_node = NULL;
 
 node_st *DGNAFEast(node_st *node) {
+    GeneratorContext *ctx = globals.gen_ctx;
+    // Unset in gen_nodeset_access_funcs
+    OUT_NO_INDENT("#ifdef NDEBUG\n");
+    OUT_NO_INDENT("// Ignore unused parameters for debug info\n");
+    OUT_NO_INDENT("#if defined(__clang__)\n");
+    OUT_NO_INDENT("#pragma clang diagnostic push\n");
+    OUT_NO_INDENT("#pragma clang diagnostic ignored \"-Wunused-parameter\"\n");
+    OUT_NO_INDENT("#elif defined(__GNUC__)\n");
+    OUT_NO_INDENT("#pragma GCC diagnostic push\n");
+    OUT_NO_INDENT("// Ignore unused parameters\n");
+    OUT_NO_INDENT("#pragma GCC diagnostic ignored \"-Wunused-parameter\"\n");
+    OUT_NO_INDENT("#endif\n");
+    OUT_NO_INDENT("#endif\n\n");
+
     TRAVinodes(node);
     return node;
 }
@@ -35,8 +49,11 @@ node_st *DGNAFEchild(node_st *node) {
                     "char *file, const char *func)",
                     ID_LWR(INODE_NAME(curr_node)),
                     ID_LWR(CHILD_NAME(node)));
-    OUT("DBUGprintAssert(line, (char *)file, func, \"Node is not a '%s'\");\n",
-        ID_ORIG(INODE_NAME(curr_node)));
+    OUT_NO_INDENT("#ifndef NDEBUG\n");
+    OUT("DBUGprintAssert(line, (char *)file, func, \"Node passed to %s_%s"
+        " is not a '%s'\");\n", ID_UPR(INODE_NAME(curr_node)),
+        ID_UPR(CHILD_NAME(node)), ID_ORIG(INODE_NAME(curr_node)));
+    OUT_NO_INDENT("#endif\n");
     OUT_END_FUNC();
 
     TRAVnext(node);
@@ -67,6 +84,7 @@ node_st *DGNAFEattribute(node_st *node) {
     OUT_NO_INDENT(") {\n");
     GNindentIncrease(ctx);
 
+    OUT_NO_INDENT("#ifndef NDEBUG\n");
     if (!is_classic) {
         OUT_BEGIN_IF("uninitialized");
         OUT("DBUGprintAssert(line, (char *)file, func, \"Trying to access "
@@ -77,12 +95,14 @@ node_st *DGNAFEattribute(node_st *node) {
         GNindentIncrease(ctx);
     }
 
-    OUT("DBUGprintAssert(line, (char *)file, func, \"Node is not a '%s'\");\n",
-        ID_ORIG(INODE_NAME(curr_node)));
-
+    OUT("DBUGprintAssert(line, (char *)file, func, \"Node passed to %s_%s"
+        " is not a '%s'\");\n", ID_UPR(INODE_NAME(curr_node)),
+        ID_UPR(ATTRIBUTE_NAME(node)), ID_ORIG(INODE_NAME(curr_node)));
     if (!is_classic) {
         OUT_END_IF();
     }
+    OUT_NO_INDENT("#endif\n");
+
     OUT_END_FUNC();
 
     TRAVnext(node);

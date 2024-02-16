@@ -14,7 +14,17 @@
 static node_st *curr_nodeset = NULL;
 
 node_st *DGNSAFEast(node_st *node) {
+    GeneratorContext *ctx = globals.gen_ctx;
     TRAVinodesets(node);
+
+    // Set in gen_node_access_funcs
+    OUT_NO_INDENT("#ifdef NDEBUG\n");
+    OUT_NO_INDENT("#if defined(__clang__)\n");
+    OUT_NO_INDENT("#pragma clang diagnostic pop\n");
+    OUT_NO_INDENT("#elif defined(__GNUC__)\n");
+    OUT_NO_INDENT("#pragma GCC diagnostic pop\n");
+    OUT_NO_INDENT("#endif\n");
+    OUT_NO_INDENT("#endif\n\n");
     return node;
 }
 
@@ -41,8 +51,11 @@ node_st *DGNSAFEattribute(node_st *node) {
                    "const char *func)",
                    readonly, ID_LWR(INODESET_NAME(curr_nodeset)),
                    ID_LWR(ATTRIBUTE_NAME(node)));
-    OUT("DBUGprintAssert(line, (char *)file, func, \"Node is not a '%s'\");\n",
-        ID_ORIG(INODESET_NAME(curr_nodeset)));
+    OUT_NO_INDENT("#ifndef NDEBUG\n");
+    OUT("DBUGprintAssert(line, (char *)file, func, \"Node passed to %s_%s "
+        "is not a '%s'\");\n", ID_UPR(INODESET_NAME(curr_nodeset)),
+        ID_UPR(ATTRIBUTE_NAME(node)), ID_ORIG(INODESET_NAME(curr_nodeset)));
+    OUT_NO_INDENT("#endif\n");
     OUT_END_FUNC();
     TRAVnext(node);
     return node;

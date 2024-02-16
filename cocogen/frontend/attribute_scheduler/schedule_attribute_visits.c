@@ -581,15 +581,15 @@ node_st *SAVast(node_st *node) {
 
     dump_dotfile(graphs_htable, "partitioned.dot", partition_tables);
 
-    struct GRedge_list *intra_visit_dependencies =
-        find_intravisit_dependencies(graphs_htable, partition_tables);
+    // struct GRedge_list *intra_visit_dependencies =
+    //     find_intravisit_dependencies(graphs_htable, partition_tables);
 
-    // Add all induced intravisit dependencies to graphs
-    while (intra_visit_dependencies != NULL) {
-        struct GRedge_list *current_edges = intra_visit_dependencies;
-        intra_visit_dependencies = NULL;
-        (void)current_edges;
-    }
+    // // Add all induced intravisit dependencies to graphs
+    // while (intra_visit_dependencies != NULL) {
+    //     struct GRedge_list *current_edges = intra_visit_dependencies;
+    //     intra_visit_dependencies = NULL;
+    //     (void)current_edges;
+    // }
 
     // TODO: Check for intravisit dependency loops. In that case execute
     // backtracking algorithm

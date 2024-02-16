@@ -245,8 +245,8 @@ struct GRedge *GRlookup_edge(graph_st *graph, struct GRnode *from,
     struct GRedge *edge = HTlookup_edge(graph->internal->edge_map, from, to);
     if (!edge) {
         return NULL;
-    } else if (intravisit && (edge->type == GRintravisit ||
-                              edge->type == GRintravisit_induced)) {
+    } else if (!intravisit && (edge->type == GRintravisit ||
+                               edge->type == GRintravisit_induced)) {
         return NULL;
     } else {
         return edge;

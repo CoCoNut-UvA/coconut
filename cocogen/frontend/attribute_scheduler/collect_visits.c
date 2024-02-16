@@ -26,9 +26,15 @@ static inline size_t lookup_partition(htable_st *partition_table, node_st *st,
 
     htable_st *subtable = (htable_st *)HTlookup(partition_table, ref);
     if (subtable == NULL) {
+        CTI(CTI_ERROR, true, "Could not find partition of attribute %s.%s",
+            ID_ORIG(get_node_name(node->node)),
+            ID_ORIG(ATTRIBUTE_NAME(node->attribute)));
+        CCNerrorAction();
+        DATA_SAV_GET()->errors += 1;
         return 0;
     }
-    size_t part = (size_t)HTlookup(subtable, node->attribute);
+    size_t part = (size_t)HTlookup(subtable,
+                                   ID_LWR(ATTRIBUTE_NAME(node->attribute)));
     if (part == 0) {
         CTI(CTI_ERROR, true, "Could not find partition of attribute %s.%s",
             ID_ORIG(get_node_name(node->node)),
@@ -48,7 +54,12 @@ struct visits *collect_visits(graph_st *graph, node_st *node, node_st *st,
     for (struct GRnode *gnode = graph->nodes; gnode != NULL;
          gnode = gnode->next) {
         size_t partition = lookup_partition(partition_tables, st, gnode);
-        size_t visit_index = partition / 2 - 1;
+        size_t visit_index;
+        if (partition == 0) {
+            visit_index = 0; // Finish action for error checking
+        } else {
+            visit_index = partition / 2 - 1;
+        }
         if (visit_index >= visits->length) {
             visits->visits = MEMrealloc(
                 visits->visits, (visit_index + 1) * sizeof(struct visit));

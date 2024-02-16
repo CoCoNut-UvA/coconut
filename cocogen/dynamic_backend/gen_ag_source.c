@@ -99,7 +99,7 @@ node_st *DGAGSinode(node_st *node) {
 
     bool has_inherited_attributes = false;
     for (node_st *visit = INODE_VISIT(node); visit; visit = VISIT_NEXT(visit)) {
-        if (VISIT_INPUTS(node)) {
+        if (VISIT_INPUTS(visit)) {
             has_inherited_attributes = true;
         }
     }
