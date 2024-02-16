@@ -50,6 +50,19 @@ struct htable *HTnew(size_t size, hash_key_ft hash_func, is_equal_ft is_equal_fu
     return table;
 }
 
+struct htable *HTcpy(struct htable *table)
+{
+    struct htable *new_table = HTnew(table->size, table->hash_f,
+                                     table->is_equal_f);
+
+    for (htable_iter_st *iter = HTiterate(table); iter;
+         iter = HTiterateNext(iter)) {
+        HTinsert(new_table, HTiterKey(iter), HTiterValue(iter));
+    }
+
+    return new_table;
+}
+
 static
 struct htable_entry *NewEntry(struct htable *table, void *key, void *value)
 {
@@ -67,6 +80,7 @@ void DeleteEntry(struct htable *table, struct htable_entry *entry)
     MEMfree(entry);
 }
 
+static
 bool Insert(struct htable *table, void *key, void *value)
 {
     struct htable_entry **target = NULL;
