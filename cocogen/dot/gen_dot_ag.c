@@ -119,7 +119,7 @@ void GDag_dot_add_graph(GDag_st *dot, node_st *st, graph_st *graph, char *name,
         struct GRnode *n1 = edge->first;
         struct GRnode *n2 = edge->second;
 
-        if (edge->induced && n1->node != n2->node) {
+        if (edge->type == GRinduced && n1->node != n2->node) {
             continue;
         }
 
@@ -128,7 +128,7 @@ void GDag_dot_add_graph(GDag_st *dot, node_st *st, graph_st *graph, char *name,
             ID_LWR(ATTRIBUTE_NAME(n1->attribute)), name,
             ID_LWR(get_node_name(n2->node)),
             ID_LWR(ATTRIBUTE_NAME(n2->attribute)));
-        if (edge->induced) {
+        if (edge->type == GRinduced) {
             OUT(" [style=\"dotted\"]");
         }
         OUT(";\n");

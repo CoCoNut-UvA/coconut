@@ -11,6 +11,7 @@
 #include "frontend/attribute_scheduler/common.h"
 #include "frontend/attribute_scheduler/fill_visit_stubs.h"
 #include "palm/ctinfo.h"
+#include "palm/dbug.h"
 #include "palm/hash_table.h"
 #include "palm/memory.h"
 
@@ -36,7 +37,8 @@ void fill_visit_stubs(node_st *node, htable_st *visit_mdata_htable,
     for (node_st *visit = INODE_VISIT(node); visit; visit = VISIT_NEXT(visit)) {
         struct visit *visit_mdata = HTlookup(visit_mdata_htable, visit);
         assert(visit_mdata != NULL);
-        printf("[debug] Adding visit %lu for node %s\n", visit_mdata->index, ID_LWR(get_node_name(node)));
+        DBUG("[debug] Adding visit %lu for node %s\n", visit_mdata->index,
+             ID_LWR(get_node_name(node)));
         for (struct visit_stub *visit_stub =
                  HTlookup(visit_stubs_htable, visit_mdata);
              visit_stub; visit_stub = visit_stub->next) {

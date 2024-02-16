@@ -13,10 +13,17 @@ struct GRnode_list {
     struct GRnode_list *next;
 };
 
+enum GRedge_type {
+    GRnormal,
+    GRinduced,
+    GRintravisit,
+    GRintravisit_induced
+};
+
 struct GRedge {
     struct GRnode *first;
     struct GRnode *second;
-    bool induced;
+    enum GRedge_type type;
 };
 
 struct GRedge_list {
@@ -32,7 +39,13 @@ struct GRgraph {
     struct GRgraph_internal *internal;
 };
 
-enum GRerror_type { GR_error_none, GR_error_cycle, GR_error_cycle_induced };
+enum GRerror_type {
+    GR_error_none,
+    GR_error_cycle,
+    GR_error_cycle_induced,
+    GR_error_cycle_intravisit,
+    GR_error_cycle_intravisit_induced
+};
 
 struct GRerror {
     enum GRerror_type type;
@@ -56,9 +69,9 @@ struct GRnode *GRlookup_node(graph_st *graph, node_st *node,
 struct GRnode_list *GRget_inter_node_dependencies(struct GRgraph *graph,
                                                   struct GRnode *node);
 struct GRerror GRadd_edge(graph_st *graph, struct GRnode *from,
-                          struct GRnode *to, bool induced);
+                          struct GRnode *to, enum GRedge_type type);
 struct GRedge *GRlookup_edge(graph_st *graph, struct GRnode *from,
-                             struct GRnode *to);
+                             struct GRnode *to, bool intravisit);
 void GRadd_new_intra_node_dependency(struct GRedge_list **added_edges,
                                      struct GRnode *n1, struct GRnode *n2);
 struct GRerror GRclose_transitivity(graph_st *graph,

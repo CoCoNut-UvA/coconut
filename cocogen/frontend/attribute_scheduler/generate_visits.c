@@ -114,7 +114,7 @@ static struct dependency *find_dependencies(graph_st *graph,
             continue;
         }
 
-        if (GRlookup_edge(graph, dep_node, node)) {
+        if (GRlookup_edge(graph, dep_node, node, false)) {
             struct dependency *dep = MEMmalloc(sizeof(struct dependency));
             dep->dependency = dep_node;
             dep->next = deps;

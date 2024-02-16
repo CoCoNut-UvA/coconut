@@ -223,7 +223,7 @@ static void combine_edgelists(struct GRedge_list **edge_list,
             insert_edge->edge = MEMmalloc(sizeof(struct GRedge));
             insert_edge->edge->first = new_n1;
             insert_edge->edge->second = new_n2;
-            insert_edge->edge->induced = true;
+            insert_edge->edge->type = GRinduced;
             insert_edge->next = *edge_list;
             *edge_list = insert_edge;
             HTinsert_edge(induced_edges_map, insert_edge->edge);
@@ -390,7 +390,7 @@ void add_induced_edges(graph_st *graph, struct GRedge_list *edges,
                 struct GRnode *to = GRlookup_node(
                     graph, node->node, entry->edge->second->attribute);
                 if (from == NULL || to == NULL ||
-                    GRlookup_edge(graph, from, to)) {
+                    GRlookup_edge(graph, from, to, false)) {
                     continue;
                 }
                 handle_graph_error(GRadd_edge(graph, from, to, true));
@@ -422,7 +422,7 @@ static inline void find_intravisit_dependencies_node(
             struct GRedge *dependency = MEMmalloc(sizeof(struct GRedge));
             dependency->first = n1;
             dependency->second = n2;
-            dependency->induced = false;
+            dependency->type = GRintravisit;
             struct GRedge_list *entry = MEMmalloc(sizeof(struct GRedge_list));
             entry->edge = dependency;
             entry->next = *dependencies;
@@ -582,8 +582,11 @@ node_st *SAVast(node_st *node) {
     struct GRedge_list *intra_visit_dependencies =
         find_intravisit_dependencies(graphs_htable, partition_tables);
 
-    // TODO: Add induced intravisit dependencies
-    (void)intra_visit_dependencies;
+    // Add all induced intravisit dependencies to graphs
+    while (intra_visit_dependencies != NULL) {
+        struct GRedge_list *current_edges = intra_visit_dependencies;
+        intra_visit_dependencies = NULL;
+    }
 
     // TODO: Check for intravisit dependency loops. In that case execute
     // backtracking algorithm

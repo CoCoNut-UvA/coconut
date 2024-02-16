@@ -7,7 +7,7 @@
 // forward declaration
 static struct GRedge *add_edge_internal(struct GRgraph *graph,
                                         struct GRnode *n1, struct GRnode *n2,
-                                        bool induced);
+                                        enum GRedge_type type);
 
 static const int hashtable_size = 200;
 
@@ -93,7 +93,7 @@ struct GRgraph *GRcopy(struct GRgraph *graph) {
          entry = entry->next) {
         struct GRedge *edge = entry->edge;
         add_edge_internal(copy, HTlookup(node_mapping, edge->first),
-                          HTlookup(node_mapping, edge->second), edge->induced);
+                          HTlookup(node_mapping, edge->second), edge->type);
     }
 
     HTdelete(node_mapping);
@@ -165,7 +165,7 @@ struct GRnode_list *GRget_inter_node_dependencies(struct GRgraph *graph,
             continue;
         }
 
-        if (GRlookup_edge(graph, dep, node)) {
+        if (GRlookup_edge(graph, dep, node, false)) {
             struct GRnode_list *entry = MEMmalloc(sizeof(struct GRnode_list));
             entry->node = dep;
             entry->next = dependencies;
@@ -178,13 +178,13 @@ struct GRnode_list *GRget_inter_node_dependencies(struct GRgraph *graph,
 
 static struct GRedge *add_edge_internal(struct GRgraph *graph,
                                         struct GRnode *n1, struct GRnode *n2,
-                                        bool induced) {
+                                        enum GRedge_type type) {
     struct GRedge_list *graph_edge_entry =
         MEMmalloc(sizeof(struct GRedge_list));
     struct GRedge *graph_edge = MEMmalloc(sizeof(struct GRedge));
     graph_edge->first = n1;
     graph_edge->second = n2;
-    graph_edge->induced = induced;
+    graph_edge->type = type;
     assert(HTlookup_edge(graph->internal->edge_map, n1, n2) == NULL);
     HTinsert_edge(graph->internal->edge_map, graph_edge);
 
@@ -202,13 +202,26 @@ static struct GRedge *add_edge_internal(struct GRgraph *graph,
 
 static inline bool check_cycle(struct GRgraph *graph, struct GRnode *n1,
                                struct GRnode *n2, struct GRerror *error,
-                               bool induced) {
+                               enum GRedge_type type) {
     if (HTlookup_edge(graph->internal->edge_map, n2, n1)) {
-        if (induced) {
-            error->type = GR_error_cycle_induced;
-        } else {
+        switch (type) {
+        case GRnormal:
             error->type = GR_error_cycle;
+            break;
+        case GRinduced:
+            error->type = GR_error_cycle_induced;
+            break;
+        case GRintravisit:
+            error->type = GR_error_cycle_intravisit;
+            break;
+        case GRintravisit_induced:
+            error->type = GR_error_cycle_intravisit_induced;
+            break;
+        default:
+            assert(false); // unhandled case
+            break;
         }
+
         error->data.cycle.n1 = n1;
         error->data.cycle.n2 = n2;
         return true;
@@ -218,18 +231,26 @@ static inline bool check_cycle(struct GRgraph *graph, struct GRnode *n1,
 }
 
 struct GRerror GRadd_edge(struct GRgraph *graph, struct GRnode *n1,
-                          struct GRnode *n2, bool induced) {
+                          struct GRnode *n2, enum GRedge_type type) {
     struct GRerror error = {.type = GR_error_none};
-    if (check_cycle(graph, n1, n2, &error, induced)) {
+    if (check_cycle(graph, n1, n2, &error, type)) {
         return error;
     }
-    add_edge_internal(graph, n1, n2, induced);
+    add_edge_internal(graph, n1, n2, type);
     return error;
 }
 
 struct GRedge *GRlookup_edge(graph_st *graph, struct GRnode *from,
-                             struct GRnode *to) {
-    return HTlookup_edge(graph->internal->edge_map, from, to);
+                             struct GRnode *to, bool intravisit) {
+    struct GRedge *edge = HTlookup_edge(graph->internal->edge_map, from, to);
+    if (!edge) {
+        return NULL;
+    } else if (intravisit && (edge->type == GRintravisit ||
+                              edge->type == GRintravisit_induced)) {
+        return NULL;
+    } else {
+        return edge;
+    }
 }
 
 void GRadd_new_intra_node_dependency(struct GRedge_list **added_edges,
@@ -238,7 +259,7 @@ void GRadd_new_intra_node_dependency(struct GRedge_list **added_edges,
     struct GRedge *edge = MEMmalloc(sizeof(struct GRedge));
     edge->first = n1;
     edge->second = n2;
-    edge->induced = true;
+    edge->type = GRinduced;
     entry->edge = edge;
 
     entry->next = *added_edges;
