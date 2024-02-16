@@ -46,8 +46,9 @@ node_st *DGNMinode(node_st *node)
 node_st *DGNMchild(node_st *node)
 {
     GeneratorContext *ctx = globals.gen_ctx;
+    assert(curr_node_name);
     child_num++;
-    OUT("#define %s_%s(n) ((n)->data.N_%s->%s_children.%s_children_st.%s)\n", curr_node_name_upr, ID_UPR(CHILD_NAME(node)), curr_node_name, curr_node_name, curr_node_name, ID_LWR(CHILD_NAME(node)));
+    OUT("#define %s_%s(n) (*CCNaccess_%s_%s(__LINE__, __FILE__, __func__, n))\n", curr_node_name_upr, ID_UPR(CHILD_NAME(node)), curr_node_name, ID_LWR(CHILD_NAME(node)));
     TRAVchildren(node);
     return node;
 }
@@ -57,7 +58,7 @@ node_st *DGNMattribute(node_st *node)
     GeneratorContext *ctx = globals.gen_ctx;
     if (!ATTRIBUTE_IS_INHERITED(node) && !ATTRIBUTE_IS_SYNTHESIZED(node)) {
         if (curr_node_name) {
-            OUT("#define %s_%s(n) ((n)->data.N_%s->%s)\n", curr_node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), curr_node_name, ID_LWR(ATTRIBUTE_NAME(node)));
+            OUT("#define %s_%s(n) (*CCNaccess_%s_%s(__LINE__, __FILE__, __func__, n))\n", curr_node_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), curr_node_name, ID_LWR(ATTRIBUTE_NAME(node)));
         } else {
             assert(curr_nodeset_name);
             OUT("#define %s_%s(n) (*CCNaccess_%s_%s(__LINE__, __FILE__, __func__, n))\n", curr_nodeset_name_upr, ID_UPR(ATTRIBUTE_NAME(node)), curr_nodeset_name, ID_LWR(ATTRIBUTE_NAME(node)));

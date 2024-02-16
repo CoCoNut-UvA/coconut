@@ -27,7 +27,8 @@ node_st *ASTid(char * orig, char * lwr, char * Upr) {
     ID_COL_END(node) = 0;
     NODE_NUMCHILDREN(node) = 1;
     NODE_CHILDREN(node) = node->data.N_id->id_children.id_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTienum(node_st *vals, node_st *name, node_st *iprefix, char * iinfo) {
     node_st *node = NewNode();
@@ -40,7 +41,8 @@ node_st *ASTienum(node_st *vals, node_st *name, node_st *iprefix, char * iinfo) 
     IENUM_IINFO(node) = iinfo;
     NODE_NUMCHILDREN(node) = 4;
     NODE_CHILDREN(node) = node->data.N_ienum->ienum_children.ienum_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTvisit_sequence_dummy(node_st *inode) {
     node_st *node = NewNode();
@@ -50,7 +52,8 @@ node_st *ASTvisit_sequence_dummy(node_st *inode) {
     VISIT_SEQUENCE_DUMMY_INODE(node) = inode;
     NODE_NUMCHILDREN(node) = 1;
     NODE_CHILDREN(node) = node->data.N_visit_sequence_dummy->visit_sequence_dummy_children.visit_sequence_dummy_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTvisit_sequence_visit(node_st *child, node_st *visit) {
     node_st *node = NewNode();
@@ -62,7 +65,8 @@ node_st *ASTvisit_sequence_visit(node_st *child, node_st *visit) {
     VISIT_SEQUENCE_VISIT_VISIT(node) = visit;
     NODE_NUMCHILDREN(node) = 2;
     NODE_CHILDREN(node) = node->data.N_visit_sequence_visit->visit_sequence_visit_children.visit_sequence_visit_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTvisit_sequence_eval(node_st *attribute) {
     node_st *node = NewNode();
@@ -72,7 +76,8 @@ node_st *ASTvisit_sequence_eval(node_st *attribute) {
     VISIT_SEQUENCE_EVAL_ATTRIBUTE(node) = attribute;
     NODE_NUMCHILDREN(node) = 1;
     NODE_CHILDREN(node) = node->data.N_visit_sequence_eval->visit_sequence_eval_children.visit_sequence_eval_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTvisit(node_st *sequence, node_st *inputs, node_st *outputs, node_st *inode, uint64_t index) {
     node_st *node = NewNode();
@@ -86,7 +91,8 @@ node_st *ASTvisit(node_st *sequence, node_st *inputs, node_st *outputs, node_st 
     VISIT_INDEX(node) = index;
     NODE_NUMCHILDREN(node) = 4;
     NODE_CHILDREN(node) = node->data.N_visit->visit_children.visit_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTvisit_arg_list(node_st *attribute) {
     node_st *node = NewNode();
@@ -96,7 +102,8 @@ node_st *ASTvisit_arg_list(node_st *attribute) {
     VISIT_ARG_LIST_NEXT(node) = NULL;
     NODE_NUMCHILDREN(node) = 2;
     NODE_CHILDREN(node) = node->data.N_visit_arg_list->visit_arg_list_children.visit_arg_list_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTattribute_reference(void) {
     node_st *node = NewNode();
@@ -109,7 +116,8 @@ node_st *ASTattribute_reference(void) {
     ATTRIBUTE_REFERENCE_CHILD_REFERENCE(node) = NULL;
     NODE_NUMCHILDREN(node) = 2;
     NODE_CHILDREN(node) = node->data.N_attribute_reference->attribute_reference_children.attribute_reference_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTequation_dependency(void) {
     node_st *node = NewNode();
@@ -119,7 +127,8 @@ node_st *ASTequation_dependency(void) {
     EQUATION_DEPENDENCY_NEXT(node) = NULL;
     NODE_NUMCHILDREN(node) = 2;
     NODE_CHILDREN(node) = node->data.N_equation_dependency->equation_dependency_children.equation_dependency_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTequation(void) {
     node_st *node = NewNode();
@@ -130,7 +139,8 @@ node_st *ASTequation(void) {
     EQUATION_NEXT(node) = NULL;
     NODE_NUMCHILDREN(node) = 3;
     NODE_CHILDREN(node) = node->data.N_equation->equation_children.equation_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTattribute(void) {
     node_st *node = NewNode();
@@ -147,7 +157,8 @@ node_st *ASTattribute(void) {
     ATTRIBUTE_IS_PROPAGATED(node) = false;
     NODE_NUMCHILDREN(node) = 4;
     NODE_CHILDREN(node) = node->data.N_attribute->attribute_children.attribute_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTitravdata(node_st *name) {
     node_st *node = NewNode();
@@ -160,7 +171,8 @@ node_st *ASTitravdata(node_st *name) {
     ITRAVDATA_INCLUDE_FILE(node) = NULL;
     NODE_NUMCHILDREN(node) = 3;
     NODE_CHILDREN(node) = node->data.N_itravdata->itravdata_children.itravdata_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTsetoperation(node_st *left, node_st *right, enum setoperation_type type) {
     node_st *node = NewNode();
@@ -171,7 +183,8 @@ node_st *ASTsetoperation(node_st *left, node_st *right, enum setoperation_type t
     SETOPERATION_TYPE(node) = type;
     NODE_NUMCHILDREN(node) = 2;
     NODE_CHILDREN(node) = node->data.N_setoperation->setoperation_children.setoperation_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTsetliteral(node_st *reference) {
     node_st *node = NewNode();
@@ -182,7 +195,8 @@ node_st *ASTsetliteral(node_st *reference) {
     SETLITERAL_RIGHT(node) = NULL;
     NODE_NUMCHILDREN(node) = 3;
     NODE_CHILDREN(node) = node->data.N_setliteral->setliteral_children.setliteral_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTsetreference(void) {
     node_st *node = NewNode();
@@ -191,7 +205,8 @@ node_st *ASTsetreference(void) {
     SETREFERENCE_REFERENCE(node) = NULL;
     NODE_NUMCHILDREN(node) = 1;
     NODE_CHILDREN(node) = node->data.N_setreference->setreference_children.setreference_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTste(void) {
     node_st *node = NewNode();
@@ -202,7 +217,8 @@ node_st *ASTste(void) {
     STE_VALUE(node) = NULL;
     NODE_NUMCHILDREN(node) = 1;
     NODE_CHILDREN(node) = node->data.N_ste->ste_children.ste_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTchild(node_st *name) {
     node_st *node = NewNode();
@@ -217,7 +233,8 @@ node_st *ASTchild(node_st *name) {
     CHILD_IS_MANDATORY(node) = false;
     NODE_NUMCHILDREN(node) = 4;
     NODE_CHILDREN(node) = node->data.N_child->child_children.child_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTlifetime_range(void) {
     node_st *node = NewNode();
@@ -229,7 +246,8 @@ node_st *ASTlifetime_range(void) {
     LIFETIME_RANGE_NEXT_ACTION_ID(node) = 0;
     NODE_NUMCHILDREN(node) = 1;
     NODE_CHILDREN(node) = node->data.N_lifetime_range->lifetime_range_children.lifetime_range_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTilifetime(void) {
     node_st *node = NewNode();
@@ -241,7 +259,8 @@ node_st *ASTilifetime(void) {
     ILIFETIME_TYPE(node) = 0;
     NODE_NUMCHILDREN(node) = 3;
     NODE_CHILDREN(node) = node->data.N_ilifetime->ilifetime_children.ilifetime_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTnodeset_child_entry(node_st *reference) {
     node_st *node = NewNode();
@@ -251,7 +270,8 @@ node_st *ASTnodeset_child_entry(node_st *reference) {
     NODESET_CHILD_ENTRY_REFERENCE(node) = reference;
     NODE_NUMCHILDREN(node) = 1;
     NODE_CHILDREN(node) = node->data.N_nodeset_child_entry->nodeset_child_entry_children.nodeset_child_entry_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTinodeset(void) {
     node_st *node = NewNode();
@@ -267,7 +287,8 @@ node_st *ASTinodeset(void) {
     INODESET_ILLEGAL_SETEXPR_ATTR(node) = false;
     NODE_NUMCHILDREN(node) = 6;
     NODE_CHILDREN(node) = node->data.N_inodeset->inodeset_children.inodeset_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTinode(node_st *name, char * iifno) {
     node_st *node = NewNode();
@@ -285,7 +306,8 @@ node_st *ASTinode(node_st *name, char * iifno) {
     INODE_INDEX(node) = 0;
     NODE_NUMCHILDREN(node) = 7;
     NODE_CHILDREN(node) = node->data.N_inode->inode_children.inode_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTipass(node_st *name, char * iifno) {
     node_st *node = NewNode();
@@ -298,7 +320,8 @@ node_st *ASTipass(node_st *name, char * iifno) {
     IPASS_IIFNO(node) = iifno;
     NODE_NUMCHILDREN(node) = 4;
     NODE_CHILDREN(node) = node->data.N_ipass->ipass_children.ipass_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTitraversal(node_st *name) {
     node_st *node = NewNode();
@@ -313,7 +336,8 @@ node_st *ASTitraversal(node_st *name) {
     ITRAVERSAL_IINFO(node) = NULL;
     NODE_NUMCHILDREN(node) = 5;
     NODE_CHILDREN(node) = node->data.N_itraversal->itraversal_children.itraversal_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTiphase(node_st *name, bool is_start) {
     node_st *node = NewNode();
@@ -329,7 +353,8 @@ node_st *ASTiphase(node_st *name, bool is_start) {
     IPHASE_IINFO(node) = NULL;
     NODE_NUMCHILDREN(node) = 5;
     NODE_CHILDREN(node) = node->data.N_iphase->iphase_children.iphase_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTiactions(void) {
     node_st *node = NewNode();
@@ -340,7 +365,8 @@ node_st *ASTiactions(void) {
     IACTIONS_ACTION_ID(node) = 0;
     NODE_NUMCHILDREN(node) = 2;
     NODE_CHILDREN(node) = node->data.N_iactions->iactions_children.iactions_children_at;
-    return node;}
+    return node;
+}
 
 node_st *ASTast(void) {
     node_st *node = NewNode();
@@ -360,5 +386,534 @@ node_st *ASTast(void) {
     AST_USES_UNSAFE(node) = false;
     NODE_NUMCHILDREN(node) = 7;
     NODE_CHILDREN(node) = node->data.N_ast->ast_children.ast_children_at;
-    return node;}
+    return node;
+}
+
+void CCNaccesserror_id_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'id'");
+}
+
+void CCNaccesserror_id_orig(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'id'");
+}
+
+void CCNaccesserror_id_lwr(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'id'");
+}
+
+void CCNaccesserror_id_upr(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'id'");
+}
+
+void CCNaccesserror_id_row(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'id'");
+}
+
+void CCNaccesserror_id_col_begin(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'id'");
+}
+
+void CCNaccesserror_id_col_end(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'id'");
+}
+
+void CCNaccesserror_ienum_vals(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ienum'");
+}
+
+void CCNaccesserror_ienum_name(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ienum'");
+}
+
+void CCNaccesserror_ienum_iprefix(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ienum'");
+}
+
+void CCNaccesserror_ienum_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ienum'");
+}
+
+void CCNaccesserror_ienum_iinfo(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ienum'");
+}
+
+void CCNaccesserror_visit_sequence_dummy_alt(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'visit_sequence_dummy'");
+}
+
+void CCNaccesserror_visit_sequence_dummy_inode(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'visit_sequence_dummy'");
+}
+
+void CCNaccesserror_visit_sequence_visit_alt(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'visit_sequence_visit'");
+}
+
+void CCNaccesserror_visit_sequence_visit_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'visit_sequence_visit'");
+}
+
+void CCNaccesserror_visit_sequence_visit_child(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'visit_sequence_visit'");
+}
+
+void CCNaccesserror_visit_sequence_visit_visit(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'visit_sequence_visit'");
+}
+
+void CCNaccesserror_visit_sequence_eval_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'visit_sequence_eval'");
+}
+
+void CCNaccesserror_visit_sequence_eval_attribute(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'visit_sequence_eval'");
+}
+
+void CCNaccesserror_visit_sequence(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'visit'");
+}
+
+void CCNaccesserror_visit_inputs(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'visit'");
+}
+
+void CCNaccesserror_visit_outputs(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'visit'");
+}
+
+void CCNaccesserror_visit_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'visit'");
+}
+
+void CCNaccesserror_visit_inode(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'visit'");
+}
+
+void CCNaccesserror_visit_index(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'visit'");
+}
+
+void CCNaccesserror_visit_arg_list_attribute(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'visit_arg_list'");
+}
+
+void CCNaccesserror_visit_arg_list_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'visit_arg_list'");
+}
+
+void CCNaccesserror_attribute_reference_inode(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'attribute_reference'");
+}
+
+void CCNaccesserror_attribute_reference_iattribute(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'attribute_reference'");
+}
+
+void CCNaccesserror_attribute_reference_node_type(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'attribute_reference'");
+}
+
+void CCNaccesserror_attribute_reference_reference(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'attribute_reference'");
+}
+
+void CCNaccesserror_attribute_reference_child_reference(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'attribute_reference'");
+}
+
+void CCNaccesserror_equation_dependency_iattribute(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'equation_dependency'");
+}
+
+void CCNaccesserror_equation_dependency_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'equation_dependency'");
+}
+
+void CCNaccesserror_equation_rule(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'equation'");
+}
+
+void CCNaccesserror_equation_iargs(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'equation'");
+}
+
+void CCNaccesserror_equation_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'equation'");
+}
+
+void CCNaccesserror_attribute_name(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'attribute'");
+}
+
+void CCNaccesserror_attribute_type_reference(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'attribute'");
+}
+
+void CCNaccesserror_attribute_lifetimes(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'attribute'");
+}
+
+void CCNaccesserror_attribute_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'attribute'");
+}
+
+void CCNaccesserror_attribute_type(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'attribute'");
+}
+
+void CCNaccesserror_attribute_in_constructor(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'attribute'");
+}
+
+void CCNaccesserror_attribute_is_inherited(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'attribute'");
+}
+
+void CCNaccesserror_attribute_is_synthesized(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'attribute'");
+}
+
+void CCNaccesserror_attribute_is_propagated(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'attribute'");
+}
+
+void CCNaccesserror_itravdata_name(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'itravdata'");
+}
+
+void CCNaccesserror_itravdata_type_reference(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'itravdata'");
+}
+
+void CCNaccesserror_itravdata_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'itravdata'");
+}
+
+void CCNaccesserror_itravdata_type(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'itravdata'");
+}
+
+void CCNaccesserror_itravdata_include_file(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'itravdata'");
+}
+
+void CCNaccesserror_setoperation_left(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'setoperation'");
+}
+
+void CCNaccesserror_setoperation_right(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'setoperation'");
+}
+
+void CCNaccesserror_setoperation_type(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'setoperation'");
+}
+
+void CCNaccesserror_setliteral_reference(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'setliteral'");
+}
+
+void CCNaccesserror_setliteral_left(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'setliteral'");
+}
+
+void CCNaccesserror_setliteral_right(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'setliteral'");
+}
+
+void CCNaccesserror_setreference_reference(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'setreference'");
+}
+
+void CCNaccesserror_ste_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ste'");
+}
+
+void CCNaccesserror_ste_key(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ste'");
+}
+
+void CCNaccesserror_ste_value(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ste'");
+}
+
+void CCNaccesserror_child_name(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'child'");
+}
+
+void CCNaccesserror_child_lifetimes(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'child'");
+}
+
+void CCNaccesserror_child_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'child'");
+}
+
+void CCNaccesserror_child_type_reference(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'child'");
+}
+
+void CCNaccesserror_child_type(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'child'");
+}
+
+void CCNaccesserror_child_in_constructor(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'child'");
+}
+
+void CCNaccesserror_child_is_mandatory(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'child'");
+}
+
+void CCNaccesserror_lifetime_range_target(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'lifetime_range'");
+}
+
+void CCNaccesserror_lifetime_range_inclusive(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'lifetime_range'");
+}
+
+void CCNaccesserror_lifetime_range_action_id(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'lifetime_range'");
+}
+
+void CCNaccesserror_lifetime_range_next_action_id(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'lifetime_range'");
+}
+
+void CCNaccesserror_ilifetime_begin(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ilifetime'");
+}
+
+void CCNaccesserror_ilifetime_end(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ilifetime'");
+}
+
+void CCNaccesserror_ilifetime_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ilifetime'");
+}
+
+void CCNaccesserror_ilifetime_type(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ilifetime'");
+}
+
+void CCNaccesserror_nodeset_child_entry_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'nodeset_child_entry'");
+}
+
+void CCNaccesserror_nodeset_child_entry_reference(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'nodeset_child_entry'");
+}
+
+void CCNaccesserror_inodeset_name(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inodeset'");
+}
+
+void CCNaccesserror_inodeset_expr(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inodeset'");
+}
+
+void CCNaccesserror_inodeset_iattributes(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inodeset'");
+}
+
+void CCNaccesserror_inodeset_unpacked(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inodeset'");
+}
+
+void CCNaccesserror_inodeset_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inodeset'");
+}
+
+void CCNaccesserror_inodeset_children_table(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inodeset'");
+}
+
+void CCNaccesserror_inodeset_iinfo(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inodeset'");
+}
+
+void CCNaccesserror_inodeset_illegal_setexpr_attr(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inodeset'");
+}
+
+void CCNaccesserror_inode_name(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inode'");
+}
+
+void CCNaccesserror_inode_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inode'");
+}
+
+void CCNaccesserror_inode_ichildren(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inode'");
+}
+
+void CCNaccesserror_inode_iattributes(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inode'");
+}
+
+void CCNaccesserror_inode_iequations(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inode'");
+}
+
+void CCNaccesserror_inode_lifetimes(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inode'");
+}
+
+void CCNaccesserror_inode_visit(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inode'");
+}
+
+void CCNaccesserror_inode_iifno(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inode'");
+}
+
+void CCNaccesserror_inode_is_root(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inode'");
+}
+
+void CCNaccesserror_inode_index(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'inode'");
+}
+
+void CCNaccesserror_ipass_name(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ipass'");
+}
+
+void CCNaccesserror_ipass_iprefix(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ipass'");
+}
+
+void CCNaccesserror_ipass_target_func(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ipass'");
+}
+
+void CCNaccesserror_ipass_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ipass'");
+}
+
+void CCNaccesserror_ipass_iifno(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ipass'");
+}
+
+void CCNaccesserror_itraversal_name(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'itraversal'");
+}
+
+void CCNaccesserror_itraversal_iprefix(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'itraversal'");
+}
+
+void CCNaccesserror_itraversal_inodes(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'itraversal'");
+}
+
+void CCNaccesserror_itraversal_data(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'itraversal'");
+}
+
+void CCNaccesserror_itraversal_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'itraversal'");
+}
+
+void CCNaccesserror_itraversal_index(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'itraversal'");
+}
+
+void CCNaccesserror_itraversal_iinfo(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'itraversal'");
+}
+
+void CCNaccesserror_iphase_name(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'iphase'");
+}
+
+void CCNaccesserror_iphase_iprefix(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'iphase'");
+}
+
+void CCNaccesserror_iphase_gate_func(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'iphase'");
+}
+
+void CCNaccesserror_iphase_iactions(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'iphase'");
+}
+
+void CCNaccesserror_iphase_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'iphase'");
+}
+
+void CCNaccesserror_iphase_is_start(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'iphase'");
+}
+
+void CCNaccesserror_iphase_is_cycle(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'iphase'");
+}
+
+void CCNaccesserror_iphase_iinfo(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'iphase'");
+}
+
+void CCNaccesserror_iactions_reference(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'iactions'");
+}
+
+void CCNaccesserror_iactions_next(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'iactions'");
+}
+
+void CCNaccesserror_iactions_action_id(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'iactions'");
+}
+
+void CCNaccesserror_ast_iphases(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ast'");
+}
+
+void CCNaccesserror_ast_itraversals(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ast'");
+}
+
+void CCNaccesserror_ast_ipasses(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ast'");
+}
+
+void CCNaccesserror_ast_inodes(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ast'");
+}
+
+void CCNaccesserror_ast_inodesets(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ast'");
+}
+
+void CCNaccesserror_ast_enums(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ast'");
+}
+
+void CCNaccesserror_ast_stable(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ast'");
+}
+
+void CCNaccesserror_ast_num_traversals(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ast'");
+}
+
+void CCNaccesserror_ast_num_nodes(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ast'");
+}
+
+void CCNaccesserror_ast_root_node(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ast'");
+}
+
+void CCNaccesserror_ast_start_phase(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ast'");
+}
+
+void CCNaccesserror_ast_uses_unsafe(int line, const char *file, const char *func) {
+    DBUGprintAssert(line, (char *)file, func, "Node is not a 'ast'");
+}
 

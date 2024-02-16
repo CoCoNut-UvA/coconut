@@ -174,6 +174,8 @@ static inline void handle_graph_error(struct GRerror error) {
             ID_ORIG(get_node_name(error.data.cycle.n2->node)),
             ID_ORIG(ATTRIBUTE_NAME(error.data.cycle.n2->attribute)));
         break;
+    default:
+        assert(false); // Error not handled
     }
 
     CCNerrorAction();
@@ -284,7 +286,7 @@ static struct graph_list *generate_graph_nodeset(node_st *nodeset,
     for (struct node_list *entry = nodes; entry != NULL; entry = entry->next) {
         graph_st *graph = GRnew();
         add_attributes(graph, nodeset, INODESET_IATTRIBUTES(nodeset));
-        add_attributes(graph, entry->node, INODE_IATTRIBUTES(nodeset));
+        add_attributes(graph, entry->node, INODESET_IATTRIBUTES(nodeset));
 
         for (node_st *attr = INODESET_IATTRIBUTES(nodeset); attr != NULL;
              attr = ATTRIBUTE_NEXT(attr)) {
@@ -586,6 +588,7 @@ node_st *SAVast(node_st *node) {
     while (intra_visit_dependencies != NULL) {
         struct GRedge_list *current_edges = intra_visit_dependencies;
         intra_visit_dependencies = NULL;
+        (void)current_edges;
     }
 
     // TODO: Check for intravisit dependency loops. In that case execute

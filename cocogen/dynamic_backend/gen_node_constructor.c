@@ -48,7 +48,7 @@ node_st *DGNCinode(node_st *node)
             OUT_FIELD("NODE_CHILDREN(node) = node->data.N_%s->%s_children.%s_children_at", name_lwr, name_lwr, name_lwr);
         }
     }
-    OUT("return node;");
+    OUT("return node;\n");
     OUT_END_FUNC();
 
     INODE_NEXT(node) = next;

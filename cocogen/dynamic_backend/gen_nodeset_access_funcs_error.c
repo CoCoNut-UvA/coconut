@@ -37,7 +37,7 @@ node_st *DGNSAFEattribute(node_st *node) {
         readonly = "";
     }
 
-    OUT_START_FUNC("void CCNaccess_%s%s_%s_error(int line, const char *file, "
+    OUT_START_FUNC("void CCNaccesserror_%s%s_%s(int line, const char *file, "
                    "const char *func)",
                    readonly, ID_LWR(INODESET_NAME(curr_nodeset)),
                    ID_LWR(ATTRIBUTE_NAME(node)));

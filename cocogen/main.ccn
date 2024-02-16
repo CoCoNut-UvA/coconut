@@ -399,7 +399,7 @@ traversal dynamicGenNodeStructs {
 traversal dynamicGenNodeAccessFunctions {
     uid = DGNAF,
 
-    nodes = {ast, inode, attribute}
+    nodes = {ast, inode, attribute, child}
 };
 
 traversal dynamicGenNodesetAccessFunctions {
@@ -411,7 +411,7 @@ traversal dynamicGenNodesetAccessFunctions {
 traversal dynamicGenNodeAccessFunctionsError {
     uid = DGNAFE,
 
-    nodes = {ast, inode, attribute}
+    nodes = {ast, inode, attribute, child}
 };
 
 traversal dynamicGenNodesetAccessFunctionsError {
