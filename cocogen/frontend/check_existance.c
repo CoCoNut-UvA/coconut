@@ -159,6 +159,7 @@ node_st *CEXinode(node_st *node)
 node_st *CEXinodeset(node_st *node)
 {
     TRAViattributes(node);
+    TRAVexpr(node);
     if (node_ste != NULL) {
         TRAVstart(node_ste, TRAV_free);
         node_ste = NULL;

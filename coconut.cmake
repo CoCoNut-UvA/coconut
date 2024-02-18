@@ -27,8 +27,8 @@ Maybe you forgot building the coconut project?")
         WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
         INPUT_FILE "${DSL_FILE}"
     )
-    if(${COCOGEN_RET})
-        message(FATAL_ERROR "cocogen generation failed, stopping CMake.")
+    if(COCOGEN_RET AND NOT COCOGEN_RET EQUAL 0)
+        message(FATAL_ERROR "cocogen generation failed (${COCOGEN_RET}), stopping CMake.")
     endif()
 endfunction()
 
