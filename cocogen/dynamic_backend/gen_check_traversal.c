@@ -52,8 +52,8 @@ node_st *DGCHTast(node_st *node)
     OUT_END_FUNC();
     gen_type_names = false;
 
-    TRAVopt(AST_INODESETS(node));
-    TRAVopt(AST_INODES(node));
+    TRAVinodesets(node);
+    TRAVinodes(node);
     return node;
 }
 
@@ -100,17 +100,17 @@ node_st *DGCHTinode(node_st *node)
     OUT_START_FUNC("struct ccn_node *CHK%s(struct ccn_node *arg_node)", ID_LWR(INODE_NAME(node)));
     OUT_FIELD("size_t action_id = CCNgetCurrentActionId()");
     OUT_FIELD("(void)action_id"); // Prevents unused error.
-    TRAVopt(INODE_ICHILDREN(node));
-    TRAVopt(INODE_IATTRIBUTES(node));
+    TRAVichildren(node);
+    TRAViattributes(node);
     // Child & attributes change the target, so change it back.
     data->lifetime_target = LT_NODE;
-    TRAVopt(INODE_LIFETIMES(node));
+    TRAVlifetimes(node);
     if (INODE_ICHILDREN(node)) {
         OUT_FIELD("TRAVchildren(arg_node)");
     }
     OUT_FIELD("return arg_node");
     OUT_END_FUNC();
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -120,7 +120,7 @@ node_st *DGCHTinodeset(node_st *node)
     OUT_START_FUNC("static bool TypeIs%s(node_st *arg_node)", ID_LWR(INODESET_NAME(node)));
     OUT_FIELD("enum ccn_nodetype node_type = NODE_TYPE(arg_node)");
     OUT("return (false");
-    TRAVopt(INODESET_EXPR(node));
+    TRAVexpr(node);
     OUT(");\n");
     OUT_END_FUNC();
     TRAVnext(node);
@@ -153,7 +153,7 @@ node_st *DGCHTchild(node_st *node)
         OUT_END_IF();
     }
     OUT_END_IF();
-    TRAVopt(CHILD_LIFETIMES(node));
+    TRAVlifetimes(node);
     TRAVnext(node);
 
     return node;
@@ -222,8 +222,8 @@ node_st *DGCHTsetliteral(node_st *node)
     if (node && SETLITERAL_REFERENCE(node)) {
         OUT_NO_INDENT(" || node_type == NT_%s", ID_UPR(SETLITERAL_REFERENCE(node)));
     }
-    TRAVopt(SETLITERAL_LEFT(node));
-    TRAVopt(SETLITERAL_RIGHT(node));
+    TRAVleft(node);
+    TRAVright(node);
     return node;
 }
 

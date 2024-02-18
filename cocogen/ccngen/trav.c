@@ -342,14 +342,14 @@ node_st *TRAVichildren(node_st *node) {
     return node;
 }
 
-node_st *TRAVVals(node_st *node) {
+node_st *TRAVvals(node_st *node) {
     switch (NODE_TYPE(node)) {
         case NT_IENUM:
             IENUM_VALS(node) = TRAVopt(IENUM_VALS(node));
             break;
             break;
         default:
-            DBUG_ASSERT(false, "Current target has no child Vals");
+            DBUG_ASSERT(false, "Current target has no child vals");
             break;
     }
 

@@ -30,9 +30,9 @@ node_st *DGNSAFEast(node_st *node) {
 
 node_st *DGNSAFEinodeset(node_st *node) {
     curr_nodeset = node;
-    TRAVopt(INODESET_IATTRIBUTES(node));
+    TRAViattributes(node);
     curr_nodeset = NULL;
-    TRAVopt(INODESET_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 

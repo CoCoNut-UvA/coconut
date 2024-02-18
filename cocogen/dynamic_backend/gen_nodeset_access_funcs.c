@@ -38,7 +38,7 @@ static inline void print_type(node_st *attribute) {
 node_st *DGNSAFast(node_st *node) {
     GeneratorContext *ctx = globals.gen_ctx;
     ste = AST_STABLE(node);
-    TRAVopt(AST_INODESETS(node));
+    TRAVinodesets(node);
 
     // Set in gen_node_access_funcs
     OUT_NO_INDENT("#ifdef NDEBUG\n");
@@ -53,9 +53,9 @@ node_st *DGNSAFast(node_st *node) {
 
 node_st *DGNSAFinodeset(node_st *node) {
     curr_nodeset = node;
-    TRAVopt(INODESET_IATTRIBUTES(node));
+    TRAViattributes(node);
     curr_nodeset = NULL;
-    TRAVopt(INODESET_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -90,7 +90,7 @@ node_st *DGNSAFattribute(node_st *node) {
     GNindentIncrease(ctx);
     OUT_BEGIN_SWITCH("NODE_TYPE(node)");
     curr_attribute = node;
-    TRAVopt(INODESET_EXPR(curr_nodeset));
+    TRAVexpr(curr_nodeset);
     curr_attribute = NULL;
     OUT_BEGIN_DEFAULT_CASE();
     OUT_END_CASE();

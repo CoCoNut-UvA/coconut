@@ -50,16 +50,16 @@ node_st *DGNAFast(node_st *node) {
     OUT_NO_INDENT("#endif\n");
     OUT_NO_INDENT("#endif\n\n");
 
-    TRAVopt(AST_INODES(node));
+    TRAVinodes(node);
     return node;
 }
 
 node_st *DGNAFinode(node_st *node) {
     curr_node = node;
-    TRAVopt(INODE_ICHILDREN(node));
-    TRAVopt(INODE_IATTRIBUTES(node));
+    TRAVichildren(node);
+    TRAViattributes(node);
     curr_node = NULL;
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 

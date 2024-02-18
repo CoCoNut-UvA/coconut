@@ -8,6 +8,7 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccngen/ast.h"
+#include "ccngen/trav.h"
 #include "ccn/dynamic_core.h"
 #include "frontend/ctihelp.h"
 #include "frontend/symboltable.h"
@@ -119,7 +120,7 @@ node_st  *CEXitravdata(node_st *node)
         }
     }
 
-    TRAVopt(ITRAVDATA_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -145,24 +146,24 @@ node_st *CEXinode(node_st *node)
             CTI(CTI_ERROR, true, "Double definition of root node");
         }
     }
-    TRAVopt(INODE_IATTRIBUTES(node));
-    TRAVopt(INODE_ICHILDREN(node));
+    TRAViattributes(node);
+    TRAVichildren(node);
     if (node_ste != NULL) {
         TRAVstart(node_ste, TRAV_free);
         node_ste = NULL;
     }
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
 node_st *CEXinodeset(node_st *node)
 {
-    TRAVopt(INODESET_IATTRIBUTES(node));
+    TRAViattributes(node);
     if (node_ste != NULL) {
         TRAVstart(node_ste, TRAV_free);
         node_ste = NULL;
     }
-    TRAVopt(INODESET_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 

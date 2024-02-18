@@ -15,6 +15,7 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 #include "dynamic_backend/gen_helpers.h"
 
 static int arg_num = 0;
@@ -51,7 +52,7 @@ node_st *DGCTast(node_st *node)
     OUT_STATEMENT("NODE_ELINE(target) = NODE_ELINE(source)");
     OUT_STATEMENT("NODE_FILENAME(target) = STRcpy(NODE_FILENAME(source))");
     OUT_END_FUNC();
-    TRAVopt(AST_INODES(node));
+    TRAVinodes(node);
     return node;
 }
 
@@ -65,11 +66,11 @@ node_st *DGCTinode(node_st *node)
     OUT_START_FUNC(DGH_TRAV_FUNC_SIG(), "CPY", DGH_TRAVERSAL_TARGET_ID(INODE_NAME(node)), node_argument_name);
     TRAVstart(node, TRAV_DGCC);
     OUT_STATEMENT("CopyBaseNode(%s, %s)", new_node_name, node_argument_name);
-    TRAVopt(INODE_ICHILDREN(node));
-    TRAVopt(INODE_IATTRIBUTES(node));
+    TRAVichildren(node);
+    TRAViattributes(node);
     OUT_FIELD("return %s", new_node_name);
     OUT_END_FUNC();
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -79,7 +80,7 @@ node_st *DGCTchild(node_st *node)
     char *node_name = ID_UPR(INODE_NAME(curr_node));
     char *child_name = ID_UPR(CHILD_NAME(node));
     OUT_FIELD("%s_%s(new_node) = TRAVopt(%s_%s(arg_node))", node_name, child_name, node_name, child_name);
-    TRAVopt(CHILD_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -91,7 +92,7 @@ node_st *DGCTattribute(node_st *node)
 
     // We do not copy inherited and synthesized attributes.
     if (ATTRIBUTE_IS_INHERITED(node) || ATTRIBUTE_IS_SYNTHESIZED(node)) {
-        TRAVopt(ATTRIBUTE_NEXT(node));
+        TRAVnext(node);
         return node;
     }
 
@@ -107,6 +108,6 @@ node_st *DGCTattribute(node_st *node)
     } else {
         OUT_FIELD("%s_%s(new_node) = %s_%s(arg_node)", node_name, attr_name, node_name, attr_name);
     }
-    TRAVopt(ATTRIBUTE_NEXT(node));
+    TRAVnext(node);
     return node;
 }

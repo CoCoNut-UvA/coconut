@@ -148,7 +148,7 @@ struct ccn_node *CHKienum(struct ccn_node *arg_node) {
     (void)action_id;
     if (IENUM_VALS(arg_node)) {
         if (NODE_TYPE(IENUM_VALS(arg_node)) != NT_ID) {
-            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(Vals) of node(ienum) has disallowed type(%s) ", nodetypeToName(IENUM_VALS(arg_node)));
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(vals) of node(ienum) has disallowed type(%s) ", nodetypeToName(IENUM_VALS(arg_node)));
         }
 
     }

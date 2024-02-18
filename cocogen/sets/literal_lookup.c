@@ -2,6 +2,7 @@
 #include <string.h>
 #include <assert.h>
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 
 void SLCinit() { return; }
 void SLCfini() { return; }
@@ -16,9 +17,9 @@ node_st *SLCsetliteral(node_st *node)
     if (cmp == 0) {
         data->contains = true;
     } else if (cmp < 0) {
-        TRAVopt(SETLITERAL_LEFT(node));
+        TRAVleft(node);
     } else {
-        TRAVopt(SETLITERAL_RIGHT(node));
+        TRAVright(node);
     }
 
     return node;

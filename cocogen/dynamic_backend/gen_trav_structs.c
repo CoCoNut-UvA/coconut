@@ -1,6 +1,7 @@
 #include "palm/dbug.h"
 #include "gen_helpers/out_macros.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 #include "gen_helpers/format.h"
 #include "globals.h"
 #include "frontend/symboltable.h"
@@ -21,10 +22,10 @@ node_st *DGTDSitraversal(node_st *node)
     GeneratorContext *ctx = globals.gen_ctx;
     if (ITRAVERSAL_DATA(node)) {
         OUT_STRUCT("data_%s", ID_LWR(ITRAVERSAL_IPREFIX(node)));
-        TRAVdo(ITRAVERSAL_DATA(node));
+        TRAVdata(node);
         OUT_STRUCT_END();
     }
-    TRAVopt(ITRAVERSAL_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -46,7 +47,7 @@ node_st *DGTDSitravdata(node_st *node)
     } else {
         OUT_FIELD("%s %s", FMTattributeTypeToString(ITRAVDATA_TYPE(node)), ID_ORIG(ITRAVDATA_NAME(node)));
     }
-    TRAVopt(ITRAVDATA_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 

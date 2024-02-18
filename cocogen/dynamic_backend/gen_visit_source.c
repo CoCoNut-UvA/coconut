@@ -11,6 +11,7 @@
 #include "ccn/ccn.h"
 #include "ccn/dynamic_core.h"
 #include "ccngen/ast.h"
+#include "ccngen/trav.h"
 #include "dynamic_backend/collect_children.h"
 #include "frontend/symboltable.h"
 #include "gen_helpers/format.h"
@@ -150,7 +151,7 @@ node_st *DGVSvisit(node_st *node) {
         OUT_NO_INDENT("\n");
     }
 
-    TRAVopt(VISIT_SEQUENCE(node));
+    TRAVsequence(node);
 
     if (!VISIT_OUTPUTS(node)) { // 0 output
         OUT("return;\n");
@@ -176,7 +177,7 @@ node_st *DGVSvisit(node_st *node) {
     OUT_END_FUNC();
 
     MEMfree(visit_name);
-    TRAVopt(VISIT_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -367,7 +368,7 @@ node_st *DGVSvisit_sequence_eval(node_st *node) {
     HTdelete(children_null);
     destroy_child_list(children);
 
-    TRAVopt(VISIT_SEQUENCE_EVAL_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -564,6 +565,6 @@ node_st *DGVSvisit_sequence_visit(node_st *node) {
 
     MEMfree(child_access);
 
-    TRAVopt(VISIT_SEQUENCE_VISIT_NEXT(node));
+    TRAVnext(node);
     return node;
 }

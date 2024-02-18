@@ -7,6 +7,7 @@
 #include "dynamic_backend/gen_helpers.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 
 
 extern bool dgif_print_semicolon;
@@ -18,7 +19,7 @@ static char *node_name_lwr = NULL;
 node_st *DGNCast(node_st *node)
 {
     dgif_print_semicolon = false;
-    TRAVopt(AST_INODES(node));
+    TRAVinodes(node);
     return node;
 }
 
@@ -40,8 +41,8 @@ node_st *DGNCinode(node_st *node)
         OUT_FIELD("NODE_TYPE(node) = %s%s", "NT_", ID_UPR(INODE_NAME(node)));
 
 
-        TRAVopt(INODE_ICHILDREN(node));
-        TRAVopt(INODE_IATTRIBUTES(node));
+        TRAVichildren(node);
+        TRAViattributes(node);
         OUT_FIELD("NODE_NUMCHILDREN(node) = %ld", num_children);
         if (num_children) {
             char *name_lwr = ID_LWR(INODE_NAME(node));
@@ -54,7 +55,7 @@ node_st *DGNCinode(node_st *node)
     INODE_NEXT(node) = next;
     assert(INODE_NEXT(node) == next);
 
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 

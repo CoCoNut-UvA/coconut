@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 #include "frontend/symboltable.h"
 #include "gen_helpers/out_macros.h"
 #include "globals.h"
@@ -18,7 +19,7 @@ node_st *DGNSast(node_st *node)
 {
     ste = AST_STABLE(node);
     ast = node;
-    TRAVopt(AST_INODES(node));
+    TRAVinodes(node);
     return node;
 }
 
@@ -34,18 +35,18 @@ node_st *DGNSinode(node_st *node)
             OUT_UNION("NODE_CHILDREN_%s", name_upr);
             OUT_STRUCT("NODE_CHILDREN_%s_STRUCT", name_upr);
             child_num = 0;
-            TRAVdo(INODE_ICHILDREN(node));
+            TRAVichildren(node);
             OUT_TYPEDEF_STRUCT_END("%s_children_st", name_lwr);
             OUT_FIELD("%s *%s_children_at[%d]", basic_node_type, name_lwr, child_num);
             OUT_TYPEDEF_STRUCT_END("%s_children", name_lwr);
         }
         curr_node = node;
-        TRAVopt(INODE_IATTRIBUTES(node));
+        TRAViattributes(node);
         curr_node = NULL;
     }
     OUT_STRUCT_END();
 
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 

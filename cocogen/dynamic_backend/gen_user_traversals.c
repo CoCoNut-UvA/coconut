@@ -1,4 +1,5 @@
 #include "ccngen/ast.h"
+#include "ccngen/trav.h"
 #include "ccn/dynamic_core.h"
 #include "globals.h"
 #include "palm/str.h"
@@ -12,7 +13,7 @@ static node_st *ast;
 node_st *DUGTast(node_st *node)
 {
     ast = node;
-    TRAVopt(AST_ITRAVERSALS(node));
+    TRAVitraversals(node);
     return node;
 }
 
@@ -48,19 +49,19 @@ node_st *DUGTitraversal(node_st *node)
         OUT("\n");
     }
     if (ITRAVERSAL_INODES(node)) {
-        TRAVdo(ITRAVERSAL_INODES(node));
+        TRAVinodes(node);
     } else {
-        TRAVdo(AST_INODES(ast));
+        TRAVinodes(ast);
     }
 
-    TRAVopt(ITRAVERSAL_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
 node_st *DUGTinode(node_st *node)
 {
-    TRAVopt(INODE_NEXT(node));
-    TRAVdo(INODE_NAME(node));
+    TRAVnext(node);
+    TRAVname(node);
     return node;
 }
 
@@ -71,6 +72,6 @@ node_st *DUGTid(node_st *node)
     OUT(" * @fn %s%s\n", curr_trav, ID_LWR(node));
     OUT(" */\n");
     OUT("node_st *%s%s(node_st *node)\n{\n    TRAVchildren(node);\n    return node;\n}\n\n", curr_trav, ID_LWR(node));
-    TRAVopt(ID_NEXT(node));
+    TRAVnext(node);
     return node;
 }

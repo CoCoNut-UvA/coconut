@@ -1,5 +1,6 @@
 #include "gen_helpers/out_macros.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 #include "gen_helpers/format.h"
 #include "globals.h"
 
@@ -13,16 +14,16 @@ node_st *DGTDCitraversal(node_st *node)
     if (ITRAVERSAL_DATA(node)) {
         has_user_type = false;
         check_user_type = true;
-        TRAVdo(ITRAVERSAL_DATA(node));
+        TRAVdata(node);
         check_user_type = false;
         OUT_FIELD("extern void %sinit()", ID_UPR(ITRAVERSAL_IPREFIX(node)));
         OUT_FIELD("extern void %sfini()", ID_UPR(ITRAVERSAL_IPREFIX(node)));
-        
+
         OUT_START_FUNC("void TRAVdataInit%s(ccn_trav_st *trav)", ID_ORIG(id));
         OUT_FIELD("trav->trav_data.%s = MEMmalloc(sizeof(struct data_%s))",
                   ID_LWR(id), ID_LWR(ITRAVERSAL_IPREFIX(node)));
         OUT_FIELD("struct data_%s *data = trav->trav_data.%s", ID_LWR(ITRAVERSAL_IPREFIX(node)), ID_LWR(id));
-        TRAVdo(ITRAVERSAL_DATA(node));
+        TRAVdata(node);
         OUT_FIELD("%sinit()", ID_UPR(ITRAVERSAL_IPREFIX(node)));
         OUT_END_FUNC();
 
@@ -31,7 +32,7 @@ node_st *DGTDCitraversal(node_st *node)
         OUT_FIELD("MEMfree(trav->trav_data.%s)", ID_LWR(id));
         OUT_END_FUNC();
     }
-    TRAVopt(ITRAVERSAL_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -43,7 +44,7 @@ node_st *DGTDCitravdata(node_st *node)
         if (ITRAVDATA_TYPE(node) == AT_user) {
             has_user_type = true;
         } else {
-            TRAVopt(ITRAVDATA_NEXT(node));
+            TRAVnext(node);
         }
         return node;
     }
@@ -55,6 +56,6 @@ node_st *DGTDCitravdata(node_st *node)
         OUT_FIELD("data->%s = %s", ID_ORIG(ITRAVDATA_NAME(node)), FMTattributeDefaultVal(ITRAVDATA_TYPE(node)));
     }
 
-    TRAVopt(ITRAVDATA_NEXT(node));
+    TRAVnext(node);
     return node;
 }

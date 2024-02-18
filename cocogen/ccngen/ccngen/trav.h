@@ -20,7 +20,7 @@ node_st *TRAVenums(node_st *node);
 node_st *TRAVattribute(node_st *node);
 node_st *TRAViattribute(node_st *node);
 node_st *TRAVichildren(node_st *node);
-node_st *TRAVVals(node_st *node);
+node_st *TRAVvals(node_st *node);
 node_st *TRAVnext(node_st *node);
 node_st *TRAValt(node_st *node);
 node_st *TRAVleft(node_st *node);

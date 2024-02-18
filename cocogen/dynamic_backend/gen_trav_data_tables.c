@@ -2,6 +2,7 @@
 #include "ccn/dynamic_core.h"
 #include "gen_helpers/format.h"
 #include "globals.h"
+#include "ccngen/trav.h"
 #include "ccngen/trav_data.h"
 
 void DGTDTinit()
@@ -22,7 +23,7 @@ node_st *DGTDTast(node_st *node)
     OUT("const ccn_trav_data_ft trav_data_init_vtable[_TRAV_SIZE] = {TRAVdataNOP,");
     data->in_init_round = true;
     data->indent = indent;
-    TRAVopt(AST_ITRAVERSALS(node));
+    TRAVitraversals(node);
     // For system traversal(check, free, copy)
     OUT("TRAVdataNOP, TRAVdataNOP, TRAVdataNOP");
     OUT("};\n");
@@ -30,7 +31,7 @@ node_st *DGTDTast(node_st *node)
     OUT("const ccn_trav_data_ft trav_data_free_vtable[_TRAV_SIZE] = {TRAVdataNOP,");
     data->in_init_round = false;
     data->indent = indent;
-    TRAVopt(AST_ITRAVERSALS(node));
+    TRAVitraversals(node);
     // For system traversal(check, free, copy)
     OUT("TRAVdataNOP, TRAVdataNOP, TRAVdataNOP");
     OUT("};\n");
@@ -51,6 +52,6 @@ node_st *DGTDTitraversal(node_st *node)
     } else {
         OUT("TRAVdataNOP,");
     }
-    TRAVopt(ITRAVERSAL_NEXT(node));
+    TRAVnext(node);
     return node;
 }

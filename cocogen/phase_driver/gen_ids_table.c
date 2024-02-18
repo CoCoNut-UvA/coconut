@@ -2,6 +2,7 @@
 
 #include "gen_helpers/out_macros.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 #include "globals.h"
 
 static node_st *ast;
@@ -32,7 +33,7 @@ node_st *GITiactions(node_st *node)
 {
     GeneratorContext *ctx = globals.gen_ctx;
     OUT("%s_%s, ", enum_action_pref, ID_UPR(IACTIONS_REFERENCE(node)));
-    TRAVopt(IACTIONS_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -41,10 +42,10 @@ node_st *GITiphase(node_st *node)
     GeneratorContext *ctx = globals.gen_ctx;
     OUT("enum %s %s_ids_table[] = {", enum_action_name, ID_LWR(IPHASE_NAME(node)));
     GNindentIncrease(ctx);
-    TRAVopt(IPHASE_IACTIONS(node));
+    TRAViactions(node);
     OUT("%s_NULL, ", enum_action_pref);
     OUT_ENUM_END();
-    TRAVopt(IPHASE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 

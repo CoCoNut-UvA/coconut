@@ -118,21 +118,21 @@ node_st *PRTinode(node_st *node)
     PrintIndent();
     printf("Children {\n");
     INDENT;
-    TRAVopt(INODE_ICHILDREN(node));
+    TRAVichildren(node);
     UNINDENT;
     PrintIndent();
     printf("}\n");
     PrintIndent();
     printf("Attributes {\n");
     INDENT;
-    TRAVopt(INODE_IATTRIBUTES(node));
+    TRAViattributes(node);
     UNINDENT;
     PrintIndent();
     printf("}\n");
     PrintIndent();
     printf("Equations {\n");
     INDENT;
-    TRAVopt(INODE_IEQUATIONS(node));
+    TRAViequations(node);
     UNINDENT;
     PrintIndent();
     printf("}\n");
@@ -141,19 +141,19 @@ node_st *PRTinode(node_st *node)
     PrintIndent();
     printf("Visits {\n");
     INDENT;
-    TRAVopt(INODE_VISIT(node));
+    TRAVvisit(node);
     UNINDENT;
     PrintIndent();
     printf("}\n");
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
 
     return node;
 }
 
 node_st *PRTchild(node_st *node)
 {
-    TRAVopt(CHILD_NAME(node));
-    TRAVopt(CHILD_NEXT(node));
+    TRAVname(node);
+    TRAVnext(node);
     return node;
 }
 
@@ -249,7 +249,7 @@ node_st *PRTattribute(node_st *node)
         printf("}");
     }
     printf("}\n");
-    TRAVopt(ATTRIBUTE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -269,7 +269,7 @@ node_st *PRTequation(node_st *node)
     UNINDENT;
     PrintIndent();
     printf("}\n");
-    TRAVopt(EQUATION_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -316,8 +316,8 @@ node_st *PRTsetliteral(node_st *node)
         PrintIndent();
         printf("%s\n", ID_ORIG(SETLITERAL_REFERENCE(node)));
     }
-    TRAVopt(SETLITERAL_LEFT(node));
-    TRAVopt(SETLITERAL_RIGHT(node));
+    TRAVleft(node);
+    TRAVright(node);
     return node;
 }
 
@@ -360,12 +360,12 @@ node_st *PRTinodeset(node_st *node)
     }
     printf("{\n");
     INDENT;
-    TRAVopt(INODESET_EXPR(node));
+    TRAVexpr(node);
 
     PrintIndent();
     printf("Child nodesets {\n");
     INDENT;
-    TRAVopt(INODESET_CHILDREN_TABLE(node));
+    TRAVchildren_table(node);
     UNINDENT;
     PrintIndent();
     printf("}\n");
@@ -373,7 +373,7 @@ node_st *PRTinodeset(node_st *node)
     PrintIndent();
     printf("Attributes {\n");
     INDENT;
-    TRAVopt(INODESET_IATTRIBUTES(node));
+    TRAViattributes(node);
     UNINDENT;
     PrintIndent();
     printf("}\n");
@@ -382,14 +382,14 @@ node_st *PRTinodeset(node_st *node)
     PrintIndent();
     printf("}\n");
 
-    TRAVopt(INODESET_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
 node_st *PRTnodeset_child_entry(node_st *node) {
     PrintIndent();
     printf("%s\n", ID_ORIG(INODESET_NAME(NODESET_CHILD_ENTRY_REFERENCE(node))));
-    TRAVopt(NODESET_CHILD_ENTRY_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -421,12 +421,12 @@ node_st *PRTilifetime(node_st *node)
         printf("disallowed");
     }
     printf("(");
-    TRAVopt(ILIFETIME_BEGIN(node));
+    TRAVbegin(node);
     printf(" -> ");
-    TRAVopt(ILIFETIME_END(node));
+    TRAVend(node);
     printf(")\n");
 
-    TRAVopt(ILIFETIME_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -459,15 +459,15 @@ node_st *PRTvisit(node_st *node)
     PrintIndent();
     printf("%s_%lu (in: {", ID_LWR(INODE_NAME(VISIT_INODE(node))),
                             VISIT_INDEX(node));
-    TRAVopt(VISIT_INPUTS(node));
+    TRAVinputs(node);
     printf("} out: {");
-    TRAVopt(VISIT_OUTPUTS(node));
+    TRAVoutputs(node);
     printf("}) {\n");
     INDENT;
-    TRAVopt(VISIT_SEQUENCE(node));
+    TRAVsequence(node);
     UNINDENT;
     printf("}\n");
-    TRAVopt(VISIT_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -478,9 +478,9 @@ node_st *PRTvisit_sequence_eval(node_st *node)
 {
     PrintIndent();
     printf("eval ");
-    TRAVdo(VISIT_SEQUENCE_EVAL_ATTRIBUTE(node));
+    TRAVattribute(node);
     printf("\n");
-    TRAVopt(VISIT_SEQUENCE_EVAL_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -494,7 +494,7 @@ node_st *PRTvisit_sequence_dummy(node_st *node)
     if (VISIT_SEQUENCE_DUMMY_ALT(node)) {
         printf(" or\n");
         INDENT;
-        TRAVdo(VISIT_SEQUENCE_DUMMY_ALT(node));
+        TRAValt(node);
         UNINDENT;
     } else {
         printf("\n");
@@ -517,12 +517,12 @@ node_st *PRTvisit_sequence_visit(node_st *node)
     if (VISIT_SEQUENCE_VISIT_ALT(node)) {
         printf(" or\n");
         INDENT;
-        TRAVdo(VISIT_SEQUENCE_VISIT_ALT(node));
+        TRAValt(node);
         UNINDENT;
     } else {
         printf("\n");
     }
 
-    TRAVopt(VISIT_SEQUENCE_VISIT_NEXT(node));
+    TRAVnext(node);
     return node;
 }

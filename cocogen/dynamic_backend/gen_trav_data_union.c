@@ -1,5 +1,6 @@
 #include "gen_helpers/out_macros.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 #include "gen_helpers/format.h"
 #include "globals.h"
 
@@ -16,7 +17,7 @@ node_st *DGTDUast(node_st *node)
     OUT_NO_INDENT("#endif\n\n");
 
     OUT_UNION("TRAV_DATA");
-    TRAVopt(AST_ITRAVERSALS(node));
+    TRAVitraversals(node);
     OUT_STRUCT_END();
 
     OUT_NO_INDENT("#if defined(__clang__)\n");
@@ -36,6 +37,6 @@ node_st *DGTDUitraversal(node_st *node)
     if (ITRAVERSAL_DATA(node)) {
         OUT_FIELD("struct data_%s *%s", ID_LWR(ITRAVERSAL_IPREFIX(node)), ID_LWR(id));
     }
-    TRAVopt(ITRAVERSAL_NEXT(node));
+    TRAVnext(node);
     return node;
 }

@@ -24,6 +24,7 @@
 #include "assert.h"
 #include "palm/str.h"
 #include "ccngen/ast.h"
+#include "ccngen/trav.h"
 #include "ccn/dynamic_core.h"
 
 #include "frontend/reachability.h"
@@ -44,7 +45,7 @@ node_st *RCBast(node_st *node)
     child_visited = MEMmalloc(sizeof(int) * AST_NUM_NODES(node) + 1);
     ast = node;
     ste = AST_STABLE(node);
-    TRAVopt(AST_ITRAVERSALS(node));
+    TRAVitraversals(node);
 
     MEMfree(child_visited);
     return node;
@@ -63,13 +64,13 @@ node_st *RCBitraversal(node_st *node)
         }
     } else {
         is_traversal_nodes = true;
-        TRAVdo(ITRAVERSAL_INODES(node));
+        TRAVinodes(node);
         is_traversal_nodes = false;
         child_is_reachable = false;
-        TRAVdo(AST_INODES(ast));
+        TRAVinodes(ast);
     }
 
-    TRAVopt(ITRAVERSAL_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -79,12 +80,12 @@ node_st *RCBinode(node_st *node)
         child_is_reachable = false;
         // To track if we visited children already to prevent infinite recursion.
         memset(child_visited, 0, sizeof(int) * AST_NUM_NODES(ast));
-        TRAVopt(INODE_ICHILDREN(node));
+        TRAVichildren(node);
         if (child_is_reachable) {
             reachability_matrix[trav_index][INODE_INDEX(node)] = RCB_NODE_HANDLED_BY_TRAV;
         }
     }
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -107,13 +108,13 @@ node_st *RCBchild(node_st *node)
             if (reach && reach != RCB_NODE_NOT_HANDLED) {
                 child_is_reachable = true;
             } else {
-                TRAVopt(INODE_ICHILDREN(inode));
+                TRAVichildren(inode);
             }
         }
     }
     // Stop the search if we already found that a child is reachable.
     if (!child_is_reachable) {
-        TRAVopt(CHILD_NEXT(node));
+        TRAVnext(node);
     }
     return node;
 }
@@ -131,13 +132,13 @@ node_st *RCBsetliteral(node_st *node)
             if (reach && reach != RCB_NODE_NOT_HANDLED) {
                 child_is_reachable = true;
             } else {
-                TRAVopt(INODE_ICHILDREN(inode));
+                TRAVichildren(inode);
             }
         }
     }
 
-    TRAVopt(SETLITERAL_LEFT(node));
-    TRAVopt(SETLITERAL_RIGHT(node));
+    TRAVleft(node);
+    TRAVright(node);
     return node;
 }
 

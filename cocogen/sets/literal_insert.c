@@ -1,5 +1,6 @@
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 #include "ccngen/trav_data.h"
 #include <string.h>
 #include <assert.h>
@@ -30,13 +31,13 @@ node_st *SLIsetliteral(node_st *node)
         data->inserted = false;
     } else if (cmp < 0) {
         if (SETLITERAL_LEFT(node)) {
-            TRAVdo(SETLITERAL_LEFT(node));
+            TRAVleft(node);
         } else {
             SETLITERAL_LEFT(node) = NewLiteral(data);
         }
     } else {
         if (SETLITERAL_RIGHT(node)) {
-            TRAVdo(SETLITERAL_RIGHT(node));
+            TRAVright(node);
         } else {
             SETLITERAL_RIGHT(node) = NewLiteral(data);
         }

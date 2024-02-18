@@ -8,6 +8,7 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 
 
 
@@ -19,7 +20,7 @@ static char *system_trav_table_template = "const ccn_trav_ft ccn_%s_vtable[_NT_S
  * Generates a vtable according to the given data.
  * The name of the vtable is `ccn_<trav_name>_vtable` and should correspond
  * to the one defined in vtable entries(see dynamic_backend/gen_trav_table.c).
- * 
+ *
  * The second parameter (trav_prefix) is the prefix or uid of the system traversal.
  * This will be used in the generation of the handler functions for the traversal.
  * It is a good idea to prefix this with `CCN_`.
@@ -30,7 +31,7 @@ static void GenSystemTraversalVtable(char *trav_prefix, char *trav_name)
     GeneratorContext *ctx = globals.gen_ctx;
     OUT(system_trav_table_template, trav_name);
     prefix = trav_prefix;
-    TRAVopt(AST_INODES(ast));
+    TRAVinodes(ast);
     OUT("};\n");
 }
 
@@ -54,7 +55,7 @@ node_st *DGSTinode(node_st *node)
     } else {
         OUT("&%s%s, ", prefix, ID_LWR(INODE_NAME(node)));
     }
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
 
     return node;
 }

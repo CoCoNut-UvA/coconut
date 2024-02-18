@@ -34,10 +34,10 @@ node_st *DGNAFEast(node_st *node) {
 
 node_st *DGNAFEinode(node_st *node) {
     curr_node = node;
-    TRAVopt(INODE_ICHILDREN(node));
-    TRAVopt(INODE_IATTRIBUTES(node));
+    TRAVichildren(node);
+    TRAViattributes(node);
     curr_node = NULL;
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 

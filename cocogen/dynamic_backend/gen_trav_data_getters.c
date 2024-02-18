@@ -1,5 +1,6 @@
 #include "gen_helpers/out_macros.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 #include "gen_helpers/format.h"
 #include "globals.h"
 
@@ -13,6 +14,6 @@ node_st *DGTDGitraversal(node_st *node)
             ID_UPR(id), ID_LWR(ITRAVERSAL_NAME(node)));
     }
 
-    TRAVopt(ITRAVERSAL_NEXT(node));
+    TRAVnext(node);
     return node;
 }

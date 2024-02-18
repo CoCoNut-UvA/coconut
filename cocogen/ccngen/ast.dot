@@ -2,7 +2,7 @@ digraph Ast {
 id;
 id -> id[label="next"]
 ienum;
-ienum -> id[label="Vals"]
+ienum -> id[label="vals"]
 ienum -> id[label="name"]
 ienum -> id[label="iprefix"]
 ienum -> ienum[label="next"]

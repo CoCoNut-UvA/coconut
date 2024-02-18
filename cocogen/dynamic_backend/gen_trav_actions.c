@@ -7,6 +7,7 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 
 extern char *current_trav_prefix;
 
@@ -20,6 +21,6 @@ node_st *DGTAinode(node_st *node)
 {
     GeneratorContext *ctx = globals.gen_ctx;
     OUT_FIELD("struct ccn_node *%s%s(struct ccn_node *node)", current_trav_prefix, ID_LWR(INODE_NAME(node)));
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
     return node;
 }

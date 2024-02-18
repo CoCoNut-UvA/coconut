@@ -7,6 +7,7 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 
 static char *curr_node_name = NULL;
 static char *curr_node_name_upr = NULL;
@@ -24,10 +25,10 @@ node_st *DGNMinodeset(node_st *node)
 {
     curr_nodeset_name = ID_LWR(INODESET_NAME(node));
     curr_nodeset_name_upr = ID_UPR(INODESET_NAME(node));
-    TRAVopt(INODESET_IATTRIBUTES(node));
+    TRAViattributes(node);
     curr_nodeset_name_upr = NULL;
     curr_nodeset_name = NULL;
-    TRAVopt(INODESET_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -35,11 +36,11 @@ node_st *DGNMinode(node_st *node)
 {
     curr_node_name = ID_LWR(INODE_NAME(node));
     curr_node_name_upr = ID_UPR(INODE_NAME(node));
-    TRAVopt(INODE_ICHILDREN(node));
-    TRAVopt(INODE_IATTRIBUTES(node));
+    TRAVichildren(node);
+    TRAViattributes(node);
     curr_node_name_upr = NULL;
     curr_node_name = NULL;
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 

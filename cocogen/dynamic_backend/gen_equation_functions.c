@@ -9,6 +9,7 @@
 
 #include "ccn/ccn.h"
 #include "ccngen/ast.h"
+#include "ccngen/trav.h"
 #include "dynamic_backend/collect_children.h"
 #include "frontend/symboltable.h"
 #include "gen_helpers/out_macros.h"
@@ -55,7 +56,7 @@ static inline void print_type(node_st *attribute) {
  */
 node_st *DGEFast(node_st *node) {
     ste = AST_STABLE(node);
-    TRAVopt(AST_INODES(node));
+    TRAVinodes(node);
     return node;
 }
 
@@ -77,9 +78,9 @@ node_st *DGEFinode(node_st *node) {
         OUT("\n");
     }
     curr_node = node;
-    TRAVopt(INODE_IEQUATIONS(node));
+    TRAViequations(node);
     curr_node = NULL;
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -175,6 +176,6 @@ node_st *DGEFequation(node_st *node) {
     destroy_child_list(children);
     HTdelete(children_null);
 
-    TRAVopt(EQUATION_NEXT(node));
+    TRAVnext(node);
     return node;
 }

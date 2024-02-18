@@ -943,7 +943,7 @@ node visit_sequence_dummy {
 
 node ienum {
     children {
-        id Vals {constructor},
+        id vals {constructor},
         id name {constructor},
         id iprefix {constructor},
         ienum next
