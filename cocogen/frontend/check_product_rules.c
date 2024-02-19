@@ -159,7 +159,7 @@ static void check_attribute_reference(node_st *node, bool in_rule) {
     if (NODE_TYPE(ref_node) == NT_INODE) {
         attribute = find_attribute(ref_node, INODE_IATTRIBUTES(ref_node),
                                    ATTRIBUTE_REFERENCE_IATTRIBUTE(node));
-        node_name = INODESET_NAME(ref_node);
+        node_name = INODE_NAME(ref_node);
     } else {
         assert(NODE_TYPE(ref_node) == NT_INODESET);
 

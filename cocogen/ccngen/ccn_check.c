@@ -3,13 +3,16 @@
 #include "ccn/phase_driver.h"
 #include "ccngen/ast.h"
 #include "palm/ctinfo.h"
-char *nodetypeToName(node_st *node) {
+static inline char *nodetypeToName(node_st *node) {
     switch (NODE_TYPE(node)) {
         case NT_ID:
             return "id";
             break;
         case NT_IENUM:
             return "ienum";
+            break;
+        case NT_VISIT_SEQUENCE_DUMMY:
+            return "visit_sequence_dummy";
             break;
         case NT_VISIT_SEQUENCE_VISIT:
             return "visit_sequence_visit";
@@ -89,6 +92,11 @@ char *nodetypeToName(node_st *node) {
 
 }
 
+static bool TypeIsvisit_sequence_alt(node_st *arg_node) {
+    enum ccn_nodetype node_type = NODE_TYPE(arg_node);
+    return (false || node_type == NT_VISIT_SEQUENCE_VISIT || node_type == NT_VISIT_SEQUENCE_DUMMY    );
+}
+
 static bool TypeIsvisit_sequence(node_st *arg_node) {
     enum ccn_nodetype node_type = NODE_TYPE(arg_node);
     return (false || node_type == NT_VISIT_SEQUENCE_EVAL || node_type == NT_VISIT_SEQUENCE_VISIT    );
@@ -140,7 +148,7 @@ struct ccn_node *CHKienum(struct ccn_node *arg_node) {
     (void)action_id;
     if (IENUM_VALS(arg_node)) {
         if (NODE_TYPE(IENUM_VALS(arg_node)) != NT_ID) {
-            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(Vals) of node(ienum) has disallowed type(%s) ", nodetypeToName(IENUM_VALS(arg_node)));
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(vals) of node(ienum) has disallowed type(%s) ", nodetypeToName(IENUM_VALS(arg_node)));
         }
 
     }
@@ -170,11 +178,29 @@ struct ccn_node *CHKienum(struct ccn_node *arg_node) {
     return arg_node;
 }
 
+struct ccn_node *CHKvisit_sequence_dummy(struct ccn_node *arg_node) {
+    size_t action_id = CCNgetCurrentActionId();
+    (void)action_id;
+    if (VISIT_SEQUENCE_DUMMY_ALT(arg_node)) {
+        if (!TypeIsvisit_sequence_alt(VISIT_SEQUENCE_DUMMY_ALT(arg_node))) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(alt) of node(visit_sequence_dummy) has disallowed type(%s) ", nodetypeToName(VISIT_SEQUENCE_DUMMY_ALT(arg_node)));
+        }
+
+    }
+
+    if (VISIT_SEQUENCE_DUMMY_INODE(arg_node) == NULL) {
+        CTI(CTI_ERROR, true, "Attribute(inode) in node(visit_sequence_dummy) is missing, but specified as mandatory.\n");;
+    }
+
+    TRAVchildren(arg_node);
+    return arg_node;
+}
+
 struct ccn_node *CHKvisit_sequence_visit(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
     (void)action_id;
     if (VISIT_SEQUENCE_VISIT_ALT(arg_node)) {
-        if (NODE_TYPE(VISIT_SEQUENCE_VISIT_ALT(arg_node)) != NT_VISIT_SEQUENCE_VISIT) {
+        if (!TypeIsvisit_sequence_alt(VISIT_SEQUENCE_VISIT_ALT(arg_node))) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(alt) of node(visit_sequence_visit) has disallowed type(%s) ", nodetypeToName(VISIT_SEQUENCE_VISIT_ALT(arg_node)));
         }
 

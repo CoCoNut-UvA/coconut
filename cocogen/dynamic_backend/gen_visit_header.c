@@ -11,6 +11,7 @@
 #include "ccn/ccn.h"
 #include "ccn/dynamic_core.h"
 #include "ccngen/ast.h"
+#include "ccngen/trav.h"
 #include "frontend/symboltable.h"
 #include "gen_helpers/format.h"
 #include "gen_helpers/out_macros.h"
@@ -95,6 +96,6 @@ node_st *DGVFvisit(node_st *node) {
     }
     OUT_NO_INDENT(");\n\n");
     MEMfree(visit_name);
-    TRAVopt(VISIT_NEXT(node));
+    TRAVnext(node);
     return node;
 }

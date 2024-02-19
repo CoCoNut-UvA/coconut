@@ -43,6 +43,7 @@ struct data_cpr {
 };
 
 struct data_cha {
+    node_st *curr_node;
     bool in_nodeset;
 };
 
@@ -73,6 +74,20 @@ struct data_dgtdt {
     fileptr file;
 };
 
+struct data_csm {
+    node_st *curr_child;
+    node_st *ste;
+};
+
+// Ignore empty struct warning
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-empty-struct"
+#elif defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#endif
+
 union TRAV_DATA {
     struct data_slc *setliteralcontains;
     struct data_sld *setliteraldifference;
@@ -87,7 +102,14 @@ union TRAV_DATA {
     struct data_dgcht *dynamicgenchecktraversal;
     struct data_dgt_f *dynamicgentravfunctions;
     struct data_dgtdt *dynamicgentravdatatables;
+    struct data_csm *childrensetmandatory;
 };
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#elif defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 #define DATA_SLC_GET() (TRAVgetCurrent()->trav_data.setliteralcontains)
 #define DATA_SLD_GET() (TRAVgetCurrent()->trav_data.setliteraldifference)
@@ -102,6 +124,7 @@ union TRAV_DATA {
 #define DATA_DGCHT_GET() (TRAVgetCurrent()->trav_data.dynamicgenchecktraversal)
 #define DATA_DGT_F_GET() (TRAVgetCurrent()->trav_data.dynamicgentravfunctions)
 #define DATA_DGTDT_GET() (TRAVgetCurrent()->trav_data.dynamicgentravdatatables)
+#define DATA_CSM_GET() (TRAVgetCurrent()->trav_data.childrensetmandatory)
 void TRAVdataInitsetliteralContains(struct ccn_trav *trav);
 void TRAVdataFreesetliteralContains(struct ccn_trav *trav);
 void TRAVdataInitsetliteralDifference(struct ccn_trav *trav);
@@ -128,3 +151,5 @@ void TRAVdataInitdynamicGenTravFunctions(struct ccn_trav *trav);
 void TRAVdataFreedynamicGenTravFunctions(struct ccn_trav *trav);
 void TRAVdataInitdynamicGenTravDataTables(struct ccn_trav *trav);
 void TRAVdataFreedynamicGenTravDataTables(struct ccn_trav *trav);
+void TRAVdataInitchildrenSetMandatory(struct ccn_trav *trav);
+void TRAVdataFreechildrenSetMandatory(struct ccn_trav *trav);

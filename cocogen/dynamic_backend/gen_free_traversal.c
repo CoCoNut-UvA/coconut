@@ -7,6 +7,7 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 
 
 static node_st *ast;
@@ -20,7 +21,7 @@ node_st *DGFTast(node_st *node)
     OUT("#include \"ccn/dynamic_core.h\"\n");
     OUT("#include \"palm/memory.h\"\n");
     ast = node;
-    TRAVopt(AST_INODES(node));
+    TRAVinodes(node);
     return node;
 }
 
@@ -58,13 +59,13 @@ node_st *DGFTinode(node_st *node)
     if (INODE_ICHILDREN(node)) {
         OUT_FIELD("TRAVchildren(arg_node)");
     }
-    TRAVopt(INODE_IATTRIBUTES(node));
+    TRAViattributes(node);
     OUT_FIELD("MEMfree(NODE_FILENAME(arg_node))");
     OUT_FIELD("MEMfree(arg_node->data.N_%s)", ID_LWR(INODE_NAME(node)));
     OUT_FIELD("MEMfree(arg_node)");
     OUT_FIELD("return NULL");
     OUT_END_FUNC();
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -92,7 +93,7 @@ node_st *DGFTattribute(node_st *node)
     if (ATTRIBUTE_TYPE(node) == AT_string) {
         OUT_FIELD("MEMfree(arg_node->data.N_%s->%s)", ID_LWR(INODE_NAME(curr_node)), ID_LWR(ATTRIBUTE_NAME(node)));
     }
-    TRAVopt(ATTRIBUTE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -200,6 +201,16 @@ node_st *DGFTvisit(node_st *node)
 node_st *DGFTvisit_sequence_eval(node_st *node)
 {
     CTI(CTI_WARN, true, "Not implemented DGFTvisit_sequence_eval");
+    TRAVchildren(node);
+    return node;
+}
+
+/**
+ * @fn DGFTvisit_sequence_dummy
+ */
+node_st *DGFTvisit_sequence_dummy(node_st *node)
+{
+    CTI(CTI_WARN, true, "Not implemented DGFTvisit_sequence_dummy");
     TRAVchildren(node);
     return node;
 }

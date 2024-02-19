@@ -41,6 +41,7 @@ node_st *CHAinodeset(node_st *node) {
  */
 node_st *CHAinode(node_st *node) {
     DATA_CHA_GET()->in_nodeset = false;
+    DATA_CHA_GET()->curr_node = node;
 
     TRAViattributes(node);
     TRAVnext(node);
@@ -52,13 +53,23 @@ node_st *CHAinode(node_st *node) {
  * @fn CHAattribute
  */
 node_st *CHAattribute(node_st *node) {
-    // Don't check propagated attributes to prevent duplicate errors
+    struct ctinfo info;
+    id_to_info(ATTRIBUTE_NAME(node), &info);
+
+    if (ATTRIBUTE_IS_INHERITED(node) && !(DATA_CHA_GET()->in_nodeset) &&
+        INODE_IS_ROOT(DATA_CHA_GET()->curr_node)) {
+            CTIobj(
+                CTI_ERROR, true, info,
+                "The root node '%s' cannot have inherited attributes\n",
+                ID_ORIG(INODE_NAME(DATA_CHA_GET()->curr_node)));
+            CCNerrorPhase();
+    }
+
+    // Don't check propagated attributes for the rest to prevent duplicate
+    // errors
     if (ATTRIBUTE_IS_PROPAGATED(node)) {
         return node;
     }
-
-    struct ctinfo info;
-    id_to_info(ATTRIBUTE_NAME(node), &info);
 
     if (ATTRIBUTE_IN_CONSTRUCTOR(node)) {
         if (DATA_CHA_GET()->in_nodeset) {

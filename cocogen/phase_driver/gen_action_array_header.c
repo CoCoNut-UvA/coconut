@@ -8,6 +8,7 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 
 
 static node_st *ast;
@@ -54,7 +55,7 @@ node_st *GAAHiphase(node_st *node)
     GeneratorContext *ctx = globals.gen_ctx;
     size++;
     OUT_ENUM_FIELD("%s_%s", enum_action_pref, ID_UPR(IPHASE_NAME(node)));
-    TRAVopt(IPHASE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -63,7 +64,7 @@ node_st *GAAHitraversal(node_st *node)
     GeneratorContext *ctx = globals.gen_ctx;
     size++;
     OUT_ENUM_FIELD("%s_%s", enum_action_pref, ID_UPR(ITRAVERSAL_NAME(node)));
-    TRAVopt(ITRAVERSAL_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -72,6 +73,6 @@ node_st *GAAHipass(node_st *node)
     GeneratorContext *ctx = globals.gen_ctx;
     size++;
     OUT_ENUM_FIELD("%s_%s", enum_action_pref, ID_UPR(IPASS_NAME(node)));
-    TRAVopt(IPASS_NEXT(node));
+    TRAVnext(node);
     return node;
 }

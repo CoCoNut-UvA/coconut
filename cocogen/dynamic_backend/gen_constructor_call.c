@@ -9,6 +9,7 @@
 
 #include "gen_helpers/out_macros.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 #include "globals.h"
 #include "../gen_helpers.h"
 #include "dynamic_backend/gen_helpers.h"
@@ -21,7 +22,7 @@ static node_st *ast;
 node_st *DGCCast(node_st *node)
 {
     ast = node;
-    TRAVopt(AST_INODES(node));
+    TRAVinodes(node);
     return node;
 }
 
@@ -30,8 +31,8 @@ node_st *DGCCinode(node_st *node)
     GeneratorContext *ctx = globals.gen_ctx;
     arg_num = 0;
     OUT(GH_DEFAULT_NODE_TYPE() " *new_node = " DGH_NODE_CONSTR_CALL_SIG(), DGH_NODE_CONSTR_TARGET(node));
-    TRAVopt(INODE_ICHILDREN(node));
-    TRAVopt(INODE_IATTRIBUTES(node));
+    TRAVichildren(node);
+    TRAViattributes(node);
     OUT_NO_INDENT(");\n");
 
     return node;
@@ -47,7 +48,7 @@ node_st *DGCCchild(node_st *node)
         arg_num++;
         OUT_NO_INDENT("NULL");
     }
-    TRAVopt(CHILD_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -65,6 +66,6 @@ node_st *DGCCattribute(node_st *node)
             OUT_NO_INDENT("%s", FMTattributeDefaultVal(ATTRIBUTE_TYPE(node)));
         }
     }
-    TRAVopt(ATTRIBUTE_NEXT(node));
+    TRAVnext(node);
     return node;
 }

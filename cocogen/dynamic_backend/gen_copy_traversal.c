@@ -15,6 +15,7 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 #include "dynamic_backend/gen_helpers.h"
 
 static int arg_num = 0;
@@ -29,7 +30,13 @@ node_st *DGCTast(node_st *node)
     OUT("#include \"palm/str.h\"\n");
     OUT("#include \"palm/ctinfo.h\"\n");
     OUT("#include \"ccn/dynamic_core.h\"\n\n");
-    OUT("static const char *const user_warn =\n");
+    // Consider switching to C23 [[maybe_unused]] in the future
+    OUT("#ifdef __GNUC__\n");
+    OUT("#define MAYBE_UNUSED __attribute__((unused))\n");
+    OUT("#else\n");
+    OUT("#define MAYBE_UNUSED\n");
+    OUT("#endif\n\n");
+    OUT("static const char *const user_warn MAYBE_UNUSED =\n");
     GNindentIncrease(ctx);
     OUT("\"%%s:%%d: Attributes with user types do not support deep copying, \"\n");
     OUT("\"instead the attributes are copied by value. Make sure you set \"\n");
@@ -45,7 +52,7 @@ node_st *DGCTast(node_st *node)
     OUT_STATEMENT("NODE_ELINE(target) = NODE_ELINE(source)");
     OUT_STATEMENT("NODE_FILENAME(target) = STRcpy(NODE_FILENAME(source))");
     OUT_END_FUNC();
-    TRAVopt(AST_INODES(node));
+    TRAVinodes(node);
     return node;
 }
 
@@ -59,11 +66,11 @@ node_st *DGCTinode(node_st *node)
     OUT_START_FUNC(DGH_TRAV_FUNC_SIG(), "CPY", DGH_TRAVERSAL_TARGET_ID(INODE_NAME(node)), node_argument_name);
     TRAVstart(node, TRAV_DGCC);
     OUT_STATEMENT("CopyBaseNode(%s, %s)", new_node_name, node_argument_name);
-    TRAVopt(INODE_ICHILDREN(node));
-    TRAVopt(INODE_IATTRIBUTES(node));
+    TRAVichildren(node);
+    TRAViattributes(node);
     OUT_FIELD("return %s", new_node_name);
     OUT_END_FUNC();
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -73,7 +80,7 @@ node_st *DGCTchild(node_st *node)
     char *node_name = ID_UPR(INODE_NAME(curr_node));
     char *child_name = ID_UPR(CHILD_NAME(node));
     OUT_FIELD("%s_%s(new_node) = TRAVopt(%s_%s(arg_node))", node_name, child_name, node_name, child_name);
-    TRAVopt(CHILD_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -82,9 +89,14 @@ node_st *DGCTattribute(node_st *node)
     GeneratorContext *ctx = globals.gen_ctx;
     char *node_name = ID_UPR(INODE_NAME(curr_node));
     char *attr_name = ID_UPR(ATTRIBUTE_NAME(node));
+
+    // We do not copy inherited and synthesized attributes.
     if (ATTRIBUTE_IS_INHERITED(node) || ATTRIBUTE_IS_SYNTHESIZED(node)) {
-        // TODO
-    } else if (ATTRIBUTE_TYPE(node) == AT_string) {
+        TRAVnext(node);
+        return node;
+    }
+
+    if (ATTRIBUTE_TYPE(node) == AT_string) {
         OUT_FIELD("%s_%s(new_node) = STRcpy(%s_%s(arg_node))", node_name, attr_name, node_name, attr_name);
     } else if (ATTRIBUTE_TYPE(node) == AT_user) {
         OUT_NO_INDENT("\n");
@@ -96,6 +108,6 @@ node_st *DGCTattribute(node_st *node)
     } else {
         OUT_FIELD("%s_%s(new_node) = %s_%s(arg_node)", node_name, attr_name, node_name, attr_name);
     }
-    TRAVopt(ATTRIBUTE_NEXT(node));
+    TRAVnext(node);
     return node;
 }

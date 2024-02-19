@@ -294,6 +294,14 @@ node_st *BSTvisit_sequence_eval(node_st *node)
 }
 
 /**
+ * @fn BSTvisit_sequence_dummy
+ */
+node_st *BSTvisit_sequence_dummy(node_st *node)
+{
+    return node;
+}
+
+/**
  * @fn BSTvisit_sequence_visit
  */
 node_st *BSTvisit_sequence_visit(node_st *node)

@@ -1,5 +1,6 @@
 #include "ccngen/ast.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 #include "gen_helpers/out_macros.h"
 #include <assert.h>
 #include "globals.h"
@@ -18,15 +19,15 @@ node_st *SGNSast(node_st *node)
     GeneratorContext *ctx = globals.gen_ctx;
     GNopenIncludeFile(ctx, "ast.h");
     decl_round = true;
-    TRAVopt(AST_INODES(node));
-    TRAVopt(AST_INODESETS(node));
+    TRAVinodes(node);
+    TRAVinodesets(node);
     decl_round = false;
     OUT_STRUCT("ccn_node");
     OUT_FIELD("enum nodetype type");
     OUT_STRUCT_END();
     OUT_FIELD("typedef struct ccn_node ccn_node");
-    TRAVopt(AST_INODES(node));
-    TRAVopt(AST_INODESETS(node));
+    TRAVinodes(node);
+    TRAVinodesets(node);
     return node;
 }
 
@@ -38,11 +39,11 @@ node_st *SGNSinode(node_st *node)
     } else {
         OUT_STRUCT("%s", SGNSnodeName(node));
         OUT_FIELD("ccn_node ccn_base");
-        TRAVopt(INODE_ICHILDREN(node));
-        TRAVopt(INODE_IATTRIBUTES(node));
+        TRAVichildren(node);
+        TRAViattributes(node);
         OUT_STRUCT_END();
     }
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -56,11 +57,11 @@ node_st *SGNSinodeset(node_st *node)
         OUT_FIELD("ccn_node ccn_base");
         OUT_FIELD("enum nodetype type");
         OUT_UNION("node");
-        TRAVdo(INODESET_EXPR(node));
+        TRAVexpr(node);
         OUT_STRUCT_END();
         OUT_STRUCT_END();
     }
-    TRAVopt(INODESET_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -68,8 +69,8 @@ node_st *SGNSsetliteral(node_st *node)
 {
     GeneratorContext *ctx = globals.gen_ctx;
     OUT_FIELD("%s *%s", ID_ORIG(SETLITERAL_REFERENCE(node)), ID_ORIG(SETLITERAL_REFERENCE(node)));
-    TRAVopt(SETLITERAL_LEFT(node));
-    TRAVopt(SETLITERAL_RIGHT(node));
+    TRAVleft(node);
+    TRAVright(node);
     return node;
 }
 
@@ -77,7 +78,7 @@ node_st *SGNSchild(node_st *node)
 {
     GeneratorContext *ctx = globals.gen_ctx;
     OUT_FIELD("struct %s *%s", ID_ORIG(CHILD_TYPE_REFERENCE(node)), ID_ORIG(CHILD_NAME(node)));
-    TRAVopt(CHILD_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -89,7 +90,7 @@ node_st *SGNSattribute(node_st *node)
     } else {
         OUT_FIELD("%s %s", FMTattributeTypeToString(ATTRIBUTE_TYPE(node)), ID_ORIG(ATTRIBUTE_NAME(node)));
     }
-    TRAVopt(ATTRIBUTE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 

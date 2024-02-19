@@ -7,6 +7,7 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 
 static node_st *ast;
 
@@ -15,7 +16,7 @@ node_st *DGTVast(node_st *node)
     GeneratorContext *ctx = globals.gen_ctx;
     ast = node;
     OUT("#include \"ccn/dynamic_core.h\"\n");
-    TRAVopt(AST_ITRAVERSALS(node));
+    TRAVitraversals(node);
     return node;
 }
 

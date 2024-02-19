@@ -62,6 +62,15 @@ phase unpackLifetimes {
             uid = MITL,
             nodes = {ast, inode, iactions, ilifetime, lifetime_range, id}
         };
+
+        traversal childrenSetMandatory {
+            uid = CSM,
+            nodes = {ast, inode, child, ilifetime},
+            travdata {
+                ste ste,
+                child curr_child
+            }
+        };
     }
 };
 
@@ -149,10 +158,13 @@ phase dynamicGenAst {
         dynamicGenNodeInitFunctions;
         dynamicGenNodeUnion;
         pass dynamicGenBaseNode;
+        dynamicGenNodeAccessFunctions;
         dynamicGenNodesetAccessFunctions;
         pass dynamicSwitchToAstSource;
         pass dynamicGenBaseNodeInit;
         dynamicGenNodeConstructor;
+        dynamicGenNodeAccessFunctionsError;
+        dynamicGenNodesetAccessFunctionsError;
     }
 };
 
@@ -168,6 +180,10 @@ phase dynamicGenVisits {
         dynamicGenVisitFunctions;
         pass dynamicSwitchToVisitSource;
         dynamicGenVisitSource;
+        pass dynamic_start_ag_header;
+        dynamicGenAGHeader;
+        pass dynamicSwitchToAGSource;
+        dynamicGenAGSource;
     }
 };
 
@@ -380,11 +396,28 @@ traversal dynamicGenNodeStructs {
     nodes = {ast, inode, child, attribute}
 };
 
-
-traversal dynamicGenNodesetAccessFunctions {
+traversal dynamicGenNodeAccessFunctions {
     uid = DGNAF,
 
+    nodes = {ast, inode, attribute, child}
+};
+
+traversal dynamicGenNodesetAccessFunctions {
+    uid = DGNSAF,
+
     nodes = {ast, inodeset, attribute, setliteral}
+};
+
+traversal dynamicGenNodeAccessFunctionsError {
+    uid = DGNAFE,
+
+    nodes = {ast, inode, attribute, child}
+};
+
+traversal dynamicGenNodesetAccessFunctionsError {
+    uid = DGNSAFE,
+
+    nodes = {ast, inodeset, attribute}
 };
 
 traversal dynamicGenNodeMacros {
@@ -415,6 +448,18 @@ traversal dynamicGenVisitSource {
     uid = DGVS,
 
     nodes = {ast, visit} | visit_sequence
+};
+
+traversal dynamicGenAGHeader {
+    uid = DGAGH,
+
+    nodes = {ast}
+};
+
+traversal dynamicGenAGSource {
+    uid = DGAGS,
+
+    nodes = {ast, inode, visit}
 };
 
 traversal checkExistance {
@@ -458,7 +503,8 @@ traversal checkAttributes {
     uid = CHA,
     nodes = {inodeset, inode, attribute},
     travdata {
-        bool in_nodeset
+        bool in_nodeset,
+        inode curr_node
     }
 };
 
@@ -598,8 +644,8 @@ node iphase {
         iphase next
     },
     attributes {
-        int is_start { constructor },
-        int is_cycle,
+        bool is_start { constructor },
+        bool is_cycle,
         string iinfo
     }
 };
@@ -643,7 +689,7 @@ node inode {
 
     attributes {
         string iifno { constructor },
-        int is_root,
+        bool is_root,
         int index
     }
 };
@@ -722,8 +768,8 @@ node child {
 
     attributes {
         child_type type,
-        int in_constructor,
-        int is_mandatory
+        bool in_constructor,
+        bool is_mandatory
     }
 };
 
@@ -873,9 +919,11 @@ node visit_sequence_eval {
     }
 };
 
+nodeset visit_sequence_alt = {visit_sequence_visit, visit_sequence_dummy};
+
 node visit_sequence_visit {
     children {
-        visit_sequence_visit alt, // Used for nodesets which contain multiple visits
+        visit_sequence_alt alt, // Used for nodesets which contain multiple visits
         visit_sequence next
     },
     attributes {
@@ -884,9 +932,18 @@ node visit_sequence_visit {
     }
 };
 
+node visit_sequence_dummy {
+    children {
+        visit_sequence_alt alt
+    },
+    attributes {
+        inode inode { constructor, mandatory }
+    }
+};
+
 node ienum {
     children {
-        id Vals {constructor},
+        id vals {constructor},
         id name {constructor},
         id iprefix {constructor},
         ienum next

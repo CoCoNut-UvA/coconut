@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include "gen_helpers/out_macros.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 #include "globals.h"
 
 
 node_st *DGEVast(node_st *node)
 {
-    TRAVopt(AST_ENUMS(node));
+    TRAVenums(node);
     return node;
 }
 
@@ -17,9 +18,9 @@ node_st *DGEVienum(node_st *node)
     OUT_ENUM("%s", ID_ORIG(IENUM_NAME(node)));
     enum_prefx = ID_UPR(IENUM_IPREFIX(node));
     OUT_ENUM_FIELD("%s_NULL", enum_prefx);
-    TRAVopt(IENUM_VALS(node));
+    TRAVvals(node);
     OUT_ENUM_END();
-    TRAVopt(IENUM_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 

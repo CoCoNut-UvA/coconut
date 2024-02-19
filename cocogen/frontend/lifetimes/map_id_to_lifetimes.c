@@ -8,6 +8,7 @@
 #include <palm/ctinfo.h>
 #include <palm/str.h>
 #include "ccngen/ast.h"
+#include "ccngen/trav.h"
 #include "ccn/dynamic_core.h"
 #include "frontend/symboltable.h"
 #include "frontend/ctihelp.h"
@@ -39,7 +40,7 @@ node_st *MITLast(node_st *node)
 {
     ast = node;
     ste = AST_STABLE(node);
-    TRAVopt(AST_INODES(node));
+    TRAVinodes(node);
     CTIabortOnError();
     return node;
 }
@@ -49,11 +50,11 @@ node_st *MITLinode(node_st *node)
     // Node lifetimes have special requirements(less options), so denote
     // we are in a node.
     in_node = true;
-    TRAVopt(INODE_LIFETIMES(node));
+    TRAVlifetimes(node);
     in_node = false;
-    TRAVopt(INODE_ICHILDREN(node));
-    TRAVopt(INODE_IATTRIBUTES(node));
-    TRAVopt(INODE_NEXT(node));
+    TRAVichildren(node);
+    TRAViattributes(node);
+    TRAVnext(node);
     return node;
 }
 
@@ -69,7 +70,7 @@ node_st *MITLiactions(node_st *node)
             last_node = action_lookup;
             return node;
         }
-        TRAVopt(IPHASE_IACTIONS(action_lookup));
+        TRAViactions(action_lookup);
     } else if (NODE_TYPE(action_lookup) == NT_IPASS) {
         if (CompareID(IPASS_NAME(action_lookup), curr_target) || CompareID(IPASS_IPREFIX(action_lookup), curr_target)) {
             last_action = node;
@@ -84,7 +85,7 @@ node_st *MITLiactions(node_st *node)
         }
     }
     if (!last_action) {
-        TRAVopt(IACTIONS_NEXT(node));
+        TRAVnext(node);
     }
     return node;
 }
@@ -95,9 +96,9 @@ node_st *MITLilifetime(node_st *node)
         CTI(CTI_ERROR, true, "Node lifetime can not use mandatory/optional.");
     }
     last_action = NULL;
-    TRAVopt(ILIFETIME_BEGIN(node));
+    TRAVbegin(node);
     last_action = NULL;
-    TRAVopt(ILIFETIME_END(node));
+    TRAVend(node);
     return node;
 }
 
@@ -106,7 +107,7 @@ node_st *MITLlifetime_range(node_st *node)
 {
     curr_target = LIFETIME_RANGE_TARGET(node);
     in_lifetime = true;
-    TRAVopt(LIFETIME_RANGE_TARGET(node));
+    TRAVtarget(node);
     if (!last_action) {
         struct ctinfo info;
         id_to_info(LIFETIME_RANGE_TARGET(node), &info);
@@ -138,7 +139,7 @@ node_st *MITLid(node_st *node)
     }
     curr_target = node;
     if (last_action == NULL) {
-        TRAVopt(IPHASE_IACTIONS(AST_START_PHASE(ast)));
+        TRAViactions(AST_START_PHASE(ast));
     } else {
         node_st *action = STlookup(ste, IACTIONS_REFERENCE(last_action));
         if (!action || NODE_TYPE(action) != NT_IPHASE)  {
@@ -154,11 +155,11 @@ node_st *MITLid(node_st *node)
         } else {
             last_action = NULL;
             last_node = NULL;
-            TRAVopt(IPHASE_IACTIONS(action));
+            TRAViactions(action);
         }
     }
     if (last_action) {
-        TRAVopt(ID_NEXT(curr_target));
+        TRAVnext(curr_target);
     }
     return node;
 }

@@ -6,6 +6,7 @@
  */
 #include <assert.h>
 #include "ccngen/ast.h"
+#include "ccngen/trav.h"
 #include "ccn/dynamic_core.h"
 #include "frontend/symboltable.h"
 #include <stdint.h>
@@ -28,8 +29,8 @@ node_st *AITAiactions(node_st *node)
     IACTIONS_ACTION_ID(node) = curr_action_id++;
     node_st *action = STlookup(ste, IACTIONS_REFERENCE(node));
     if (NODE_TYPE(action) == NT_IPHASE) {
-        TRAVopt(IPHASE_IACTIONS(action));
+        TRAViactions(action);
     }
-    TRAVopt(IACTIONS_NEXT(node));
+    TRAVnext(node);
     return node;
 }

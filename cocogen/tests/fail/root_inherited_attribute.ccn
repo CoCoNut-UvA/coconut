@@ -1,0 +1,33 @@
+nodeset inh {
+    nodes = {ast},
+    attributes {
+        int test {inherited}
+    }
+};
+
+root node ast {
+    children {
+        a a
+    }
+};
+
+node a {
+    attributes {
+        int val
+    }
+};
+
+start phase begin {
+    actions {
+        pass p;
+    }
+};
+
+traversal Letsgo {
+    uid = go,
+
+    travdata {
+        int val,
+        ast ast
+    }
+};

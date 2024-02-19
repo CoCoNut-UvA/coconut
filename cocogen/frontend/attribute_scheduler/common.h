@@ -4,6 +4,14 @@
 #include "ccngen/ast.h"
 #include "frontend/symboltable.h"
 
+#ifndef MIN
+#  define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#endif
+
+#ifndef MAX
+#  define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#endif
+
 static inline node_st *get_node_attributes(node_st *node) {
     if (NODE_TYPE(node) == NT_INODE) {
         return INODE_IATTRIBUTES(node);

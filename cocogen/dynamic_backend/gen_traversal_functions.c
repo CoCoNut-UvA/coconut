@@ -8,6 +8,7 @@
  */
 #include "ccn/ccn.h"
 #include "ccngen/ast.h"
+#include "ccngen/trav.h"
 #include "ccngen/trav_data.h"
 #include "gen_helpers/out_macros.h"
 #include "palm/hash_table.h"
@@ -61,7 +62,7 @@ node_st *DGT_Fast(node_st *node)
 {
     GeneratorContext *ctx = globals.gen_ctx;
     lookup = HTnew_String(AST_NUM_NODES(node));
-    TRAVopt(AST_INODES(node));
+    TRAVinodes(node);
     GNopenSourceFile(ctx, "trav.c");
     OUT("#include <stdbool.h>\n");
     OUT("#include \"palm/dbug.h\"\n");
@@ -82,8 +83,8 @@ node_st *DGT_Finode(node_st *node)
 {
     struct data_dgt_f *data = DATA_DGT_F_GET();
     data->curr_node = node;
-    TRAVopt(INODE_ICHILDREN(node));
-    TRAVopt(INODE_NEXT(node));
+    TRAVichildren(node);
+    TRAVnext(node);
     return node;
 }
 
@@ -102,6 +103,6 @@ node_st *DGT_Fchild(node_st *node)
         HTinsert(lookup, ID_ORIG(CHILD_NAME(node)), node_name);
     }
 
-    TRAVopt(CHILD_NEXT(node));
+    TRAVnext(node);
     return node;
 }

@@ -8,6 +8,7 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 
 static node_st *ast;
 
@@ -49,7 +50,7 @@ node_st *GAAiphase(node_st *node)
         "%s_ids_table, %s, %s_%s,},},\n", enum_action_pref, name_upr, ID_ORIG(IPHASE_NAME(node)), IPHASE_GATE_FUNC(node) ? ID_ORIG(IPHASE_GATE_FUNC(node)) : "NULL",
         ID_UPR(INODE_NAME(AST_ROOT_NODE(ast))), ID_LWR(IPHASE_NAME(node)), IPHASE_IS_CYCLE(node) ? "true": "false" ,enum_action_pref, name_upr);
 
-    TRAVopt(IPHASE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -61,7 +62,7 @@ node_st *GAAitraversal(node_st *node)
     OUT("{CCN_ACTION_TRAVERSAL, %s_%s, \"%s\", .traversal = "
         "{TRAV_%s,},},\n", enum_action_pref, name_upr, ID_ORIG(ITRAVERSAL_NAME(node)), ID_UPR(ITRAVERSAL_IPREFIX(node)));
 
-    TRAVopt(ITRAVERSAL_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -72,6 +73,6 @@ node_st *GAAipass(node_st *node)
     OUT("{CCN_ACTION_PASS, %s_%s, \"%s\", .pass = {PASS_%s,},},\n",
         enum_action_pref, name_upr, ID_ORIG(IPASS_NAME(node)), name_upr);
 
-    TRAVopt(IPASS_NEXT(node));
+    TRAVnext(node);
     return node;
 }

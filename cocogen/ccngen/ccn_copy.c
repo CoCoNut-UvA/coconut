@@ -4,7 +4,13 @@
 #include "palm/ctinfo.h"
 #include "ccn/dynamic_core.h"
 
-static const char *const user_warn =
+#ifdef __GNUC__
+#define MAYBE_UNUSED __attribute__((unused))
+#else
+#define MAYBE_UNUSED
+#endif
+
+static const char *const user_warn MAYBE_UNUSED =
     "%s:%d: Attributes with user types do not support deep copying, "
     "instead the attributes are copied by value. Make sure you set "
     "a correct value for the copied node's attribute yourself. Add "
@@ -40,6 +46,14 @@ ccn_node *CPYienum(ccn_node *arg_node) {
     IENUM_IPREFIX(new_node) = TRAVopt(IENUM_IPREFIX(arg_node));
     IENUM_NEXT(new_node) = TRAVopt(IENUM_NEXT(arg_node));
     IENUM_IINFO(new_node) = STRcpy(IENUM_IINFO(arg_node));
+    return new_node;
+}
+
+ccn_node *CPYvisit_sequence_dummy(ccn_node *arg_node) {
+    ccn_node *new_node = ASTvisit_sequence_dummy(NULL);
+    CopyBaseNode(new_node, arg_node);
+    VISIT_SEQUENCE_DUMMY_ALT(new_node) = TRAVopt(VISIT_SEQUENCE_DUMMY_ALT(arg_node));
+    VISIT_SEQUENCE_DUMMY_INODE(new_node) = VISIT_SEQUENCE_DUMMY_INODE(arg_node);
     return new_node;
 }
 
@@ -265,7 +279,7 @@ ccn_node *CPYitraversal(ccn_node *arg_node) {
 }
 
 ccn_node *CPYiphase(ccn_node *arg_node) {
-    ccn_node *new_node = ASTiphase(NULL, 0);
+    ccn_node *new_node = ASTiphase(NULL, false);
     CopyBaseNode(new_node, arg_node);
     IPHASE_NAME(new_node) = TRAVopt(IPHASE_NAME(arg_node));
     IPHASE_IPREFIX(new_node) = TRAVopt(IPHASE_IPREFIX(arg_node));

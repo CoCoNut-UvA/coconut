@@ -9,6 +9,7 @@
 
 #include "ccn/ccn.h"
 #include "ccngen/ast.h"
+#include "ccngen/trav.h"
 #include "globals.h"
 #include "gen_helpers/out_macros.h"
 
@@ -19,7 +20,7 @@ node_st *DGEIast(node_st *node)
 {
     GeneratorContext *ctx = globals.gen_ctx;
     OUT("\n");
-    TRAVopt(AST_INODES(node));
+    TRAVinodes(node);
     return node;
 }
 
@@ -32,6 +33,6 @@ node_st *DGEIinode(node_st *node)
     if (INODE_IEQUATIONS(node)) {
         OUT("#include \"ccngen/equations/%s.h\"\n", ID_LWR(INODE_NAME(node)));
     }
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
     return node;
 }

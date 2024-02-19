@@ -5,6 +5,7 @@
 
 #include "ccn/dynamic_core.h"
 #include "ccngen/ast.h"
+#include "ccngen/trav.h"
 #include "palm/hash_table.h"
 #include <gen_helpers/out_macros.h>
 #include <globals.h>
@@ -20,8 +21,8 @@ node_st *GDast(node_st *node)
     seen = HTnew_String(10);
     GNopenSourceFile(ctx, "ast.dot");
     OUT("digraph Ast {\n");
-    TRAVopt(AST_INODES(node));
-    TRAVopt(AST_INODESETS(node));
+    TRAVinodes(node);
+    TRAVinodesets(node);
     OUT("}\n");
     HTdelete(seen);
     return node;
@@ -33,9 +34,9 @@ node_st *GDinode(node_st *node)
     HTclear(seen);
     curr_node = node;
     OUT("%s;\n", ID_ORIG(INODE_NAME(node)));
-    TRAVopt(INODE_ICHILDREN(node));
-    TRAVopt(INODE_IATTRIBUTES(node));
-    TRAVopt(INODE_NEXT(node));
+    TRAVichildren(node);
+    TRAViattributes(node);
+    TRAVnext(node);
     return node;
 }
 
@@ -44,8 +45,8 @@ node_st *GDinodeset(node_st *node)
     GeneratorContext *ctx = globals.gen_ctx;
     OUT("%s;\n", ID_ORIG(INODESET_NAME(node)));
     curr_nodeset = node;
-    TRAVopt(INODESET_EXPR(node));
-    TRAVopt(INODESET_NEXT(node));
+    TRAVexpr(node);
+    TRAVnext(node);
     return node;
 }
 
@@ -55,8 +56,8 @@ node_st *GDsetliteral(node_st *node)
     if (node && SETLITERAL_REFERENCE(node)) {
         OUT("%s -> %s [color=blue]\n", ID_ORIG(INODESET_NAME(curr_nodeset)), ID_ORIG(SETLITERAL_REFERENCE(node)));
     }
-    TRAVopt(SETLITERAL_RIGHT(node));
-    TRAVopt(SETLITERAL_LEFT(node));
+    TRAVright(node);
+    TRAVleft(node);
     return node;
 }
 
@@ -69,7 +70,7 @@ node_st *GDattribute(node_st *node)
             ID_ORIG(ATTRIBUTE_NAME(node)));
     }
 
-    TRAVopt(ATTRIBUTE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 
@@ -81,6 +82,6 @@ node_st *GDchild(node_st *node)
         //HTinsert(seen, ID_LWR(CHILD_TYPE_REFERENCE(node)), node);
     }
 
-    TRAVopt(CHILD_NEXT(node));
+    TRAVnext(node);
     return node;
 }

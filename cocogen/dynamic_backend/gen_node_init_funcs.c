@@ -7,6 +7,7 @@
 #include "palm/ctinfo.h"
 #include "palm/str.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 #include "dynamic_backend/gen_helpers.h"
 
 bool dgif_print_semicolon = false;
@@ -18,7 +19,7 @@ static int arg_num = 0;
 node_st *DGIFast(node_st *node)
 {
     dgif_print_semicolon = true;
-    TRAVopt(AST_INODES(node));
+    TRAVinodes(node);
     return node;
 }
 
@@ -29,8 +30,8 @@ node_st *DGIFinode(node_st *node)
     curr_node_name_upr = ID_UPR(INODE_NAME(node));
     OUT("%s *%s%s(", basic_node_type, "AST", ID_LWR(INODE_NAME(node)));
     arg_num = 0;
-    TRAVopt(INODE_ICHILDREN(node));
-    TRAVopt(INODE_IATTRIBUTES(node));
+    TRAVichildren(node);
+    TRAViattributes(node);
     curr_node_name_upr = NULL;
     curr_node_name = NULL;
     if (arg_num == 0) {
@@ -40,7 +41,7 @@ node_st *DGIFinode(node_st *node)
     if (dgif_print_semicolon) {
         OUT(";\n");
     }
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
     return node;
 }
 

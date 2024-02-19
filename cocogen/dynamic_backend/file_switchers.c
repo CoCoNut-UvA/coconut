@@ -15,7 +15,6 @@ node_st *dynamic_start_ast_header(node_st *root)
     GeneratorContext *ctx = globals.gen_ctx;
     GNopenIncludeFile(ctx, "ast.h");
 
-    OUT("#include <assert.h>\n");
     OUT("#include <stddef.h>\n\n");
     OUT("#include \"ccngen/ccn_defs.h\"\n");
     OUT("#include \"ccn/ccn_types.h\"\n");
@@ -35,6 +34,7 @@ node_st *dynamicSwitchToAstSource(node_st *root)
 
     OUT("#include \"ccngen/ast.h\"\n");
     OUT("#include \"palm/memory.h\"\n");
+    OUT("#include \"palm/dbug.h\"\n");
 
     return root;
 }
@@ -70,7 +70,13 @@ node_st *dynamicSwitchToVisitSource(node_st *root)
 
     OUT("#include \"palm/dbug.h\"\n\n");
     OUT("#include \"ccngen/equation.h\"\n");
-    OUT("#include \"ccngen/visit.h\"\n");
+    OUT("#include \"ccngen/visit.h\"\n\n");
+    // Consider switching to C23 [[maybe_unused]] in the future
+    OUT("#ifdef __GNUC__\n");
+    OUT("#define MAYBE_UNUSED __attribute__((unused))\n");
+    OUT("#else\n");
+    OUT("#define MAYBE_UNUSED\n");
+    OUT("#endif\n");
 
     return root;
 }
@@ -117,5 +123,29 @@ node_st *dynamicSwitchTravData(node_st *root)
     OUT("#include \"palm/memory.h\"\n");
 
 
+    return root;
+}
+
+node_st *dynamic_start_ag_header(node_st *root)
+{
+    GeneratorContext *ctx = globals.gen_ctx;
+    GNopenIncludeFile(ctx, "ag.h");
+    OUT("#include \"ccn/ccn_types.h\"\n\n");
+
+    return root;
+}
+
+
+
+node_st *dynamicSwitchToAGSource(node_st *root)
+{
+    GeneratorContext *ctx = globals.gen_ctx;
+    GNopenSourceFile(ctx, "ag.c");
+    OUT("#include \"ccn/phase_driver.h\"\n");
+    OUT("#include \"ccngen/ast.h\"\n");
+    OUT("#include \"ccngen/ag.h\"\n");
+    OUT("#include \"ccngen/enum.h\"\n");
+    OUT("#include \"ccngen/visit.h\"\n");
+    OUT("#include \"palm/ctinfo.h\"\n\n");
     return root;
 }

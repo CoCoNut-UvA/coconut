@@ -42,6 +42,15 @@ htable_st *HTnew_Ptr(size_t size);
 htable_st *HTnew_Int(size_t size);
 
 /**
+ * Create a copy of the hash table. Note that keys and values are not deep-
+ * copied.
+ *
+ * @param table hash table to copy.
+ * @return the new hash table.
+*/
+htable_st *HTcpy(htable_st *table);
+
+/**
  * Insert the key, value pair from the table.
  *
  * @return true if insertion was successful.
@@ -144,6 +153,12 @@ void HTiterateCancel(htable_iter_st *iter);
  *
 */
 void *HTiterValue(htable_iter_st *iter);
+
+/**
+ * Set value of current element from iterator.
+ *
+*/
+void HTiterSetValue(htable_iter_st *iter, void *value);
 
 /**
  * Get key of current element from iterator.

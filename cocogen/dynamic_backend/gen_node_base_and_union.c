@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "gen_helpers/out_macros.h"
 #include "ccn/dynamic_core.h"
+#include "ccngen/trav.h"
 #include "globals.h"
 
 
@@ -72,7 +73,7 @@ node_st *DGBUast(node_st *node)
 node_st *DGBUinode(node_st *node)
 {
     GeneratorContext *ctx = globals.gen_ctx;
-    TRAVopt(INODE_NEXT(node));
+    TRAVnext(node);
     OUT_FIELD("struct NODE_DATA_%s *N_%s", ID_UPR((INODE_NAME(node))), ID_LWR(INODE_NAME(node)));
     return node;
 }
