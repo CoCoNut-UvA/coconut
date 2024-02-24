@@ -403,8 +403,8 @@ static void print_visit_call(node_st *node, node_st *outputs,
                                 ID_UPR(CHILD_NAME(child)));
 
     if (!is_nodeset) {
-        OUT("assert(NODE_TYPE(%s) == NT_%s);\n", child_access,
-            ID_UPR(INODE_NAME(VISIT_INODE(visit))));
+        OUT("DBUG_ASSERT(NODE_TYPE(%s) == NT_%s, \"Problem in visit\");\n",
+            child_access, ID_UPR(INODE_NAME(VISIT_INODE(visit))));
     }
 
     if (VISIT_OUTPUTS(visit)) {
