@@ -18,6 +18,7 @@
 #include "gen_helpers/out_macros.h"
 #include "globals.h"
 #include "palm/ctinfo.h"
+#include "palm/dbug.h"
 #include "palm/hash_table.h"
 #include "palm/memory.h"
 #include "palm/str.h"
@@ -265,7 +266,17 @@ node_st *DGVSvisit_sequence_eval(node_st *node) {
     htable_st *children_null = HTnew_Ptr(htable_size);
     node_st *attribute = VISIT_SEQUENCE_EVAL_ATTRIBUTE(node);
     node_st *equation = get_equation(curr_node, attribute);
-    assert(equation != NULL);
+
+    if (equation == NULL) {
+        CTI(CTI_ERROR, true, "Could not find eval function in %s for %s.%s",
+            ID_ORIG(INODE_NAME(curr_node)), get_node_name_this(attribute),
+            ID_ORIG(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+        CCNerrorAction();
+        HTdelete(children_null);
+        TRAVnext(node);
+        return node;
+    }
+
     struct child_list *children =
         collect_children_equation_args(children_null, curr_node, equation);
 

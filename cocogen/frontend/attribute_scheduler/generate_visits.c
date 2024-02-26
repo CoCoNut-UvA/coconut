@@ -465,19 +465,19 @@ static node_st *generate_visit(graph_st *graph, node_st *node, node_st *st,
         HTinsert(queued, item->node, (void *)1);
     }
 
-    // Insert child visits in queue
-    for (node_st *child = INODE_ICHILDREN(node); child; child = CHILD_NEXT(child)) {
-        struct visits *child_visits = HTlookup(visits_htable, get_node_type(child, st));
-        assert(child_visits != NULL);
-        size_t stop = last_visit ? child_visits->length : MIN(visit->index + 1, child_visits->length);
-        for (size_t i = 0; i < stop; ++i) {
-            assert(i < child_visits->length);
-            item = MEMmalloc(sizeof(struct seq_queue_item));
-            item->is_visit = true;
-            item->visit = get_child_visit(child_visits_htable, child, child_visits->visits[i]);
-            fprintf(log, "Adding child visit %s %lu to queue\n", ID_LWR(CHILD_NAME(child)), child_visits->visits[i]->index);
-            QUinsert(queue, item);
-            HTinsert(queued, item->visit, (void *)1);
+    if (last_visit) {
+        // Insert child visits in queue
+        for (node_st *child = INODE_ICHILDREN(node); child; child = CHILD_NEXT(child)) {
+            struct visits *child_visits = HTlookup(visits_htable, get_node_type(child, st));
+            assert(child_visits != NULL);
+            for (size_t i = 0; i < child_visits->length; ++i) {
+                item = MEMmalloc(sizeof(struct seq_queue_item));
+                item->is_visit = true;
+                item->visit = get_child_visit(child_visits_htable, child, child_visits->visits[i]);
+                fprintf(log, "Adding child visit %s %lu to queue\n", ID_LWR(CHILD_NAME(child)), child_visits->visits[i]->index);
+                QUinsert(queue, item);
+                HTinsert(queued, item->visit, (void *)1);
+            }
         }
     }
 

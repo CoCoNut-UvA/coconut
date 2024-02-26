@@ -53,6 +53,9 @@ struct visits *collect_visits(graph_st *graph, node_st *node, node_st *st,
     visits->length = 0;
     for (struct GRnode *gnode = graph->nodes; gnode != NULL;
          gnode = gnode->next) {
+        if (gnode->node != node) {
+            continue;
+        }
         size_t partition = lookup_partition(partition_tables, st, gnode);
         size_t visit_index;
         if (partition == 0) {
@@ -75,10 +78,6 @@ struct visits *collect_visits(graph_st *graph, node_st *node, node_st *st,
         }
 
         struct visit *visit = visits->visits[visit_index];
-
-        if (gnode->node != node) {
-            continue;
-        }
 
         if (ATTRIBUTE_IS_INHERITED(gnode->attribute)) {
             visit->inputs =
