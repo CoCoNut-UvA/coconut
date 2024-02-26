@@ -96,6 +96,11 @@ node_st *DGVSast(node_st *node) {
     OUT_NO_INDENT("#pragma GCC diagnostic push\n");
     OUT_NO_INDENT("// Ignore unused parameters\n");
     OUT_NO_INDENT("#pragma GCC diagnostic ignored \"-Wunused-parameter\"\n");
+    OUT_NO_INDENT("#ifdef NDEBUG\n");
+    OUT_NO_INDENT("// We do not initialize variables in unreachable cases, which are guarded\n"
+                  "// by assertions in debug builds. We ignore this on release builds.\n");
+    OUT_NO_INDENT("#pragma GCC diagnostic ignored \"-Wmaybe-uninitialized\"\n");
+    OUT_NO_INDENT("#endif\n");
     OUT_NO_INDENT("#endif\n\n");
 
     ste = AST_STABLE(node);
