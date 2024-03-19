@@ -221,7 +221,6 @@ static inline void print_equation_args(node_st *equation,
     for (node_st *arg = EQUATION_IARGS(equation); arg;
          arg = EQUATION_DEPENDENCY_NEXT(arg)) {
         node_st *attribute = EQUATION_DEPENDENCY_IATTRIBUTE(arg);
-        node_st *reference = ATTRIBUTE_REFERENCE_REFERENCE(attribute);
         bool is_child = ATTRIBUTE_REFERENCE_INODE(attribute) != NULL;
         if (is_child) {
             node_st *child = get_child(ATTRIBUTE_REFERENCE_INODE(attribute));
