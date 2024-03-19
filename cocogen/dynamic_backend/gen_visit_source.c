@@ -18,6 +18,7 @@
 #include "gen_helpers/out_macros.h"
 #include "globals.h"
 #include "palm/ctinfo.h"
+#include "palm/dbug.h"
 #include "palm/hash_table.h"
 #include "palm/memory.h"
 #include "palm/str.h"
@@ -95,6 +96,11 @@ node_st *DGVSast(node_st *node) {
     OUT_NO_INDENT("#pragma GCC diagnostic push\n");
     OUT_NO_INDENT("// Ignore unused parameters\n");
     OUT_NO_INDENT("#pragma GCC diagnostic ignored \"-Wunused-parameter\"\n");
+    OUT_NO_INDENT("#ifdef NDEBUG\n");
+    OUT_NO_INDENT("// We do not initialize variables in unreachable cases, which are guarded\n"
+                  "// by assertions in debug builds. We ignore this on release builds.\n");
+    OUT_NO_INDENT("#pragma GCC diagnostic ignored \"-Wmaybe-uninitialized\"\n");
+    OUT_NO_INDENT("#endif\n");
     OUT_NO_INDENT("#endif\n\n");
 
     ste = AST_STABLE(node);
@@ -231,9 +237,9 @@ static inline void print_equation_args(node_st *equation,
             OUT_NO_INDENT(", ");
         }
 
-        // Classic attribute dependency
-        if (!ATTRIBUTE_IS_INHERITED(reference) &&
-            !ATTRIBUTE_IS_SYNTHESIZED(reference)) {
+        // // Classic attribute dependency
+        // if (!ATTRIBUTE_IS_INHERITED(reference) &&
+        //     !ATTRIBUTE_IS_SYNTHESIZED(reference)) {
             node_st *node_name = INODE_NAME(curr_node);
             assert(node_name != NULL);
             if (is_child) {
@@ -247,10 +253,10 @@ static inline void print_equation_args(node_st *equation,
             } else {
                 OUT_NO_INDENT("node)");
             }
-        } else {
-            OUT_NO_INDENT("%s_%s", get_node_name_this(attribute),
-                          ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
-        }
+        // } else {
+        //     OUT_NO_INDENT("%s_%s", get_node_name_this(attribute),
+        //                   ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+        // }
     }
 }
 
@@ -265,7 +271,17 @@ node_st *DGVSvisit_sequence_eval(node_st *node) {
     htable_st *children_null = HTnew_Ptr(htable_size);
     node_st *attribute = VISIT_SEQUENCE_EVAL_ATTRIBUTE(node);
     node_st *equation = get_equation(curr_node, attribute);
-    assert(equation != NULL);
+
+    if (equation == NULL) {
+        CTI(CTI_ERROR, true, "Could not find eval function in %s for %s.%s",
+            ID_ORIG(INODE_NAME(curr_node)), get_node_name_this(attribute),
+            ID_ORIG(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+        CCNerrorAction();
+        HTdelete(children_null);
+        TRAVnext(node);
+        return node;
+    }
+
     struct child_list *children =
         collect_children_equation_args(children_null, curr_node, equation);
 

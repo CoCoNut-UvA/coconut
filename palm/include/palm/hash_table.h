@@ -7,6 +7,7 @@ typedef struct htable htable_st;
 typedef struct htable_iter htable_iter_st;
 typedef size_t (*hash_key_ft)(void *);
 typedef bool (*is_equal_ft)(void *, void *);
+typedef void *(*cpy_ft)(void *);
 typedef void *(*map_ft)(void *);
 typedef void *(*mapk_ft)(void *key, void *item);
 typedef void *(*mapdk_ft)(void *data, void *key, void *item);
@@ -43,12 +44,24 @@ htable_st *HTnew_Int(size_t size);
 
 /**
  * Create a copy of the hash table. Note that keys and values are not deep-
- * copied.
+ * copied, use HTdeep_copy if you need this.
  *
  * @param table hash table to copy.
  * @return the new hash table.
 */
 htable_st *HTcpy(htable_st *table);
+
+/**
+ * Create a deep copy of the hash table.
+ *
+ * @param table hash table to copy.
+ * @param key_copy_func function called on every key to copy the key element.
+ * @param val_copy_func function called on every value to copy the value element.
+ *
+ * @return the new hash table.
+*/
+htable_st *HTdeep_copy(htable_st *table, cpy_ft key_copy_func,
+                       cpy_ft val_copy_func);
 
 /**
  * Insert the key, value pair from the table.

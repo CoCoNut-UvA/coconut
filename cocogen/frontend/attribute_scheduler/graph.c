@@ -176,6 +176,25 @@ struct GRnode_list *GRget_inter_node_dependencies(struct GRgraph *graph,
     return dependencies;
 }
 
+struct GRnode_list *GRget_node_dependencies(struct GRgraph *graph,
+                                            struct GRnode *node) {
+    struct GRnode_list *dependencies = NULL;
+    for (struct GRnode *dep = graph->nodes; dep != NULL; dep = dep->next) {
+        if (dep == node) {
+            continue;
+        }
+
+        if (GRlookup_edge(graph, dep, node, false)) {
+            struct GRnode_list *entry = MEMmalloc(sizeof(struct GRnode_list));
+            entry->node = dep;
+            entry->next = dependencies;
+            dependencies = entry;
+        }
+    }
+
+    return dependencies;
+}
+
 static struct GRedge *add_edge_internal(struct GRgraph *graph,
                                         struct GRnode *n1, struct GRnode *n2,
                                         enum GRedge_type type) {

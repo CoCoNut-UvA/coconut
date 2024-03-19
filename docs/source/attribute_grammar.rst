@@ -1,4 +1,5 @@
 .. _attribute_grammar:
+
 =============================
 Attribute Grammars in CoCoNut
 =============================

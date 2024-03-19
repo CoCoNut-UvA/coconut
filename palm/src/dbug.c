@@ -17,7 +17,7 @@ void DBUGprintAssert(int line, char *file, const char *func, char *msg, ...)
     fprintf(stderr, "\t");
     vfprintf(stderr, msg, arg_p);
     fprintf(stderr, "\n");
-    fprintf(stderr, "ABORTING EXECUTION");
+    fprintf(stderr, "ABORTING EXECUTION\n");
 
     va_end(arg_p);
 

@@ -53,6 +53,9 @@ struct visits *collect_visits(graph_st *graph, node_st *node, node_st *st,
     visits->length = 0;
     for (struct GRnode *gnode = graph->nodes; gnode != NULL;
          gnode = gnode->next) {
+        if (gnode->node != node) {
+            continue;
+        }
         size_t partition = lookup_partition(partition_tables, st, gnode);
         size_t visit_index;
         if (partition == 0) {
@@ -75,10 +78,6 @@ struct visits *collect_visits(graph_st *graph, node_st *node, node_st *st,
         }
 
         struct visit *visit = visits->visits[visit_index];
-
-        if (gnode->node != node) {
-            continue;
-        }
 
         if (ATTRIBUTE_IS_INHERITED(gnode->attribute)) {
             visit->inputs =
@@ -157,8 +156,7 @@ void generate_empty_visits(node_st *nodes, node_st *nodesets, node_st *st,
 
         for (node_st *node = nodes; node != NULL; node = INODE_NEXT(node)) {
             struct visits *visits = HTlookup(visits_htable, node);
-            assert(visits != NULL);
-            if (visits->length > 0) {
+            if (visits == NULL || visits->length > 0) {
                 continue;
             }
 
@@ -171,8 +169,7 @@ void generate_empty_visits(node_st *nodes, node_st *nodesets, node_st *st,
         for (node_st *nodeset = nodesets; nodeset;
              nodeset = INODESET_NEXT(nodeset)) {
             struct visits *visits = HTlookup(visits_htable, nodeset);
-            assert(visits != NULL);
-            if (visits->length > 0) {
+            if (visits == NULL || visits->length > 0) {
                 continue;
             }
 

@@ -63,6 +63,21 @@ struct htable *HTcpy(struct htable *table)
     return new_table;
 }
 
+struct htable *HTdeep_copy(struct htable *table, cpy_ft key_copy_func,
+                           cpy_ft val_copy_func)
+{
+    struct htable *new_table = HTnew(table->size, table->hash_f,
+                                     table->is_equal_f);
+
+    for (htable_iter_st *iter = HTiterate(table); iter;
+         iter = HTiterateNext(iter)) {
+        HTinsert(new_table, key_copy_func(HTiterKey(iter)),
+                            val_copy_func(HTiterValue(iter)));
+    }
+
+    return new_table;
+}
+
 static
 struct htable_entry *NewEntry(struct htable *table, void *key, void *value)
 {
