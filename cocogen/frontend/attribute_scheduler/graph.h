@@ -68,6 +68,8 @@ struct GRnode *GRlookup_node(graph_st *graph, node_st *node,
                              node_st *attribute);
 struct GRnode_list *GRget_inter_node_dependencies(struct GRgraph *graph,
                                                   struct GRnode *node);
+struct GRnode_list *GRget_node_dependencies(struct GRgraph *graph,
+                                            struct GRnode *node);
 struct GRerror GRadd_edge(graph_st *graph, struct GRnode *from,
                           struct GRnode *to, enum GRedge_type type);
 struct GRedge *GRlookup_edge(graph_st *graph, struct GRnode *from,

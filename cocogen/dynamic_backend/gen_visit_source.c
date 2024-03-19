@@ -237,9 +237,9 @@ static inline void print_equation_args(node_st *equation,
             OUT_NO_INDENT(", ");
         }
 
-        // Classic attribute dependency
-        if (!ATTRIBUTE_IS_INHERITED(reference) &&
-            !ATTRIBUTE_IS_SYNTHESIZED(reference)) {
+        // // Classic attribute dependency
+        // if (!ATTRIBUTE_IS_INHERITED(reference) &&
+        //     !ATTRIBUTE_IS_SYNTHESIZED(reference)) {
             node_st *node_name = INODE_NAME(curr_node);
             assert(node_name != NULL);
             if (is_child) {
@@ -253,10 +253,10 @@ static inline void print_equation_args(node_st *equation,
             } else {
                 OUT_NO_INDENT("node)");
             }
-        } else {
-            OUT_NO_INDENT("%s_%s", get_node_name_this(attribute),
-                          ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
-        }
+        // } else {
+        //     OUT_NO_INDENT("%s_%s", get_node_name_this(attribute),
+        //                   ID_LWR(ATTRIBUTE_REFERENCE_IATTRIBUTE(attribute)));
+        // }
     }
 }
 

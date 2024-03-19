@@ -545,10 +545,8 @@ node_st *SAVast(node_st *node) {
         delete_edge_list(current_edges);
 
         // Write intermediate results to dot file
-        char *counter_str = STRitoa(counter);
-        char *filename = STRcatn(3, "induce_", counter_str, ".dot");
+        char *filename = STRfmt("induce_%d.dot", counter);
         dump_dotfile(graphs_htable, filename, NULL);
-        MEMfree(counter_str);
         MEMfree(filename);
         ++counter;
     }
@@ -580,6 +578,7 @@ node_st *SAVast(node_st *node) {
     }
 
     dump_dotfile(graphs_htable, "partitioned.dot", partition_tables);
+
 
     // struct GRedge_list *intra_visit_dependencies =
     //     find_intravisit_dependencies(graphs_htable, partition_tables);
