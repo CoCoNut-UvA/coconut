@@ -477,6 +477,11 @@
 <dd></dd></dl>
 
 <dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv46cpy_ft">
+<span id="_CPPv36cpy_ft"></span><span id="_CPPv26cpy_ft"></span><span id="cpy_ft"></span><span class="target" id="hash__table_8h_1aac87ee24772aad32202a18f58d0a47ca"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">cpy_ft</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv46cpy_ft" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv46map_ft">
 <span id="_CPPv36map_ft"></span><span id="_CPPv26map_ft"></span><span id="map_ft"></span><span class="target" id="hash__table_8h_1a5f2a883074dd201fd37a5302aade71a5"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">map_ft</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv46map_ft" title="Permalink to this definition"></a><br /></dt>
 <dd></dd></dl>
@@ -550,10 +555,28 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv45HTcpyP9htable_st">
 <span id="_CPPv35HTcpyP9htable_st"></span><span id="_CPPv25HTcpyP9htable_st"></span><span id="HTcpy__htable_stP"></span><span class="target" id="hash__table_8h_1a2a5d1ed0bffc9aa6cbca279cf6f33534"></span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTcpy</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv45HTcpyP9htable_st" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Create a copy of the hash table. Note that keys and values are not deep- copied.</p>
+<dd><p>Create a copy of the hash table. Note that keys and values are not deep- copied, use HTdeep_copy if you need this.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>table</strong> – hash table to copy. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the new hash table. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411HTdeep_copyP9htable_st6cpy_ft6cpy_ft">
+<span id="_CPPv311HTdeep_copyP9htable_st6cpy_ft6cpy_ft"></span><span id="_CPPv211HTdeep_copyP9htable_st6cpy_ft6cpy_ft"></span><span id="HTdeep_copy__htable_stP.cpy_ft.cpy_ft"></span><span class="target" id="hash__table_8h_1acbf9776be20c137d0d5df99201b4575d"></span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">HTdeep_copy</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv49htable_st" title="htable_st"><span class="n"><span class="pre">htable_st</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">table</span></span>, <a class="reference internal" href="#_CPPv46cpy_ft" title="cpy_ft"><span class="n"><span class="pre">cpy_ft</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">key_copy_func</span></span>, <a class="reference internal" href="#_CPPv46cpy_ft" title="cpy_ft"><span class="n"><span class="pre">cpy_ft</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">val_copy_func</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411HTdeep_copyP9htable_st6cpy_ft6cpy_ft" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Create a deep copy of the hash table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table</strong> – hash table to copy. </p></li>
+<li><p><strong>key_copy_func</strong> – function called on every key to copy the key element. </p></li>
+<li><p><strong>val_copy_func</strong> – function called on every value to copy the value element.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the new hash table. </p>
