@@ -10,12 +10,15 @@
 #define MAYBE_UNUSED
 #endif
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-const-variable"
 static const char *const user_warn MAYBE_UNUSED =
     "%s:%d: Attributes with user types do not support deep copying, "
     "instead the attributes are copied by value. Make sure you set "
     "a correct value for the copied node's attribute yourself. Add "
     "`#define CCN_USES_UNSAFE_ACKNOWLEDGE` to user_types.h to "
     "disable this warning.";
+#pragma GCC diagnostic pop
 
 void CopyBaseNode(node_st *target, node_st *source) {
     NODE_BCOL(target) = NODE_BCOL(source);
@@ -318,4 +321,3 @@ ccn_node *CPYast(ccn_node *arg_node) {
     AST_USES_UNSAFE(new_node) = AST_USES_UNSAFE(arg_node);
     return new_node;
 }
-
