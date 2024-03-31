@@ -11,15 +11,20 @@
 #include "palm/memory.h"
 #include "palm/str.h"
 
+#define RED "\033[0;31m"
+#define LIGHT_PURPLE "\033[95m"
+#define RESET "\033[0m"
+
 static char *message_buffer = NULL;
 static int message_buffer_size = 0;
 static int message_line_length = 116;
 
 static char *abort_message_header = "abort: ";
-static char *error_message_header = "error: ";
-static char *warn_message_header = "warning: ";
+static char *error_message_header = "\033[0;31merror: \033[0m";
+static char *warn_message_header = "\033[95mwarning: \033[0m";
 static char *state_message_header = "";
 static char *note_message_header = "note: ";
+static enum cti_type current_type = CTI_ERROR;
 
 static int errors = 0;
 static int warnings = 0;
@@ -165,14 +170,31 @@ static void PrintLocation(struct ctinfo *info)
 {
     if (info->line != NULL) {
         // We push 4 spaces to take the ' |> ' into account.
-        fprintf(stderr, " |> %s\n    ", info->line);
+        fprintf(stderr, " |> ");
 
+        for (int i = 0; i < info->first_column - 1 && info->line[i] != '\0'; ++i) {
+            fputc(info->line[i], stderr);
+        }
+        if (current_type == CTI_ERROR) fprintf(stderr, RED);
+        else if (current_type == CTI_WARN) fprintf(stderr, LIGHT_PURPLE);
+
+        for (int i = info->first_column - 1; i < info->last_column && info->line[i] != '\0'; ++i) {
+            fputc(info->line[i], stderr);
+        }
+
+        fprintf(stderr, RESET);
+        for (int i = info->last_column; info->line[i] != '\0'; ++i) {
+            fputc(info->line[i], stderr);
+        }
+
+        fprintf(stderr, "\n    ");
         int c = 1;
         while (c < info->first_column) {
             fputc(' ', stderr);
             c++;
         }
-
+        if (current_type == CTI_ERROR) fprintf(stderr, RED);
+        else if (current_type == CTI_WARN) fprintf(stderr, LIGHT_PURPLE);
         fputc('^', stderr);
 
         c++;
@@ -181,6 +203,7 @@ static void PrintLocation(struct ctinfo *info)
             fputc('~', stderr);
             c++;
         }
+        fprintf(stderr, RESET);
         fputc('\n', stderr);
     }
 }
@@ -517,6 +540,7 @@ void CTI(enum cti_type type, bool newline, const char *format, ...)
 void CTIobj(enum cti_type type, bool newline, struct ctinfo obj, const char *format, ...)
 {
     char *message_header = GetMessageHeader(type);
+    current_type = type;
     HandleCtiCall(type);
     va_list arg_p;
 
