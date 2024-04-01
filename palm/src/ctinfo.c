@@ -20,8 +20,8 @@ static int message_buffer_size = 0;
 static int message_line_length = 116;
 
 static char *abort_message_header = "abort: ";
-static char *error_message_header = "\033[0;31merror: \033[0m";
-static char *warn_message_header = "\033[95mwarning: \033[0m";
+static char *error_message_header = RED"error: "RESET;
+static char *warn_message_header = LIGHT_PURPLE"warning: "RESET;
 static char *state_message_header = "";
 static char *note_message_header = "note: ";
 static enum cti_type current_type = CTI_ERROR;
