@@ -169,21 +169,23 @@ char *CTIgetErrorMessageVA(int line, const char *format, va_list arg_p)
 static void PrintLocation(struct ctinfo *info)
 {
     if (info->line != NULL) {
+        size_t i;
         // We push 4 spaces to take the ' |> ' into account.
         fprintf(stderr, " |> ");
 
-        for (int i = 0; i < info->first_column - 1 && info->line[i] != '\0'; ++i) {
+        for (i = 0; i < info->first_column - 1 && info->line[i] != '\0'; ++i) {
             fputc(info->line[i], stderr);
         }
         if (current_type == CTI_ERROR) fprintf(stderr, RED);
         else if (current_type == CTI_WARN) fprintf(stderr, LIGHT_PURPLE);
 
-        for (int i = info->first_column - 1; i < info->last_column && info->line[i] != '\0'; ++i) {
+        for (/* Keep i from previous loop */;
+             i < info->last_column && info->line[i] != '\0'; ++i) {
             fputc(info->line[i], stderr);
         }
 
         fprintf(stderr, RESET);
-        for (int i = info->last_column; info->line[i] != '\0'; ++i) {
+        for (/* Keep i from previous loop */; info->line[i] != '\0'; ++i) {
             fputc(info->line[i], stderr);
         }
 
