@@ -6,20 +6,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "palm/dbug.h"
 #include "palm/memory.h"
 #include "palm/str.h"
 
+
 static char *message_buffer = NULL;
 static int message_buffer_size = 0;
 static int message_line_length = 116;
 
-static char *abort_message_header = "abort: ";
-static char *error_message_header = "error: ";
-static char *warn_message_header = "warning: ";
-static char *state_message_header = "";
-static char *note_message_header = "note: ";
+static const char *const err_color = "\033[31m";
+static const char *const warn_color = "\033[95m";
+static const char *const reset_color = "\033[0m";
+
+static const char *const abort_message_header = "abort: ";
+static const char *const error_message_header = "error: ";
+static const char *const warn_message_header = "warning: ";
+static const char *const state_message_header = "";
+static const char *const note_message_header = "note: ";
+
+static enum cti_type current_type = CTI_ERROR;
 
 static int errors = 0;
 static int warnings = 0;
@@ -159,18 +167,58 @@ char *CTIgetErrorMessageVA(int line, const char *format, va_list arg_p)
     return res;
 }
 
+static inline bool color_supported(int fd) {
+    return isatty(fd) == 1;
+}
+
 //TODO: make this inline with message length.
 
 static void PrintLocation(struct ctinfo *info)
 {
     if (info->line != NULL) {
+        size_t i;
         // We push 4 spaces to take the ' |> ' into account.
-        fprintf(stderr, " |> %s\n    ", info->line);
+        fprintf(stderr, " |> ");
 
+        for (i = 0; i < info->first_column - 1 && info->line[i] != '\0'; ++i) {
+            fputc(info->line[i], stderr);
+        }
+
+        if (color_supported(STDERR_FILENO)) {
+            if (current_type == CTI_ERROR) {
+                fputs(err_color, stderr);
+            } else if (current_type == CTI_WARN) {
+                fputs(warn_color, stderr);
+            }
+        }
+
+        for (/* Keep i from previous loop */;
+             i < info->last_column && info->line[i] != '\0'; ++i) {
+            fputc(info->line[i], stderr);
+        }
+
+        if (color_supported(STDERR_FILENO) &&
+            (current_type == CTI_ERROR || current_type == CTI_WARN)) {
+            fputs(reset_color, stderr);
+        }
+
+        for (/* Keep i from previous loop */; info->line[i] != '\0'; ++i) {
+            fputc(info->line[i], stderr);
+        }
+
+        fprintf(stderr, "\n    ");
         int c = 1;
         while (c < info->first_column) {
             fputc(' ', stderr);
             c++;
+        }
+
+        if (color_supported(STDERR_FILENO)) {
+            if (current_type == CTI_ERROR) {
+                fputs(err_color, stderr);
+            } else if (current_type == CTI_WARN) {
+                fputs(warn_color, stderr);
+            }
         }
 
         fputc('^', stderr);
@@ -181,6 +229,12 @@ static void PrintLocation(struct ctinfo *info)
             fputc('~', stderr);
             c++;
         }
+
+        if (color_supported(STDERR_FILENO) &&
+            (current_type == CTI_ERROR || current_type == CTI_WARN)) {
+            fputs(reset_color, stderr);
+        }
+
         fputc('\n', stderr);
     }
 }
@@ -239,7 +293,7 @@ static void PrintInfo(struct ctinfo *info)
  *
  ******************************************************************************/
 
-static void PrintMessage(char *header, const char *format, va_list arg_p, bool newline, struct ctinfo *info)
+static void PrintMessage(const char *header, const char *format, va_list arg_p, bool newline, struct ctinfo *info)
 {
     char *line;
     bool first_line = true;
@@ -251,7 +305,22 @@ static void PrintMessage(char *header, const char *format, va_list arg_p, bool n
     line = strtok(message_buffer, "@");
 
     while (line != NULL) {
-        fprintf(stderr, "%s%s\n", header, line);
+        if (color_supported(STDERR_FILENO)) {
+            if (current_type == CTI_ERROR) {
+                fputs(err_color, stderr);
+            } else if (current_type == CTI_WARN) {
+                fputs(warn_color, stderr);
+            }
+        }
+
+        fputs(header, stderr);
+
+        if (color_supported(STDERR_FILENO) &&
+            (current_type == CTI_ERROR || current_type == CTI_WARN)) {
+            fputs(reset_color, stderr);
+        }
+
+        fprintf(stderr, "%s\n", line);
         header = "";
         line = strtok(NULL, "@");
     }
@@ -474,7 +543,7 @@ static void HandleCtiCall(enum cti_type type)
     }
 }
 
-static char *GetMessageHeader(enum cti_type type)
+static const char *GetMessageHeader(enum cti_type type)
 {
     switch (type) {
     case CTI_WARN:
@@ -499,7 +568,7 @@ static char *GetMessageHeader(enum cti_type type)
  */
 void CTI(enum cti_type type, bool newline, const char *format, ...)
 {
-    char *message_header = GetMessageHeader(type);
+    const char *message_header = GetMessageHeader(type);
     HandleCtiCall(type);
     va_list arg_p;
 
@@ -516,7 +585,8 @@ void CTI(enum cti_type type, bool newline, const char *format, ...)
  */
 void CTIobj(enum cti_type type, bool newline, struct ctinfo obj, const char *format, ...)
 {
-    char *message_header = GetMessageHeader(type);
+    const char *message_header = GetMessageHeader(type);
+    current_type = type;
     HandleCtiCall(type);
     va_list arg_p;
 
