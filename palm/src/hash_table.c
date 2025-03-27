@@ -109,12 +109,12 @@ bool Insert(struct htable *table, void *key, void *value)
         for (; last->next; last = last->next) {
             if (table->is_equal_f(last->key, key)) {
                 last->value = value;
-                return true;
+                return false;
             }
         }
         if (table->is_equal_f(last->key, key)) {
             last->value = value;
-            return true;
+            return false;
         }
 
         target = &(last->next);
