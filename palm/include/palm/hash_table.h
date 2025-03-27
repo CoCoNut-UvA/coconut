@@ -66,7 +66,8 @@ htable_st *HTdeep_copy(htable_st *table, cpy_ft key_copy_func,
 /**
  * Insert the key, value pair from the table.
  *
- * @return true if insertion was successful.
+ * @return true if the key was newly inserted, false if the key already existed
+ *         and its value was updated.
  */
 bool HTinsert(htable_st *table, void *key, void *value);
 
