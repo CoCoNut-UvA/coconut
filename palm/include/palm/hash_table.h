@@ -72,6 +72,14 @@ htable_st *HTdeep_copy(htable_st *table, cpy_ft key_copy_func,
 bool HTinsert(htable_st *table, void *key, void *value);
 
 /**
+ * Try to insert the key, value pair from the table if the key does not exist
+ *
+ * @return true if the key was newly inserted, false if the key already existed,
+ *         in which case the table is unmodified
+ */
+bool HTinsert_unique(htable_st *table, void *key, void *value);
+
+/**
  * Lookup a value in the hash table.
  *
  * @return the corresponding value or NULL if key is not found.

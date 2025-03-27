@@ -96,7 +96,7 @@ void DeleteEntry(struct htable *table, struct htable_entry *entry)
 }
 
 static
-bool Insert(struct htable *table, void *key, void *value)
+bool Insert(struct htable *table, void *key, void *value, bool allow_overwrite)
 {
     struct htable_entry **target = NULL;
 
@@ -108,12 +108,16 @@ bool Insert(struct htable *table, void *key, void *value)
         struct htable_entry *last = table->entries[index];
         for (; last->next; last = last->next) {
             if (table->is_equal_f(last->key, key)) {
-                last->value = value;
+                if (allow_overwrite) {
+                    last->value = value;
+                }
                 return false;
             }
         }
         if (table->is_equal_f(last->key, key)) {
-            last->value = value;
+            if (allow_overwrite) {
+                last->value = value;
+            }
             return false;
         }
 
@@ -129,7 +133,12 @@ bool Insert(struct htable *table, void *key, void *value)
 
 bool HTinsert(struct htable *table, void *key, void *value)
 {
-    return Insert(table, key, value);
+    return Insert(table, key, value, true);
+}
+
+bool HTinsert_unique(struct htable *table, void *key, void *value)
+{
+    return Insert(table, key, value, false);
 }
 
 /**
