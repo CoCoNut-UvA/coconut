@@ -1,4 +1,4 @@
 #pragma once
 
-#include "ccn/phase_driver.h"
-#include "ccn/dynamic_core.h"
+#include "ccn/dynamic_core.h" // IWYU pragma: export
+#include "ccn/phase_driver.h" // IWYU pragma: export
