@@ -206,6 +206,45 @@ char *STRcatn(int n, ...)
 
 /*******************************************************************************
  *
+ * Description: Concatenate 2 strings.
+ *              Only append n characters from the second string to the first one.
+ *              If len is greater then STRlen(second), STRlen(second) will be used
+ *              as len.
+ *
+ * Parameters: - first, first string to use
+ *             - second, second string to use - append n characters to the first one
+ *             - len, number of characters to copy from the second string              
+ *
+ * Return: - new concatenated string
+ *
+ *******************************************************************************/
+
+ char* STRncat(const char *first, const char *second, size_t len)
+ {
+    char *result;
+    
+    size_t max_len = STRlen(second);
+    if (len < max_len) { max_len = len; }
+
+    if (first == NULL && second == NULL) {
+        result = NULL;
+    } else if (first == NULL && second != NULL) {
+        result = STRncpy(second, max_len);
+    } else if (first != NULL && second == NULL) {
+        result = STRncpy(first, STRlen(first));
+    } else {
+        size_t first_len = STRlen(first);
+        result = (char *)MEMmalloc(first_len + max_len + 1);
+
+        strncpy(result, first, first_len);
+        strncat(result, second, max_len);
+    }
+
+    return result;
+ }
+
+/*******************************************************************************
+ *
  * Description: Compare two strings.
  *
  * Parameters: - first, first string to compare
