@@ -224,7 +224,7 @@ char *STRcatn(int n, ...)
     if (first == NULL && second == NULL) {
         result = NULL;
     } else if (first == NULL && second != NULL) {
-        result = STRncpy(second, STRlen(second));
+        result = STRncpy(second, len);
     } else if (first != NULL && second == NULL) {
         result = STRncpy(first, STRlen(first));
     } else {
