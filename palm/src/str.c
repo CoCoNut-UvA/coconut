@@ -209,11 +209,11 @@ char *STRcatn(int n, ...)
  * Description: Concatenate 2 strings.
  *              Only append n characters from the second string to the first one
  *
- * Parameters: - first, first string to compare
- *             - second, second string to compare
+ * Parameters: - first, first string to use
+ *             - second, second string to use - append n characters to the first one
+ *             - len, number of characters to copy from the second string              
  *
- * Return: - true, string contents are equal
- *         - false, string contents are not equal
+ * Return: - new concatenated string
  *
  *******************************************************************************/
 
