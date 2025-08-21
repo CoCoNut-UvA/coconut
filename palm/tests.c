@@ -7,6 +7,18 @@
 #include "palm/memory.h"
 #include "palm/dbug.h"
 
+int strncat_test()
+{
+    char first[7] = "Hello \0";
+    char second[7] = "World!\0";
+
+    char *result = STRncat(first, second, STRlen(second));
+    printf("%s\n", result);
+
+    MEMfree(result);
+    
+}
+
 int main() {
     struct ctinfo info = {1, 1, 0, 0, "simple.ccn", "Phase"};
     info.last_column = 5;
@@ -23,6 +35,10 @@ int main() {
     MEMfree(up);
     MEMfree(low);
 
-    MEMmalloc((size_t)-1);
+    //MEMmalloc((size_t)-1);
+
+
+    strncat_test();
+
     return 0;
 }
