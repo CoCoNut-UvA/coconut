@@ -74,6 +74,18 @@ extern size_t STRlen(const char *str);
 extern char *STRcat(const char *first, const char* second);
 
 /**
+ * Concatenate two strings and allocate memory for new string.
+ * 
+ * Copy only len characters
+ * 
+ * @param first First string
+ * @param second Second string
+ * @param len Number of characters to copy from the second string
+ * @return New concatenated string
+ */
+extern char* STRncat(const char *first, const char *second, size_t len);
+
+/**
  * Concatenate n strings and allocate memory for new string.
  *
  * @param n Number of strings
