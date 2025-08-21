@@ -76,7 +76,7 @@ extern char *STRcat(const char *first, const char* second);
 /**
  * Concatenate two strings and allocate memory for new string.
  * 
- * Copy only len characters
+ * Copy only len, but at most `STRlen(secons)` characters.
  * 
  * @param first First string
  * @param second Second string
