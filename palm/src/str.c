@@ -219,7 +219,7 @@ char *STRcatn(int n, ...)
 
  char* STRncat(const char *first, const char *second, size_t len)
  {
-        char *result;
+    char *result;
 
     if (first == NULL && second == NULL) {
         result = NULL;
@@ -229,11 +229,10 @@ char *STRcatn(int n, ...)
         result = STRncpy(first, STRlen(first));
     } else {
         size_t first_len = STRlen(first);
-        size_t second_len = STRlen(second);
-        result = (char *)MEMmalloc(first_len + second_len + 1);
+        result = (char *)MEMmalloc(first_len + len + 1);
 
         strncpy(result, first, first_len);
-        strncat(result, second, second_len);
+        strncat(result, second, len);
     }
 
     return result;
