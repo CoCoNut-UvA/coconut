@@ -35,10 +35,9 @@ int main() {
     MEMfree(up);
     MEMfree(low);
 
-    //MEMmalloc((size_t)-1);
-
-
     strncat_test();
+
+    MEMmalloc((size_t)-1);
 
     return 0;
 }
