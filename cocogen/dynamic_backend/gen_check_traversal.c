@@ -394,7 +394,7 @@ static void LifetimeChildAllowed(node_st *lifetime_begin, node_st *lifetime_end)
                  ID_UPR(INODE_NAME(curr_node)),
                  ID_UPR(CHILD_NAME(curr_child)));
     OUT_FIELD(
-        "CTIerror(\"Found disallowed child(%s) in node(%s).\\n\");",
+        "CTI(CTI_ERROR, true, \"Found disallowed child(%s) in node(%s).\\n\");",
         ID_ORIG(CHILD_NAME(curr_child)),
         ID_ORIG(INODE_NAME(curr_node)));
     OUT_END_IF();
@@ -567,7 +567,7 @@ static void LifetimeAttributeAllowed(node_st *lifetime_begin, node_st *lifetime_
 
     OUT_BEGIN_IF("%s != NULL", access);
     OUT_FIELD(
-        "CTIerror(\"Found disallowed attribute(%s) in node(%s).\\n\");",
+        "CTI(CTI_ERROR, true, \"Found disallowed attribute(%s) in node(%s).\\n\");",
         ID_ORIG(ATTRIBUTE_NAME(curr_attribute)),
         ID_ORIG(INODE_NAME(curr_node)));
     OUT_END_IF();
