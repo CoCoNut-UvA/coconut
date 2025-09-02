@@ -234,9 +234,9 @@ char *STRcatn(int n, ...)
         result = STRncpy(first, first_len);
     } else {
         size_t total_len = first_len + second_len + 1;
-        result = (char *)MEMmalloc(sizeof(char) * (first_len + second_len + 1));
+        result = MEMmalloc(first_len + second_len + 1);
 
-        result = strncpy(result, first, first_len + 1);
+        strncpy(result, first, first_len + 1);
         strncat(result, second, second_len);
     }
 
