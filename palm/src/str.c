@@ -222,22 +222,22 @@ char *STRcatn(int n, ...)
  char* STRncat(const char *first, const char *second, size_t len)
  {
     char *result;
-    
-    size_t max_len = STRlen(second);
-    if (len < max_len) { max_len = len; }
+    size_t first_len = STRlen(first);
+    size_t second_len = STRlen(second);
+    if (len < second_len) { second_len = len; }
 
     if (first == NULL && second == NULL) {
         result = NULL;
     } else if (first == NULL && second != NULL) {
-        result = STRncpy(second, max_len);
+        result = STRncpy(second, second_len);
     } else if (first != NULL && second == NULL) {
-        result = STRncpy(first, STRlen(first));
+        result = STRncpy(first, first_len);
     } else {
-        size_t first_len = STRlen(first);
-        result = (char *)MEMmalloc(first_len + max_len + 1);
+        size_t total_len = first_len + second_len + 1;
+        result = MEMmalloc(first_len + second_len + 1);
 
-        strncpy(result, first, first_len);
-        strncat(result, second, max_len);
+        strncpy(result, first, first_len + 1);
+        strncat(result, second, second_len);
     }
 
     return result;
