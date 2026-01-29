@@ -689,6 +689,12 @@ node: is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebod
         INODE_IS_ROOT($$) = $root;
         INODE_IEQUATIONS($$) = $equations;
     }
+    | is_root[root] T_NODE id[name] '{' nodelifetimes[lifetimes] '}'
+    {
+        $$ = ASTinode($name, NULL);
+        INODE_IS_ROOT($$) = $root;
+        INODE_LIFETIMES($$) = $lifetimes;
+    }
     | is_root[root] T_NODE id[name] '{' '}'
     {
         $$ = ASTinode($name, NULL);

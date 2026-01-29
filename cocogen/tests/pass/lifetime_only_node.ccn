@@ -1,0 +1,32 @@
+start phase startPhase {
+    uid = SP,
+    actions {
+        pass print;
+    }
+};
+
+nodeset tree {
+    nodes = {binop, leaf},
+    attributes {
+        int sum
+    }
+};
+
+root node prog {
+    children {
+        tree tree
+    }
+};
+
+node binop {
+    children {
+        tree left,
+        tree right
+    }
+};
+
+node leaf { 
+    lifetime {
+        allowed (-> print]
+    }
+};
