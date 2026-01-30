@@ -51,7 +51,11 @@ void strncat_test()
 
 int main() {
     struct ctinfo info = {1, 1, 0, 0, "simple.ccn", "Phase"};
+    struct ctinfo info_with_null = {1, 1, 0, 0, "simple.ccn", NULL};
     info.last_column = 5;
+
+    CTIobj(CTI_STATE, true, info, "");
+    CTIobj(CTI_STATE, true, info_with_null, "Error");
 
     char *orig = "hello";
     char *up = STRupper(orig);
