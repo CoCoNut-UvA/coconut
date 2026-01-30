@@ -95,6 +95,11 @@ void DeleteEntry(struct htable *table, struct htable_entry *entry)
     MEMfree(entry);
 }
 
+/**
+ * Performs the actual insertion into a hashtable.
+ * @return true if they key was newly inserted, false if the key already existed
+    and its value was updated.
+ */
 static
 bool Insert(struct htable *table, void *key, void *value, bool allow_overwrite)
 {
@@ -133,8 +138,18 @@ bool Insert(struct htable *table, void *key, void *value, bool allow_overwrite)
 
 bool HTinsert(struct htable *table, void *key, void *value)
 {
+    Insert(table, key, value, true);
+    /* NOTE: Before the introduction of the _unique and _v variants, this function always returned true.
+       We keep that for compatability reasons, because some functions actually use the return value.
+    */
+    return true;
+}
+
+bool HTinsert_v(htable_st *table, void *key, void *value)
+{
     return Insert(table, key, value, true);
 }
+
 
 bool HTinsert_unique(struct htable *table, void *key, void *value)
 {

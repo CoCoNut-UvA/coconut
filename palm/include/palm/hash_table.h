@@ -66,13 +66,20 @@ htable_st *HTdeep_copy(htable_st *table, cpy_ft key_copy_func,
 /**
  * Insert the key, value pair from the table.
  *
- * @return true if the key was newly inserted, false if the key already existed
- *         and its value was updated.
+ * @return true if insertion was successful.
  */
 bool HTinsert(htable_st *table, void *key, void *value);
 
 /**
- * Try to insert the key, value pair from the table if the key does not exist
+ * A variant of `HTinsert` that is more verbose by giving information about the type of modification
+ * that was performed on the table.
+ * @return true if the key was newly inserted, false if the key already existed
+ *         and its value was updated.
+ */
+bool HTinsert_v(htable_st *table, void *key, void *value);
+
+/**
+ * Try to insert the key, value pair from the table with the requirement that the key does not exist
  *
  * @return true if the key was newly inserted, false if the key already existed,
  *         in which case the table is unmodified
@@ -118,6 +125,7 @@ void HTmapWithKey(htable_st *table, mapk_ft fun);
 void HTmapWithDataAndKey(htable_st *table, void *data, mapdk_ft fun);
 
 void HTfold(htable_st *table, fold_ft fun, void *init_acc);
+
 /**
  * @return the amount of entries in the hash table.
  */
