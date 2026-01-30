@@ -689,11 +689,12 @@ node: is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebod
         INODE_IS_ROOT($$) = $root;
         INODE_IEQUATIONS($$) = $equations;
     }
-    | is_root[root] T_NODE id[name] '{' nodelifetimes[lifetimes] '}'
+    // for this case we disallow an empty nodelifetimes to prevent shift/reduce conflict so define it inline.
+    | is_root[root] T_NODE id[name] '{' T_LIFETIME '{' lifetimes[lts] '}' '}'
     {
         $$ = ASTinode($name, NULL);
         INODE_IS_ROOT($$) = $root;
-        INODE_LIFETIMES($$) = $lifetimes;
+        INODE_LIFETIMES($$) = $lts;
     }
     | is_root[root] T_NODE id[name] '{' '}'
     {
