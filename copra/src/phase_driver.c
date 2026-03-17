@@ -197,12 +197,19 @@ struct ccn_node *StartPhase(struct ccn_phase *phase, char *phase_name, struct cc
         phase_driver.action_id = curr_action_id;
         size_t action_counter = 0;
         enum ccn_action_id action_id = phase->action_table[action_counter];
+
+        size_t old_iter = phase_driver.cycle_iter;
+        bool old_fixed_point = phase_driver.fixed_point;
+        
         while (action_id != CCNAC_ID_NULL) {
+            old_fixed_point = phase_driver.fixed_point;
             struct ccn_action *action = CCNgetActionFromID(action_id);
             node = CCNdispatchAction(action, phase->root_type, node, false);
             action_counter++;
             action_id = phase->action_table[action_counter];
+            phase_driver.fixed_point = phase_driver.fixed_point && old_fixed_point;
         }
+        phase_driver.cycle_iter = old_iter;
         phase_driver.cycle_iter++;
     } while(cycle && phase_driver.cycle_iter < phase_driver.max_cycles && !(phase_driver.fixed_point));
 
